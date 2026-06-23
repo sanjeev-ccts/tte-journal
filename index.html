@@ -616,7 +616,8 @@
     }
     
     function triggerGenerate() { 
-        if(!window.appState.legs || window.appState.legs.length === 0) return showModal("Empty", "No entries to generate.", "warning", false);
+        if(!appState.profile) return showModal("Loading", "Please wait for data to load...", "warning", false);
+        if(!appState.legs || appState.legs.length === 0) return showModal("Empty", "No entries to generate.", "warning", false);
         let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
         let hasBreak = false; let breakMsg = "";
@@ -643,7 +644,8 @@
         validLegs.forEach((row, index) => {
             let item = row.item; let taStr = "-"; let rateStr = "-"; let pStr = "-";
             if(row.isLastOfDay && row.matchingTA) { taStr = `${row.matchingTA.pct}%`; if(row.matchingTA.pct > 0) { rateStr = row.matchingTA.rate; pStr = "00"; totalAmount += row.matchingTA.rate; counts[row.matchingTA.pct]++; } }
-            let objCell = ""; if(index === 0) { let objStyle = validLegs.length > 2 ? "writing-mode: vertical-rl; transform: rotate(180deg); font-weight: bold; letter-spacing: 2px; text-align: center; vertical-align: middle; white-space: nowrap;" : "font-weight: bold; text-align: center; vertical-align: middle;"; objCell = `<td rowspan="${validLegs.length}" style="border: 1px solid black; padding: 2px; width: 35px; max-width: 35px; ${objStyle}">Worked as TTE</td>`; }
+            // Change this specific line to use these exact styles:
+    objCell = `<td rowspan="${validLegs.length}" style="border: 1px solid black; padding: 2px; width: 35px; min-width: 35px; max-width: 35px; writing-mode: vertical-rl; transform: rotate(180deg); font-weight: bold; text-align: center; vertical-align: middle; white-space: nowrap;">Worked as TTE</td>`;
             tbodyHtml += `<tr><td style="border: 1px solid black; padding: 4px; width: 10%;">${formatDate(item.date)}</td><td style="border: 1px solid black; padding: 4px; width: 9%;">${item.train}</td><td style="border: 1px solid black; padding: 4px; width: 9%;">${item.depTime}</td><td style="border: 1px solid black; padding: 4px; width: 9%;">${item.arrTime}</td><td style="border: 1px solid black; padding: 4px; width: 11%;">${item.depStn}</td><td style="border: 1px solid black; padding: 4px; width: 11%;">${item.arrStn}</td><td style="border: 1px solid black; padding: 4px; width: 6%;">${taStr}</td>${objCell}<td style="border: 1px solid black; padding: 4px; width: 7.5%;">${rateStr}</td><td style="border: 1px solid black; padding: 4px; width: 7.5%;">${pStr}</td></tr>`;
         });
         let bHtml = ""; if(counts[30] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 4px;">30% x ${counts[30]}</td><td style="border: 1px solid black; padding: 4px;">${Math.floor(p.tarate*0.3)} x ${counts[30]}</td><td style="border: 1px solid black; padding: 4px;">₹${counts[30] * Math.floor(p.tarate*0.3)}</td></tr>`; if(counts[70] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 4px;">70% x ${counts[70]}</td><td style="border: 1px solid black; padding: 4px;">${Math.floor(p.tarate*0.7)} x ${counts[70]}</td><td style="border: 1px solid black; padding: 4px;">₹${counts[70] * Math.floor(p.tarate*0.7)}</td></tr>`; if(counts[100] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 4px;">100% x ${counts[100]}</td><td style="border: 1px solid black; padding: 4px;">${p.tarate} x ${counts[100]}</td><td style="border: 1px solid black; padding: 4px;">₹${counts[100] * p.tarate}</td></tr>`;
