@@ -1,6 +1,6 @@
-const CACHE_NAME = 'tte-journal-v1';
+const CACHE_NAME = 'tte-journal-v1.1';
 const urlsToCache = [
-  './Index.html',
+  './index.html',
   './manifest.json',
   './icon.png'
 ];
