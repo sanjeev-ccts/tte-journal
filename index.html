@@ -46,23 +46,10 @@
                     if (data) {
                         window.appState = data;
                         if (!window.appState.legs) window.appState.legs = [];
-                        
-                        // If user is on login screen, push to dashboard
-                        if(!document.getElementById('screen-login').classList.contains('hidden')) {
-                            navTo('screen-dashboard');
-                        } else {
-                            // Silently update current screens if data changed from elsewhere
-                            if(!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
-                            if(!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
-                        }
+                        navTo('screen-dashboard'); // Force push to dashboard
                     } else {
-                        // New user, push to profile setup
-                        navTo('screen-register');
+                        navTo('screen-register'); // Force push to register
                     }
-                });
-            } else {
-                navTo('screen-login');
-            }
         });
 
         window.syncDataToCloud = () => {
