@@ -193,11 +193,6 @@
                     <div style="margin-bottom: 10px;"><label class="profile-lbl">Nearby HQs <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-nearby" style="text-transform: uppercase;"></div>
                     <div style="margin-bottom: 10px;"><label class="profile-lbl">Outward Destinations <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-dest" style="text-transform: uppercase;"></div>
                 </div>
-                
-                <div style="background: #ecfccb; padding: 12px; border-radius: 8px; border: 1px solid #bef264;">
-                    <label style="font-size: 13px; display: flex; align-items: center; gap: 8px; cursor: pointer; color: #4d7c0f; font-weight: bold;"><input type="checkbox" id="reg-autobackup" style="width: 20px; height: 20px; margin: 0; cursor: pointer;"> Enable Device Backup File</label>
-                    <div style="font-size: 11px; color: #65a30d; margin-top: 5px;">In addition to cloud sync, this saves a local file to your phone.</div>
-                </div>
 
                 <button style="margin-top: 20px; background: #0f172a;" onclick="saveProfile()">Save Profile</button>
                 <button style="margin-top: 10px; background: #ef4444;" onclick="window.logout()">Sign Out of Cloud</button>
@@ -258,11 +253,12 @@
                 <div style="display: flex; border-bottom: 1px solid #818cf8;">
                     <div style="flex: 1; padding: 12px; border-right: 1px solid #818cf8;">
                         <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Station From</label>
-                        <select id="trip-dep-stn" onchange="handleStationChange(this)" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;"></select>
+                        <input list="stn-list" id="trip-dep-stn" placeholder="Type or Select" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px; text-transform: uppercase;">
                     </div>
                     <div style="flex: 1; padding: 12px;">
                         <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Station To</label>
-                        <select id="trip-arr-stn" onchange="handleStationChange(this)" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;"></select>
+                        <input list="stn-list" id="trip-arr-stn" placeholder="Type or Select" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px; text-transform: uppercase;">
+<datalist id="stn-list"></datalist>
                     </div>
                 </div>
                 <div style="display: flex;">
@@ -311,8 +307,8 @@
             <div class="card" id="report-summary-card" style="border: 2px solid #38bdf8; background: #e0f2fe;">
                 <h3 style="font-size: 15px; color: var(--blue);">Summary</h3><div class="summary-row"><span>Entries this period</span><span id="rep-count">0</span></div><div class="summary-row" style="border-bottom: none; margin-bottom: 0;"><span>Total Value</span><span id="rep-val">₹0</span></div>
                 <div id="ta-extras" style="display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 15px;">
-                    <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: #0c4a6e;">Working Days</label><input type="number" id="pdf-work-days" placeholder="Enter Days (Optional)" style="border: 2px solid #bae6fd; font-size: 14px; font-weight: bold; text-align: center;"></div>
-                    <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: #0c4a6e;">Earnings</label><input type="number" id="pdf-earnings" placeholder="Enter ₹ (Optional)" style="border: 2px solid #bae6fd; font-size: 14px; font-weight: bold; text-align: center;"></div>
+                    <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: #0c4a6e;">Working Days</label><input type="number" id="pdf-work-days" placeholder="Enter Days" style="border: 2px solid #bae6fd; font-size: 14px; font-weight: bold; text-align: center;"></div>
+                    <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: #0c4a6e;">Earnings</label><input type="number" id="pdf-earnings" placeholder="Enter ₹" style="border: 2px solid #bae6fd; font-size: 14px; font-weight: bold; text-align: center;"></div>
                 </div>
                 <button style="margin-top: 15px; background: #10b981;" id="generate-btn" onclick="triggerGenerate()">Generate TA Journal PDF</button>
             </div>
@@ -573,22 +569,17 @@
     const safeNearby = window.appState.profile.nearby || []; 
     const safeDest = window.appState.profile.dest || []; 
     const allStns = [window.appState.profile.hq, ...safeNearby, ...safeDest, 'DDU']; 
-    const stnHtml = [...new Set(allStns)].filter(s=>s).map(s => `<option value="${s}">${s}</option>`).join('') + `<option value="ADD_NEW" style="color: var(--blue); font-weight: bold;">+ Add New Station</option>`; 
+    const stnHtml = [...new Set(allStns)].filter(s=>s).map(s => `<option value="${s}">${s}</option>`).join(''); 
     
-    const depStnSelect = document.getElementById('trip-dep-stn');
-    if(window.appState.legs && window.appState.legs.length > 0) {
-        let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
-        const lastLeg = sortedLegs[sortedLegs.length - 1];
-        if(!allStns.includes(lastLeg.arrStn)) { 
-            depStnSelect.innerHTML = `<option value="${lastLeg.arrStn}">${lastLeg.arrStn}</option>` + stnHtml; 
-        } else { 
-            depStnSelect.innerHTML = stnHtml; 
-        }
-        depStnSelect.value = lastLeg.arrStn;
-    } else { 
-        depStnSelect.innerHTML = stnHtml; 
-    }
-    document.getElementById('trip-arr-stn').innerHTML = stnHtml; 
+    const dList = document.getElementById('stn-list');
+ if(dList) dList.innerHTML = stnHtml;
+ const depStnSelect = document.getElementById('trip-dep-stn');
+ if(window.appState.legs && window.appState.legs.length > 0) {
+     let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+     depStnSelect.value = sortedLegs[sortedLegs.length - 1].arrStn;
+ } else { 
+     depStnSelect.value = window.appState.profile.hq; 
+ } 
     const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
     const badge = document.getElementById('duty-status-badge'); 
     const dot = document.getElementById('duty-status-dot'); 
@@ -619,7 +610,7 @@
     document.getElementById('dash-nda-lbl').innerText = `NDA hrs this period, ₹${Math.round(ndaAmt)}`;
     const rcAdd = document.getElementById('recent-logs-add'); let rcHTML = '';
     if(!window.appState.legs || window.appState.legs.length === 0) { rcHTML = '<p style="color: #64748b; font-size: 13px; text-align: center;">No entries yet. Tap "Add Journey Entry" to begin.</p>'; } else { 
-        let recent = [...window.appState.legs].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`)).slice(0, 5); 
+        let recent = [...window.appState.legs].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`)).slice(0, 10); 
         rcHTML = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin-top: 5px;"><thead style="background: #334155; color: white; border-bottom: 2px solid var(--border);"><tr><th style="padding: 6px 2px;">Tr</th><th style="padding: 6px 2px;">Dep Dt</th><th style="padding: 6px 2px;">From</th><th style="padding: 6px 2px;">Dep</th><th style="padding: 6px 2px;">Arr Dt</th><th style="padding: 6px 2px;">To</th><th style="padding: 6px 2px;">Arr</th></tr></thead><tbody>`;
         let sortedAll = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
         let legColors = {}; let cycleIndex = 0; const bgColors = ['#f8fafc', '#e2e8f0'];
