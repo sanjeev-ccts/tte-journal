@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TA-NDA Tracker Cloud</title>
     
-    <!-- PWA APP SETTINGS (Hides the browser bar) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2830/2830305.png">
+    <link rel="apple-touch-icon" href="./my-icon.png">
 
     <style>
         :root { --bg: #f4f6f8; --card: #ffffff; --border: #cbd5e1; --text: #1e293b; --blue: #1e40af; --light-blue: #0ea5e9; --green: #10b981; --red: #ef4444; --orange: #f59e0b; }
@@ -68,7 +67,6 @@
         }
     </style>
 
-    <!-- Firebase Cloud Engine (Integrated securely) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -90,10 +88,11 @@
         window.firebaseSet = set;
         window.firebaseRef = ref;
 
-        // Bridge to allow HTML buttons to access Firebase Login/Logout
         window.login = () => {
             signInWithPopup(window.auth, window.provider).catch(err => {
-                showModal("Login Error", err.message, "error", false);
+                if(err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
+                    showModal("Login Error", err.message, "error", false);
+                }
             });
         };
 
@@ -103,7 +102,6 @@
             });
         };
 
-        // Watch for Login/Logout state
         onAuthStateChanged(window.auth, (user) => {
             if (user) {
                 window.currentUid = user.uid;
@@ -116,7 +114,8 @@
                             navTo('screen-dashboard');
                         }
                     } else {
-                        navTo('screen-register'); // New user needs to register
+                        window.appState = { profile: null, legs: [] };
+                        openSettings(); 
                     }
                 });
             } else {
@@ -161,7 +160,6 @@
         </div>
     </div>
 
-    <!-- CLOUD LOGIN SCREEN -->
     <div id="screen-login" class="hidden card" style="max-width: 320px; margin: 80px auto; text-align: center; padding: 30px 20px; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
         <div style="font-size: 45px; margin-bottom: 10px;">☁️</div>
         <h2 style="color: var(--blue); margin-bottom: 5px; font-size: 22px;">TTE Cloud Journal</h2>
@@ -169,7 +167,6 @@
         <button style="border-radius: 12px; font-size: 16px; padding: 14px; background: var(--blue);" onclick="window.login()">Sign in with Google</button>
     </div>
 
-    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar"><button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>TTE Profile Setup</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -188,30 +185,32 @@
                         <div style="flex: 1;"><label class="profile-lbl">Grade Pay</label><input type="number" id="reg-gradepay"></div>
                         <div style="flex: 1;"><label class="profile-lbl">DA (%)</label><input type="number" id="reg-da" placeholder="e.g. 50"></div>
                     </div>
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">TA Rate (₹)</label><input type="number" id="reg-tarate"></div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div style="flex: 1;"><label class="profile-lbl">Basic Pay (₹)</label><input type="number" id="reg-basicpay"></div>
+                        <div style="flex: 1;"><label class="profile-lbl">TA Rate (₹)</label><input type="number" id="reg-tarate"></div>
+                    </div>
                 </div>
 
                 <div class="profile-sec" style="background: #fdf4ff;">
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1;"><label class="profile-lbl">Pass No.</label><input type="text" id="reg-pass"></div><div style="flex: 1;"><label class="profile-lbl">Pass Validity</label><input type="date" id="reg-passval"></div></div>
-                    <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1;"><label class="profile-lbl">Auth No.</label><input type="text" id="reg-auth"></div><div style="flex: 1;"><label class="profile-lbl">Auth Validity</label><input type="date" id="reg-authval"></div></div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1;"><label class="profile-lbl">Checking Authority No.</label><input type="text" id="reg-auth"></div><div style="flex: 1;"><label class="profile-lbl">Auth Validity</label><input type="date" id="reg-authval"></div></div>
                 </div>
 
                 <div class="profile-sec" style="background: #f0fdf4;">
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Main HQ Station <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-hq" style="text-transform: uppercase;"></div>
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Nearby HQs <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-nearby" style="text-transform: uppercase;"></div>
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Outward Destinations <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-dest" style="text-transform: uppercase;"></div>
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Main HQ Station <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-hq" placeholder="e.g. NDLS" style="text-transform: uppercase;"></div>
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Nearby HQs <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-nearby" placeholder="e.g. DLI, NZM" style="text-transform: uppercase;"></div>
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Outward Destinations <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-dest" placeholder="e.g. CNB, LKO, BSB" style="text-transform: uppercase;"></div>
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #eab308; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">✏️ Edit Profile</button>
+                    <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #4f46e5; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">Edit Profile</button>
                     <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #22c55e; color: white; font-weight: bold; font-size: 15px; display: none; cursor: pointer;">💾 Save & Lock</button>
                 </div>
-                <button style="margin-top: 10px; background: #ef4444;" onclick="window.logout()">Sign Out of Cloud</button>
+                <button style="margin-top: 10px; background: #e11d48; color: white;" onclick="window.logout()">Sign Out of Cloud</button>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar" style="flex-direction: column; justify-content: center; position: relative;">
             <div style="text-align: center;">
@@ -242,7 +241,6 @@
         </div>
     </div>
 
-    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Add Journey</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -288,7 +286,6 @@
         </div>
     </div>
 
-    <!-- ALL ENTRIES -->
     <div id="screen-all" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>All Entries</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -304,7 +301,6 @@
         </div>
     </div>
 
-    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Generate PDF</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -326,7 +322,6 @@
         </div>
     </div>
 
-    <!-- BACKUP -->
     <div id="screen-backup" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Backup & Restore</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -351,7 +346,7 @@
 
 <script>
     window.appState = { profile: null, legs: [] }; 
-    const APP_VERSION = "3.5"; 
+    const APP_VERSION = "3.2"; 
     let currentTab = 'ta';
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
@@ -375,7 +370,6 @@
         if(window.currentUid && window.firebaseSet && window.firebaseRef) {
             window.firebaseSet(window.firebaseRef(window.db, 'users/' + window.currentUid), window.appState);
         }
-        triggerAutoBackup(); 
     }
     
     function showModal(title, msg, type, showCancel, callback) { const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; box.style.borderTopColor = type === 'error' ? 'var(--red)' : (type === 'warning' ? 'var(--orange)' : 'var(--green)'); document.getElementById('modal-title').style.color = box.style.borderTopColor; const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; btnCancel.onclick = () => { modal.classList.add('hidden'); if(callback) callback(false); }; modal.classList.remove('hidden'); }
@@ -391,6 +385,7 @@
         const saveBtn = document.getElementById('btn-save-profile');
         if(editBtn) editBtn.style.display = 'block';
         if(saveBtn) saveBtn.style.display = 'none';
+        document.getElementById('profile-back-btn').classList.remove('hidden');
     }
 
     function unlockProfile() {
@@ -413,6 +408,7 @@
         document.getElementById('reg-payscale').value = p.payscale || ''; 
         document.getElementById('reg-gradepay').value = p.gradepay || ''; 
         document.getElementById('reg-da').value = p.da || ''; 
+        document.getElementById('reg-basicpay').value = p.basicpay || ''; 
         document.getElementById('reg-appt').value = p.appt || ''; 
         document.getElementById('reg-tarate').value = p.tarate || ''; 
         document.getElementById('reg-pass').value = p.pass || ''; 
@@ -422,18 +418,24 @@
         document.getElementById('reg-hq').value = p.hq || ''; 
         document.getElementById('reg-nearby').value = (p.nearby || []).join(', '); 
         document.getElementById('reg-dest').value = (p.dest || []).join(', '); 
-        document.getElementById('profile-back-btn').classList.remove('hidden'); 
+        
         navTo('screen-register'); 
-        setTimeout(lockProfile, 50); 
+        
+        if (!p.name) {
+            unlockProfile();
+            document.getElementById('profile-back-btn').classList.add('hidden');
+        } else {
+            setTimeout(lockProfile, 50); 
+        }
     }   
 
     function saveProfile() { 
         try { 
             const getVal = id => document.getElementById(id).value.trim().toUpperCase(); 
-            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !getVal('reg-payscale') || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR / त्रुटि", "All profile fields are mandatory to fill.\nसभी फ़ील्ड भरना अनिवार्य है।", "error", false);
+            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !getVal('reg-payscale') || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !document.getElementById('reg-basicpay').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR / त्रुटि", "All profile fields are mandatory to fill.\nसभी फ़ील्ड भरना अनिवार्य है।", "error", false);
             
             window.appState.profile = { 
-                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), payscale: getVal('reg-payscale'), gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
+                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), payscale: getVal('reg-payscale'), gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, basicpay: document.getElementById('reg-basicpay').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
             }; 
             
             if(!window.appState.legs) window.appState.legs = []; 
@@ -446,8 +448,8 @@
         } 
     }
     
-    function exportData(isAuto = false) { const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState)); const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr); dlAnchorElem.setAttribute("download", `TTE_${isAuto ? 'AutoBackup' : 'Backup'}_${new Date().toISOString().split('T')[0]}.json`); dlAnchorElem.click(); }
-    function triggerAutoBackup() { if(window.appState.profile && window.appState.profile.autoBackup) { exportData(true); } }
+    function exportData() { const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState)); const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr); dlAnchorElem.setAttribute("download", `TTE_Backup_${new Date().toISOString().split('T')[0]}.json`); dlAnchorElem.click(); }
+    
     function importData(event) { const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { try { const imported = JSON.parse(e.target.result); if(imported.profile && imported.legs) { window.appState = imported; saveData(); showModal("SUCCESS / सफलता", "Backup restored!\nबैकअप रीस्टोर हो गया!", "success", false, () => { location.reload(); }); } else { throw new Error("Invalid Format"); } } catch(err) { showModal("ERROR / त्रुटि", "Invalid backup file.\nअमान्य बैकअप फ़ाइल।", "error", false); } }; reader.readAsText(file); }
     
     function manageLeg(id, train, dep, arr) { document.getElementById('manage-id').value = id; document.getElementById('manage-msg').innerText = `Tr: ${train} | ${dep} ➔ ${arr}`; document.getElementById('manage-modal').classList.remove('hidden'); }
@@ -455,10 +457,8 @@
     function triggerEdit() { closeManage(); editLeg(parseInt(document.getElementById('manage-id').value)); }
     function triggerDelete() { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
     
-    function handleStationChange(sel) { if(sel.value === 'ADD_NEW') { let newStn = prompt("Enter new station code (e.g., NDLS):"); if(newStn && newStn.trim() !== '') { newStn = newStn.trim().toUpperCase(); if(!window.appState.profile.dest) window.appState.profile.dest = []; const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; if(!window.appState.profile.dest.includes(newStn) && !hqGroup.includes(newStn)) { window.appState.profile.dest.push(newStn); saveData(); } updateDashboardUI(); setTimeout(() => sel.value = newStn, 50); } else { sel.selectedIndex = 0; } } }
-    
     function saveLeg() { 
-        const leg = { id: Date.now(), depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase(), depStn: document.getElementById('trip-dep-stn').value, depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value, arrTime: document.getElementById('trip-arr-time').value }; 
+        const leg = { id: Date.now(), depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
         if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR / त्रुटि", "All fields are mandatory.\nसभी फील्ड्स अनिवार्य हैं।", "error", false); 
         if(leg.depStn === leg.arrStn) return showModal("ERROR / त्रुटि", "From and To stations cannot be same.\nप्रस्थान और गंतव्य स्टेशन समान नहीं हो सकते।", "error", false); 
         if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR / त्रुटि", "Arrival must be after Departure.\nआगमन का समय प्रस्थान के बाद होना चाहिए।", "error", false); 
@@ -476,7 +476,7 @@
             if(hqGroup.includes(prev.arrStn)) {
                 if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at HQ. New journey must start from HQ.\nपिछली यात्रा मुख्यालय पर समाप्त हुई थी। नई यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
             } else {
-                if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.\nपिछली यात्रा ${prev.arrStn} पर समाप्त हुई थी। आपको वहीं से शुरू करनाমহানगर शुरू करना होगा।`, "error", false);
+                if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.\nपिछली यात्रा ${prev.arrStn} पर समाप्त हुई थी। आपको वहीं से शुरू करना होगा।`, "error", false);
             }
         } else {
             if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Your very first journey must start from HQ.\nआपकी पहली यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
@@ -630,69 +630,76 @@
     }
     
     function updateDashboardUI() { 
-    let firstName = window.appState.profile.name.split(' ')[0]; 
-    firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(); 
-    
-    // This now shows the version number dynamically
-    document.getElementById('dash-subtitle').innerText = `Hi, ${firstName} (v${APP_VERSION})`; 
-    
-    const safeNearby = window.appState.profile.nearby || []; 
-    const safeDest = window.appState.profile.dest || []; 
-    const allStns = [window.appState.profile.hq, ...safeNearby, ...safeDest, 'DDU']; 
-    const stnHtml = [...new Set(allStns)].filter(s=>s).map(s => `<option value="${s}">${s}</option>`).join(''); 
-    
-    const dList = document.getElementById('stn-list');
- if(dList) dList.innerHTML = stnHtml;
- const depStnSelect = document.getElementById('trip-dep-stn');
- if(window.appState.legs && window.appState.legs.length > 0) {
-     let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
-     depStnSelect.value = sortedLegs[sortedLegs.length - 1].arrStn;
- } else { 
-     depStnSelect.value = window.appState.profile.hq; 
- } 
-    const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
-    const badge = document.getElementById('duty-status-badge'); 
-    const dot = document.getElementById('duty-status-dot'); 
-    const txt = document.getElementById('duty-status-text'); 
-    const desc = document.getElementById('duty-status-desc'); 
-    if(!window.appState.legs || window.appState.legs.length === 0) { 
-        badge.style.background = '#ecfdf5'; badge.style.color = '#047857'; dot.style.background = '#10b981'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
-    } else { 
-        const lastLeg = window.appState.legs[window.appState.legs.length - 1]; 
-        if(hqGroup.includes(lastLeg.arrStn)) { 
+        let firstName = window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
+        firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(); 
+        document.getElementById('dash-subtitle').innerText = `Hi, ${firstName} (v${APP_VERSION})`; 
+        
+        const safeNearby = window.appState.profile.nearby || []; 
+        const safeDest = window.appState.profile.dest || []; 
+        const allStns = [window.appState.profile.hq, ...safeNearby, ...safeDest, 'DDU']; 
+        const stnHtml = [...new Set(allStns)].filter(s=>s).map(s => `<option value="${s}">${s}</option>`).join(''); 
+        
+        const dList = document.getElementById('stn-list');
+        if(dList) dList.innerHTML = stnHtml;
+        const depStnSelect = document.getElementById('trip-dep-stn');
+        if(window.appState.legs && window.appState.legs.length > 0) {
+            let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+            depStnSelect.value = sortedLegs[sortedLegs.length - 1].arrStn;
+        } else { 
+            depStnSelect.value = window.appState.profile.hq || ''; 
+        } 
+        
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
+        const badge = document.getElementById('duty-status-badge'); 
+        const dot = document.getElementById('duty-status-dot'); 
+        const txt = document.getElementById('duty-status-text'); 
+        const desc = document.getElementById('duty-status-desc'); 
+        
+        if(!window.appState.legs || window.appState.legs.length === 0) { 
             badge.style.background = '#ecfdf5'; badge.style.color = '#047857'; dot.style.background = '#10b981'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
         } else { 
-            badge.style.background = '#fff7ed'; badge.style.color = '#b45309'; dot.style.background = '#f59e0b'; txt.innerText = `At ${lastLeg.arrStn}`; desc.innerText = 'On duty. Awaiting return leg to HQ.'; 
+            const lastLeg = window.appState.legs[window.appState.legs.length - 1]; 
+            if(hqGroup.includes(lastLeg.arrStn)) { 
+                badge.style.background = '#ecfdf5'; badge.style.color = '#047857'; dot.style.background = '#10b981'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
+            } else { 
+                badge.style.background = '#fff7ed'; badge.style.color = '#b45309'; dot.style.background = '#f59e0b'; txt.innerText = `At ${lastLeg.arrStn}`; desc.innerText = 'On duty. Awaiting return leg to HQ.'; 
+            } 
         } 
-    } 
-    const mo = document.getElementById('report-month-hidden').value; 
-    const [y, m] = mo.split('-'); 
-    const moName = new Date(y, m-1).toLocaleString('default',{month:'short'}); 
-    document.getElementById('dash-ta-lbl').innerText = `TA this month (${moName})`; 
-    let totalTA = 0; const cycles = buildCycles(window.appState.legs); 
-    cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
-    document.getElementById('dash-ta-val').innerText = '₹' + totalTA; 
-    const nda = extractNDALegs(mo); const ndaHrsStr = `${String(Math.floor(nda.totalNdaMinutes / 60)).padStart(2,'0')}:${String(Math.round(nda.totalNdaMinutes % 60)).padStart(2,'0')}`;
-    const daPct = window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
-    const gp = window.appState.profile.gradepay ? parseFloat(window.appState.profile.gradepay) : 0;
-    const ndaAmt = ((nda.totalNdaMinutes / 60) * 10 / 60) * (gp * (1 + (daPct / 100)) / 200);
-    document.getElementById('dash-nda-val').innerText = `${ndaHrsStr} Hrs`;
-    document.getElementById('dash-nda-lbl').innerText = `NDA hrs this period, ₹${Math.round(ndaAmt)}`;
-    const rcAdd = document.getElementById('recent-logs-add'); let rcHTML = '';
-    if(!window.appState.legs || window.appState.legs.length === 0) { rcHTML = '<p style="color: #64748b; font-size: 13px; text-align: center;">No entries yet. Tap "Add Journey Entry" to begin.</p>'; } else { 
-        let recent = [...window.appState.legs].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`)).slice(0, 10); 
-        rcHTML = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin-top: 5px;"><thead style="background: #334155; color: white; border-bottom: 2px solid var(--border);"><tr><th style="padding: 6px 2px;">Tr</th><th style="padding: 6px 2px;">Dep Dt</th><th style="padding: 6px 2px;">From</th><th style="padding: 6px 2px;">Dep</th><th style="padding: 6px 2px;">Arr Dt</th><th style="padding: 6px 2px;">To</th><th style="padding: 6px 2px;">Arr</th></tr></thead><tbody>`;
-        let sortedAll = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
-        let legColors = {}; let cycleIndex = 0; const bgColors = ['#f8fafc', '#e2e8f0'];
-        for(let i=0; i<sortedAll.length; i++){ let prev = i>0 ? sortedAll[i-1] : null; if(prev && hqGroup.includes(prev.arrStn)){ cycleIndex++; } legColors[sortedAll[i].id] = bgColors[cycleIndex % 2]; }
-        recent.forEach((leg) => { 
-            let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); let rowColor = legColors[leg.id] || '#ffffff';
-            rcHTML += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="padding: 8px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="padding: 8px 2px; color: #475569;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="padding: 8px 2px; color: #475569;">${leg.arrTime}</td></tr>`; 
-        }); 
-        rcHTML += `</tbody></table>`;
-    } 
-    if(rcAdd) rcAdd.innerHTML = rcHTML;
-}
+        
+        const mo = document.getElementById('report-month-hidden').value; 
+        const [y, m] = mo.split('-'); 
+        const moName = new Date(y, m-1).toLocaleString('default',{month:'short'}); 
+        document.getElementById('dash-ta-lbl').innerText = `TA this month (${moName})`; 
+        
+        let totalTA = 0; const cycles = buildCycles(window.appState.legs); 
+        cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
+        document.getElementById('dash-ta-val').innerText = '₹' + totalTA; 
+        
+        const nda = extractNDALegs(mo); const ndaHrsStr = `${String(Math.floor(nda.totalNdaMinutes / 60)).padStart(2,'0')}:${String(Math.round(nda.totalNdaMinutes % 60)).padStart(2,'0')}`;
+        const daPct = window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
+        const gp = window.appState.profile.gradepay ? parseFloat(window.appState.profile.gradepay) : 0;
+        const ndaAmt = ((nda.totalNdaMinutes / 60) * 10 / 60) * (gp * (1 + (daPct / 100)) / 200);
+        
+        document.getElementById('dash-nda-val').innerText = `${ndaHrsStr} Hrs`;
+        document.getElementById('dash-nda-lbl').innerText = `NDA hrs this period, ₹${Math.round(ndaAmt)}`;
+        
+        const rcAdd = document.getElementById('recent-logs-add'); let rcHTML = '';
+        if(!window.appState.legs || window.appState.legs.length === 0) { 
+            rcHTML = '<p style="color: #64748b; font-size: 13px; text-align: center;">No entries yet. Tap "Add Journey Entry" to begin.</p>'; 
+        } else { 
+            let recent = [...window.appState.legs].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`)).slice(0, 10); 
+            rcHTML = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin-top: 5px;"><thead style="background: #334155; color: white; border-bottom: 2px solid var(--border);"><tr><th style="padding: 6px 2px;">Tr</th><th style="padding: 6px 2px;">Dep Dt</th><th style="padding: 6px 2px;">From</th><th style="padding: 6px 2px;">Dep</th><th style="padding: 6px 2px;">Arr Dt</th><th style="padding: 6px 2px;">To</th><th style="padding: 6px 2px;">Arr</th></tr></thead><tbody>`;
+            let sortedAll = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
+            let legColors = {}; let cycleIndex = 0; const bgColors = ['#f8fafc', '#e2e8f0'];
+            for(let i=0; i<sortedAll.length; i++){ let prev = i>0 ? sortedAll[i-1] : null; if(prev && hqGroup.includes(prev.arrStn)){ cycleIndex++; } legColors[sortedAll[i].id] = bgColors[cycleIndex % 2]; }
+            recent.forEach((leg) => { 
+                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); let rowColor = legColors[leg.id] || '#ffffff';
+                rcHTML += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="padding: 8px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="padding: 8px 2px; color: #475569;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="padding: 8px 2px; color: #475569;">${leg.arrTime}</td></tr>`; 
+            }); 
+            rcHTML += `</tbody></table>`;
+        } 
+        if(rcAdd) rcAdd.innerHTML = rcHTML;
+    }
     
     function switchTab(tab) { currentTab = tab; document.getElementById('tab-ta').classList.remove('active'); document.getElementById('tab-nda').classList.remove('active'); document.getElementById(`tab-${tab}`).classList.add('active'); updateReportUI(); }
     function changeMonth(delta) { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); updateDashboardUI(); }
