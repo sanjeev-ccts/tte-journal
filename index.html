@@ -669,7 +669,7 @@
             
             let objCell = ""; 
             if(index === 0) { 
-               objCell = `<td rowspan="${validLegs.length}" style="border: 1px solid black; padding: 2px; font-weight: bold; text-align: center; vertical-align: middle; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 1px;">Worked as TTE</td>`; 
+                objCell = `<td rowspan="${validLegs.length}" style="border: 1px solid black; padding: 2px; font-weight: bold; text-align: center; vertical-align: middle; writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: 1px;">Worked as TTE</td>`; 
             }
             tbodyHtml += `<tr><td style="border: 1px solid black; padding: 4px; width: 10%;">${formatDate(item.date)}</td><td style="border: 1px solid black; padding: 4px; width: 9%;">${item.train}</td><td style="border: 1px solid black; padding: 4px; width: 9%;">${item.depTime}</td><td style="border: 1px solid black; padding: 4px; width: 9%;">${item.arrTime}</td><td style="border: 1px solid black; padding: 4px; width: 11%;">${item.depStn}</td><td style="border: 1px solid black; padding: 4px; width: 11%;">${item.arrStn}</td><td style="border: 1px solid black; padding: 4px; width: 6%;">${taStr}</td>${objCell}<td style="border: 1px solid black; padding: 4px; width: 8%;">${rateStr}</td><td style="border: 1px solid black; padding: 4px; width: 7%;">${pStr}</td></tr>`;
         });
