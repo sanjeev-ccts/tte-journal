@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tte-journal-v2.5'; // Change this number when you update index.html
+const CACHE_NAME = 'tte-journal-v2.6'; // Change this number when you update index.html
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
