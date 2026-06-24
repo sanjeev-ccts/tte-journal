@@ -60,6 +60,7 @@
         }
     </style>
 
+    <!-- Firebase Cloud Engine (Integrated securely) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -152,6 +153,7 @@
         </div>
     </div>
 
+    <!-- CLOUD LOGIN SCREEN -->
     <div id="screen-login" class="hidden card" style="max-width: 320px; margin: 80px auto; text-align: center; padding: 30px 20px; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
         <div style="font-size: 45px; margin-bottom: 10px;">☁️</div>
         <h2 style="color: var(--blue); margin-bottom: 5px; font-size: 22px;">TTE Cloud Journal</h2>
@@ -159,6 +161,7 @@
         <button style="border-radius: 12px; font-size: 16px; padding: 14px; background: var(--blue);" onclick="window.login()">Sign in with Google</button>
     </div>
 
+    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar"><button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>TTE Profile Setup</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -191,12 +194,16 @@
                     <div style="margin-bottom: 10px;"><label class="profile-lbl">Outward Destinations <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-dest" style="text-transform: uppercase;"></div>
                 </div>
 
-                <button style="margin-top: 20px; background: #0f172a;" onclick="saveProfile()">Save Profile</button>
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #eab308; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">✏️ Edit Profile</button>
+                    <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #22c55e; color: white; font-weight: bold; font-size: 15px; display: none; cursor: pointer;">💾 Save & Lock</button>
+                </div>
                 <button style="margin-top: 10px; background: #ef4444;" onclick="window.logout()">Sign Out of Cloud</button>
             </div>
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar" style="flex-direction: column; justify-content: center; position: relative;">
             <div style="text-align: center;">
@@ -227,6 +234,7 @@
         </div>
     </div>
 
+    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Add Journey</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -272,6 +280,7 @@
         </div>
     </div>
 
+    <!-- ALL ENTRIES -->
     <div id="screen-all" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>All Entries</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -287,6 +296,7 @@
         </div>
     </div>
 
+    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Generate PDF</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -308,6 +318,7 @@
         </div>
     </div>
 
+    <!-- BACKUP -->
     <div id="screen-backup" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Backup & Restore</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -332,7 +343,7 @@
 
 <script>
     window.appState = { profile: null, legs: [] }; 
-    const APP_VERSION = "3.2"; 
+    const APP_VERSION = "3.1"; 
     let currentTab = 'ta';
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
@@ -360,12 +371,72 @@
     }
     
     function showModal(title, msg, type, showCancel, callback) { const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; box.style.borderTopColor = type === 'error' ? 'var(--red)' : (type === 'warning' ? 'var(--orange)' : 'var(--green)'); document.getElementById('modal-title').style.color = box.style.borderTopColor; const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; btnCancel.onclick = () => { modal.classList.add('hidden'); if(callback) callback(false); }; modal.classList.remove('hidden'); }
-    
-    function openSettings() { const p = window.appState.profile || {}; document.getElementById('reg-name').value = p.name || ''; document.getElementById('reg-pf').value = p.pf || ''; document.getElementById('reg-bu').value = p.bu || ''; document.getElementById('reg-desig').value = p.desig || ''; document.getElementById('reg-payscale').value = p.payscale || ''; document.getElementById('reg-gradepay').value = p.gradepay || ''; document.getElementById('reg-da').value = p.da || ''; document.getElementById('reg-appt').value = p.appt || ''; document.getElementById('reg-tarate').value = p.tarate || ''; document.getElementById('reg-pass').value = p.pass || ''; document.getElementById('reg-passval').value = p.passval || ''; document.getElementById('reg-auth').value = p.auth || ''; document.getElementById('reg-authval').value = p.authval || ''; document.getElementById('reg-hq').value = p.hq || ''; document.getElementById('reg-nearby').value = (p.nearby || []).join(', '); document.getElementById('reg-dest').value = (p.dest || []).join(', '); document.getElementById('profile-back-btn').classList.remove('hidden'); navTo('screen-register'); }   
-    
-    function saveProfile() { try { const getVal = id => document.getElementById(id).value.trim().toUpperCase(); 
-        if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !getVal('reg-payscale') || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR / त्रुटि", "All profile fields are mandatory to fill.\nसभी फ़ील्ड भरना अनिवार्य है।", "error", false);
-    window.appState.profile = { name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), payscale: getVal('reg-payscale'), gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) }; if(!window.appState.legs) window.appState.legs = []; saveData(); navTo('screen-dashboard'); showModal("Success / सफलता", "Profile Saved & Synced!\nप्रोफाइल सेव हो गई है!", "success", false); } catch(e) { showModal("Save Error", e.message, "error", false); } }
+
+    function lockProfile() {
+        document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
+            inp.disabled = true;
+            inp.style.background = "#f8fafc";
+            inp.style.border = "1px dashed #cbd5e1";
+            inp.style.color = "#334155";
+        });
+        const editBtn = document.getElementById('btn-edit-profile');
+        const saveBtn = document.getElementById('btn-save-profile');
+        if(editBtn) editBtn.style.display = 'block';
+        if(saveBtn) saveBtn.style.display = 'none';
+    }
+
+    function unlockProfile() {
+        document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
+            inp.disabled = false;
+            inp.style.background = "white";
+            inp.style.border = "1px solid #c7d2fe";
+            inp.style.color = "black";
+        });
+        document.getElementById('btn-edit-profile').style.display = 'none';
+        document.getElementById('btn-save-profile').style.display = 'block';
+    }
+
+    function openSettings() { 
+        const p = window.appState.profile || {}; 
+        document.getElementById('reg-name').value = p.name || ''; 
+        document.getElementById('reg-pf').value = p.pf || ''; 
+        document.getElementById('reg-bu').value = p.bu || ''; 
+        document.getElementById('reg-desig').value = p.desig || ''; 
+        document.getElementById('reg-payscale').value = p.payscale || ''; 
+        document.getElementById('reg-gradepay').value = p.gradepay || ''; 
+        document.getElementById('reg-da').value = p.da || ''; 
+        document.getElementById('reg-appt').value = p.appt || ''; 
+        document.getElementById('reg-tarate').value = p.tarate || ''; 
+        document.getElementById('reg-pass').value = p.pass || ''; 
+        document.getElementById('reg-passval').value = p.passval || ''; 
+        document.getElementById('reg-auth').value = p.auth || ''; 
+        document.getElementById('reg-authval').value = p.authval || ''; 
+        document.getElementById('reg-hq').value = p.hq || ''; 
+        document.getElementById('reg-nearby').value = (p.nearby || []).join(', '); 
+        document.getElementById('reg-dest').value = (p.dest || []).join(', '); 
+        document.getElementById('profile-back-btn').classList.remove('hidden'); 
+        navTo('screen-register'); 
+        setTimeout(lockProfile, 50); 
+    }   
+
+    function saveProfile() { 
+        try { 
+            const getVal = id => document.getElementById(id).value.trim().toUpperCase(); 
+            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !getVal('reg-payscale') || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR / त्रुटि", "All profile fields are mandatory to fill.\nसभी फ़ील्ड भरना अनिवार्य है।", "error", false);
+            
+            window.appState.profile = { 
+                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), payscale: getVal('reg-payscale'), gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
+            }; 
+            
+            if(!window.appState.legs) window.appState.legs = []; 
+            saveData(); 
+            lockProfile();
+            navTo('screen-dashboard'); 
+            showModal("Success / सफलता", "Profile Saved & Synced!\nप्रोफाइल सेव हो गई है!", "success", false); 
+        } catch(e) { 
+            showModal("Save Error", e.message, "error", false); 
+        } 
+    }
     
     function exportData(isAuto = false) { const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState)); const dlAnchorElem = document.createElement('a'); dlAnchorElem.setAttribute("href", dataStr); dlAnchorElem.setAttribute("download", `TTE_${isAuto ? 'AutoBackup' : 'Backup'}_${new Date().toISOString().split('T')[0]}.json`); dlAnchorElem.click(); }
     function triggerAutoBackup() { if(window.appState.profile && window.appState.profile.autoBackup) { exportData(true); } }
