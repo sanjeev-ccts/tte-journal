@@ -1,46 +1,42 @@
-const CACHE_NAME = 'tte-journal-v3.3'; // Change this number when you update index.html
+const CACHE_NAME = 'tte-tracker-v3.3';
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon.png' // Make sure you actually have an icon.png file in your GitHub!
+    './index.html',
+    './manifest.json'
 ];
 
-// 1. Install Phase: Download the new files into the new box
+// 1. INSTALL PHASE: Cache new files and bypass the waiting phase
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        return cache.addAll(ASSETS_TO_CACHE);
-      })
-      .then(() => self.skipWaiting()) // Forces the new version to activate immediately
-  );
-});
-
-// 2. Activate Phase: The Cleanup Crew (Deletes old version boxes)
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
-            return caches.delete(cacheName); // Throws away v1.1 when v1.2 arrives
-          }
+    self.skipWaiting(); // Instantly force the new version to install
+    event.waitUntil(
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(ASSETS_TO_CACHE);
         })
-      );
-    })
-  );
-  return self.clients.claim(); // Takes control of the screen immediately
+    );
 });
 
-// 3. Fetch Phase: How it serves the app to your phone
+// 2. ACTIVATE PHASE: Delete old caches and take control
+self.addEventListener('activate', (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    // If the cache name doesn't match our current version, destroy it
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => {
+            return self.clients.claim(); // Immediately seize control of all open pages
+        })
+    );
+});
+
+// 3. FETCH PHASE: Always try the network first to get fresh data, fall back to offline cache
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        // Return the cached version if found, otherwise fetch from the internet
-        return response || fetch(event.request);
-      })
-  );
+    event.respondWith(
+        fetch(event.request).catch(() => {
+            return caches.match('./index.html');
+        })
+    );
 });
