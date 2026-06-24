@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TA-NDA Tracker Cloud</title>
+    
+    <!-- PWA APP SETTINGS (Hides the browser bar) -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2830/2830305.png">
+
     <style>
         :root { --bg: #f4f6f8; --card: #ffffff; --border: #cbd5e1; --text: #1e293b; --blue: #1e40af; --light-blue: #0ea5e9; --green: #10b981; --red: #ef4444; --orange: #f59e0b; }
         * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
@@ -468,7 +476,7 @@
             if(hqGroup.includes(prev.arrStn)) {
                 if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at HQ. New journey must start from HQ.\nपिछली यात्रा मुख्यालय पर समाप्त हुई थी। नई यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
             } else {
-                if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.\nपिछली यात्रा ${prev.arrStn} पर समाप्त हुई थी। आपको वहीं से शुरू करना होगा।`, "error", false);
+                if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.\nपिछली यात्रा ${prev.arrStn} पर समाप्त हुई थी। आपको वहीं से शुरू करनाমহানगर शुरू करना होगा।`, "error", false);
             }
         } else {
             if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Your very first journey must start from HQ.\nआपकी पहली यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
@@ -793,6 +801,13 @@
         const totalH = Math.floor(nda.totalNdaMinutes / 60); const totalM = Math.round(nda.totalNdaMinutes % 60);
         const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.4; background: white; max-width: 800px; width: 800px; margin: 0 auto;"><div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">NIGHT DUTY BILL</div><table style="margin: 0 auto 20px auto; font-size: 12px; text-align: left; border: none; width: auto; line-height: 1.8;"><tr><td style="padding-right: 30px;">Name: <b>${p.name}</b></td><td>Designation: <b>${p.desig}</b></td></tr><tr><td>H.Q.: <b>${p.hq}/NR</b></td><td>ROP: <span style="float: right; font-weight: bold;">p.m.</span></td></tr><tr><td>P.F. No.: <b>${p.pf}</b></td><td>BU No.: <b>${p.bu}</b></td></tr><tr><td>Period From: <b>${strFrom}</b></td><td>To: <b>${strTo}</b></td></tr></table><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 15px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">From</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">To</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign On</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Dep.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Arrival</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign Off</th><th colspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px;">Night Duty</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Night<br>Hours</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">From</th><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">To</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="10" style="text-align: right; border: 1px solid black; padding: 12px 10px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-weight: bold; font-size: 12px;">${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}</td></tr></tfoot></table><div style="font-weight: bold; font-size: 12px; margin-bottom: 40px;">Total Night Duty Hours = ${totalH} Hours ${totalM} Minutes</div><table style="border: none; width: 300px; text-align: left; font-size: 12px; line-height: 1.8; float: right; margin-right: 20px;"><tr><td style="text-align: right; padding-right: 10px;">Signature:</td><td style="text-align: left;">...................................................</td></tr><tr><td style="text-align: right; padding-right: 10px;">Name:</td><td style="text-align: left;"><b>${p.name}</b></td></tr><tr><td style="text-align: right; padding-right: 10px;">Designation:</td><td style="text-align: left;"><b>${p.desig}</b></td></tr></table><div style="clear: both;"></div></div>`;
         document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
+    }
+    
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js').catch(err => console.log('SW setup failed', err));
+        });
     }
 </script>
 </body>
