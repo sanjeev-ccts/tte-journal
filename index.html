@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TA-NDA Tracker Cloud</title>
     
+    <!-- PWA APP SETTINGS -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -160,6 +161,7 @@
         </div>
     </div>
 
+    <!-- CLOUD LOGIN SCREEN -->
     <div id="screen-login" class="hidden card" style="max-width: 320px; margin: 80px auto; text-align: center; padding: 30px 20px; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
         <div style="font-size: 45px; margin-bottom: 10px;">☁️</div>
         <h2 style="color: var(--blue); margin-bottom: 5px; font-size: 22px;">TTE Cloud Journal</h2>
@@ -167,6 +169,7 @@
         <button style="border-radius: 12px; font-size: 16px; padding: 14px; background: var(--blue);" onclick="window.login()">Sign in with Google</button>
     </div>
 
+    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar"><button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>TTE Profile Setup</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -211,6 +214,7 @@
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar" style="flex-direction: column; justify-content: center; position: relative;">
             <div style="text-align: center;">
@@ -241,6 +245,7 @@
         </div>
     </div>
 
+    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Add Journey</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -286,6 +291,7 @@
         </div>
     </div>
 
+    <!-- ALL ENTRIES -->
     <div id="screen-all" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>All Entries</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -301,6 +307,7 @@
         </div>
     </div>
 
+    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Generate PDF</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -322,6 +329,7 @@
         </div>
     </div>
 
+    <!-- BACKUP -->
     <div id="screen-backup" class="hidden">
         <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Backup & Restore</h1><div style="width:50px;"></div></div>
         <div class="screen-content">
@@ -346,7 +354,7 @@
 
 <script>
     window.appState = { profile: null, legs: [] }; 
-    const APP_VERSION = "3.6"; 
+    const APP_VERSION = "3.7"; 
     let currentTab = 'ta';
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
@@ -677,8 +685,8 @@
         
         const nda = extractNDALegs(mo); const ndaHrsStr = `${String(Math.floor(nda.totalNdaMinutes / 60)).padStart(2,'0')}:${String(Math.round(nda.totalNdaMinutes % 60)).padStart(2,'0')}`;
         const daPct = window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
-        const gp = window.appState.profile.gradepay ? parseFloat(window.appState.profile.gradepay) : 0;
-        const ndaAmt = ((nda.totalNdaMinutes / 60) * 10 / 60) * (gp * (1 + (daPct / 100)) / 200);
+        const basicPay = window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
+        const ndaAmt = (nda.totalNdaMinutes / 60) * ((basicPay * (1 + (daPct / 100))) / 200);
         
         document.getElementById('dash-nda-val').innerText = `${ndaHrsStr} Hrs`;
         document.getElementById('dash-nda-lbl').innerText = `NDA hrs this period, ₹${Math.round(ndaAmt)}`;
