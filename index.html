@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TA-NDA Tracker Cloud</title>
     
-    <!-- PWA APP SETTINGS -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -19,10 +18,11 @@
         .hidden { display: none !important; }
         
         /* Mobile-Compatible Header */
-        .top-bar { background: #0f172a; color: white; padding: 20px; min-height: 80px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.2); max-width: 600px; margin: 0 auto; width: 100%; }
-        .top-bar h1 { margin: 0; font-size: 20px; font-weight: 800; color: #fde047; letter-spacing: 1px; }
-        .top-bar .subtitle { font-size: 13px; color: #cbd5e1; margin-top: 4px; }
-        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; margin: 0; width: auto; font-weight: bold; }
+        .top-bar { background: #0f172a; color: white; padding: 20px; min-height: 80px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.2); max-width: 600px; margin: 0 auto; width: 100%; }
+        .top-bar-content { width: 100%; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .top-bar h1 { margin: 0; font-size: 20px; font-weight: 800; color: #fde047; letter-spacing: 1px; text-align: center; flex: 1; }
+        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; margin: 0; width: auto; font-weight: bold; position: absolute; left: 0; }
+        .version-badge { position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; }
         
         .screen-content { padding: 15px; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
         .card { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -37,8 +37,8 @@
         .nav-desc { font-size: 12px; opacity: 0.8; }
         
         input, select { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 6px; margin-top: 4px; font-size: 15px; background: #fff; }
-        .profile-lbl { font-size: 13px; font-weight: 600; color: #334155; }
-        .profile-sec { padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.08); }
+        .profile-lbl { font-size: 14px; font-weight: 800; color: #0f172a; }
+        .profile-sec { padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid rgba(0,0,0,0.1); }
         
         button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); transition: opacity 0.2s; }
         button:active { opacity: 0.8; }
@@ -46,8 +46,6 @@
         .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #ecfdf5; color: #047857; }
         .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; }
         .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); z-index: 5000; cursor: ns-resize; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; }
-        .action-btn { display: inline-flex; justify-content: center; align-items: center; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: opacity 0.2s; }
-        .action-btn:active { opacity: 0.6; }
         .tab-container { display: flex; background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
         .tab-btn { flex: 1; padding: 12px; background: white; color: #64748b; font-weight: bold; border-radius: 0; margin: 0; text-align: center; cursor: pointer; }
         .tab-btn.active { background: var(--blue); color: white; }
@@ -107,6 +105,10 @@
             if (user) {
                 window.currentUid = user.uid;
                 onValue(ref(window.db, 'users/' + user.uid), (snapshot) => {
+                    window.lastSyncTime = new Date().toLocaleTimeString();
+                    const syncLbl = document.getElementById('sync-time-lbl');
+                    if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
+
                     const data = snapshot.val();
                     if (data) {
                         window.appState = data;
@@ -161,7 +163,6 @@
         </div>
     </div>
 
-    <!-- CLOUD LOGIN SCREEN -->
     <div id="screen-login" class="hidden card" style="max-width: 320px; margin: 80px auto; text-align: center; padding: 30px 20px; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #e2e8f0;">
         <div style="font-size: 45px; margin-bottom: 10px;">☁️</div>
         <h2 style="color: var(--blue); margin-bottom: 5px; font-size: 22px;">TTE Cloud Journal</h2>
@@ -169,68 +170,87 @@
         <button style="border-radius: 12px; font-size: 16px; padding: 14px; background: var(--blue);" onclick="window.login()">Sign in with Google</button>
     </div>
 
-    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
-        <div class="top-bar"><button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>TTE Profile Setup</h1><div style="width:50px;"></div></div>
+        <div class="top-bar">
+            <div class="top-bar-content">
+                <button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <h1>TTE Profile Setup</h1>
+                <div class="version-badge">v3.8</div>
+            </div>
+        </div>
         <div class="screen-content">
             <div class="card" style="border: 2px solid var(--border); padding: 10px;">
-                <div class="profile-sec" style="background: #f0f9ff;">
+                <div class="profile-sec" style="background: #e0f2fe;">
                     <div style="margin-bottom: 10px;"><label class="profile-lbl">Full Name</label><input type="text" id="reg-name" style="text-transform: uppercase;"></div>
                     <div style="margin-bottom: 10px;"><label class="profile-lbl">P.F. No.</label><input type="text" id="reg-pf"></div>
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">BU No.</label><input type="text" id="reg-bu"></div>
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Bill Unit No.</label><input type="text" id="reg-bu"></div>
                     <div style="margin-bottom: 10px;"><label class="profile-lbl">Designation</label><input type="text" id="reg-desig" style="text-transform: uppercase;"></div>
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Date of Appt</label><input type="date" id="reg-appt"></div>
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Date of Appointment</label><input type="date" id="reg-appt"></div>
                 </div>
 
-                <div class="profile-sec" style="background: #fff7ed;">
+                <div class="profile-sec" style="background: #ffedd5;">
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                        <div style="flex: 1;"><label class="profile-lbl">Pay Scale</label><input type="text" id="reg-payscale" style="text-transform: uppercase;"></div>
-                        <div style="flex: 1;"><label class="profile-lbl">Grade Pay</label><input type="number" id="reg-gradepay"></div>
+                        <div style="flex: 1;"><label class="profile-lbl">Pay Scale</label><input type="text" id="reg-payscale" placeholder="e.g. LEVEL-6" style="text-transform: uppercase;"></div>
+                        <div style="flex: 1;"><label class="profile-lbl">Grade Pay</label><input type="number" id="reg-gradepay" placeholder="e.g. 4200"></div>
                         <div style="flex: 1;"><label class="profile-lbl">DA (%)</label><input type="number" id="reg-da" placeholder="e.g. 50"></div>
                     </div>
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                        <div style="flex: 1;"><label class="profile-lbl">Basic Pay (₹)</label><input type="number" id="reg-basicpay"></div>
+                        <div style="flex: 1;"><label class="profile-lbl">Basic Pay (₹)</label><input type="number" id="reg-basicpay" placeholder="e.g. 35400"></div>
                         <div style="flex: 1;"><label class="profile-lbl">TA Rate (₹)</label><input type="number" id="reg-tarate"></div>
                     </div>
                 </div>
 
-                <div class="profile-sec" style="background: #fdf4ff;">
+                <div class="profile-sec" style="background: #fae8ff;">
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1;"><label class="profile-lbl">Pass No.</label><input type="text" id="reg-pass"></div><div style="flex: 1;"><label class="profile-lbl">Pass Validity</label><input type="date" id="reg-passval"></div></div>
-                    <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1;"><label class="profile-lbl">Checking Authority No.</label><input type="text" id="reg-auth"></div><div style="flex: 1;"><label class="profile-lbl">Auth Validity</label><input type="date" id="reg-authval"></div></div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1;"><label class="profile-lbl">Checking Authority No.</label><input type="text" id="reg-auth"></div><div style="flex: 1;"><label class="profile-lbl">Authority Validity</label><input type="date" id="reg-authval"></div></div>
                 </div>
 
-                <div class="profile-sec" style="background: #f0fdf4;">
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Main HQ Station <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-hq" placeholder="e.g. NDLS" style="text-transform: uppercase;"></div>
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Nearby HQs <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-nearby" placeholder="e.g. DLI, NZM" style="text-transform: uppercase;"></div>
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Outward Destinations <span style="font-size: 11px; font-weight: normal;">(Codes only, comma separated)</span></label><input type="text" id="reg-dest" placeholder="e.g. CNB, LKO, BSB" style="text-transform: uppercase;"></div>
+                <div class="profile-sec" style="background: #dcfce7;">
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Main HQ Station <span style="font-size: 11px; font-weight: normal;">(Codes only)</span></label><input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;"></div>
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Nearby HQs <span style="font-size: 11px; font-weight: normal;">(Codes, comma separated)</span></label><input type="text" id="reg-nearby" placeholder="e.g. BCY, BSBS" style="text-transform: uppercase;"></div>
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Outward Destinations <span style="font-size: 11px; font-weight: normal;">(Codes, comma separated)</span></label><input type="text" id="reg-dest" placeholder="e.g. LKO, PRYJ, DDU" style="text-transform: uppercase;"></div>
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #4f46e5; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">Edit Profile</button>
                     <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #22c55e; color: white; font-weight: bold; font-size: 15px; display: none; cursor: pointer;">💾 Save & Lock</button>
                 </div>
-                <button style="margin-top: 10px; background: #e11d48; color: white;" onclick="window.logout()">Sign Out of Cloud</button>
+                <button style="margin-top: 10px; background: #e11d48; color: white;" onclick="window.logout()">Sign Out</button>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
-        <div class="top-bar" style="flex-direction: column; justify-content: center; position: relative;">
-            <div style="text-align: center;">
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                    <h1 id="dash-title" style="text-transform: uppercase; font-size: 20px; font-weight: 900; color: #fde047; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">TA-NDA TRACKER</h1>
+        <div class="top-bar">
+            <div class="top-bar-content" style="justify-content: center;">
+                <div style="text-align: center;">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
+                        <h1 id="dash-title" style="text-transform: uppercase; font-size: 20px; font-weight: 900; color: #fde047; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">TA-NDA TRACKER</h1>
+                    </div>
+                    <div class="subtitle" id="dash-subtitle" style="text-align: center; margin-top: 10px; font-size: 14px; color: #e2e8f0; font-weight: bold;">Hi, User</div>
                 </div>
-                <div class="subtitle" id="dash-subtitle" style="text-align: center; margin-top: 10px; font-size: 14px; color: #e2e8f0; font-weight: bold;">Hi, User</div>
+                <div class="version-badge">v3.8</div>
             </div>
         </div>
         <div class="screen-content">
-            <div class="card" style="border: 2px solid #cbd5e1;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;"><h3 style="margin: 0; font-size: 16px; color: #1e40af;">Duty Status</h3><div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div></div><p style="font-size: 13px; color: #64748b; margin-top: 0; margin-bottom: 15px;" id="duty-status-desc">Ready to log your next journey.</p><button onclick="navTo('screen-add')">+ Add Journey Entry</button></div>
+            
+            <div class="card" style="border: 2px solid #6366f1; background: #eef2ff;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0; font-size: 16px; color: #1e40af;">Duty Status</h3>
+                    <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
+                </div>
+                <p style="font-size: 13px; color: #64748b; margin-top: 0; margin-bottom: 15px;" id="duty-status-desc">Ready to log your next journey.</p>
+                <button onclick="navTo('screen-add')" style="background: #4f46e5;">+ Add Journey Entry</button>
+                
+                <hr style="border: 0; border-top: 1px dashed #a5b4fc; margin: 20px 0 15px 0;">
+                <h4 style="margin: 0 0 10px 0; font-size: 13px; color: #4338ca; text-transform: uppercase; letter-spacing: 0.5px;">Recent Entries</h4>
+                <div id="recent-logs-dash"></div>
+            </div>
             
             <div class="card" style="border: 2px solid #34d399; padding: 15px; box-shadow: 0 4px 6px rgba(52,211,153,0.1);">
                 <div class="grid-2" style="margin-bottom: 0;">
                     <div class="stat-box" style="background: #a7f3d0; border: 2px solid #34d399;"><div class="stat-value" id="dash-ta-val" style="color: #065f46;">₹0</div><div class="stat-label" id="dash-ta-lbl" style="color: #047857;">TA this month</div></div>
-                    <div class="stat-box" style="background: #bae6fd; border: 2px solid #38bdf8;"><div class="stat-value" id="dash-nda-val" style="color: #0c4a6e;">0:00 Hrs</div><div class="stat-label" id="dash-nda-lbl" style="color: #075985;">NDA hrs this period</div></div>
+                    <div class="stat-box" style="background: #bae6fd; border: 2px solid #38bdf8;"><div class="stat-value" id="dash-nda-val" style="color: #0c4a6e;">0:00 Hrs</div><div class="stat-label" id="dash-nda-lbl" style="color: #075985;">NDA this period</div></div>
                 </div>
             </div>
 
@@ -245,72 +265,97 @@
         </div>
     </div>
 
-    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
-        <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Add Journey</h1><div style="width:50px;"></div></div>
+        <div class="top-bar">
+            <div class="top-bar-content">
+                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <h1>Add Journey</h1>
+                <div class="version-badge">v3.8</div>
+            </div>
+        </div>
         <div class="screen-content">
-            <div style="background: #eef2ff; border: 1px solid #818cf8; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
-                <div style="padding: 12px; border-bottom: 1px solid #818cf8;">
+            <div style="background: #eef2ff; border: 2px solid #818cf8; border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
+                <div style="padding: 12px; border-bottom: 2px solid #818cf8;">
                     <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Train No.</label>
                     <input type="text" id="trip-train" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
                 </div>
-                <div style="display: flex; border-bottom: 1px solid #818cf8;">
-                    <div style="flex: 1; padding: 12px; border-right: 1px solid #818cf8;">
-                        <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Departure Date</label>
-                        <input type="date" id="trip-dep-date" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
-                    </div>
-                    <div style="flex: 1; padding: 12px;">
-                        <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Arrival Date</label>
-                        <input type="date" id="trip-arr-date" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
-                    </div>
-                </div>
-                <div style="display: flex; border-bottom: 1px solid #818cf8;">
-                    <div style="flex: 1; padding: 12px; border-right: 1px solid #818cf8;">
-                        <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Station From</label>
-                        <input list="stn-list" id="trip-dep-stn" placeholder="Type or Select" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px; text-transform: uppercase;">
-                    </div>
-                    <div style="flex: 1; padding: 12px;">
-                        <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Station To</label>
-                        <input list="stn-list" id="trip-arr-stn" placeholder="Type or Select" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px; text-transform: uppercase;">
-<datalist id="stn-list"></datalist>
-                    </div>
-                </div>
                 <div style="display: flex;">
-                    <div style="flex: 1; padding: 12px; border-right: 1px solid #818cf8;">
-                        <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Departure Time</label>
-                        <input type="time" id="trip-dep-time" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
+                    <div style="flex: 1; border-right: 2px solid #818cf8;">
+                        <div style="padding: 12px; border-bottom: 2px solid #818cf8;">
+                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Departure Date</label>
+                            <input type="date" id="trip-dep-date" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
+                        </div>
+                        <div style="padding: 12px; border-bottom: 2px solid #818cf8;">
+                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Station From</label>
+                            <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px; text-transform: uppercase;">
+                        </div>
+                        <div style="padding: 12px;">
+                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Departure Time</label>
+                            <input type="time" id="trip-dep-time" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
+                        </div>
                     </div>
-                    <div style="flex: 1; padding: 12px;">
-                        <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Arrival Time</label>
-                        <input type="time" id="trip-arr-time" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
+                    <div style="flex: 1;">
+                        <div style="padding: 12px; border-bottom: 2px solid #818cf8;">
+                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Arrival Date</label>
+                            <input type="date" id="trip-arr-date" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
+                        </div>
+                        <div style="padding: 12px; border-bottom: 2px solid #818cf8;">
+                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Station To</label>
+                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px; text-transform: uppercase;">
+                            <datalist id="stn-list"></datalist>
+                        </div>
+                        <div style="padding: 12px;">
+                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Arrival Time</label>
+                            <input type="time" id="trip-arr-time" style="margin: 0; border: 1px solid #c7d2fe; background: white; border-radius: 4px;">
+                        </div>
                     </div>
                 </div>
             </div>
-            <button onclick="saveLeg()">Save Leg Entry</button>
-            <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px;">Recent Entries</h3><div class="card" id="recent-logs-add" style="padding: 5px 15px; border: 2px solid #cbd5e1;"></div>
+            <button onclick="saveLeg()" style="background: #4f46e5;">Save Leg Entry</button>
         </div>
     </div>
 
-    <!-- ALL ENTRIES -->
     <div id="screen-all" class="hidden">
-        <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>All Entries</h1><div style="width:50px;"></div></div>
+        <div class="top-bar">
+            <div class="top-bar-content">
+                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <h1>All Entries</h1>
+                <div class="version-badge">v3.8</div>
+            </div>
+        </div>
         <div class="screen-content">
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button onclick="navTo('screen-add')" style="flex: 1;">+ Add Journey Entry</button>
+                <button onclick="navTo('screen-add')" style="flex: 1; background: #4f46e5;">+ Add Journey Entry</button>
             </div>
             <p style="font-size: 16px; color: var(--blue); text-align: center; margin-top: 0; font-weight: 900;">👆 Tap any row below to Edit or Delete<br><span style="font-size: 14px; color: #ef4444; font-weight: bold;">एडिट या डिलीट करने के लिए किसी भी पंक्ति पर टैप करें</span></p>
-            <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: #f0f9ff; padding: 10px; border-radius: 8px; border: 1px solid #bae6fd;">
-                <label style="font-size: 13px; font-weight: bold; color: #0369a1; white-space: nowrap;">Filter Month:</label>
-                <input type="month" id="all-logs-month" onchange="renderAllLogs()" style="margin: 0; border: 1px solid #7dd3fc; background: white; padding: 8px; flex: 1;">
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: #e2e8f0; padding: 10px; border-radius: 8px; border: 2px solid #94a3b8;">
+                <label style="font-size: 14px; font-weight: 900; color: #334155; white-space: nowrap;">Filter:</label>
+                <select id="all-logs-month" onchange="renderAllLogs()" style="margin: 0; border: 1px solid #cbd5e1; font-weight: bold; background: white; padding: 10px; flex: 1; border-radius: 6px;">
+                    <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
+                    <option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option>
+                    <option value="09">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+                </select>
+                <select id="all-logs-year" onchange="renderAllLogs()" style="margin: 0; border: 1px solid #cbd5e1; font-weight: bold; background: white; padding: 10px; flex: 1; border-radius: 6px;">
+                    <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+                    <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
+                </select>
             </div>
+            
             <div id="all-logs-container" style="width: 100%; overflow-x: auto;"></div>
         </div>
     </div>
 
-    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
-        <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Generate PDF</h1><div style="width:50px;"></div></div>
-        <div class="screen-content">
+        <div class="top-bar">
+            <div class="top-bar-content">
+                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <h1>Generate PDF</h1>
+                <div class="version-badge">v3.8</div>
+            </div>
+        </div>
+        <div class="screen-content" id="reports-swipe-zone">
+            <p style="text-align: center; font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 10px; font-weight: bold;">↔️ Swipe left or right to switch tabs</p>
             <div class="tab-container"><button class="tab-btn active" id="tab-ta" onclick="switchTab('ta')">TA Journal</button><button class="tab-btn" id="tab-nda" onclick="switchTab('nda')">NDA Bill</button></div>
             
             <div style="background: #eef2ff; border: 2px solid #818cf8; border-radius: 8px; padding: 5px 10px; margin-bottom: 15px;">
@@ -329,23 +374,29 @@
         </div>
     </div>
 
-    <!-- BACKUP -->
     <div id="screen-backup" class="hidden">
-        <div class="top-bar"><button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button><h1>Backup & Restore</h1><div style="width:50px;"></div></div>
+        <div class="top-bar">
+            <div class="top-bar-content">
+                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <h1>Backup & Restore</h1>
+                <div class="version-badge">v3.8</div>
+            </div>
+        </div>
         <div class="screen-content">
-            <div class="card" style="border: 2px solid #6ee7b7; background: #ecfdf5;">
+            <div class="card" style="border: 2px solid #10b981; background: #ecfdf5;">
                 <h3 style="color: #047857;">Cloud Sync Status</h3>
                 <p style="font-size: 14px; font-weight: bold; color: #065f46; margin-bottom: 5px;">Your data is actively syncing to Google.</p>
-                <p style="font-size: 12px; color: #047857; margin-top:0;">You are protected. Every change you make is saved instantly to the cloud.</p>
+                <p style="font-size: 13px; font-weight: bold; color: #10b981; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #a7f3d0;" id="sync-time-lbl">Last Synced: Never</p>
             </div>
-            <div class="card" style="border: 2px solid #d8b4fe;">
+            <div class="card" style="border: 2px solid #d8b4fe; background: #faf5ff;">
                 <h3 style="color: var(--blue);">Manual Backup</h3>
                 <p style="font-size: 13px; color: #64748b; margin-top:0;">Save a physical backup file to your phone.</p>
-                <button onclick="exportData()">Download Backup File</button>
+                <button onclick="exportData()" style="background: #a855f7;">Download Backup File</button>
             </div>
-            <div class="card" style="border: 2px solid #e2e8f0;">
-                <h3 style="color: var(--blue);">Restore from File</h3>
-                <button class="btn-outline" onclick="document.getElementById('import-file').click()">Choose file & Restore</button>
+            <div class="card" style="border: 2px solid #f59e0b; background: #fffbeb;">
+                <h3 style="color: #b45309;">Restore from File</h3>
+                <p style="font-size: 13px; color: #92400e; margin-top:0;">Import a previously downloaded `.json` file.</p>
+                <button onclick="document.getElementById('import-file').click()" style="background: #f59e0b; color: white;">Choose File & Restore</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
             </div>
         </div>
@@ -354,7 +405,7 @@
 
 <script>
     window.appState = { profile: null, legs: [] }; 
-    const APP_VERSION = "3.7"; 
+    const APP_VERSION = "3.8"; 
     let currentTab = 'ta';
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
@@ -362,14 +413,29 @@
     
     window.onload = () => { 
         const today = new Date(); 
-        const currentMonthStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+        const year = today.getFullYear();
+        const month = String(today.getMonth()+1).padStart(2,'0');
+        const currentMonthStr = `${year}-${month}`;
+        
         document.getElementById('report-month-hidden').value = currentMonthStr; 
-        document.getElementById('all-logs-month').value = currentMonthStr;
+        document.getElementById('all-logs-month').value = month;
+        document.getElementById('all-logs-year').value = year.toString();
         
         const fBtn = document.getElementById('global-back-btn');
         fBtn.addEventListener('touchmove', function(e) {
             let y = e.targetTouches[0].clientY; if(y < 50) y = 50; if(y > window.innerHeight - 50) y = window.innerHeight - 50; fBtn.style.top = y + 'px'; e.preventDefault();
         }, {passive: false});
+
+        // Swipe Event Listeners for Reports Tab
+        let touchstartX = 0;
+        let touchendX = 0;
+        const reportsZone = document.getElementById('reports-swipe-zone');
+        reportsZone.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; }, {passive: true});
+        reportsZone.addEventListener('touchend', e => { 
+            touchendX = e.changedTouches[0].screenX; 
+            if (touchendX < touchstartX - 50 && currentTab === 'ta') switchTab('nda'); // swipe left to NDA
+            if (touchendX > touchstartX + 50 && currentTab === 'nda') switchTab('ta'); // swipe right to TA
+        }, {passive: true});
     };
     
     function navTo(screenId) { ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); document.getElementById(screenId).classList.remove('hidden'); if(screenId === 'screen-dashboard') updateDashboardUI(); if(screenId === 'screen-all') renderAllLogs(); if(screenId === 'screen-reports') updateReportUI(); if(screenId === 'screen-dashboard' || screenId === 'screen-login') { document.getElementById('global-back-btn').classList.add('hidden'); } else { document.getElementById('global-back-btn').classList.remove('hidden'); } }
@@ -377,6 +443,9 @@
     function saveData() { 
         if(window.currentUid && window.firebaseSet && window.firebaseRef) {
             window.firebaseSet(window.firebaseRef(window.db, 'users/' + window.currentUid), window.appState);
+            window.lastSyncTime = new Date().toLocaleTimeString();
+            const syncLbl = document.getElementById('sync-time-lbl');
+            if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
         }
     }
     
@@ -400,7 +469,7 @@
         document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
             inp.disabled = false;
             inp.style.background = "white";
-            inp.style.border = "1px solid #c7d2fe";
+            inp.style.border = "2px solid #a5b4fc";
             inp.style.color = "black";
         });
         document.getElementById('btn-edit-profile').style.display = 'none';
@@ -497,17 +566,17 @@
         const container = document.getElementById('all-logs-container'); container.innerHTML = ''; 
         if(!window.appState.legs || window.appState.legs.length === 0) { container.innerHTML = '<p style="padding: 15px; color: #64748b; font-size: 14px; text-align: center;">No entries yet.</p>'; return; } 
         
-        const selectedMonth = document.getElementById('all-logs-month').value;
+        const selectedMonth = document.getElementById('all-logs-year').value + '-' + document.getElementById('all-logs-month').value;
         
         let headerHTML = `<div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 12px 2px; background: #334155; border: 1px solid var(--border); border-radius: 6px 6px 0 0; font-size: 11px; font-weight: bold; color: white; text-transform: uppercase; text-align: center; margin-bottom: 0;">
-            <div style="text-align: left; padding-left: 5px;">Tr</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
+            <div style="text-align: left; padding-left: 5px;">TRAIN</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
         </div>`;
         
         let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
         let filteredLegs = sortedLegs.filter(leg => leg.depDate.startsWith(selectedMonth));
         
         if(filteredLegs.length === 0) {
-            container.innerHTML = `<p style="padding: 15px; color: #64748b; font-size: 14px; text-align: center;">No entries found for ${selectedMonth}. Try changing the month above.</p>`; return;
+            container.innerHTML = `<p style="padding: 15px; color: #64748b; font-size: 14px; text-align: center;">No entries found for ${selectedMonth}. Try changing the filter above.</p>`; return;
         }
 
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; let htmlElements = [];
@@ -527,10 +596,10 @@
                 <div style="text-align: left; font-weight: bold; color: black; padding-left: 5px; font-size: 11px;">${leg.train}</div>
                 <div style="color: var(--blue); font-weight: bold; font-size: 11px;">${shortDep}</div>
                 <div style="font-weight: bold; color: black;">${leg.depStn}</div>
-                <div style="color: #475569;">${leg.depTime}</div>
+                <div style="color: #475569; font-weight: bold;">${leg.depTime}</div>
                 <div style="color: var(--blue); font-weight: bold; font-size: 11px;">${shortArr}</div>
                 <div style="font-weight: bold; color: black;">${leg.arrStn}</div>
-                <div style="color: #475569;">${leg.arrTime}</div>
+                <div style="color: #475569; font-weight: bold;">${leg.arrTime}</div>
             </div>`);
             
             if (i < filteredLegs.length - 1) {
@@ -640,7 +709,7 @@
     function updateDashboardUI() { 
         let firstName = window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
         firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(); 
-        document.getElementById('dash-subtitle').innerText = `Hi, ${firstName} (v${APP_VERSION})`; 
+        document.getElementById('dash-subtitle').innerText = `Hi, ${firstName}`; 
         
         const safeNearby = window.appState.profile.nearby || []; 
         const safeDest = window.appState.profile.dest || []; 
@@ -684,25 +753,29 @@
         document.getElementById('dash-ta-val').innerText = '₹' + totalTA; 
         
         const nda = extractNDALegs(mo); const ndaHrsStr = `${String(Math.floor(nda.totalNdaMinutes / 60)).padStart(2,'0')}:${String(Math.round(nda.totalNdaMinutes % 60)).padStart(2,'0')}`;
-        const daPct = window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
+        
+        // Explicit Formula Breakdown using correct statutory math variables
         const basicPay = window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
-        const ndaAmt = (nda.totalNdaMinutes / 60) * ((basicPay * (1 + (daPct / 100))) / 200);
+        const daPct = window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
+        const daAllowance = basicPay * (daPct / 100);
+        const hourlyRate = (basicPay + daAllowance) / 200;
+        const ndaAmt = (nda.totalNdaMinutes / 60) * hourlyRate;
         
         document.getElementById('dash-nda-val').innerText = `${ndaHrsStr} Hrs`;
-        document.getElementById('dash-nda-lbl').innerText = `NDA hrs this period, ₹${Math.round(ndaAmt)}`;
+        document.getElementById('dash-nda-lbl').innerText = `NDA this period, ₹${Math.round(ndaAmt)}`;
         
-        const rcAdd = document.getElementById('recent-logs-add'); let rcHTML = '';
+        const rcAdd = document.getElementById('recent-logs-dash'); let rcHTML = '';
         if(!window.appState.legs || window.appState.legs.length === 0) { 
             rcHTML = '<p style="color: #64748b; font-size: 13px; text-align: center;">No entries yet. Tap "Add Journey Entry" to begin.</p>'; 
         } else { 
-            let recent = [...window.appState.legs].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`)).slice(0, 10); 
-            rcHTML = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin-top: 5px;"><thead style="background: #334155; color: white; border-bottom: 2px solid var(--border);"><tr><th style="padding: 6px 2px;">Tr</th><th style="padding: 6px 2px;">Dep Dt</th><th style="padding: 6px 2px;">From</th><th style="padding: 6px 2px;">Dep</th><th style="padding: 6px 2px;">Arr Dt</th><th style="padding: 6px 2px;">To</th><th style="padding: 6px 2px;">Arr</th></tr></thead><tbody>`;
+            let recent = [...window.appState.legs].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`)).slice(0, 5); 
+            rcHTML = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center;"><thead style="background: #e0e7ff; color: #3730a3; border-bottom: 2px solid #a5b4fc;"><tr><th style="padding: 6px 2px;">Tr</th><th style="padding: 6px 2px;">Dep Dt</th><th style="padding: 6px 2px;">From</th><th style="padding: 6px 2px;">Dep</th><th style="padding: 6px 2px;">Arr Dt</th><th style="padding: 6px 2px;">To</th><th style="padding: 6px 2px;">Arr</th></tr></thead><tbody>`;
             let sortedAll = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
-            let legColors = {}; let cycleIndex = 0; const bgColors = ['#f8fafc', '#e2e8f0'];
+            let legColors = {}; let cycleIndex = 0; const bgColors = ['#f8fafc', '#ffffff'];
             for(let i=0; i<sortedAll.length; i++){ let prev = i>0 ? sortedAll[i-1] : null; if(prev && hqGroup.includes(prev.arrStn)){ cycleIndex++; } legColors[sortedAll[i].id] = bgColors[cycleIndex % 2]; }
             recent.forEach((leg) => { 
                 let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); let rowColor = legColors[leg.id] || '#ffffff';
-                rcHTML += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="padding: 8px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="padding: 8px 2px; color: #475569;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="padding: 8px 2px; color: #475569;">${leg.arrTime}</td></tr>`; 
+                rcHTML += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="padding: 8px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="padding: 8px 2px; color: #475569; font-weight: bold;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="padding: 8px 2px; color: #475569; font-weight: bold;">${leg.arrTime}</td></tr>`; 
             }); 
             rcHTML += `</tbody></table>`;
         } 
