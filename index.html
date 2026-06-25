@@ -17,15 +17,24 @@
         body { background: var(--bg); color: var(--text); margin: 0; padding: 0; font-size: 15px; -webkit-tap-highlight-color: transparent; }
         .hidden { display: none !important; }
         
-        /* Mobile-Compatible Header */
-        .top-bar { background: #0f172a; color: white; padding: 20px; min-height: 80px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.2); max-width: 600px; margin: 0 auto; width: 100%; }
+        /* Mobile-Compatible Header - Slimmed Down */
+        .top-bar { background: #0f172a; color: white; padding: 12px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.2); max-width: 600px; margin: 0 auto; width: 100%; }
         .top-bar-content { width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
-        .top-bar h1 { margin: 0; font-size: 20px; font-weight: 800; color: #fde047; letter-spacing: 1px; text-align: center; }
+        .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); }
+        .top-bar .subtitle { font-size: 12px; color: #cbd5e1; margin-top: 2px; text-align: center; font-weight: bold; }
+        
         .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; margin: 0; width: auto; font-weight: bold; position: absolute; left: 0; }
-        .version-badge { position: absolute; right: 0; background: rgba(255,255,255,0.2); padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; }
+        
+        /* Floating Badges */
+        .float-badge-left { position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .float-badge-right { position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; color: white; border: 1px solid rgba(255,255,255,0.3); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         
         .screen-content { padding: 15px; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
-        .card { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .card { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+        
+        /* 3D Dashboard Card Styling */
+        .card-3d { box-shadow: 0 10px 15px -3px rgba(0,0,0,0.15), 0 4px 6px -4px rgba(0,0,0,0.1); transform: translateY(-2px); transition: transform 0.2s, box-shadow 0.2s; }
+        
         h2, h3 { margin-top: 0; color: #0f172a; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .stat-box { background: white; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; justify-content: center; }
@@ -42,12 +51,9 @@
         
         button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); transition: opacity 0.2s; }
         button:active { opacity: 0.8; }
-        .btn-outline { background: white; color: var(--blue); border: 1px solid var(--blue); }
         .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background: #ecfdf5; color: #047857; }
         .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; }
         .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); z-index: 5000; cursor: ns-resize; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; }
-        .action-btn { display: inline-flex; justify-content: center; align-items: center; width: 34px; height: 34px; border-radius: 6px; cursor: pointer; font-size: 16px; transition: opacity 0.2s; }
-        .action-btn:active { opacity: 0.6; }
         .tab-container { display: flex; background: white; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; }
         .tab-btn { flex: 1; padding: 12px; background: white; color: #64748b; font-weight: bold; border-radius: 0; margin: 0; text-align: center; cursor: pointer; }
         .tab-btn.active { background: var(--blue); color: white; }
@@ -55,7 +61,7 @@
         .slider-btn { background: white; border: 1px solid var(--border); color: var(--text); padding: 5px 12px; border-radius: 6px; width: auto; margin: 0; font-size: 16px; }
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 14px; }
         .summary-row:last-of-type { border-bottom: none; margin-bottom: 15px; font-weight: bold; }
-        #custom-modal, #manage-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 2000; }
+        #custom-modal, #manage-modal, #help-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; text-align: center; border-top: 6px solid var(--blue); }
         #preview-wrapper { padding-top: 70px; background: #cbd5e1; min-height: 100vh; overflow-x: auto; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; }
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
@@ -128,6 +134,22 @@
                 navTo('screen-login');
             }
         });
+        
+        window.checkGazetted = (isManualClick) => {
+            const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
+            const drop = document.getElementById('reg-payscale-dropdown');
+            const txt = document.getElementById('reg-payscale-text');
+            if (isGaz) {
+                drop.classList.add('hidden'); 
+                txt.classList.remove('hidden');
+                if (isManualClick) {
+                    showModal("NOTICE / सूचना", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7. This includes those who have reached Pay Level-8 through the Modified Assured Career Progression (MACP) scheme.", "warning", false);
+                }
+            } else {
+                drop.classList.remove('hidden'); 
+                txt.classList.add('hidden');
+            }
+        };
     </script>
 </head>
 <body>
@@ -151,8 +173,17 @@
         </div>
     </div>
     
+    <div id="help-modal" class="hidden">
+        <div style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border-top: 6px solid #3b82f6; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+            <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 5px; text-transform: uppercase;">Help & Support</h3>
+            <p style="font-size: 13px; color: #475569; margin-top: 0; margin-bottom: 20px; font-weight: bold;">Got suggestions, facing errors, or need help? Reach out directly!</p>
+            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20Tracker%20Feedback" style="display: inline-block; width: 100%; background: #3b82f6; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px; box-sizing: border-box;">✉️ Email Developer</a>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: #e2e8f0; color: #475569; border-radius: 8px;">Close</button>
+        </div>
+    </div>
+
     <div id="manage-modal" class="hidden">
-        <div style="background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 2px solid var(--blue); margin: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <div style="background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); border: 2px solid var(--blue); margin: auto;">
             <div style="font-size: 30px; margin-bottom: 10px;">⚙️</div>
             <h3 style="margin-top:0; font-size: 18px; color: var(--blue);">Manage Entry</h3>
             <p id="manage-msg" style="font-size: 13px; color: #475569; margin-bottom: 20px; font-weight: bold;"></p>
@@ -176,10 +207,7 @@
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                    <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">PROFILE SETUP</h1>
-                </div>
-                <div class="version-badge">v4.1</div>
+                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">PROFILE SETUP</h1>
             </div>
         </div>
         <div class="screen-content">
@@ -249,26 +277,25 @@
                     <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #4f46e5; color: white; font-weight: bold; font-size: 15px; cursor: pointer;">Edit Profile</button>
                     <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #22c55e; color: white; font-weight: bold; font-size: 15px; display: none; cursor: pointer;">💾 Save & Lock</button>
                 </div>
-                <button style="margin-top: 10px; background: #475569; color: white;" onclick="window.logout()">Sign Out</button>
+                <button style="margin-top: 10px; background: #ef4444; color: white;" onclick="window.logout()">Sign Out</button>
             </div>
         </div>
     </div>
 
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar">
-            <div class="top-bar-content" style="justify-content: center;">
-                <div style="text-align: center;">
-                    <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                        <h1 id="dash-title" style="text-transform: uppercase; font-size: 20px; font-weight: 900; color: #fde047; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">TA-NDA TRACKER</h1>
-                    </div>
-                    <div class="subtitle" id="dash-subtitle" style="text-align: center; margin-top: 10px; font-size: 14px; color: #e2e8f0; font-weight: bold;">Hi, User</div>
+            <div class="top-bar-content">
+                <div class="float-badge-left" onclick="document.getElementById('help-modal').classList.remove('hidden')">❓ Help</div>
+                <div>
+                    <h1 id="dash-title">TA-NDA TRACKER</h1>
+                    <div class="subtitle" id="dash-subtitle">Hi, User</div>
                 </div>
-                <div class="version-badge">v4.1</div>
+                <div class="float-badge-right">v4.2</div>
             </div>
         </div>
         <div class="screen-content">
             
-            <div class="card" style="border: 3px solid #6366f1; background: #eef2ff;">
+            <div class="card card-3d" style="border: 3px solid #6366f1; background: #eef2ff;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                     <h3 style="margin: 0; font-size: 16px; color: #1e40af;">Duty Status</h3>
                     <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
@@ -281,28 +308,21 @@
                 <div id="recent-logs-dash" style="border: 1px solid #c7d2fe; border-radius: 6px; overflow: hidden;"></div>
             </div>
             
-            <div class="card" style="border: 3px solid #6366f1; padding: 15px; box-shadow: 0 4px 6px rgba(99,102,241,0.1);">
+            <div class="card card-3d" style="border: 3px solid #6366f1; padding: 15px; background: #f0fdf4;">
                 <div class="grid-2" style="margin-bottom: 0;">
                     <div class="stat-box" style="background: #a7f3d0; border: 2px solid #34d399;"><div class="stat-value" id="dash-ta-val" style="color: #065f46;">₹0</div><div class="stat-label" id="dash-ta-lbl" style="color: #047857;">TA this month</div></div>
                     <div class="stat-box" style="background: #bae6fd; border: 2px solid #38bdf8;"><div class="stat-value" id="dash-nda-val" style="color: #0c4a6e;">0:00 Hrs</div><div class="stat-label" id="dash-nda-lbl" style="color: #075985;">NDA this period</div></div>
                 </div>
             </div>
 
-            <div class="card" style="border: 3px solid #6366f1; padding: 15px; box-shadow: 0 4px 6px rgba(99,102,241,0.1);">
+            <div class="card card-3d" style="border: 3px solid #6366f1; padding: 15px; background: #fdf4ff;">
                 <div class="grid-2" style="margin-bottom: 0;">
-                    <div class="nav-card" onclick="navTo('screen-all')" style="background: #fef2f2; border: 2px solid #fca5a5;"><div class="nav-icon">📋</div><div class="nav-title" style="color: #dc2626;">ALL ENTRIES</div><div class="nav-desc" style="color: #ef4444;">View, edit, delete</div></div>
-                    <div class="nav-card" onclick="navTo('screen-reports')" style="background: #faf5ff; border: 2px solid #d8b4fe;"><div class="nav-icon">🖨️</div><div class="nav-title" style="color: #9333ea;">GENERATE PDF</div><div class="nav-desc" style="color: #a855f7;">TA Journal / NDA Bill</div></div>
-                    <div class="nav-card" onclick="openSettings()" style="background: #fffbeb; border: 2px solid #fcd34d;"><div class="nav-icon">👤</div><div class="nav-title" style="color: #d97706;">PROFILE SETUP</div><div class="nav-desc" style="color: #f59e0b;">Stations, pay details</div></div>
-                    <div class="nav-card" onclick="navTo('screen-backup')" style="background: #f0fdf4; border: 2px solid #6ee7b7;"><div class="nav-icon">💾</div><div class="nav-title" style="color: #0d9488;">BACKUP DATA</div><div class="nav-desc" style="color: #10b981;">Save your data</div></div>
+                    <div class="nav-card" onclick="navTo('screen-all')" style="background: #e0f2fe; border: 2px solid #7dd3fc;"><div class="nav-icon">📋</div><div class="nav-title" style="color: #0369a1;">ALL ENTRIES</div><div class="nav-desc" style="color: #0ea5e9;">View, edit, delete</div></div>
+                    <div class="nav-card" onclick="navTo('screen-reports')" style="background: #f3e8ff; border: 2px solid #d8b4fe;"><div class="nav-icon">🖨️</div><div class="nav-title" style="color: #7e22ce;">GENERATE PDF</div><div class="nav-desc" style="color: #a855f7;">TA Journal / NDA Bill</div></div>
+                    <div class="nav-card" onclick="openSettings()" style="background: #fef3c7; border: 2px solid #fcd34d;"><div class="nav-icon">👤</div><div class="nav-title" style="color: #b45309;">PROFILE SETUP</div><div class="nav-desc" style="color: #f59e0b;">Stations, pay details</div></div>
+                    <div class="nav-card" onclick="navTo('screen-backup')" style="background: #dcfce7; border: 2px solid #86efac;"><div class="nav-icon">💾</div><div class="nav-title" style="color: #15803d;">BACKUP DATA</div><div class="nav-desc" style="color: #22c55e;">Save your data</div></div>
                 </div>
             </div>
-
-            <div class="card" style="border: 3px solid #3b82f6; background: #eff6ff; text-align: center; padding: 20px;">
-                <h3 style="color: #1e40af; margin-top: 0; margin-bottom: 5px; text-transform: uppercase; font-size: 15px;">Help & Support</h3>
-                <p style="font-size: 13px; color: #475569; margin-top: 0; margin-bottom: 15px; font-weight: bold;">Got suggestions, facing errors, or need help? Reach out directly!</p>
-                <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20Tracker%20Feedback" style="display: inline-block; background: #3b82f6; color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 14px; box-shadow: 0 2px 4px rgba(59,130,246,0.3);">✉️ Contact Support</a>
-            </div>
-
         </div>
     </div>
 
@@ -310,10 +330,7 @@
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                    <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">ADD JOURNEY</h1>
-                </div>
-                <div class="version-badge">v4.1</div>
+                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">ADD JOURNEY</h1>
             </div>
         </div>
         <div class="screen-content">
@@ -365,10 +382,7 @@
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                    <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">ALL ENTRIES</h1>
-                </div>
-                <div class="version-badge">v4.1</div>
+                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">ALL ENTRIES</h1>
             </div>
         </div>
         <div class="screen-content">
@@ -379,18 +393,18 @@
             
             <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: #334155; padding: 12px; border-radius: 8px; border: 2px solid #1e293b; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
                 <label style="font-size: 14px; font-weight: 900; color: white; white-space: nowrap;">Filter:</label>
-                <select id="all-logs-month" onchange="renderAllLogs()" style="margin: 0; border: none; font-weight: bold; background: white; padding: 10px; flex: 1; border-radius: 4px;">
+                <select id="all-logs-month" onchange="renderAllLogs()" style="margin: 0; border: none; font-weight: bold; background: white; padding: 10px; flex: 0 0 45%; border-radius: 4px;">
                     <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
                     <option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option>
                     <option value="09">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
                 </select>
-                <select id="all-logs-year" onchange="renderAllLogs()" style="margin: 0; border: none; font-weight: bold; background: white; padding: 10px; flex: 1; border-radius: 4px;">
+                <select id="all-logs-year" onchange="renderAllLogs()" style="margin: 0; border: none; font-weight: bold; background: white; padding: 10px; flex: 0 0 35%; border-radius: 4px;">
                     <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
                     <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
                 </select>
             </div>
             
-            <div id="all-logs-container" style="width: 100%; max-height: 480px; overflow-y: auto; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);"></div>
+            <div id="all-logs-container" style="width: 100%; max-height: 520px; overflow-y: auto; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative;"></div>
             
             <div style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 15px;">
                 <span style="color: #166534; background: #f0fdf4; padding: 6px 12px; border-radius: 4px; border: 2px solid #bbf7d0;">🟩 Upward Leg</span>
@@ -403,14 +417,11 @@
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                    <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">GENERATE PDF</h1>
-                </div>
-                <div class="version-badge">v4.1</div>
+                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">GENERATE PDF</h1>
             </div>
         </div>
         <div class="screen-content" id="reports-swipe-zone" style="min-height: 75vh; width: 100%;">
-            <p style="text-align: center; font-size: 14px; color: #1e40af; margin-top: 0; margin-bottom: 15px; font-weight: 900;">↔️ Swipe left or right to switch tabs</p>
+            <p style="text-align: center; font-size: 14px; color: #ef4444; margin-top: 0; margin-bottom: 15px; font-weight: 900;">↔️ Swipe left or right to switch tabs</p>
             <div class="tab-container"><button class="tab-btn active" id="tab-ta" onclick="switchTab('ta')">TA Journal</button><button class="tab-btn" id="tab-nda" onclick="switchTab('nda')">NDA Bill</button></div>
             
             <div style="background: #eef2ff; border: 2px solid #818cf8; border-radius: 8px; padding: 5px 10px; margin-bottom: 15px;">
@@ -435,10 +446,7 @@
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 12px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                    <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">BACKUP & RESTORE</h1>
-                </div>
-                <div class="version-badge">v4.1</div>
+                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">BACKUP & RESTORE</h1>
             </div>
         </div>
         <div class="screen-content">
@@ -464,7 +472,8 @@
 
 <script>
     window.appState = { profile: null, legs: [] }; 
-    const APP_VERSION = "4.1"; 
+    window.editModeId = null; // Global tracker for active edit
+    const APP_VERSION = "4.2"; 
     let currentTab = 'ta';
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
@@ -493,8 +502,8 @@
         reportsZone.addEventListener('touchend', e => { 
             touchendX = e.changedTouches[0].screenX; 
             let diff = touchendX - touchstartX;
-            if (diff < -40 && currentTab === 'ta') switchTab('nda'); // swipe left
-            if (diff > 40 && currentTab === 'nda') switchTab('ta'); // swipe right
+            if (diff < -40 && currentTab === 'ta') switchTab('nda'); 
+            if (diff > 40 && currentTab === 'nda') switchTab('ta'); 
         }, {passive: true});
     };
     
@@ -519,7 +528,24 @@
         }
     };
     
-    function navTo(screenId) { ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); document.getElementById(screenId).classList.remove('hidden'); if(screenId === 'screen-dashboard') updateDashboardUI(); if(screenId === 'screen-all') renderAllLogs(); if(screenId === 'screen-reports') updateReportUI(); if(screenId === 'screen-dashboard' || screenId === 'screen-login') { document.getElementById('global-back-btn').classList.add('hidden'); } else { document.getElementById('global-back-btn').classList.remove('hidden'); } }
+    function navTo(screenId) { 
+        if (screenId !== 'screen-add' && window.editModeId) {
+            window.editModeId = null;
+            document.getElementById('trip-train').value = '';
+            document.getElementById('trip-dep-date').value = '';
+            document.getElementById('trip-dep-time').value = '';
+            document.getElementById('trip-arr-date').value = '';
+            document.getElementById('trip-arr-time').value = '';
+        }
+        
+        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
+        document.getElementById(screenId).classList.remove('hidden'); 
+        
+        if(screenId === 'screen-dashboard') updateDashboardUI(); 
+        if(screenId === 'screen-all') renderAllLogs(); 
+        if(screenId === 'screen-reports') updateReportUI(); 
+        if(screenId === 'screen-dashboard' || screenId === 'screen-login') { document.getElementById('global-back-btn').classList.add('hidden'); } else { document.getElementById('global-back-btn').classList.remove('hidden'); } 
+    }
 
     function saveData() { 
         if(window.currentUid && window.firebaseSet && window.firebaseRef) {
@@ -588,7 +614,7 @@
         } else {
             document.getElementById('reg-payscale-dropdown').value = p.payscale || '';
         }
-        window.checkGazetted(false); // setup UI without alert
+        window.checkGazetted(false); 
         
         document.getElementById('reg-gradepay').value = p.gradepay || ''; 
         document.getElementById('reg-da').value = p.da || ''; 
@@ -641,18 +667,38 @@
     
     function manageLeg(id, train, dep, arr) { document.getElementById('manage-id').value = id; document.getElementById('manage-msg').innerText = `Tr: ${train} | ${dep} ➔ ${arr}`; document.getElementById('manage-modal').classList.remove('hidden'); }
     function closeManage() { document.getElementById('manage-modal').classList.add('hidden'); }
-    function triggerEdit() { closeManage(); editLeg(parseInt(document.getElementById('manage-id').value)); }
+    
+    function triggerEdit() { 
+        closeManage(); 
+        const id = parseInt(document.getElementById('manage-id').value);
+        const leg = window.appState.legs.find(l => l.id === id); 
+        window.editModeId = id; 
+        document.getElementById('trip-dep-date').value = leg.depDate; 
+        document.getElementById('trip-train').value = leg.train; 
+        document.getElementById('trip-dep-stn').innerHTML = `<option value="${leg.depStn}">${leg.depStn}</option>` + document.getElementById('trip-dep-stn').innerHTML;
+        document.getElementById('trip-dep-stn').value = leg.depStn; 
+        document.getElementById('trip-dep-time').value = leg.depTime; 
+        document.getElementById('trip-arr-date').value = leg.arrDate; 
+        document.getElementById('trip-arr-stn').value = leg.arrStn; 
+        document.getElementById('trip-arr-time').value = leg.arrTime; 
+        navTo('screen-add'); 
+    }
+    
     function triggerDelete() { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
     
     function saveLeg() { 
-        const leg = { id: Date.now(), depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
+        const leg = { id: window.editModeId ? window.editModeId : Date.now(), depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
         if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR / त्रुटि", "All fields are mandatory.\nसभी फील्ड्स अनिवार्य हैं।", "error", false); 
         if(leg.depStn === leg.arrStn) return showModal("ERROR / त्रुटि", "From and To stations cannot be same.\nप्रस्थान और गंतव्य स्टेशन समान नहीं हो सकते।", "error", false); 
         if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR / त्रुटि", "Arrival must be after Departure.\nआगमन का समय प्रस्थान के बाद होना चाहिए।", "error", false); 
         
-        if(!window.appState.legs) window.appState.legs = []; let testLegs = [...window.appState.legs, leg]; testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
+        if(!window.appState.legs) window.appState.legs = []; 
+        let testLegs = [...window.appState.legs]; 
+        if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
+        testLegs.push(leg);
+        testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
         
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
         let idx = testLegs.findIndex(l => l.id === leg.id); let prev = idx > 0 ? testLegs[idx-1] : null;
         
         if(prev) {
@@ -671,14 +717,15 @@
         
         window.appState.legs = testLegs; 
         
-        // Clear all boxes except "Station From"
         document.getElementById('trip-train').value = ''; 
         document.getElementById('trip-dep-date').value = ''; 
         document.getElementById('trip-dep-time').value = ''; 
         document.getElementById('trip-arr-date').value = ''; 
         document.getElementById('trip-arr-stn').value = ''; 
         document.getElementById('trip-arr-time').value = ''; 
+        document.getElementById('trip-dep-stn').value = leg.arrStn;
         
+        window.editModeId = null;
         saveData(); navTo('screen-dashboard'); 
     }
 
@@ -688,7 +735,7 @@
         
         const selectedMonth = document.getElementById('all-logs-year').value + '-' + document.getElementById('all-logs-month').value;
         
-        let headerHTML = `<div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 12px 2px; background: #1e293b; border: 1px solid var(--border); border-radius: 6px 6px 0 0; font-size: 11px; font-weight: bold; color: white; text-transform: uppercase; text-align: center; margin-bottom: 0;">
+        let headerHTML = `<div style="position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 12px 2px; background: #1e293b; border: 1px solid var(--border); border-radius: 6px 6px 0 0; font-size: 11px; font-weight: bold; color: white; text-transform: uppercase; text-align: center; margin-bottom: 0;">
             <div style="text-align: left; padding-left: 5px;">TRAIN</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
         </div>`;
         
@@ -699,7 +746,6 @@
             container.innerHTML = `<p style="padding: 15px; color: #64748b; font-size: 14px; text-align: center;">No entries found for ${selectedMonth}. Try changing the filter above.</p>`; return;
         }
 
-        // Color coding by Upward/Downward Leg
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
         const allCycles = buildCycles(window.appState.legs);
         let legDirectionMap = {};
@@ -743,18 +789,7 @@
                 if (isBroken) { htmlElements.push(`<div style="background: #fef2f2; border: 1px dashed #ef4444; color: #ef4444; padding: 10px; text-align: center; font-size: 12px; font-weight: bold;">⚠️ CHAIN BREAK: Missing journey for ${expectedStr}</div>`); }
             }
         }
-        container.innerHTML = headerHTML + `<div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">` + htmlElements.reverse().join('') + `</div>`;
-    }
-    
-    function editLeg(id) { 
-        showModal("WARNING / चेतावनी", "Editing an entry may break your journey chain. You can fix it by adding missing legs later.\n\nक्या आप वाकई इसे एडिट करना चाहते हैं?", "warning", true, (proceed) => {
-            if(proceed) {
-                const leg = window.appState.legs.find(l => l.id === id); document.getElementById('trip-dep-date').value = leg.depDate; document.getElementById('trip-train').value = leg.train; 
-                document.getElementById('trip-dep-stn').innerHTML = `<option value="${leg.depStn}">${leg.depStn}</option>` + document.getElementById('trip-dep-stn').innerHTML;
-                document.getElementById('trip-dep-stn').value = leg.depStn; document.getElementById('trip-dep-time').value = leg.depTime; document.getElementById('trip-arr-date').value = leg.arrDate; document.getElementById('trip-arr-stn').value = leg.arrStn; document.getElementById('trip-arr-time').value = leg.arrTime; 
-                window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); navTo('screen-add'); 
-            }
-        });
+        container.innerHTML = headerHTML + `<div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px;">` + htmlElements.reverse().join('') + `</div>`;
     }
     
     function deleteLeg(id) { 
@@ -854,12 +889,15 @@
         const dList = document.getElementById('stn-list');
         if(dList) dList.innerHTML = stnHtml;
         const depStnSelect = document.getElementById('trip-dep-stn');
-        if(window.appState.legs && window.appState.legs.length > 0) {
-            let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
-            depStnSelect.value = sortedLegs[sortedLegs.length - 1].arrStn;
-        } else { 
-            depStnSelect.value = window.appState.profile.hq || ''; 
-        } 
+        
+        if(!window.editModeId) {
+            if(window.appState.legs && window.appState.legs.length > 0) {
+                let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+                depStnSelect.value = sortedLegs[sortedLegs.length - 1].arrStn;
+            } else { 
+                depStnSelect.value = window.appState.profile.hq || ''; 
+            } 
+        }
         
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
         const badge = document.getElementById('duty-status-badge'); 
@@ -922,26 +960,39 @@
             rcHTMLAdd = rcHTMLDash;
         } else { 
             let sortedAll = [...window.appState.legs].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
-            let recentDashArr = sortedAll.slice(0, 4);
+            let recentDashArr = sortedAll.slice(0, 3);
             let recentAddArr = sortedAll.slice(0, 6);
             
-            let theadCommon = `<thead style="background: #e0e7ff; color: #3730a3; position: sticky; top: 0; border-bottom: 2px solid #a5b4fc;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
-            let theadBordered = `<thead style="background: #e0e7ff; color: #3730a3; position: sticky; top: 0; border-bottom: 2px solid #a5b4fc;"><tr><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Tr</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Dep Dt</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">From</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Dep</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Arr Dt</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">To</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Arr</th></tr></thead>`;
+            let theadCommon = `<thead style="background: #e0e7ff; color: #3730a3; border-bottom: 2px solid #a5b4fc;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
+            let theadBordered = `<thead style="background: #e0e7ff; color: #3730a3; border-bottom: 2px solid #a5b4fc;"><tr><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Tr</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Dep Dt</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">From</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Dep</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Arr Dt</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">To</th><th style="border: 1px solid #a5b4fc; padding: 8px 2px;">Arr</th></tr></thead>`;
             
             rcHTMLDash = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0;">${theadCommon}<tbody>`;
             rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: 1px solid #cbd5e1;">${theadBordered}<tbody>`;
 
-            let sortedForward = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
-            let legColors = {}; let cycleIndex = 0; const bgColors = ['#f8fafc', '#ffffff'];
-            for(let i=0; i<sortedForward.length; i++){ let prev = i>0 ? sortedForward[i-1] : null; if(prev && hqGroup.includes(prev.arrStn)){ cycleIndex++; } legColors[sortedForward[i].id] = bgColors[cycleIndex % 2]; }
+            const allCycles = buildCycles(window.appState.legs);
+            let legDirectionMap = {};
+            allCycles.forEach(cycle => {
+                let maxGap = -1; let splitIdx = 0;
+                for(let i=0; i < cycle.length - 1; i++) {
+                    let arrT = new Date(`${cycle[i].arrDate}T${cycle[i].arrTime}`);
+                    let depT = new Date(`${cycle[i+1].depDate}T${cycle[i+1].depTime}`);
+                    let gap = depT - arrT;
+                    if(gap > maxGap) { maxGap = gap; splitIdx = i; }
+                }
+                cycle.forEach((leg, idx) => {
+                    legDirectionMap[leg.id] = (idx <= splitIdx) ? 'up' : 'down';
+                });
+            });
             
             recentDashArr.forEach((leg) => { 
-                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); let rowColor = legColors[leg.id] || '#ffffff';
+                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
+                let rowColor = legDirectionMap[leg.id] === 'up' ? '#f0fdf4' : '#fff7ed';
                 rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${leg.arrTime}</td></tr>`; 
             });
             
             recentAddArr.forEach((leg) => { 
-                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); let rowColor = legColors[leg.id] || '#ffffff';
+                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
+                let rowColor = legDirectionMap[leg.id] === 'up' ? '#f0fdf4' : '#fff7ed';
                 rcHTMLAdd += `<tr style="background: ${rowColor}; border: 1px solid #cbd5e1;"><td style="border: 1px solid #cbd5e1; padding: 10px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="border: 1px solid #cbd5e1; padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="border: 1px solid #cbd5e1; padding: 10px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="border: 1px solid #cbd5e1; padding: 10px 2px; color: #475569; font-weight: bold;">${leg.depTime}</td><td style="border: 1px solid #cbd5e1; padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="border: 1px solid #cbd5e1; padding: 10px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="border: 1px solid #cbd5e1; padding: 10px 2px; color: #475569; font-weight: bold;">${leg.arrTime}</td></tr>`; 
             });
             
@@ -1013,7 +1064,7 @@
     
     function closePreview() { document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = ''; }
 
-    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING / चेतावनी", "Working Days and Earnings are empty. Generate partial PDF anyway?\nवर्किंग डेज और अर्निंग्स खाली हैं। क्या आप फिर भी PDF जनरेट करना चाहते हैं?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
+    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING / चेतावनी", "Working Days and Earnings are empty. Generate partial PDF anyway?\nवर्किंग डेज और अर्निंग्स खाली हैं। क्या চরম फिर भी PDF जनरेट करना चाहते हैं?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
 
     function buildTAPreview(mo, wDays, earn) {
         const p = window.appState.profile; if(!p) return; const monthStr = new Date(mo+'-01').toLocaleString('default', {month:'long', year:'numeric'}).toUpperCase();
@@ -1035,7 +1086,7 @@
         let printPayScale = p.payscale ? p.payscale.replace(' (MACP)', '') : '';
         let bHtml = ""; if(counts[30] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 4px;">30% x ${counts[30]}</td><td style="border: 1px solid black; padding: 4px;">${Math.floor(p.tarate*0.3)} x ${counts[30]}</td><td style="border: 1px solid black; padding: 4px;">₹${counts[30] * Math.floor(p.tarate*0.3)}</td></tr>`; if(counts[70] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 4px;">70% x ${counts[70]}</td><td style="border: 1px solid black; padding: 4px;">${Math.floor(p.tarate*0.7)} x ${counts[70]}</td><td style="border: 1px solid black; padding: 4px;">₹${counts[70] * Math.floor(p.tarate*0.7)}</td></tr>`; if(counts[100] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 4px;">100% x ${counts[100]}</td><td style="border: 1px solid black; padding: 4px;">${p.tarate} x ${counts[100]}</td><td style="border: 1px solid black; padding: 4px;">₹${counts[100] * p.tarate}</td></tr>`;
 
-        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.5; background: white; max-width: 800px; width: 800px; margin: 0 auto;"><div style="display: flex; justify-content: space-between; align-items: flex-start; font-weight: bold; margin-bottom: 10px;"><div style="width: 20%; font-size: 11px; text-align: left;">NR</div><div style="width: 60%; text-align: center; font-size: 14px;">TRAVELLING ALLOWANCE JOURNAL</div><div style="width: 20%; text-align: right; font-size: 11px;">G.A. 31/S.R.C./G-1677<br>G-6</div></div><div style="font-size: 11px; line-height: 1.6; margin-bottom: 20px;"><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 2px;"><tr><td style="width: 20%;">Branch: <b>Commercial</b></td><td style="width: 20%; text-align: center;">Division: <b>LKO/NR</b></td><td style="width: 20%; text-align: center;">HQ: <b>${p.hq}/NR</b></td><td style="width: 25%; text-align: center;">P.F. No.: <b>${p.pf}</b></td><td style="width: 15%; text-align: right;">Bill Unit No: <b>${p.bu}</b></td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 6px;"><tr><td style="white-space: nowrap; width: 25%;">Journal of duties performed by Shri</td><td style="text-align: center; font-weight: bold; font-size: 11px; width: 30%; white-space: nowrap;">${p.name}</td><td style="white-space: nowrap; text-align: center; width: 20%;">for which allowance for</td><td style="text-align: center; font-weight: bold; width: 15%; white-space: nowrap;">${monthStr}</td><td style="white-space: nowrap; text-align: right; width: 10%;">is claimed.</td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 6px;"><tr><td style="width: 25%;">Designation: <b>${p.desig}</b></td><td style="width: 25%; text-align: center;">Pay Scale: <b>${printPayScale}</b></td><td style="width: 25%; text-align: center;">Grade Pay: <b>${p.gradepay}</b></td><td style="width: 25%; text-align: right;">Date of appointment: <b>${formatDate(p.appt)}</b></td></tr></table><table style="width: 450px; font-size: 11px; text-align: left; border: none; margin-bottom: 2px;"><tr><td style="width: 55%;">Rule by which governed: <b>HOER</b></td><td>TA Rate: <b>@${p.tarate}</b></td></tr></table><table style="width: 450px; font-size: 11px; text-align: left; border: none; margin-bottom: 2px;"><tr><td style="width: 55%;">Card Pass No.: <b>${p.pass}</b></td><td>Validity: <b>${formatDate(p.passval)}</b></td></tr></table><table style="width: 450px; font-size: 11px; text-align: left; border: none;"><tr><td style="width: 55%;">Checking Authority No.: <b>${p.auth}</b></td><td>Validity: <b>${formatDate(p.authval)}</b></td></tr></table></div><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-top: 15px; margin-bottom: 15px; font-size: 10px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 10%;">Month &<br>Date</th><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 9%;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 9%;">Time<br>Left</th><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 9%;">Time<br>Arrived</th><th colspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px;">Station</th><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 6%;">TA %</th><<th rowspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px; width: 8%;">Objective of<br>Journey</th><th colspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px;">Rate = ${p.tarate}</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 11%;">From</th><th style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 11%;">To</th><th style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 7.5%;">Rs.</th><th style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 7.5%;">P.</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="8" style="text-align: right; border: 1px solid black; padding: 12px 6px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-size: 12px;">${totalAmount}</td><td style="border: 1px solid black; padding: 12px 4px; font-size: 12px;">00</td></tr></tfoot></table><div style="display: flex; align-items: flex-end; gap: 20px; margin-bottom: 20px;"><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px;"><tr><td colspan="2" style="border: 1px solid black; padding: 4px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">TA RATE</td><td style="border: 1px solid black; padding: 4px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">₹${p.tarate}</td></tr>${bHtml}<tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;"><td colspan="2" style="border: 1px solid black; padding: 4px;">TOTAL AMOUNT</td><td style="border: 1px solid black; padding: 4px;">₹${totalAmount}</td></tr></table><div style="font-weight: bold; font-size: 12px; padding-bottom: 5px;">Rupees ${numberToWords(totalAmount)} Only</div></div><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px; margin-bottom: 20px;"><tr><td style="border: 1px solid black; padding: 4px; font-weight: bold; width: 66%; background: #e5e5e5; -webkit-print-color-adjust: exact;">Working Days</td><td style="border: 1px solid black; padding: 4px; font-weight: bold;">${wDays||""}</td></tr><tr><td style="border: 1px solid black; padding: 4px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">Total Earnings</td><td style="border: 1px solid black; padding: 4px; font-weight: bold;">₹ ${earn||""}</td></tr></table><div style="font-size: 11px; line-height: 1.5;">It is certified that:<br>1. The TA claimed by me has not been claimed before and will not be claimed hereafter.<br>2. Conveyance charges claimed have actually been spent by me and according to local Municipal rates.<br>3. Cheapest mode of conveyance was utilized.<br>4. The journey performed by road for which conveyance have been claimed was over 1.6 KM<br><br><div style="text-align: right; margin-top: 10px;">...........................................................................<br>Signature of the Officer Claiming T.A.</div></div><div style="margin-top: 20px; font-size: 11px; line-height: 1.5;">I hereby certify that Shri <b>${p.name}</b> was absent on duty from his headquarters station during the period charged for in the bill on Railway business and that the officer performed the journey by Rail/Sea/ Air/ Road was allowed/ not allowed free pass of locomotion at the expense of Government local fund of Indian State.</div><div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 11px;"><div style="text-align: left;">Countersigned<br><br><br><br>Controlling Officer</div><div style="text-align: right;">...........................................................................<br>Signature of the Head of the office</div></div></div>`;
+        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.5; background: white; max-width: 800px; width: 800px; margin: 0 auto;"><div style="display: flex; justify-content: space-between; align-items: flex-start; font-weight: bold; margin-bottom: 10px;"><div style="width: 20%; font-size: 11px; text-align: left;">NR</div><div style="width: 60%; text-align: center; font-size: 14px;">TRAVELLING ALLOWANCE JOURNAL</div><div style="width: 20%; text-align: right; font-size: 11px;">G.A. 31/S.R.C./G-1677<br>G-6</div></div><div style="font-size: 11px; line-height: 1.6; margin-bottom: 20px;"><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 2px;"><tr><td style="width: 20%;">Branch: <b>Commercial</b></td><td style="width: 20%; text-align: center;">Division: <b>LKO/NR</b></td><td style="width: 20%; text-align: center;">HQ: <b>${p.hq}/NR</b></td><td style="width: 25%; text-align: center;">P.F. No.: <b>${p.pf}</b></td><td style="width: 15%; text-align: right;">Bill Unit No: <b>${p.bu}</b></td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 6px;"><tr><td style="white-space: nowrap; width: 25%;">Journal of duties performed by Shri</td><td style="text-align: center; font-weight: bold; font-size: 11px; width: 30%; white-space: nowrap;">${p.name}</td><td style="white-space: nowrap; text-align: center; width: 20%;">for which allowance for</td><td style="text-align: center; font-weight: bold; width: 15%; white-space: nowrap;">${monthStr}</td><td style="white-space: nowrap; text-align: right; width: 10%;">is claimed.</td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 6px;"><tr><td style="width: 25%;">Designation: <b>${p.desig}</b></td><td style="width: 25%; text-align: center;">Pay Scale: <b>${printPayScale}</b></td><td style="width: 25%; text-align: center;">Grade Pay: <b>${p.gradepay}</b></td><td style="width: 25%; text-align: right;">Date of appointment: <b>${formatDate(p.appt)}</b></td></tr></table><table style="width: 450px; font-size: 11px; text-align: left; border: none; margin-bottom: 2px;"><tr><td style="width: 55%;">Rule by which governed: <b>HOER</b></td><td>TA Rate: <b>@${p.tarate}</b></td></tr></table><table style="width: 450px; font-size: 11px; text-align: left; border: none; margin-bottom: 2px;"><tr><td style="width: 55%;">Card Pass No.: <b>${p.pass}</b></td><td>Validity: <b>${formatDate(p.passval)}</b></td></tr></table><table style="width: 450px; font-size: 11px; text-align: left; border: none;"><tr><td style="width: 55%;">Checking Authority No.: <b>${p.auth}</b></td><td>Validity: <b>${formatDate(p.authval)}</b></td></tr></table></div><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-top: 15px; margin-bottom: 15px; font-size: 10px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 10%;">Month &<br>Date</th><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 9%;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 9%;">Time<br>Left</th><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 9%;">Time<br>Arrived</th><th colspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px;">Station</th><th rowspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 6%;">TA %</th><th rowspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px; width: 8%;">Objective of<br>Journey</th><th colspan="2" style="border: 1px solid black; padding: 6px 4px; font-size: 11px;">Rate = ${p.tarate}</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 11%;">From</th><th style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 11%;">To</th><th style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 7.5%;">Rs.</th><th style="border: 1px solid black; padding: 6px 4px; font-size: 11px; width: 7.5%;">P.</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="8" style="text-align: right; border: 1px solid black; padding: 12px 6px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-size: 12px;">${totalAmount}</td><td style="border: 1px solid black; padding: 12px 4px; font-size: 12px;">00</td></tr></tfoot></table><div style="page-break-before: always; break-before: page; padding-top: 20px;"><div style="display: flex; align-items: flex-end; gap: 20px; margin-bottom: 20px;"><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px;"><tr><td colspan="2" style="border: 1px solid black; padding: 4px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">TA RATE</td><td style="border: 1px solid black; padding: 4px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">₹${p.tarate}</td></tr>${bHtml}<tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;"><td colspan="2" style="border: 1px solid black; padding: 4px;">TOTAL AMOUNT</td><td style="border: 1px solid black; padding: 4px;">₹${totalAmount}</td></tr></table><div style="font-weight: bold; font-size: 12px; padding-bottom: 5px;">Rupees ${numberToWords(totalAmount)} Only</div></div><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px; margin-bottom: 20px;"><tr><td style="border: 1px solid black; padding: 4px; font-weight: bold; width: 66%; background: #e5e5e5; -webkit-print-color-adjust: exact;">Working Days</td><td style="border: 1px solid black; padding: 4px; font-weight: bold;">${wDays||""}</td></tr><tr><td style="border: 1px solid black; padding: 4px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">Total Earnings</td><td style="border: 1px solid black; padding: 4px; font-weight: bold;">₹ ${earn||""}</td></tr></table><div style="font-size: 11px; line-height: 1.5;">It is certified that:<br>1. The TA claimed by me has not been claimed before and will not be claimed hereafter.<br>2. Conveyance charges claimed have actually been spent by me and according to local Municipal rates.<br>3. Cheapest mode of conveyance was utilized.<br>4. The journey performed by road for which conveyance have been claimed was over 1.6 KM<br><br><div style="text-align: right; margin-top: 10px;">...........................................................................<br>Signature of the Officer Claiming T.A.</div></div><div style="margin-top: 20px; font-size: 11px; line-height: 1.5;">I hereby certify that Shri <b>${p.name}</b> was absent on duty from his headquarters station during the period charged for in the bill on Railway business and that the officer performed the journey by Rail/Sea/ Air/ Road was allowed/ not allowed free pass of locomotion at the expense of Government local fund of Indian State.</div><div style="display: flex; justify-content: space-between; margin-top: 30px; font-size: 11px;"><div style="text-align: left;">Countersigned<br><br><br><br>Controlling Officer</div><div style="text-align: right;">...........................................................................<br>Signature of the Head of the office</div></div></div></div>`;
         document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
     }
 
@@ -1092,7 +1143,7 @@
             tbodyHtml = `<tr><td colspan="11" style="border: 1px solid black; padding: 15px; font-weight: bold; color: red;">Gazetted Employees are not eligible for Night Duty Allowance.</td></tr>`;
         }
 
-        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.4; background: white; max-width: 800px; width: 800px; margin: 0 auto;"><div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">NIGHT DUTY BILL</div><table style="margin: 0 auto 20px auto; font-size: 12px; text-align: left; border: none; width: auto; line-height: 1.8;"><tr><td style="padding-right: 30px;">Name: <b>${p.name}</b></td><td>Designation: <b>${p.desig}</b></td></tr><tr><td>H.Q.: <b>${p.hq}/NR</b></td><td>ROP: <span style="float: right; font-weight: bold;">p.m.</span></td></tr><tr><td>P.F. No.: <b>${p.pf}</b></td><td>BU No.: <b>${p.bu}</b></td></tr><tr><td>Period From: <b>${strFrom}</b></td><td>To: <b>${strTo}</b></td></tr></table><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 15px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">From</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">To</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign On</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Dep.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Arrival</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign Off</th><th colspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px;">Night Duty</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Night<br>Hours</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">From</th><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">To</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="10" style="text-align: right; border: 1px solid black; padding: 12px 10px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-weight: bold; font-size: 12px;">${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}</td></tr></tfoot></table><div style="font-weight: bold; font-size: 12px; margin-bottom: 40px;">Total Night Duty Hours = ${totalH} Hours ${totalM} Minutes</div><table style="border: none; width: 300px; text-align: left; font-size: 12px; line-height: 1.8; float: right; margin-right: 20px;"><tr><td style="text-align: right; padding-right: 10px;">Signature:</td><td style="text-align: left;">...................................................</td></tr><tr><td style="text-align: right; padding-right: 10px;">Name:</td><td style="text-align: left;"><b>${p.name}</b></td></tr><tr><td style="text-align: right; padding-right: 10px;">Designation:</td><td style="text-align: left;"><b>${p.desig}</b></td></tr></table><div style="clear: both;"></div></div>`;
+        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.4; background: white; max-width: 800px; width: 800px; margin: 0 auto;"><div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">NIGHT DUTY BILL</div><table style="margin: 0 auto 20px auto; font-size: 12px; text-align: left; border: none; width: auto; line-height: 1.8;"><tr><td style="padding-right: 30px;">Name: <b>${p.name}</b></td><td>Designation: <b>${p.desig}</b></td></tr><tr><td>H.Q.: <b>${p.hq}/NR</b></td><td>ROP: <span style="float: right; font-weight: bold;">p.m.</span></td></tr><tr><td>P.F. No.: <b>${p.pf}</b></td><td>BU No.: <b>${p.bu}</b></td></tr><tr><td>Period From: <b>${strFrom}</b></td><td>To: <b>${strTo}</b></td></tr></table><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 15px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">From</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">To</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign On</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Dep.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Arrival</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign Off</th><th colspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px;">Night Duty</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Night<br>Hours</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">From</th><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">To</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="10" style="text-align: right; border: 1px solid black; padding: 12px 10px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-weight: bold; font-size: 12px;">${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}</td></tr></tfoot></table><div style="page-break-before: always; padding-top: 20px;"><div style="font-weight: bold; font-size: 12px; margin-bottom: 40px;">Total Night Duty Hours = ${totalH} Hours ${totalM} Minutes</div><table style="border: none; width: 300px; text-align: left; font-size: 12px; line-height: 1.8; float: right; margin-right: 20px;"><tr><td style="text-align: right; padding-right: 10px;">Signature:</td><td style="text-align: left;">...................................................</td></tr><tr><td style="text-align: right; padding-right: 10px;">Name:</td><td style="text-align: left;"><b>${p.name}</b></td></tr><tr><td style="text-align: right; padding-right: 10px;">Designation:</td><td style="text-align: left;"><b>${p.desig}</b></td></tr></table><div style="clear: both;"></div></div></div>`;
         document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
     }
     
