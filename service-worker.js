@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tte-tracker-v4.6';
+const CACHE_NAME = 'tte-tracker-v4.7';
 const ASSETS_TO_CACHE = [
     './index.html',
     './manifest.json'
