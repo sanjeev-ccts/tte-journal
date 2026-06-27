@@ -61,8 +61,11 @@
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; }
         
-        .notification-dot { position: absolute; top: 10px; right: 10px; width: 14px; height: 14px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 0 3px white, 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; }
+        .notification-dot { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 0 2px white, 0 2px 4px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; }
         
+        .help-btn-3d { width: 42px; height: 42px; border-radius: 50%; background: #3b82f6; border: 2px solid #93c5fd; display: flex; justify-content: center; align-items: center; font-size: 12px; font-weight: bold; color: white; cursor: pointer; box-shadow: 0 4px 0 #1d4ed8, 0 5px 10px rgba(0,0,0,0.3); transform: translateY(-2px); transition: all 0.1s ease; }
+        .help-btn-3d:active { box-shadow: 0 0 0 #1d4ed8, 0 2px 4px rgba(0,0,0,0.3); transform: translateY(2px); }
+
         /* Print Styles */
         @media screen {
             .page-break { border-top: 2px dashed #cbd5e1; margin-top: 30px; padding-top: 30px; position: relative; }
@@ -97,14 +100,7 @@
         window.firebaseSet = set;
         window.firebaseRef = ref;
 
-        window.login = () => {
-            signInWithPopup(window.auth, window.provider).catch(err => {
-                if(err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
-                    showModal("Login Error", err.message, "error", false);
-                }
-            });
-        };
-
+        window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
 
         onAuthStateChanged(window.auth, (user) => {
@@ -119,9 +115,7 @@
                     if (data) {
                         window.appState = data;
                         if (!window.appState.legs) window.appState.legs = [];
-                        if (document.getElementById('screen-register').classList.contains('hidden')) {
-                            navTo('screen-dashboard');
-                        }
+                        if (document.getElementById('screen-register').classList.contains('hidden')) navTo('screen-dashboard');
                     } else {
                         window.appState = { profile: null, legs: [] };
                         navTo('screen-register');
@@ -137,14 +131,8 @@
             const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
             const drop = document.getElementById('reg-payscale-dropdown');
             const txt = document.getElementById('reg-payscale-text');
-            if (isGaz) {
-                drop.classList.add('hidden'); 
-                txt.classList.remove('hidden');
-                if (isManualClick) showModal("NOTICE / सूचना", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7. This includes those who have reached Pay Level-8 through the Modified Assured Career Progression (MACP) scheme.", "warning", false);
-            } else {
-                drop.classList.remove('hidden'); 
-                txt.classList.add('hidden');
-            }
+            if (isGaz) { drop.classList.add('hidden'); txt.classList.remove('hidden'); if (isManualClick) showModal("NOTICE / सूचना", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false); } 
+            else { drop.classList.remove('hidden'); txt.classList.add('hidden'); }
         };
     </script>
 </head>
@@ -159,8 +147,8 @@
         <div id="preview-content"></div>
     </div>
     <div id="preview-floating-btns" style="position: fixed; right: -5px; top: 82%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px;">
-        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; transition: right 0.3s;" onclick="window.print()">🖨️ Print</div>
-        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; transition: right 0.3s;" onclick="closePreview()">❌ Close</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.print()">🖨️ Print</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="closePreview()">❌ Close</div>
     </div>
 </div>
 
@@ -217,12 +205,7 @@
             <h2 style="color: var(--blue); margin-bottom: 5px; font-size: 20px; font-weight: 900;">TTE Cloud Journal</h2>
             <p style="color: #64748b; font-size: 13px; margin-bottom: 25px; font-weight: bold;">Sign in securely to sync your journey</p>
             <button style="border-radius: 30px; font-size: 14px; padding: 10px 15px; background: #ffffff; color: #334155; border: 1px solid #cbd5e1; border-bottom: 3px solid #94a3b8; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; align-items: center; justify-content: center; width: max-content; margin: 0 auto; gap: 10px;" onclick="window.login()">
-                <svg style="width: 22px; height: 22px;" viewBox="0 0 48 48">
-                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                </svg>
+                <svg style="width: 22px; height: 22px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
                 Sign in with Google
             </button>
             <p style="color: #ef4444; font-size: 11px; font-weight: bold; margin-top: 15px; margin-bottom: 0;">Wait a few seconds after sign in</p>
@@ -238,6 +221,7 @@
         </div>
     </div>
 
+    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -297,9 +281,9 @@
                         <div style="flex: 1;"><label class="profile-lbl">Grade Pay</label><input type="number" id="reg-gradepay" placeholder="e.g. 4200"></div>
                         <div style="flex: 1;"><label class="profile-lbl">Basic Pay (₹)</label><input type="number" id="reg-basicpay" placeholder="e.g. 35400"></div>
                     </div>
-                    <div style="display: flex; gap: 10px; margin-bottom: 5px; position: relative;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 5px;">
                         <div style="flex: 1;"><label class="profile-lbl">TA Rate (₹)</label><input type="number" id="reg-tarate" placeholder="e.g. 800"></div>
-                        <div style="flex: 1;">
+                        <div style="flex: 1; position: relative;">
                             <label class="profile-lbl">DA (%)</label>
                             <input type="number" id="reg-da" placeholder="e.g. 50">
                             <div id="da-warning-msg" class="hidden" style="color: #ef4444; font-size: 11px; font-weight: bold; margin-top: 5px;"></div>
@@ -323,17 +307,17 @@
                     <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #22c55e; color: white; font-weight: bold; font-size: 15px; display: none; cursor: pointer; border-bottom: 3px solid #16a34a;">💾 Save & Lock</button>
                 </div>
                 <button style="margin-top: 10px; background: #ef4444; color: white; border-bottom: 3px solid #b91c1c;" onclick="window.logout()">Sign Out</button>
-                <div style="text-align: center; margin-top: 15px; font-size: 12px; color: #64748b; font-weight: bold;">App Version v1.0</div>
+                <div style="text-align: center; margin-top: 15px; font-size: 12px; color: #64748b; font-weight: bold;">App Version v1.1</div>
             </div>
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar" style="padding: 15px 20px; min-height: 85px;">
             <div class="top-bar-content" style="justify-content: center;">
                 <div style="position: absolute; left: 0; display: flex; align-items: center;">
-                    <img src="./logo.png" style="width: 40px; height: 40px; border-radius: 50%; object-fit: contain; border: 1px solid rgba(255,255,255,0.3); background: white;">
-
+                    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/45/Indian_Railways_Logo.svg/500px-Indian_Railways_Logo.svg.png" style="width: 45px; height: 45px; border-radius: 50%; object-fit: contain; border: 2px solid #93c5fd; background: white; padding: 2px; box-shadow: 0 4px 0 #1d4ed8, 0 5px 10px rgba(0,0,0,0.3);">
                 </div>
                 <div style="text-align: center;">
                     <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
@@ -342,7 +326,7 @@
                     <div class="subtitle" id="dash-subtitle" style="text-align: center; margin-top: 10px; font-size: 14px; color: #e2e8f0; font-weight: bold;">Hi, User</div>
                 </div>
                 <div style="position: absolute; right: 0; display: flex; align-items: center;">
-                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #0f172a; border: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; color: white; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.15);" onclick="document.getElementById('help-modal').classList.remove('hidden')">Help</div>
+                    <div class="help-btn-3d" onclick="document.getElementById('help-modal').classList.remove('hidden')">Help</div>
                 </div>
             </div>
         </div>
@@ -354,7 +338,7 @@
                     <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
                 </div>
                 <p style="font-size: 13px; color: #64748b; margin-top: 0; margin-bottom: 15px;" id="duty-status-desc">Ready to log your next journey.</p>
-                <button onclick="switchAddTab('duty'); navTo('screen-add');" style="background: #4f46e5; border-bottom-color: #3730a3;">+ Add Journey Entry</button>
+                <button onclick="window.switchAddTab('duty'); navTo('screen-add');" style="background: #4f46e5; border-bottom-color: #3730a3;">+ Add Journey Entry</button>
                 
                 <hr style="border: 0; border-top: 2px dashed #a5b4fc; margin: 20px 0 15px 0;">
                 <h4 style="margin: 0 0 10px 0; font-size: 14px; color: #4338ca; text-transform: uppercase; letter-spacing: 0.5px;">Recent Entries</h4>
@@ -382,6 +366,7 @@
         </div>
     </div>
 
+    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -390,52 +375,54 @@
             </div>
         </div>
         <div class="screen-content">
-            
+            <p style="text-align: center; font-size: 13px; color: #ef4444; margin-top: 0; margin-bottom: 15px; font-weight: 900;">↔️ Swipe left or right to switch tabs</p>
             <div class="tab-container" style="margin-bottom: 15px;">
-                <button id="tab-duty" class="tab-btn active" onclick="switchAddTab('duty')">Duty Journey</button>
-                <button id="tab-nonduty" class="tab-btn" onclick="switchAddTab('nonduty')">Rest/Leave/COCL</button>
+                <button id="tab-duty" class="tab-btn active" onclick="window.switchAddTab('duty')">Duty Journey</button>
+                <button id="tab-nonduty" class="tab-btn" onclick="window.switchAddTab('nonduty')">Rest/Leave/COCL</button>
             </div>
 
+            <!-- Duty Form -->
             <div id="form-duty">
-                <div style="background: #eef2ff; border: 2px solid #818cf8; border-radius: 8px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06); border-bottom-width: 4px;">
-                    <div style="padding: 12px; border-bottom: 2px solid #818cf8;">
-                        <label style="font-size: 14px; font-weight: 900; color: #4338ca; display: block; margin-bottom: 5px;">Train No.</label>
-                        <input type="text" id="trip-train" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px;">
+                <div style="background: #eef2ff; border: 2px solid #818cf8; border-radius: 8px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px;">
+                    <div style="padding: 10px; border-bottom: 2px solid #818cf8;">
+                        <label style="font-size: 13px; font-weight: 900; color: #4338ca; display: block; margin-bottom: 4px;">Train No.</label>
+                        <input type="text" id="trip-train" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; padding: 8px;">
                     </div>
                     <div style="display: flex; border-bottom: 2px solid #818cf8; background: #f8fafc;">
-                        <div style="flex: 1; padding: 12px; border-right: 2px solid #818cf8;">
-                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Station From</label>
-                            <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; text-transform: uppercase;">
+                        <div style="flex: 1; padding: 10px; border-right: 2px solid #818cf8;">
+                            <label style="font-size: 12px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 4px;">Departure Date</label>
+                            <input type="date" id="trip-dep-date" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; padding: 8px;">
                         </div>
-                        <div style="flex: 1; padding: 12px;">
-                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Station To</label>
-                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; text-transform: uppercase;">
-                            <datalist id="stn-list"></datalist>
+                        <div style="flex: 1; padding: 10px;">
+                            <label style="font-size: 12px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 4px;">Arrival Date</label>
+                            <input type="date" id="trip-arr-date" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; padding: 8px;">
                         </div>
                     </div>
                     <div style="display: flex; border-bottom: 2px solid #818cf8; background: #f8fafc;">
-                        <div style="flex: 1; padding: 12px; border-right: 2px solid #818cf8;">
-                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Departure Date</label>
-                            <input type="date" id="trip-dep-date" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px;">
+                        <div style="flex: 1; padding: 10px; border-right: 2px solid #818cf8;">
+                            <label style="font-size: 12px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 4px;">Departure Time</label>
+                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; padding: 8px;">
                         </div>
-                        <div style="flex: 1; padding: 12px;">
-                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Arrival Date</label>
-                            <input type="date" id="trip-arr-date" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px;">
+                        <div style="flex: 1; padding: 10px;">
+                            <label style="font-size: 12px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 4px;">Arrival Time</label>
+                            <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; padding: 8px;">
                         </div>
                     </div>
                     <div style="display: flex; background: #f8fafc;">
-                        <div style="flex: 1; padding: 12px; border-right: 2px solid #818cf8;">
-                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Departure Time</label>
-                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px;">
+                        <div style="flex: 1; padding: 10px; border-right: 2px solid #818cf8;">
+                            <label style="font-size: 12px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 4px;">Station From</label>
+                            <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; text-transform: uppercase; padding: 8px;">
                         </div>
-                        <div style="flex: 1; padding: 12px;">
-                            <label style="font-size: 13px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 5px;">Arrival Time</label>
-                            <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px;">
+                        <div style="flex: 1; padding: 10px;">
+                            <label style="font-size: 12px; font-weight: bold; color: #4338ca; display: block; margin-bottom: 4px;">Station To</label>
+                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; border: 1px solid #c7d2fe; background: #e0e7ff; border-radius: 4px; text-transform: uppercase; padding: 8px;">
+                            <datalist id="stn-list"></datalist>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Non-Duty Form -->
             <div id="form-nonduty" class="hidden">
                 <div style="background: #f0fdf4; border: 2px solid #4ade80; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px;">
                     <div style="margin-bottom: 15px;">
@@ -460,13 +447,14 @@
             </div>
 
             <button id="btn-save-duty" onclick="saveLeg()" style="background: #4f46e5; border-bottom-color: #3730a3;">Save This Journey</button>
-            <button id="btn-save-nonduty" class="hidden" onclick="saveNonDuty()" style="background: #22c55e; border-bottom-color: #166534;">Save Record</button>
+            <button id="btn-save-nonduty" class="hidden" onclick="window.saveNonDuty()" style="background: #22c55e; border-bottom-color: #166534;">Save Record</button>
             
-            <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px;">Recent Duty Entries</h3>
+            <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px;" id="recent-duty-title">Recent Duty Entries</h3>
             <div id="recent-logs-add" style="border-radius: 6px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"></div>
         </div>
     </div>
 
+    <!-- ALL JOURNEY -->
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -476,7 +464,7 @@
         </div>
         <div class="screen-content">
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button onclick="switchAddTab('duty'); navTo('screen-add')" style="flex: 1; background: #4f46e5; border-bottom-color: #3730a3;">+ Add Journey Entry</button>
+                <button onclick="window.switchAddTab('duty'); navTo('screen-add')" style="flex: 1; background: #4f46e5; border-bottom-color: #3730a3;">+ Add Journey Entry</button>
             </div>
             <p style="font-size: 16px; color: var(--blue); text-align: center; margin-top: 0; font-weight: 900;">👆 Tap any row below to Edit or Delete<br><span style="font-size: 14px; color: #ef4444; font-weight: bold;">एडिट या डिलीट करने के लिए किसी भी पंक्ति पर टैप करें</span></p>
             
@@ -502,6 +490,7 @@
         </div>
     </div>
 
+    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -570,6 +559,7 @@
     window.editModeId = null; 
     window.lastManualBackup = localStorage.getItem('lastManualBackup') || 'Never';
     window.lastRestoreTime = localStorage.getItem('lastRestoreTime') || 'Never';
+    window.currentAddTab = 'duty';
     let currentTab = 'ta';
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
@@ -602,7 +592,7 @@
         let touchstartX = 0;
         let touchendX = 0;
         document.addEventListener('touchstart', e => { 
-            if(!document.getElementById('screen-reports').classList.contains('hidden')) {
+            if(!document.getElementById('screen-reports').classList.contains('hidden') || !document.getElementById('screen-add').classList.contains('hidden')) {
                 touchstartX = e.changedTouches[0].screenX; 
             }
         }, {passive: true});
@@ -612,6 +602,11 @@
                 let diff = touchendX - touchstartX;
                 if (diff < -50 && currentTab === 'ta') { switchTab('nda'); }
                 else if (diff > 50 && currentTab === 'nda') { switchTab('ta'); }
+            } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
+                touchendX = e.changedTouches[0].screenX; 
+                let diff = touchendX - touchstartX;
+                if (diff < -50 && window.currentAddTab === 'duty') { window.switchAddTab('nonduty'); }
+                else if (diff > 50 && window.currentAddTab === 'nonduty') { window.switchAddTab('duty'); }
             }
         }, {passive: true});
     };
@@ -637,7 +632,8 @@
         }
     };
     
-    function switchAddTab(tab) {
+    window.switchAddTab = function(tab) {
+        window.currentAddTab = tab;
         if (tab === 'duty') {
             document.getElementById('tab-duty').classList.add('active');
             document.getElementById('tab-nonduty').classList.remove('active');
@@ -645,6 +641,7 @@
             document.getElementById('form-nonduty').classList.add('hidden');
             document.getElementById('btn-save-duty').classList.remove('hidden');
             document.getElementById('btn-save-nonduty').classList.add('hidden');
+            document.getElementById('recent-duty-title').innerText = "Recent Duty Entries";
         } else {
             document.getElementById('tab-nonduty').classList.add('active');
             document.getElementById('tab-duty').classList.remove('active');
@@ -652,8 +649,10 @@
             document.getElementById('form-duty').classList.add('hidden');
             document.getElementById('btn-save-nonduty').classList.remove('hidden');
             document.getElementById('btn-save-duty').classList.add('hidden');
+            document.getElementById('recent-duty-title').innerText = "Recent Non-Duty Entries";
         }
-    }
+        updateDashboardUI(); // Refresh recent logs in add screen
+    };
     
     function navTo(screenId) { 
         if (screenId !== 'screen-add' && window.editModeId) {
@@ -738,7 +737,7 @@
             drop.classList.add('hidden'); 
             txt.classList.remove('hidden');
             if (isManualClick) {
-                showModal("NOTICE / सूचना", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7. This includes those who have reached Pay Level-8 through the Modified Assured Career Progression (MACP) scheme.", "warning", false);
+                showModal("NOTICE / सूचना", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false);
             }
         } else {
             drop.classList.remove('hidden'); 
@@ -784,14 +783,6 @@
             lockProfile();
         }
     }   
-    
-    window.setDAReminder = () => {
-        let m = new Date().getMonth();
-        if (m === 2) localStorage.setItem('da_remind_month', '4'); 
-        if (m === 8) localStorage.setItem('da_remind_month', '10'); 
-        document.getElementById('da-warning-msg').classList.add('hidden');
-        showModal("Reminder Set", "You will be reminded again on the 1st of next month.", "success", false);
-    }
     
     function checkProfileNotifications() {
         const p = window.appState.profile;
@@ -925,7 +916,8 @@
     function manageNonDuty(id, type, from, to) {
         document.getElementById('manage-type').value = 'nonduty';
         document.getElementById('manage-id').value = id; 
-        document.getElementById('manage-msg').innerText = `${type.toUpperCase()} | ${formatDate(from)} to ${formatDate(to)}`; 
+        let dateStr = (from === to) ? formatDate(from) : `${formatDate(from)} to ${formatDate(to)}`;
+        document.getElementById('manage-msg').innerText = `${type.toUpperCase()} | ${dateStr}`; 
         document.getElementById('manage-modal').classList.remove('hidden');
     }
     function closeManage() { document.getElementById('manage-modal').classList.add('hidden'); }
@@ -938,12 +930,12 @@
         closeManage(); 
         
         if (mType === 'nonduty') {
-            switchAddTab('nonduty');
+            window.switchAddTab('nonduty');
             document.getElementById('nonduty-type').value = leg.dutyType;
             document.getElementById('nonduty-from').value = leg.fromDate;
             document.getElementById('nonduty-to').value = leg.toDate;
         } else {
-            switchAddTab('duty');
+            window.switchAddTab('duty');
             document.getElementById('trip-dep-date').value = leg.depDate; 
             document.getElementById('trip-train').value = leg.train; 
             document.getElementById('trip-dep-stn').innerHTML = `<option value="${leg.depStn}">${leg.depStn}</option>` + document.getElementById('trip-dep-stn').innerHTML;
@@ -1009,20 +1001,43 @@
         if(!from || !to) return showModal("ERROR / त्रुटि", "Dates are mandatory.", "error", false);
         if(new Date(from) > new Date(to)) return showModal("ERROR / त्रुटि", "From Date cannot be after To Date.", "error", false);
         
-        const hq = window.appState.profile.hq || 'HQ';
-        const leg = { id: window.editModeId || Date.now(), isNonDuty: true, dutyType: type, fromDate: from, toDate: to, depDate: from, depTime: '00:00', arrDate: to, arrTime: '23:59', depStn: hq, arrStn: hq, train: 'NON-DUTY' };
+        let overlap = false;
+        let fromD = new Date(`${from}T00:00:00`);
+        let toD = new Date(`${to}T23:59:59`);
         
-        if(!window.appState.legs) window.appState.legs = [];
-        let testLegs = [...window.appState.legs]; 
-        if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
-        testLegs.push(leg);
-        testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+        if(window.appState.legs) {
+            window.appState.legs.forEach(l => {
+                if(l.id === window.editModeId) return;
+                let lStart = new Date(`${l.depDate}T${l.depTime || '00:00'}`);
+                let lEnd = new Date(`${l.arrDate}T${l.arrTime || '23:59'}`);
+                if (fromD <= lEnd && toD >= lStart) overlap = true;
+            });
+        }
         
-        window.appState.legs = testLegs;
-        document.getElementById('nonduty-from').value = '';
-        document.getElementById('nonduty-to').value = '';
-        window.editModeId = null;
-        saveData(); navTo('screen-dashboard'); 
+        const finalizeSave = () => {
+            const hq = window.appState.profile.hq || 'HQ';
+            const leg = { id: window.editModeId || Date.now(), isNonDuty: true, dutyType: type, fromDate: from, toDate: to, depDate: from, depTime: '00:00', arrDate: to, arrTime: '23:59', depStn: hq, arrStn: hq, train: 'NON-DUTY' };
+            
+            if(!window.appState.legs) window.appState.legs = [];
+            let testLegs = [...window.appState.legs]; 
+            if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
+            testLegs.push(leg);
+            testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+            
+            window.appState.legs = testLegs;
+            document.getElementById('nonduty-from').value = '';
+            document.getElementById('nonduty-to').value = '';
+            window.editModeId = null;
+            saveData(); navTo('screen-dashboard'); 
+        };
+
+        if(overlap) {
+            showModal("WARNING / चेतावनी", "Warning: The selected dates overlap with an existing journey or leave!\nचेतावनी: चयनित तिथियां मौजूदा प्रविष्टि के साथ ओवरलैप हो रही हैं।", "warning", true, (proceed) => {
+                if(proceed) finalizeSave();
+            });
+        } else {
+            finalizeSave();
+        }
     }
 
     function renderAllLogs() { 
@@ -1066,7 +1081,13 @@
             let leg = filteredLegs[i];
             
             if (leg.isNonDuty) {
-                htmlElements.push(`<div style="grid-column: 1 / -1; background: rgba(34, 197, 94, 0.6); color: #064e3b; font-weight: bold; padding: 10px; text-align: center; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="manageNonDuty(${leg.id}, '${leg.dutyType}', '${leg.fromDate}', '${leg.toDate}')">🌴 ${leg.dutyType.toUpperCase()}: ${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}</div>`);
+                let bgCol = ""; let textCol = "#1e293b";
+                if(leg.dutyType === 'Rest') bgCol = "rgba(34, 197, 94, 0.35)";
+                else if(leg.dutyType === 'Leave') bgCol = "rgba(59, 130, 246, 0.35)";
+                else if(leg.dutyType === 'COCL') bgCol = "rgba(234, 179, 8, 0.35)";
+                
+                let dateStr = (leg.fromDate === leg.toDate) ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}`;
+                htmlElements.push(`<div style="grid-column: 1 / -1; background: ${bgCol}; color: ${textCol}; font-weight: bold; padding: 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 12px; cursor: pointer;" onclick="manageNonDuty(${leg.id}, '${leg.dutyType}', '${leg.fromDate}', '${leg.toDate}')">🌴 ${leg.dutyType.toUpperCase()} : ${dateStr}</div>`);
             } else {
                 let dir = legDirectionMap[leg.id];
                 let rowColor = dir === 'up' ? '#f0fdf4' : '#fff7ed';
@@ -1093,8 +1114,17 @@
                         if (leg.arrStn !== next.depStn) { isBroken = true; expectedStr = `${leg.arrStn} to ${next.depStn}`; } 
                     }
                     if (isBroken) { 
-                        htmlElements.push(`<div style="background: #fef2f2; border: 1px dashed #ef4444; color: #ef4444; padding: 10px; text-align: center; font-size: 12px; font-weight: bold;">⚠️ CHAIN BREAK: Missing journey for ${expectedStr}</div>`); 
+                        htmlElements.push(`<div style="background: #fef2f2; border: 1px dashed #ef4444; color: #ef4444; padding: 10px; text-align: center; font-size: 12px; font-weight: bold;">⚠️ CHAIN BREAK: Missing duty journey for ${expectedStr}</div>`); 
                     }
+                }
+            }
+            
+            let next = filteredLegs[i+1];
+            if (next) {
+                let curEnd = new Date(`${leg.arrDate}T${leg.arrTime || '23:59'}`);
+                let nextStart = new Date(`${next.depDate}T${next.depTime || '00:00'}`);
+                if (nextStart < curEnd) {
+                    htmlElements.push(`<div style="background: #fef2f2; border: 1px dashed #ef4444; color: #ef4444; padding: 10px; text-align: center; font-size: 12px; font-weight: bold;">⚠️ OVERLAPPING DATES: Please check the above and below entries.</div>`);
                 }
             }
         }
@@ -1241,7 +1271,6 @@
         cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
         document.getElementById('dash-ta-val').innerText = '₹' + totalTA; 
         
-        // Dynamic NDA Month Selection based on current date
         let todayDash = new Date();
         let ndaYDash = todayDash.getFullYear();
         let ndaMDash = todayDash.getMonth() + 1;
@@ -1288,33 +1317,56 @@
         
         if(dutyOnly.length === 0) { 
             rcHTMLDash = '<p style="color: #64748b; font-size: 13px; text-align: center; padding: 15px;">No entries yet. Tap "Add Journey Entry" to begin.</p>'; 
-            rcHTMLAdd = rcHTMLDash;
         } else { 
             let sortedAll = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
             let recentDashArr = sortedAll.slice(0, 3);
-            let recentAddArr = sortedAll.slice(0, 7);
             
             let theadCommon = `<thead style="background: #e0e7ff; color: #3730a3; position: sticky; top: 0; border-bottom: 2px solid #a5b4fc;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
             
             rcHTMLDash = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0;">${theadCommon}<tbody>`;
-            rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadCommon}<tbody>`;
 
             recentDashArr.forEach((leg, i) => { 
                 let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
                 let rowColor = (i % 2 === 0) ? '#f8fafc' : '#ffffff';
                 rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${leg.arrTime}</td></tr>`; 
             });
-            
-            recentAddArr.forEach((leg, i) => { 
-                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
-                let rowColor = (i % 2 === 0) ? '#f8fafc' : '#ffffff';
-                rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid #cbd5e1;"><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${leg.arrTime}</td></tr>`; 
-            });
-            
             rcHTMLDash += `</tbody></table>`;
-            rcHTMLAdd += `</tbody></table>`;
         } 
         if(rcDash) rcDash.innerHTML = rcHTMLDash;
+        
+        let recentAddArr = [];
+        if(window.currentAddTab === 'nonduty') {
+            let nondutyOnly = window.appState.legs ? window.appState.legs.filter(l => l.isNonDuty) : [];
+            if(nondutyOnly.length === 0) {
+                rcHTMLAdd = '<p style="color: #64748b; font-size: 13px; text-align: center; padding: 15px;">No Non-Duty entries found.</p>';
+            } else {
+                let sortedNonDuty = [...nondutyOnly].sort((a,b) => new Date(b.fromDate) - new Date(a.fromDate));
+                recentAddArr = sortedNonDuty.slice(0, 7);
+                let theadND = `<thead style="background: #fae8ff; color: #86198f; position: sticky; top: 0; border-bottom: 2px solid #f0abfc;"><tr><th style="padding: 8px 2px;">Type</th><th style="padding: 8px 2px;">Date Range</th></tr></thead>`;
+                rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadND}<tbody>`;
+                recentAddArr.forEach((leg, i) => {
+                    let rowColor = (i % 2 === 0) ? '#fdf4ff' : '#ffffff';
+                    let dateStr = (leg.fromDate === leg.toDate) ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}`;
+                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid #cbd5e1;"><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.dutyType.toUpperCase()}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${dateStr}</td></tr>`;
+                });
+                rcHTMLAdd += `</tbody></table>`;
+            }
+        } else {
+            if(dutyOnly.length === 0) {
+                rcHTMLAdd = '<p style="color: #64748b; font-size: 13px; text-align: center; padding: 15px;">No Duty entries found.</p>';
+            } else {
+                let sortedDuty = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+                recentAddArr = sortedDuty.slice(0, 7);
+                let theadDuty = `<thead style="background: #e0e7ff; color: #3730a3; position: sticky; top: 0; border-bottom: 2px solid #a5b4fc;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
+                rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadDuty}<tbody>`;
+                recentAddArr.forEach((leg, i) => {
+                    let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
+                    let rowColor = (i % 2 === 0) ? '#f8fafc' : '#ffffff';
+                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid #cbd5e1;"><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.train}</td><td style="padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.depStn}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--blue); font-weight: bold;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: black;">${leg.arrStn}</td><td style="padding: 10px 2px; color: #475569; font-weight: bold;">${leg.arrTime}</td></tr>`; 
+                });
+                rcHTMLAdd += `</tbody></table>`;
+            }
+        }
         if(rcAdd) rcAdd.innerHTML = rcHTMLAdd;
     }
     
