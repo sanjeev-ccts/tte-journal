@@ -86,6 +86,7 @@
         .dash-header { min-height: 80px; }
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; line-height: 1.2; }
         
+        /* Fixed Top Back Button Alignment */
         .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: bold; margin: 0; }
         
         .screen-content { padding: 15px; padding-bottom: 90px; max-width: 600px; margin: 0 auto; }
@@ -107,6 +108,7 @@
         button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); box-shadow: var(--shadow); transition: background 0.3s; }
         button:active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
         
+        /* Duty Status Badges */
         .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: background 0.3s; }
         
@@ -151,6 +153,50 @@
             @page { margin: 0.3cm; size: A4; }
         }
     </style>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const app = initializeApp({
+            apiKey: "AIzaSyClDJ3enyipS3sHJujYJTkxdunvvVgju64",
+            authDomain: "tte-journal.firebaseapp.com",
+            databaseURL: "https://tte-journal-default-rtdb.firebaseio.com",
+            projectId: "tte-journal"
+        });
+
+        window.db = getDatabase(app);
+        window.auth = getAuth(app);
+        window.provider = new GoogleAuthProvider();
+        window.firebaseSet = set;
+        window.firebaseRef = ref;
+
+        window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
+        window.logout = () => signOut(window.auth).then(() => window.location.reload());
+
+        onAuthStateChanged(window.auth, (user) => {
+            if (user) {
+                window.currentUid = user.uid;
+                onValue(ref(window.db, 'users/' + user.uid), (snapshot) => {
+                    const data = snapshot.val();
+                    if (data) {
+                        window.appState = data;
+                        if (!window.appState.legs) window.appState.legs = [];
+                        if (document.getElementById('screen-register').classList.contains('hidden')) {
+                            window.navTo('screen-dashboard');
+                        }
+                    } else {
+                        window.appState = { profile: null, legs: [] };
+                        window.navTo('screen-register'); 
+                    }
+                });
+            } else {
+                window.currentUid = null;
+                window.navTo('screen-login');
+            }
+        });
+    </script>
 </head>
 <body>
 
@@ -218,7 +264,7 @@
 
     <div id="screen-login" class="hidden" style="position: relative; min-height: 100vh; width: 100vw; background-color: #0f172a; background-image: url('./login-bg.png'); background-size: cover; background-position: center bottom; background-repeat: no-repeat;">
         <div style="position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
-            <button style="border-radius: 30px; font-size: 15px; padding: 12px 24px; background: #ffffff; color: #1e293b; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; width: max-content; gap: 10px; font-weight: bold; cursor: pointer;" onclick="login()">
+            <button style="border-radius: 30px; font-size: 15px; padding: 12px 24px; background: #ffffff; color: #1e293b; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; width: max-content; gap: 10px; font-weight: bold; cursor: pointer;" onclick="window.login()">
                 <svg style="width: 24px; height: 24px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
                 Sign in with Google
             </button>
@@ -230,7 +276,7 @@
         <div class="top-bar">
             <button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">◀ Back</button>
             <div class="top-bar-content">
-                <h1>PROFILE SETUP</h1>
+                <h1 style="color: #fde047;">PROFILE SETUP</h1>
             </div>
         </div>
         <div class="screen-content">
@@ -308,8 +354,8 @@
                 <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; background: var(--blue);">Edit Profile</button>
                 <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
-            <button style="margin-top: 10px; background: var(--red);" onclick="logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.3</div>
+            <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.4</div>
         </div>
     </div>
 
@@ -334,7 +380,7 @@
                 <h4 style="margin: 0 0 10px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Recent Entries</h4>
                 <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"></div>
                 
-                <button onclick="switchAddTab('duty'); navTo('screen-add');" style="margin-top: 15px; border-radius: 12px;">+ Add Journey Entry</button>
+                <button onclick="switchAddTab('duty'); navTo('screen-add');" style="margin-top: 15px; border-radius: 30px;">+ Add Journey Entry</button>
             </div>
             
             <div style="margin-bottom: 10px;">
@@ -483,8 +529,8 @@
             <div id="all-logs-container" style="width: 100%; max-height: 525px; overflow-y: auto; border-radius: 12px; box-shadow: var(--shadow); position: relative; background: var(--card); border: 1px solid var(--border);"></div>
             
             <div style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 15px;">
-                <span style="color: var(--row-text); background: var(--row-up-bg); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border);">Up Train</span>
-                <span style="color: var(--row-text); background: var(--row-down-bg); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border);">Down Train</span>
+                <span style="color: var(--row-text); background: var(--row-up-bg); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);">Up Train</span>
+                <span style="color: var(--row-text); background: var(--row-down-bg); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);">Down Train</span>
             </div>
         </div>
     </div>
@@ -520,13 +566,13 @@
                 <p style="font-size: 11px; color: var(--blue); font-weight: bold; margin-top: 10px; margin-bottom: 0; text-align: center;">💡 To check previous history, use the ❮ ❯ arrows above to change the month.</p>
                 
                 <div id="ta-extras" style="display: flex; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 15px; justify-content: center;">
-                    <div style="flex: 1; text-align: center;">
+                    <div style="flex: 1; text-align: center; background: var(--input-bg); padding: 10px; border-radius: 12px; border: 1px solid var(--border);">
                         <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 5px;">Working Days</label>
-                        <input type="number" id="pdf-work-days" placeholder="Days" style="text-align: center; color: var(--blue); margin: 0 auto; background: var(--input-bg);">
+                        <input type="number" id="pdf-work-days" placeholder="Days" style="text-align: center; color: var(--blue); margin: 0 auto; background: var(--card);">
                     </div>
-                    <div style="flex: 1; text-align: center;">
+                    <div style="flex: 1; text-align: center; background: var(--input-bg); padding: 10px; border-radius: 12px; border: 1px solid var(--border);">
                         <label style="font-size: 12px; font-weight: bold; color: var(--green); display: block; margin-bottom: 5px;">Earnings</label>
-                        <input type="number" id="pdf-earnings" placeholder="₹" style="text-align: center; color: var(--green); margin: 0 auto; background: var(--input-bg);">
+                        <input type="number" id="pdf-earnings" placeholder="₹" style="text-align: center; color: var(--green); margin: 0 auto; background: var(--card);">
                     </div>
                 </div>
                 <button style="margin-top: 20px;" id="generate-btn" onclick="triggerGenerate()">Generate PDF Document</button>
@@ -565,7 +611,38 @@
 </div>
 
 <script>
-    // These functions and variables are native to the window. No bridging needed.
+    // ==============================================
+    // CORE APP LOGIC - EXPLICIT GLOBAL FUNCTIONS
+    // ==============================================
+
+    window.navTo = navTo;
+    window.showModal = showModal;
+    window.openSettings = openSettings;
+    window.unlockProfile = unlockProfile;
+    window.updateDashboardUI = updateDashboardUI;
+    window.triggerGenerate = triggerGenerate;
+    window.changeMonth = changeMonth;
+    window.switchTab = switchTab;
+    window.renderAllLogs = renderAllLogs;
+    window.saveLeg = saveLeg;
+    window.saveNonDuty = saveNonDuty;
+    window.triggerDelete = triggerDelete;
+    window.triggerEdit = triggerEdit;
+    window.closeManage = closeManage;
+    window.manageNonDuty = manageNonDuty;
+    window.manageLeg = manageLeg;
+    window.importData = importData;
+    window.exportData = exportData;
+    window.saveProfile = saveProfile;
+    window.setDAReminder = setDAReminder;
+    window.toggleTheme = toggleTheme;
+    window.shareApp = shareApp;
+    window.showNotifications = showNotifications;
+    window.switchAddTab = switchAddTab;
+    window.formatTimeInput = formatTimeInput;
+    window.closePreview = closePreview;
+    window.checkGazetted = checkGazetted;
+
     window.appState = { profile: null, legs: [] }; 
     window.editModeId = null; 
     window.lastManualBackup = localStorage.getItem('lastManualBackup') || 'Never';
@@ -612,66 +689,6 @@
         }
     }
 
-    window.onload = () => { 
-        const savedTheme = localStorage.getItem('app_theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            const tt = document.getElementById('theme-toggle');
-            if(tt) tt.innerText = '☀️';
-        }
-        
-        const today = new Date(); 
-        const year = today.getFullYear();
-        const month = String(today.getMonth()+1).padStart(2,'0');
-        const currentMonthStr = `${year}-${month}`;
-        
-        document.getElementById('report-month-hidden').value = currentMonthStr; 
-        document.getElementById('all-logs-month').value = month;
-        document.getElementById('all-logs-year').value = year.toString();
-
-        const fBtn = document.getElementById('global-back-btn');
-        if(fBtn) {
-            let startY, startTop;
-            fBtn.addEventListener('touchstart', function(e) {
-                startY = e.touches[0].clientY;
-                startTop = parseInt(window.getComputedStyle(fBtn).top, 10);
-                fBtn.style.transition = 'none';
-            }, {passive: true});
-            fBtn.addEventListener('touchmove', function(e) {
-                let y = e.touches[0].clientY;
-                let newTop = startTop + (y - startY);
-                if(newTop < 60) newTop = 60;
-                if(newTop > window.innerHeight - 60) newTop = window.innerHeight - 60;
-                fBtn.style.top = newTop + 'px';
-                e.preventDefault();
-            }, {passive: false});
-            fBtn.addEventListener('touchend', function(e) {
-                fBtn.style.transition = 'right 0.3s';
-            }, {passive: true});
-        }
-
-        let touchstartX = 0;
-        let touchendX = 0;
-        document.addEventListener('touchstart', e => { 
-            if(!document.getElementById('screen-reports').classList.contains('hidden') || !document.getElementById('screen-add').classList.contains('hidden')) {
-                touchstartX = e.changedTouches[0].screenX; 
-            }
-        }, {passive: true});
-        document.addEventListener('touchend', e => { 
-            if(!document.getElementById('screen-reports').classList.contains('hidden')) {
-                touchendX = e.changedTouches[0].screenX; 
-                let diff = touchendX - touchstartX;
-                if (diff < -50 && currentTab === 'ta') { switchTab('nda'); }
-                else if (diff > 50 && currentTab === 'nda') { switchTab('ta'); }
-            } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
-                touchendX = e.changedTouches[0].screenX; 
-                let diff = touchendX - touchstartX;
-                if (diff < -50 && window.currentAddTab === 'duty') { switchAddTab('nonduty'); }
-                else if (diff > 50 && window.currentAddTab === 'nonduty') { switchAddTab('duty'); }
-            }
-        }, {passive: true});
-    };
-    
     function formatTimeInput(el) {
         let val = el.value.replace(/\D/g, '');
         if (!val) return;
@@ -802,16 +819,6 @@
         }
     }
 
-    function saveData() { 
-        if(window.currentUid && window.firebaseSet && window.firebaseRef) {
-            window.firebaseSet(window.firebaseRef(window.db, 'users/' + window.currentUid), window.appState);
-            window.lastSyncTime = new Date().toLocaleTimeString();
-            const syncLbl = document.getElementById('sync-time-lbl');
-            if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
-            checkGlobalNotifications();
-        }
-    }
-    
     function showModal(title, msg, type, showCancel, callback) { 
         const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
         document.getElementById('modal-title').innerText = title; 
@@ -1158,7 +1165,19 @@
         document.getElementById('trip-dep-stn').value = leg.arrStn;
         
         window.editModeId = null;
-        saveData(); navTo('screen-dashboard'); 
+        
+        // This save syncs to cloud, and then updates the dashboard!
+        if(window.currentUid && window.firebaseSet && window.firebaseRef) {
+            window.firebaseSet(window.firebaseRef(window.db, 'users/' + window.currentUid), window.appState).then(() => {
+                window.lastSyncTime = new Date().toLocaleTimeString();
+                const syncLbl = document.getElementById('sync-time-lbl');
+                if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
+                checkGlobalNotifications();
+                navTo('screen-dashboard'); 
+            });
+        } else {
+            navTo('screen-dashboard');
+        }
     }
 
     function saveNonDuty() {
@@ -1195,7 +1214,18 @@
             document.getElementById('nonduty-from').value = '';
             document.getElementById('nonduty-to').value = '';
             window.editModeId = null;
-            saveData(); navTo('screen-dashboard'); 
+            
+            if(window.currentUid && window.firebaseSet && window.firebaseRef) {
+                window.firebaseSet(window.firebaseRef(window.db, 'users/' + window.currentUid), window.appState).then(() => {
+                    window.lastSyncTime = new Date().toLocaleTimeString();
+                    const syncLbl = document.getElementById('sync-time-lbl');
+                    if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
+                    checkGlobalNotifications();
+                    navTo('screen-dashboard'); 
+                });
+            } else {
+                navTo('screen-dashboard');
+            }
         };
 
         if(overlap) {
@@ -1585,25 +1615,7 @@
         } 
     }
 
-    /* Assign Local Script Functions to Global Window to prevent PDF crashes */
-    window.triggerGenerate = triggerGenerate;
-    window.changeMonth = changeMonth;
-    window.switchTab = switchTab;
-    window.renderAllLogs = renderAllLogs;
-    window.saveLeg = saveLeg;
-    window.saveNonDuty = saveNonDuty;
-    window.triggerDelete = triggerDelete;
-    window.triggerEdit = triggerEdit;
-    window.closeManage = closeManage;
-    window.manageNonDuty = manageNonDuty;
-    window.manageLeg = manageLeg;
-    window.importData = importData;
-    window.exportData = exportData;
-    window.saveProfile = saveProfile;
-    window.setDAReminder = setDAReminder;
-    window.updateDashboardUI = updateDashboardUI;
-    
-    window.closePreview = () => { document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = ''; }
+    function closePreview() { document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = ''; }
 
     function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING", "Working Days and Earnings are empty. Generate partial PDF anyway?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
 
