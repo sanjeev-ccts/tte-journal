@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TA-NDA Tracker Cloud</title>
+    <title>TTE LOG</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="apple-touch-icon" href="./my-icon.png">
@@ -27,7 +27,7 @@
             --warning-bg: #fffbeb; --warning-border: #f59e0b; --warning-text: #92400e;
             
             --blue-card-bg: #e0f2fe; --blue-card-border: #7dd3fc; --blue-text: #0369a1;
-            --orange-card-bg: #ffedd5; --orange-card-border: #fdba74;
+            --orange-card-bg: #ffedd5; --orange-card-border: #fdba74; --orange-text: #c2410c;
             --pink-card-bg: #fae8ff; --pink-card-border: #f9a8d4;
             --green-card-bg: #dcfce7; --green-card-border: #86efac; --green-text: #166534;
             --indigo-card-bg: #eef2ff; --indigo-card-border: #818cf8; --indigo-text: #4338ca;
@@ -47,62 +47,64 @@
             --table-border: #a5b4fc;
         }
 
+        /* NEW DARK MODE: Black, White, Red, Yellow, Blue ONLY */
         body.dark-mode {
-            --bg: #0f172a;
-            --card: #1e293b;
-            --border: #334155;
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-            --blue: #38bdf8;
-            --input-bg: #0f172a;
-            --input-disabled: #1e293b;
-            --input-tint-bg: #1e3a8a;
-            --input-tint-border: #4f46e5;
-            --modal-bg: #1e293b;
-            --top-bar-bg: #020617;
+            --bg: #000000;
+            --card: #0a0a0a;
+            --border: #333333;
+            --text: #ffffff;
+            --text-muted: #a3a3a3;
+            --blue: #3b82f6;
+            --input-bg: #000000;
+            --input-disabled: #111111;
+            --input-tint-bg: #0a0a0a;
+            --input-tint-border: #3b82f6;
+            --modal-bg: #111111;
+            --top-bar-bg: #0a0a0a;
             
-            --danger-bg: #450a0a; --danger-border: #b91c1c; --danger-text: #fca5a5;
-            --warning-bg: #451a03; --warning-border: #d97706; --warning-text: #fcd34d;
+            --danger-bg: #111111; --danger-border: #ef4444; --danger-text: #ef4444;
+            --warning-bg: #111111; --warning-border: #eab308; --warning-text: #eab308;
             
-            --blue-card-bg: #082f49; --blue-card-border: #0284c7; --blue-text: #38bdf8;
-            --orange-card-bg: #431407; --orange-card-border: #ea580c;
-            --pink-card-bg: #4a044e; --pink-card-border: #d946ef;
-            --green-card-bg: #064e3b; --green-card-border: #10b981; --green-text: #4ade80;
-            --indigo-card-bg: #1e3a8a; --indigo-card-border: #6366f1; --indigo-text: #818cf8;
-            --purple-card-bg: #3b0764; --purple-card-border: #a855f7; --purple-text: #c084fc;
-            --yellow-card-bg: #422006; --yellow-card-border: #d97706; --yellow-text: #fbbf24;
-            --red-card-bg: #450a0a; --red-card-border: #dc2626; --red-text: #f87171;
+            --blue-card-bg: #0a0a0a; --blue-card-border: #3b82f6; --blue-text: #3b82f6;
+            --orange-card-bg: #0a0a0a; --orange-card-border: #eab308; --orange-text: #eab308;
+            --pink-card-bg: #0a0a0a; --pink-card-border: #ffffff;
+            --green-card-bg: #0a0a0a; --green-card-border: #eab308; --green-text: #ffffff;
+            --indigo-card-bg: #0a0a0a; --indigo-card-border: #3b82f6; --indigo-text: #ffffff;
+            --purple-card-bg: #0a0a0a; --purple-card-border: #eab308; --purple-text: #eab308;
+            --yellow-card-bg: #0a0a0a; --yellow-card-border: #3b82f6; --yellow-text: #ffffff;
+            --red-card-bg: #0a0a0a; --red-card-border: #ef4444; --red-text: #ef4444;
             
-            --green-box-bg: #064e3b; --green-box-border: #10b981; --green-box-val: #6ee7b7; --green-box-lbl: #34d399;
-            --blue-box-bg: #0c4a6e; --blue-box-border: #0ea5e9; --blue-box-val: #7dd3fc; --blue-box-lbl: #38bdf8;
+            --green-box-bg: #0a0a0a; --green-box-border: #eab308; --green-box-val: #eab308; --green-box-lbl: #ffffff;
+            --blue-box-bg: #0a0a0a; --blue-box-border: #3b82f6; --blue-box-val: #3b82f6; --blue-box-lbl: #ffffff;
             
-            --row-up-bg: #022c22;
-            --row-down-bg: #431407;
-            --row-text: #f8fafc;
-            --row-blue-text: #7dd3fc;
-            --table-header-bg: #312e81;
-            --table-header-text: #c7d2fe;
-            --table-border: #4f46e5;
+            --row-up-bg: #111111;
+            --row-down-bg: #0a0a0a;
+            --row-text: #ffffff;
+            --row-blue-text: #eab308;
+            --table-header-bg: #111111;
+            --table-header-text: #3b82f6;
+            --table-border: #333333;
         }
 
         * { box-sizing: border-box; font-family: system-ui, sans-serif; }
         body { background: var(--bg); color: var(--text); margin: 0; padding: 0; font-size: 15px; -webkit-tap-highlight-color: transparent; transition: background 0.3s, color 0.3s; }
         .hidden { display: none !important; }
         
+        /* Layout */
         .top-bar { background: var(--top-bar-bg); color: white; padding: 12px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.3); max-width: 600px; margin: 0 auto; width: 100%; border-bottom: 2px solid #334155; transition: background 0.3s; }
-        .top-bar-content { width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); max-width: 100%; white-space: nowrap; line-height: 1.2; }
-        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; margin: 0; width: auto; font-weight: bold; position: absolute; left: 0; box-shadow: none; border-bottom: none; z-index: 10; }
+        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; position: absolute; left: 15px; font-weight: bold; }
         
         .screen-content { padding: 15px; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
+        
+        /* Elements */
         .card { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 6px 10px -2px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s; }
         .profile-sec { padding: 15px; border-radius: 8px; margin-bottom: 15px; border-bottom-width: 4px; transition: background 0.3s, border 0.3s; }
         .stat-box { border-radius: 10px; padding: 15px; display: flex; flex-direction: column; justify-content: center; border-bottom-width: 4px; cursor: pointer; transition: transform 0.1s, background 0.3s, border 0.3s; }
-        .stat-box:active { transform: translateY(3px); border-bottom-width: 1px; margin-top: 3px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .stat-box:active { transform: translateY(3px); border-bottom-width: 1px; margin-top: 3px; }
         .nav-card { border-radius: 10px; padding: 15px; display: flex; flex-direction: column; cursor: pointer; border-bottom-width: 4px; transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; }
-        .nav-card:active { transform: translateY(3px); border-bottom-width: 1px; margin-top: 3px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .nav-card:active { transform: translateY(3px); border-bottom-width: 1px; margin-top: 3px; }
         
-        h2, h3 { margin-top: 0; color: var(--text); transition: color 0.3s; }
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
         .stat-value { font-size: 20px; font-weight: bold; margin-bottom: 2px; }
         .stat-label { font-size: 12px; font-weight: 600; }
@@ -119,7 +121,6 @@
         
         .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background: var(--green-card-bg); color: var(--green-text); box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); transition: background 0.3s, color 0.3s; }
         .status-dot { width: 8px; height: 8px; background: var(--green-card-border); border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: background 0.3s; }
-        .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); z-index: 5000; cursor: ns-resize; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; transition: right 0.3s; }
         
         .tab-container { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-bottom-width: 3px; transition: background 0.3s, border 0.3s; }
         .tab-btn { flex: 1; padding: 12px; background: var(--card); color: var(--text-muted); font-weight: bold; border-radius: 0; margin: 0; text-align: center; cursor: pointer; box-shadow: none; border-bottom: none; transition: background 0.3s, color 0.3s; }
@@ -127,25 +128,28 @@
         .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; font-weight: bold; color: var(--indigo-text); transition: color 0.3s; }
         .slider-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 5px 12px; border-radius: 6px; width: auto; margin: 0; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-bottom-width: 2px; transition: background 0.3s, color 0.3s, border 0.3s; }
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 14px; }
-        .summary-row:last-of-type { border-bottom: none; margin-bottom: 0; font-weight: bold; }
         
         #custom-modal, #manage-modal, #help-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; text-align: center; border-top: 6px solid var(--blue); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: background 0.3s; }
         
-        #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; -webkit-overflow-scrolling: touch; padding-bottom: 150px; }
+        /* BOTTOM NAVIGATION BAR */
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 35px; background: var(--top-bar-bg); display: flex; justify-content: space-around; align-items: center; z-index: 4000; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); border-top: 2px solid #334155; transition: background 0.3s; }
+        .bottom-icon { width: 26px; height: 26px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; font-size: 13px; color: white; cursor: pointer; position: relative; }
+        .bottom-icon:active { background: rgba(255,255,255,0.1); }
+        .bell-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        
+        /* PRINT PREVIEW */
+        #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; }
         
-        .notification-dot { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; transition: box-shadow 0.3s; }
-
-        /* Print Styles */
         @media screen {
             .page-break { border-top: 2px dashed #cbd5e1; margin-top: 30px; padding-top: 30px; position: relative; }
             .page-break::before { content: "✂️ PAGE BREAK"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #cbd5e1; color: #334155; padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: bold; }
         }
         @media print {
             body { background: white !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; color-adjust: exact !important; print-color-adjust: exact !important; }
-            #ui-wrapper, #preview-controls, .floating-back, #preview-floating-btns { display: none !important; }
+            #ui-wrapper, #preview-controls, #preview-floating-btns, .bottom-bar { display: none !important; }
             #preview-wrapper { display: block !important; padding: 0 !important; margin: 0 !important; background: white !important; position: static; overflow: visible !important; }
             #preview-content-scale { transform: scale(1) !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; }
             .page-break { border: none !important; margin-top: 0 !important; padding-top: 80px !important; page-break-before: always !important; }
@@ -172,24 +176,13 @@
         window.firebaseSet = set;
         window.firebaseRef = ref;
 
-        window.login = () => {
-            signInWithPopup(window.auth, window.provider).catch(err => {
-                if(err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
-                    showModal("Login Error", err.message, "error", false);
-                }
-            });
-        };
-
+        window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
 
         onAuthStateChanged(window.auth, (user) => {
             if (user) {
                 window.currentUid = user.uid;
                 onValue(ref(window.db, 'users/' + user.uid), (snapshot) => {
-                    window.lastSyncTime = new Date().toLocaleTimeString();
-                    const syncLbl = document.getElementById('sync-time-lbl');
-                    if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
-
                     const data = snapshot.val();
                     if (data) {
                         window.appState = data;
@@ -199,7 +192,7 @@
                         }
                     } else {
                         window.appState = { profile: null, legs: [] };
-                        navTo('screen-register');
+                        openSettings();
                     }
                 });
             } else {
@@ -212,14 +205,8 @@
             const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
             const drop = document.getElementById('reg-payscale-dropdown');
             const txt = document.getElementById('reg-payscale-text');
-            if (isGaz) {
-                drop.classList.add('hidden'); 
-                txt.classList.remove('hidden');
-                if (isManualClick) showModal("NOTICE / सूचना", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false);
-            } else {
-                drop.classList.remove('hidden'); 
-                txt.classList.add('hidden');
-            }
+            if (isGaz) { drop.classList.add('hidden'); txt.classList.remove('hidden'); if (isManualClick) showModal("NOTICE", "NDA is only paid up to Pay Level-7.", "warning", false); } 
+            else { drop.classList.remove('hidden'); txt.classList.add('hidden'); }
         };
     </script>
 </head>
@@ -234,36 +221,42 @@
         <div id="preview-content"></div>
     </div>
     <div id="preview-floating-btns" style="position: fixed; right: -5px; top: 82%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px;">
-        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; transition: right 0.3s;" onclick="window.print()">🖨️ Print</div>
-        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; transition: right 0.3s;" onclick="closePreview()">❌ Close</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; gap: 8px; transition: right 0.3s;" onclick="window.print()">🖨️ Print</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; gap: 8px; transition: right 0.3s;" onclick="closePreview()">❌ Close</div>
     </div>
 </div>
 
 <div id="ui-wrapper">
-    <div id="global-back-btn" class="floating-back hidden" onclick="navTo('screen-dashboard')">◀ Back</div>
+    <div class="bottom-bar hidden" id="main-bottom-bar">
+        <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
+        <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
+        <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
+        <div class="bottom-icon" onclick="showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
+        <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
+    </div>
 
     <div id="custom-modal" class="hidden">
         <div id="modal-box">
             <h3 id="modal-title" style="margin-top:0; font-size: 18px; color: var(--text);">Message</h3>
-            <p id="modal-msg" style="font-size: 14px; white-space: pre-wrap; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;"></p>
+            <p id="modal-msg" style="font-size: 14px; white-space: pre-wrap; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; text-align: left;"></p>
             <div style="display: flex; gap: 10px; justify-content: center;"><button id="modal-cancel" class="hidden" style="flex: 1; margin: 0; padding: 10px; background: #64748b; color: white;">CANCEL</button><button id="modal-ok" style="flex: 1; margin: 0; padding: 10px; background: #0ea5e9; color: white;">OK</button></div>
         </div>
     </div>
     
     <div id="help-modal" class="hidden">
-        <div style="background: var(--modal-bg); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border-top: 6px solid #3b82f6; box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: background 0.3s;">
+        <div style="background: var(--modal-bg); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border-top: 6px solid var(--blue); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: background 0.3s;">
             <div style="background: var(--indigo-card-bg); padding: 10px; border-radius: 8px; border: 2px solid var(--indigo-card-border); margin-bottom: 15px;">
                 <h3 style="color: var(--indigo-text); margin: 0; text-transform: uppercase;">Help & Support</h3>
             </div>
             <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 20px; font-weight: bold;">Got suggestions, facing errors, or need help? Reach out directly!</p>
-            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20Tracker%20Feedback" style="display: inline-block; width: 100%; background: #3b82f6; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px; box-sizing: border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-bottom: 3px solid #1d4ed8;">✉️ Email Developer</a>
-            <a href="https://wa.me/918116002746" target="_blank" style="display: inline-block; width: 100%; background: #25D366; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 15px; box-sizing: border-box; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-bottom: 3px solid #16a34a;">💬 WhatsApp (Chat Only)</a>
+            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: inline-block; width: 100%; background: #3b82f6; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px;">✉️ Email Developer</a>
+            <a href="https://wa.me/918116002746" target="_blank" style="display: inline-block; width: 100%; background: #25D366; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 15px;">💬 WhatsApp (Chat Only)</a>
             <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border-radius: 8px; border: 1px solid var(--border); box-shadow: none;">Close</button>
         </div>
     </div>
 
     <div id="manage-modal" class="hidden">
-        <div style="background: var(--modal-bg); padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); border: 2px solid var(--blue); margin: auto; transition: background 0.3s;">
+        <div style="background: var(--modal-bg); padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; border: 2px solid var(--blue); margin: auto; transition: background 0.3s;">
             <div style="font-size: 30px; margin-bottom: 10px;">⚙️</div>
             <h3 style="margin-top:0; font-size: 18px; color: var(--blue);">Manage Entry</h3>
             <p id="manage-msg" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: bold;"></p>
@@ -272,47 +265,30 @@
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <button style="background: #0ea5e9; color: white;" onclick="triggerEdit()">✏️ Edit</button>
                 <button style="background: #ef4444; color: white;" onclick="triggerDelete()">🗑️ Delete</button>
-                <button style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none; border-bottom: 3px solid var(--border);" onclick="closeManage()">Cancel</button>
+                <button style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;" onclick="closeManage()">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- LOGIN INTERFACE -->
     <div id="screen-login" class="hidden" style="position: relative; min-height: 100vh; width: 100vw; background-color: #0f172a; background-image: url('./login-bg.png'); background-size: cover; background-position: center bottom; background-repeat: no-repeat;">
         <div style="position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
             <button style="border-radius: 30px; font-size: 15px; padding: 12px 24px; background: #ffffff; color: #1e293b; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; width: max-content; gap: 10px; font-weight: bold; cursor: pointer;" onclick="window.login()">
-                <svg style="width: 24px; height: 24px;" viewBox="0 0 48 48">
-                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                </svg>
+                <svg style="width: 24px; height: 24px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
                 Sign in with Google
             </button>
             <p style="color: #ffffff; font-size: 13px; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 0.5px;">Please wait a few seconds after sign in</p>
         </div>
     </div>
 
-    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')" style="left: 0; position: absolute;">← Back</button>
+                <button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">← Back</button>
                 <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; margin: 0; letter-spacing: 0.5px;">PROFILE SETUP</h1>
             </div>
         </div>
         <div class="screen-content">
             
-            <div id="profile-alert-box" class="hidden" style="background: var(--danger-bg); border-left: 4px solid var(--danger-border); padding: 12px; margin-bottom: 15px; font-size: 13px; color: var(--danger-text); border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s;">
-                <b style="display: block; margin-bottom: 5px;">⚠️ Action Required:</b>
-                <span id="profile-alert-msg"></span>
-            </div>
-
-            <div style="background: var(--warning-bg); border-left: 4px solid var(--warning-border); padding: 12px; margin-bottom: 15px; font-size: 13px; color: var(--warning-text); border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s;">
-                <b>Note:</b> Please fill out this data carefully. It will be used directly for your TA/NDA calculations and PDF generation.<br>
-                <b style="margin-top: 5px; display: inline-block;">नोट:</b> कृपया इस डेटा को ध्यानपूर्वक भरें। इसका उपयोग सीधे आपके TA/NDA गणना और PDF जनरेशन के लिए किया जाएगा।
-            </div>
-        
             <div class="card" style="border: 2px solid var(--border); padding: 10px;">
                 <div class="profile-sec" style="background: var(--blue-card-bg); border: 2px solid var(--blue-card-border);">
                     <div style="margin-bottom: 10px;"><label class="profile-lbl">Full Name</label><input type="text" id="reg-name" style="text-transform: uppercase;"></div>
@@ -358,7 +334,6 @@
                         <div style="flex: 1; position: relative;">
                             <label class="profile-lbl">DA (%)</label>
                             <input type="number" id="reg-da" placeholder="e.g. 50">
-                            <div id="da-warning-msg" class="hidden" style="color: var(--danger-border); font-size: 11px; font-weight: bold; margin-top: 5px;"></div>
                         </div>
                     </div>
                 </div>
@@ -379,27 +354,19 @@
                     <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #22c55e; color: white; font-weight: bold; font-size: 15px; display: none; cursor: pointer; border-bottom: 3px solid #16a34a;">💾 Save & Lock</button>
                 </div>
                 <button style="margin-top: 10px; background: #ef4444; color: white; border-bottom: 3px solid #b91c1c;" onclick="window.logout()">Sign Out</button>
-                <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.0 (Dark Mode)</div>
+                <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v4.18 (Dark Mode Ready)</div>
             </div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar" style="padding: 15px 20px; min-height: 85px;">
             <div class="top-bar-content" style="justify-content: center;">
-                <div style="position: absolute; left: 0; display: flex; align-items: center;">
-                    <img src="./logo.icon" style="width: 40px; height: 40px; border-radius: 50%; object-fit: contain; border: 1px solid rgba(255,255,255,0.3); background: white;">
-                </div>
                 <div style="text-align: center;">
                     <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                        <h1 id="dash-title" style="text-transform: uppercase; font-size: 20px; font-weight: 900; color: #fde047; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">TA-NDA TRACKER</h1>
+                        <h1 id="dash-title" style="text-transform: uppercase; font-size: 20px; font-weight: 900; color: #fde047; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">TTE LOG</h1>
                     </div>
                     <div class="subtitle" id="dash-subtitle" style="text-align: center; margin-top: 10px; font-size: 14px; color: #e2e8f0; font-weight: bold;">Hi, User</div>
-                </div>
-                <div style="position: absolute; right: 0; display: flex; align-items: center; gap: 8px;">
-                    <div id="theme-toggle" style="width: 35px; height: 35px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; font-size: 16px; cursor: pointer; background: transparent;" onclick="window.toggleTheme()">🌙</div>
-                    <div style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); display: flex; justify-content: center; align-items: center; font-size: 11px; font-weight: bold; color: #fde047; cursor: pointer; background: transparent;" onclick="document.getElementById('help-modal').classList.remove('hidden')">Help</div>
                 </div>
             </div>
         </div>
@@ -429,8 +396,8 @@
                 <div class="grid-2" style="margin-bottom: 0;">
                     <div class="nav-card" onclick="navTo('screen-all')" style="background: var(--blue-card-bg); border: 2px solid var(--blue-card-border);"><div class="nav-icon">📋</div><div class="nav-title" style="color: var(--blue-text);">ALL JOURNEY</div><div class="nav-desc" style="color: var(--blue-text); opacity: 0.8;">View, edit, delete</div></div>
                     <div class="nav-card" onclick="currentTab='ta'; navTo('screen-reports');" style="background: var(--purple-card-bg); border: 2px solid var(--purple-card-border);"><div class="nav-icon">🖨️</div><div class="nav-title" style="color: var(--purple-text);">GENERATE PDF</div><div class="nav-desc" style="color: var(--purple-text); opacity: 0.8;">TA Journal / NDA Bill</div></div>
-                    <div class="nav-card" onclick="navTo('screen-register')" style="background: var(--yellow-card-bg); border: 2px solid var(--yellow-card-border);">
-                        <div class="nav-icon" style="position: relative; display: inline-block;">👤<div id="profile-alert-badge" class="notification-dot hidden">!</div></div>
+                    <div class="nav-card" onclick="openSettings()" style="background: var(--yellow-card-bg); border: 2px solid var(--yellow-card-border);">
+                        <div class="nav-icon" style="position: relative; display: inline-block;">👤</div>
                         <div class="nav-title" style="color: var(--yellow-text);">PROFILE SETUP</div><div class="nav-desc" style="color: var(--yellow-text); opacity: 0.8;">Stations, pay details</div>
                     </div>
                     <div class="nav-card" onclick="navTo('screen-backup')" style="background: var(--red-card-bg); border: 2px solid var(--red-card-border);"><div class="nav-icon">💾</div><div class="nav-title" style="color: var(--red-text);">BACKUP DATA</div><div class="nav-desc" style="color: var(--red-text); opacity: 0.8;">Save your data</div></div>
@@ -439,11 +406,10 @@
         </div>
     </div>
 
-    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="navTo('screen-dashboard')" style="left: 15px; position: absolute; z-index: 10;">← Back</button>
+                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
                 <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">ADD JOURNEY</h1>
             </div>
         </div>
@@ -454,7 +420,6 @@
                 <button id="tab-nonduty" class="tab-btn" onclick="window.switchAddTab('nonduty')">Rest/Leave/COCL</button>
             </div>
 
-            <!-- Duty Form -->
             <div id="form-duty">
                 <div style="background: var(--indigo-card-bg); border: 2px solid var(--indigo-card-border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s;">
                     <div style="padding: 8px; border-bottom: 2px solid var(--indigo-card-border);">
@@ -495,7 +460,6 @@
                 </div>
             </div>
 
-            <!-- Non-Duty Form -->
             <div id="form-nonduty" class="hidden">
                 <div style="background: var(--green-card-bg); border: 2px solid var(--green-card-border); border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s;">
                     <div style="margin-bottom: 15px;">
@@ -527,11 +491,10 @@
         </div>
     </div>
 
-    <!-- ALL JOURNEY -->
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="navTo('screen-dashboard')" style="left: 15px; position: absolute; z-index: 10;">← Back</button>
+                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
                 <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">ALL JOURNEY</h1>
             </div>
         </div>
@@ -563,11 +526,10 @@
         </div>
     </div>
 
-    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="navTo('screen-dashboard')" style="left: 15px; position: absolute; z-index: 10;">← Back</button>
+                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
                 <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">GENERATE PDF</h1>
             </div>
         </div>
@@ -600,7 +562,7 @@
     <div id="screen-backup" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="navTo('screen-dashboard')" style="left: 15px; position: absolute; z-index: 10;">← Back</button>
+                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
                 <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">BACKUP & RESTORE</h1>
             </div>
         </div>
@@ -654,6 +616,26 @@
         if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
         if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
     };
+    
+    window.shareApp = () => {
+        if (navigator.share) {
+            navigator.share({ title: 'TTE LOG', url: window.location.href }).catch(console.error);
+        } else {
+            showModal("Share Link", `Copy this link:\n${window.location.href}`, "success", false);
+        }
+    };
+    
+    window.showNotifications = () => {
+        let notifs = window.globalNotifications || [];
+        if (notifs.length === 0) {
+            showModal("Notifications", "You are all caught up! No active warnings.", "success", false);
+        } else {
+            let htmlList = `<div style="text-align:left; font-size:13px; line-height:1.6;">` + notifs.map(n => `• ${n}`).join('<br><br>') + `</div>`;
+            showModal("Attention Required", htmlList, "warning", false);
+            // Replace innerText with innerHTML safely for the modal message
+            document.getElementById('modal-msg').innerHTML = htmlList;
+        }
+    };
 
     window.onload = () => { 
         const savedTheme = localStorage.getItem('app_theme');
@@ -671,13 +653,6 @@
         document.getElementById('report-month-hidden').value = currentMonthStr; 
         document.getElementById('all-logs-month').value = month;
         document.getElementById('all-logs-year').value = year.toString();
-        
-        const fBtn = document.getElementById('global-back-btn');
-        if(fBtn) {
-            fBtn.addEventListener('touchmove', function(e) {
-                let y = e.targetTouches[0].clientY; if(y < 50) y = 50; if(y > window.innerHeight - 50) y = window.innerHeight - 50; fBtn.style.top = y + 'px'; e.preventDefault();
-            }, {passive: false});
-        }
 
         let touchstartX = 0;
         let touchendX = 0;
@@ -764,12 +739,17 @@
         document.getElementById(screenId).classList.remove('hidden'); 
         window.scrollTo(0, 0); 
         
-        if(screenId === 'screen-dashboard') updateDashboardUI(); 
-        if(screenId === 'screen-all') renderAllLogs(); 
+        const bBar = document.getElementById('main-bottom-bar');
+        if(bBar) {
+            if(screenId === 'screen-login' || screenId === 'screen-reports') { bBar.classList.add('hidden'); } else { bBar.classList.remove('hidden'); }
+        }
+        
+        if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
+        if(screenId === 'screen-all') { renderAllLogs(); checkGlobalNotifications(); }
         if(screenId === 'screen-reports') updateReportUI(); 
         if(screenId === 'screen-backup') updateBackupUI(); 
         if(screenId === 'screen-register') {
-            checkProfileNotifications();
+            openSettings(); // Fix: Enforce data population and locking
         }
         
         const gBack = document.getElementById('global-back-btn');
@@ -784,10 +764,22 @@
             window.lastSyncTime = new Date().toLocaleTimeString();
             const syncLbl = document.getElementById('sync-time-lbl');
             if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
+            checkGlobalNotifications();
         }
     }
     
-    function showModal(title, msg, type, showCancel, callback) { const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); document.getElementById('modal-title').innerText = title; document.getElementById('modal-msg').innerText = msg; box.style.borderTopColor = type === 'error' ? 'var(--red)' : (type === 'warning' ? 'var(--orange)' : 'var(--green)'); document.getElementById('modal-title').style.color = box.style.borderTopColor; const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; btnCancel.onclick = () => { modal.classList.add('hidden'); if(callback) callback(false); }; modal.classList.remove('hidden'); }
+    function showModal(title, msg, type, showCancel, callback) { 
+        const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
+        document.getElementById('modal-title').innerText = title; 
+        document.getElementById('modal-msg').innerText = msg; // Reset to text by default
+        box.style.borderTopColor = type === 'error' ? 'var(--red)' : (type === 'warning' ? 'var(--orange)' : 'var(--green)'); 
+        document.getElementById('modal-title').style.color = box.style.borderTopColor; 
+        const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); 
+        if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
+        btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; 
+        btnCancel.onclick = () => { modal.classList.add('hidden'); if(callback) callback(false); }; 
+        modal.classList.remove('hidden'); 
+    }
 
     function lockProfile() {
         document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
@@ -797,8 +789,6 @@
         const saveBtn = document.getElementById('btn-save-profile');
         if(editBtn) editBtn.style.display = 'block';
         if(saveBtn) saveBtn.style.display = 'none';
-        const pbb = document.getElementById('profile-back-btn');
-        if(pbb) pbb.classList.remove('hidden');
     }
 
     function unlockProfile() {
@@ -857,11 +847,10 @@
         
         if (!p.name) {
             unlockProfile();
-            const pbb = document.getElementById('profile-back-btn');
-            if(pbb) pbb.classList.add('hidden');
         } else {
             lockProfile();
         }
+        checkProfileNotifications(); // Local check for the profile screen warnings
     }   
     
     window.setDAReminder = () => {
@@ -870,9 +859,75 @@
         if (m === 8) localStorage.setItem('da_remind_month', '10'); 
         document.getElementById('da-warning-msg').classList.add('hidden');
         showModal("Reminder Set", "You will be reminded again on the 1st of next month.", "success", false);
+        checkGlobalNotifications();
     }
     
+    function checkGlobalNotifications() {
+        window.globalNotifications = [];
+        const p = window.appState.profile;
+        if(p) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            if(p.passval) {
+                const pv = new Date(p.passval);
+                const pDays = (pv - today) / (1000 * 60 * 60 * 24);
+                if (pDays < 0) { window.globalNotifications.push("Your Card Pass has expired!"); }
+                else if (pDays <= 20) { window.globalNotifications.push(`Your Card Pass expires in ${Math.ceil(pDays)} days.`); }
+            }
+            
+            if(p.authval) {
+                const av = new Date(p.authval);
+                const aDays = (av - today) / (1000 * 60 * 60 * 24);
+                if (aDays < 0) { window.globalNotifications.push("Your Checking Authority has expired!"); }
+                else if (aDays <= 20) { window.globalNotifications.push(`Your Checking Authority expires in ${Math.ceil(aDays)} days.`); }
+            }
+            
+            const m = today.getMonth(); 
+            const d = today.getDate();
+            if ((m === 6 && d <= 3) || (m === 0 && d <= 3)) { 
+                window.globalNotifications.push("Reminder: Did your Basic Pay change? Please update it if applicable.");
+            }
+            
+            let daReminded = localStorage.getItem('da_remind_month');
+            let showDA = false;
+            if ((m === 2 && d >= 1 && d <= 3) || (m === 8 && d >= 1 && d <= 3)) { showDA = true; }
+            if (m === 3 && d >= 1 && d <= 3 && daReminded === '4') { showDA = true; }
+            if (m === 9 && d >= 1 && d <= 3 && daReminded === '10') { showDA = true; }
+            if (showDA) {
+                window.globalNotifications.push("DA% Update: Please update your DA% in Profile Setup if a new rate is applicable.");
+            }
+
+            // Chain Break Check
+            if(window.appState.legs && window.appState.legs.length > 0) {
+                const hqGroup = [p.hq, ...(p.nearby || [])]; 
+                const dutyOnlyAll = window.appState.legs.filter(l => !l.isNonDuty);
+                let sortedDuty = [...dutyOnlyAll].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
+                
+                for(let i = 0; i < sortedDuty.length - 1; i++) {
+                    let leg = sortedDuty[i]; let next = sortedDuty[i+1];
+                    if (hqGroup.includes(leg.arrStn)) { 
+                        if (!hqGroup.includes(next.depStn)) { window.globalNotifications.push(`Chain Break: Missing journey for HQ to ${next.depStn}`); } 
+                    } else { 
+                        if (leg.arrStn !== next.depStn) { window.globalNotifications.push(`Chain Break: Missing journey for ${leg.arrStn} to ${next.depStn}`); } 
+                    }
+                }
+            }
+        }
+        
+        const badge = document.getElementById('nav-bell-badge');
+        if(badge) {
+            if(window.globalNotifications.length > 0) {
+                badge.innerText = window.globalNotifications.length;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+    }
+
     function checkProfileNotifications() {
+        // Local check just for the profile screen warning box
         const p = window.appState.profile;
         if(!p) return;
         
@@ -887,14 +942,12 @@
             if (pDays < 0) { validMsg += "Your Card Pass has expired! "; hasWarning = true; }
             else if (pDays <= 20) { validMsg += `Your Card Pass expires in ${Math.ceil(pDays)} days. `; hasWarning = true; }
         }
-        
         if(p.authval) {
             const av = new Date(p.authval);
             const aDays = (av - today) / (1000 * 60 * 60 * 24);
             if (aDays < 0) { validMsg += "Your Checking Authority has expired! "; hasWarning = true; }
             else if (aDays <= 20) { validMsg += `Your Checking Authority expires in ${Math.ceil(aDays)} days. `; hasWarning = true; }
         }
-        
         const m = today.getMonth(); 
         const d = today.getDate();
         if ((m === 6 && d <= 3) || (m === 0 && d <= 3)) { 
@@ -904,21 +957,17 @@
         
         const alertBox = document.getElementById('profile-alert-box');
         const alertMsg = document.getElementById('profile-alert-msg');
-        const badge = document.getElementById('profile-alert-badge');
         
         if (hasWarning) {
             if(alertMsg) alertMsg.innerText = validMsg + (validMsg.includes("expired") || validMsg.includes("expires") ? "Please extend your validity soon." : "");
             if(alertBox) alertBox.classList.remove('hidden');
-            if(badge) badge.classList.remove('hidden');
         } else {
             if(alertBox) alertBox.classList.add('hidden');
-            if(badge) badge.classList.add('hidden');
         }
         
         let daWarningDiv = document.getElementById('da-warning-msg');
         let daReminded = localStorage.getItem('da_remind_month');
         let showDA = false; let showRemindBtn = false;
-        
         if ((m === 2 && d >= 1 && d <= 3) || (m === 8 && d >= 1 && d <= 3)) { showDA = true; showRemindBtn = true; }
         if (m === 3 && d >= 1 && d <= 3 && daReminded === '4') { showDA = true; }
         if (m === 9 && d >= 1 && d <= 3 && daReminded === '10') { showDA = true; }
@@ -949,7 +998,6 @@
             if(!window.appState.legs) window.appState.legs = []; 
             saveData(); 
             lockProfile();
-            checkProfileNotifications();
             navTo('screen-dashboard'); 
             showModal("Success / सफलता", "Profile Saved & Synced!\nप्रोफाइल सेव हो गई है!", "success", false); 
         } catch(e) { 
@@ -1310,6 +1358,7 @@
         document.getElementById('dash-subtitle').innerText = `Hi, ${firstName}`; 
         
         checkProfileNotifications();
+        checkGlobalNotifications();
 
         const safeNearby = window.appState.profile.nearby || []; 
         const safeDest = window.appState.profile.dest || []; 
