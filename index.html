@@ -10,7 +10,7 @@
 
     <style>
         :root { 
-            --bg: #f1f5f9; 
+            --bg: #f1f5f9;
             --card: #f8fafc; 
             --border: #cbd5e1; 
             --shadow: 0 8px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
@@ -26,7 +26,8 @@
             --modal-bg: #ffffff;
             --top-bar-bg: #0f172a;
             
-            --danger-bg: #fef2f2; --danger-border: #ef4444; --danger-text: #991b1b;
+            --danger-bg: #fef2f2;
+            --danger-border: #ef4444; --danger-text: #991b1b;
             --warning-bg: #fffbeb; --warning-border: #f59e0b; --warning-text: #92400e;
             
             --row-up-bg: #ffffff;
@@ -34,7 +35,6 @@
             --row-text: #000000;
             --row-blue-text: #1e40af;
             --row-muted-text: #475569;
-            
             --table-header-bg: #e0e7ff;
             --table-header-text: #3730a3;
             --table-border: #a5b4fc;
@@ -56,9 +56,12 @@
             --input-bg: #000000;
             --input-disabled: #0a0a0a;
             --modal-bg: #161616;
-            --top-bar-bg: #1a1a1a; 
             
-            --danger-bg: #1e1e1e; --danger-border: #ef4444; --danger-text: #f87171;
+            /* (iii) Dark theme header and bottom padding matching light theme */
+            --top-bar-bg: #0f172a; 
+            
+            --danger-bg: #1e1e1e;
+            --danger-border: #ef4444; --danger-text: #f87171;
             --warning-bg: #1e1e1e; --warning-border: #eab308; --warning-text: #fcd34d;
             
             --row-up-bg: #111111; 
@@ -66,7 +69,6 @@
             --row-text: #ffffff;
             --row-blue-text: #3b82f6; 
             --row-muted-text: #a3a3a3;
-            
             --table-header-bg: #1a1a1a;
             --table-header-text: #ffffff;
             --table-border: #333333;
@@ -74,7 +76,7 @@
 
         * { box-sizing: border-box; font-family: system-ui, sans-serif; }
         body { 
-            background: var(--bg); 
+            background: var(--bg);
             color: var(--text); 
             margin: 0; 
             padding: 0; 
@@ -82,7 +84,7 @@
             -webkit-tap-highlight-color: transparent; 
             transition: background 0.3s, color 0.3s; 
             overflow-x: hidden; 
-            overscroll-behavior-x: none; 
+            overscroll-behavior-x: none;
             width: 100vw;
         }
         .hidden { display: none !important; }
@@ -116,8 +118,12 @@
         button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); box-shadow: var(--shadow); transition: background 0.3s; }
         button:active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
         
-        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid var(--border); transition: background 0.3s, color 0.3s; }
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid var(--border); transition: background 0.3s, color 0.3s, border-color 0.3s; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+
+        /* (v) Explicit Colors for Duty Status to survive dark mode overrides */
+        .status-hq { background-color: var(--green) !important; color: white !important; border-color: var(--green) !important; }
+        .status-away { background-color: var(--yellow) !important; color: black !important; border-color: var(--yellow) !important; }
         
         .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.6); z-index: 5000; cursor: grab; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; touch-action: none; }
         .floating-back:active { cursor: grabbing; }
@@ -168,20 +174,17 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
         const app = initializeApp({
             apiKey: "AIzaSyClDJ3enyipS3sHJujYJTkxdunvvVgju64",
             authDomain: "tte-journal.firebaseapp.com",
             databaseURL: "https://tte-journal-default-rtdb.firebaseio.com",
             projectId: "tte-journal"
         });
-
         window.db = getDatabase(app);
         window.auth = getAuth(app);
         window.provider = new GoogleAuthProvider();
         window.firebaseSet = set;
         window.firebaseRef = ref;
-
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
 
@@ -206,12 +209,13 @@
                 window.navTo('screen-login');
             }
         });
-        
         window.checkGazetted = (isManualClick) => {
             const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
             const drop = document.getElementById('reg-payscale-dropdown');
             const txt = document.getElementById('reg-payscale-text');
-            if (isGaz) { drop.classList.add('hidden'); txt.classList.remove('hidden'); if (isManualClick) showModal("NOTICE", "NDA is only paid up to Pay Level-7.", "warning", false); } 
+            if (isGaz) { drop.classList.add('hidden'); txt.classList.remove('hidden');
+                if (isManualClick) showModal("NOTICE", "NDA is only paid up to Pay Level-7.", "warning", false);
+            } 
             else { drop.classList.remove('hidden'); txt.classList.add('hidden'); }
         };
     </script>
@@ -381,12 +385,13 @@
         <div class="top-bar dash-header">
             <div class="top-bar-content">
                 <div style="text-align: center;">
-                    <div style="display: inline-block; background: transparent; padding: 8px 25px; border-radius: 30px; border: 2px solid var(--border);">
+                    <div style="display: inline-block; background: transparent; padding: 8px 25px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.2);">
                         <h1 id="dash-title">TTE LOG</h1>
                     </div>
                 </div>
             </div>
         </div>
+        
         <div class="screen-content">
             
             <div class="card" style="padding: 15px; margin-bottom: 15px;">
@@ -401,6 +406,12 @@
             
             <div style="margin-bottom: 10px;">
                 <div class="grid-2">
+                    <div class="nav-card" onclick="window.switchAddTab('duty'); window.navTo('screen-add');">
+                        <div class="nav-icon">➕</div>
+                        <div class="nav-title" style="color: var(--green);">ADD JOURNEY</div>
+                        <div class="nav-desc">New duty or leave</div>
+                    </div>
+                    
                     <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
                         <div class="stat-value" id="dash-ta-val" style="color: var(--green);">₹0</div>
                         <div class="nav-title">TA this month</div>
@@ -638,8 +649,99 @@
     window.openSettings = openSettings;
     window.unlockProfile = unlockProfile;
 
+    /* (iv) FIX: Added the previously missing updateDashboardUI function */
+    window.updateDashboardUI = () => {
+        if(!window.appState) return;
+
+        // 1. Update Duty Status Box
+        const p = window.appState.profile || {};
+        const legs = window.appState.legs || [];
+        const badge = document.getElementById('duty-status-badge');
+        const text = document.getElementById('duty-status-text');
+
+        if(legs.length > 0) {
+            const dutyLegs = legs.filter(l => !l.isNonDuty).sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
+            if(dutyLegs.length > 0) {
+                const lastLeg = dutyLegs[dutyLegs.length - 1];
+                const hqGroup = [p.hq, ...(p.nearby || [])];
+                const isAtHQ = hqGroup.includes(lastLeg.arrStn);
+
+                if(isAtHQ) {
+                    text.innerText = "At HQ";
+                    badge.className = "status-badge status-hq";
+                } else {
+                    text.innerText = "Away (" + lastLeg.arrStn + ")";
+                    badge.className = "status-badge status-away";
+                }
+            } else {
+                text.innerText = "At HQ";
+                badge.className = "status-badge status-hq";
+            }
+        } else {
+            text.innerText = "At HQ";
+            badge.className = "status-badge status-hq";
+        }
+
+        // 2. Update Live Tracker values for TA and NDA
+        const today = new Date();
+        const mo = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
+        let totalTA = 0;
+        const dutyOnly = legs.filter(l => !l.isNonDuty);
+        const cycles = buildCycles(dutyOnly);
+        
+        cycles.forEach(cycle => {
+            const taResults = calculateCycleTA(cycle);
+            taResults.forEach(res => {
+                if(res.date.startsWith(mo)) totalTA += res.rate;
+            });
+        });
+        document.getElementById('dash-ta-val').innerText = '₹' + Math.floor(totalTA);
+
+        const isGazetted = p.empType === 'Gazetted';
+        if(isGazetted) {
+            document.getElementById('dash-nda-val').innerText = "0:00 Hrs";
+            document.getElementById('dash-nda-lbl').innerText = "Not Eligible";
+        } else {
+            const nda = extractNDALegs(mo);
+            const totalH = Math.floor(nda.totalNdaMinutes / 60);
+            const totalM = Math.round(nda.totalNdaMinutes % 60);
+            document.getElementById('dash-nda-val').innerText = `${totalH}:${String(totalM).padStart(2,'0')} Hrs`;
+            
+            let ndaAmt = 0;
+            if(totalH > 0) {
+                const bp = parseFloat(p.basicpay) || 0;
+                const cappedBp = bp > 43600 ? 43600 : bp;
+                const da = parseFloat(p.da) || 0;
+                const hourlyRate = (cappedBp + (cappedBp * da / 100)) / 200;
+                ndaAmt = (totalH / 6) * hourlyRate;
+            }
+            document.getElementById('dash-nda-lbl').innerText = '₹' + Math.round(ndaAmt);
+        }
+
+        // 3. Update Recent Entries on Dashboard
+        const dashRecent = document.getElementById('recent-logs-dash');
+        const addRecent = document.getElementById('recent-logs-add');
+        
+        const recentLogs = [...legs].sort((a, b) => new Date(`${b.depDate}T${b.depTime||'00:00'}`) - new Date(`${a.depDate}T${a.depTime||'00:00'}`)).slice(0, 3);
+        const htmlToRender = recentLogs.length > 0 ? recentLogs.map(l => {
+            if(l.isNonDuty) return `<div style="padding: 10px; border-bottom: 1px solid var(--border); font-size: 12px; background: rgba(34, 197, 94, 0.1);">🌴 ${l.dutyType} (${formatDate(l.fromDate)})</div>`;
+            return `<div style="padding: 10px; border-bottom: 1px solid var(--border); font-size: 12px;">🚆 ${l.train} | ${l.depStn} ➔ ${l.arrStn} <br><span style="color: var(--text-muted); font-size: 11px;">${formatDate(l.depDate)} at ${l.depTime}</span></div>`;
+        }).join('') : '<div style="padding: 15px; font-size: 12px; color: var(--text-muted); text-align: center;">No recent entries</div>';
+        
+        if(dashRecent) dashRecent.innerHTML = htmlToRender;
+        if(addRecent) addRecent.innerHTML = htmlToRender;
+    };
+
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
-    function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
+    function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen '];
+    const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow';
+    let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ?
+    (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ?
+    (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ?
+    (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ?
+    (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ?
+    ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
+    return str.trim(); }
     
     function updateBackupUI() {
         const bUI = document.getElementById('manual-backup-time');
@@ -686,7 +788,7 @@
             if(tt) tt.innerText = '☀️';
         }
         
-        const today = new Date(); 
+        const today = new Date();
         const year = today.getFullYear();
         const month = String(today.getMonth()+1).padStart(2,'0');
         const currentMonthStr = `${year}-${month}`;
@@ -758,7 +860,7 @@
             el.value = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
         }
     };
-    
+
     window.switchAddTab = function(tab) {
         window.currentAddTab = tab;
         if (tab === 'duty') {
@@ -780,7 +882,7 @@
         }
         updateDashboardUI();
     };
-    
+
     function navTo(screenId) { 
         if (screenId !== 'screen-add' && window.editModeId) {
             window.editModeId = null;
@@ -794,29 +896,31 @@
         }
         
         if(screenId === 'screen-reports') {
-            window.switchTab(currentTab); 
+            window.switchTab(currentTab);
         }
         
-        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
+        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
         document.getElementById(screenId).classList.remove('hidden'); 
         window.scrollTo(0, 0); 
         
         const bBar = document.getElementById('main-bottom-bar');
         if(bBar) {
-            if(screenId === 'screen-login' || screenId === 'screen-register') { bBar.classList.add('hidden'); } else { bBar.classList.remove('hidden'); }
+            if(screenId === 'screen-login' || screenId === 'screen-register') { bBar.classList.add('hidden');
+            } else { bBar.classList.remove('hidden'); }
         }
         
         if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
         if(screenId === 'screen-all') { window.renderAllLogs(); checkGlobalNotifications(); }
         if(screenId === 'screen-reports') updateReportUI(); 
-        if(screenId === 'screen-backup') updateBackupUI(); 
+        if(screenId === 'screen-backup') updateBackupUI();
         if(screenId === 'screen-register') {
-            openSettings(); 
+            openSettings();
         }
         
         const gBack = document.getElementById('global-back-btn');
         if(gBack) {
-            if(screenId === 'screen-dashboard' || screenId === 'screen-login') { gBack.classList.add('hidden'); } else { gBack.classList.remove('hidden'); } 
+            if(screenId === 'screen-dashboard' || screenId === 'screen-login') { gBack.classList.add('hidden');
+            } else { gBack.classList.remove('hidden'); } 
         }
     }
 
@@ -831,13 +935,15 @@
     }
     
     function showModal(title, msg, type, showCancel, callback) { 
-        const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
+        const modal = document.getElementById('custom-modal');
+        const box = document.getElementById('modal-box'); 
         document.getElementById('modal-title').innerText = title; 
-        document.getElementById('modal-msg').innerHTML = msg; // Supports HTML for notifications
-        const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); 
+        document.getElementById('modal-msg').innerHTML = msg;
+        const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok');
         if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
         btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; 
-        btnCancel.onclick = () => { modal.classList.add('hidden'); if(callback) callback(false); }; 
+        btnCancel.onclick = () => { modal.classList.add('hidden');
+        if(callback) callback(false); }; 
         modal.classList.remove('hidden'); 
     }
 
@@ -870,7 +976,6 @@
         
         const empTypeVal = p.empType || 'Non-Gazetted';
         document.getElementById('reg-emp-type').value = empTypeVal;
-        
         if (empTypeVal === 'Gazetted') {
             document.getElementById('reg-payscale-text').value = p.payscale || '';
             document.getElementById('reg-payscale-dropdown').classList.add('hidden');
@@ -892,8 +997,7 @@
         document.getElementById('reg-authval').value = p.authval || ''; 
         document.getElementById('reg-hq').value = p.hq || ''; 
         document.getElementById('reg-nearby').value = (p.nearby || []).join(', '); 
-        document.getElementById('reg-dest').value = (p.dest || []).join(', '); 
-        
+        document.getElementById('reg-dest').value = (p.dest || []).join(', ');
         if (!p.name) {
             unlockProfile();
             const pbb = document.getElementById('profile-back-btn');
@@ -914,18 +1018,22 @@
             if(p.passval) {
                 const pv = new Date(p.passval);
                 const pDays = (pv - today) / (1000 * 60 * 60 * 24);
-                if (pDays < 0) { window.globalNotifications.push("Your Card Pass has expired!"); }
-                else if (pDays <= 20) { window.globalNotifications.push(`Your Card Pass expires in ${Math.ceil(pDays)} days.`); }
+                if (pDays < 0) { window.globalNotifications.push("Your Card Pass has expired!");
+                }
+                else if (pDays <= 20) { window.globalNotifications.push(`Your Card Pass expires in ${Math.ceil(pDays)} days.`);
+                }
             }
             
             if(p.authval) {
                 const av = new Date(p.authval);
                 const aDays = (av - today) / (1000 * 60 * 60 * 24);
-                if (aDays < 0) { window.globalNotifications.push("Your Checking Authority has expired!"); }
-                else if (aDays <= 20) { window.globalNotifications.push(`Your Checking Authority expires in ${Math.ceil(aDays)} days.`); }
+                if (aDays < 0) { window.globalNotifications.push("Your Checking Authority has expired!");
+                }
+                else if (aDays <= 20) { window.globalNotifications.push(`Your Checking Authority expires in ${Math.ceil(aDays)} days.`);
+                }
             }
             
-            const m = today.getMonth(); 
+            const m = today.getMonth();
             const d = today.getDate();
             if ((m === 6 && d <= 3) || (m === 0 && d <= 3)) { 
                 window.globalNotifications.push("Reminder: Did your Basic Pay change? Please update it if applicable.");
@@ -933,24 +1041,29 @@
             
             let daReminded = localStorage.getItem('da_remind_month');
             let showDA = false;
-            if ((m === 2 && d >= 1 && d <= 3) || (m === 8 && d >= 1 && d <= 3)) { showDA = true; }
-            if (m === 3 && d >= 1 && d <= 3 && daReminded === '4') { showDA = true; }
-            if (m === 9 && d >= 1 && d <= 3 && daReminded === '10') { showDA = true; }
+            if ((m === 2 && d >= 1 && d <= 3) || (m === 8 && d >= 1 && d <= 3)) { showDA = true;
+            }
+            if (m === 3 && d >= 1 && d <= 3 && daReminded === '4') { showDA = true;
+            }
+            if (m === 9 && d >= 1 && d <= 3 && daReminded === '10') { showDA = true;
+            }
             if (showDA) {
                 window.globalNotifications.push("DA% Update: Please update your DA% in Profile Setup if a new rate is applicable.");
             }
 
             if(window.appState.legs && window.appState.legs.length > 0) {
-                const hqGroup = [p.hq, ...(p.nearby || [])]; 
+                const hqGroup = [p.hq, ...(p.nearby || [])];
                 const dutyOnlyAll = window.appState.legs.filter(l => !l.isNonDuty);
                 let sortedDuty = [...dutyOnlyAll].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
-                
                 for(let i = 0; i < sortedDuty.length - 1; i++) {
-                    let leg = sortedDuty[i]; let next = sortedDuty[i+1];
+                    let leg = sortedDuty[i];
+                    let next = sortedDuty[i+1];
                     if (hqGroup.includes(leg.arrStn)) { 
-                        if (!hqGroup.includes(next.depStn)) { window.globalNotifications.push(`Chain Break: Missing journey for HQ to ${next.depStn}`); } 
+                        if (!hqGroup.includes(next.depStn)) { window.globalNotifications.push(`Chain Break: Missing journey for HQ to ${next.depStn}`);
+                        } 
                     } else { 
-                        if (leg.arrStn !== next.depStn) { window.globalNotifications.push(`Chain Break: Missing journey for ${leg.arrStn} to ${next.depStn}`); } 
+                        if (leg.arrStn !== next.depStn) { window.globalNotifications.push(`Chain Break: Missing journey for ${leg.arrStn} to ${next.depStn}`);
+                        } 
                     }
                 }
             }
@@ -975,18 +1088,19 @@
         let hasWarning = false;
         const today = new Date();
         today.setHours(0,0,0,0);
-        
         if(p.passval) {
             const pv = new Date(p.passval);
             const pDays = (pv - today) / (1000 * 60 * 60 * 24);
-            if (pDays < 0) { validMsg += "Your Card Pass has expired! "; hasWarning = true; }
-            else if (pDays <= 20) { validMsg += `Your Card Pass expires in ${Math.ceil(pDays)} days. `; hasWarning = true; }
+            if (pDays < 0) { validMsg += "Your Card Pass has expired! "; hasWarning = true;
+            }
+            else if (pDays <= 20) { validMsg += `Your Card Pass expires in ${Math.ceil(pDays)} days.`; hasWarning = true; }
         }
         if(p.authval) {
             const av = new Date(p.authval);
             const aDays = (av - today) / (1000 * 60 * 60 * 24);
-            if (aDays < 0) { validMsg += "Your Checking Authority has expired! "; hasWarning = true; }
-            else if (aDays <= 20) { validMsg += `Your Checking Authority expires in ${Math.ceil(aDays)} days. `; hasWarning = true; }
+            if (aDays < 0) { validMsg += "Your Checking Authority has expired! "; hasWarning = true;
+            }
+            else if (aDays <= 20) { validMsg += `Your Checking Authority expires in ${Math.ceil(aDays)} days.`; hasWarning = true; }
         }
         
         const alertBox = document.getElementById('profile-alert-box');
@@ -1002,29 +1116,26 @@
 
     window.saveProfile = () => { 
         try { 
-            const getVal = id => document.getElementById(id).value.trim().toUpperCase(); 
+            const getVal = id => document.getElementById(id).value.trim().toUpperCase();
             const empTypeVal = document.getElementById('reg-emp-type').value;
             const payScaleVal = empTypeVal === 'Gazetted' ? getVal('reg-payscale-text') : getVal('reg-payscale-dropdown');
-            
             if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !payScaleVal || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !document.getElementById('reg-basicpay').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR / त्रुटि", "All profile fields are mandatory to fill.\nसभी फ़ील्ड भरना अनिवार्य है।", "error", false);
-            
             window.appState.profile = { 
                 name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), empType: empTypeVal, payscale: payScaleVal, gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, basicpay: document.getElementById('reg-basicpay').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
-            }; 
-            
+            };
             if(!window.appState.legs) window.appState.legs = []; 
             saveData(); 
             lockProfile();
             checkProfileNotifications();
             navTo('screen-dashboard'); 
-            showModal("Success / सफलता", "Profile Saved & Synced!\nप्रोफाइल सेव हो गई है!", "success", false); 
+            showModal("Success / सफलता", "Profile Saved & Synced!\nप्रोफाइल सेव हो गई है!", "success", false);
         } catch(e) { 
-            showModal("Save Error", e.message, "error", false); 
+            showModal("Save Error", e.message, "error", false);
         } 
     }
     
     window.exportData = () => { 
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState)); 
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState));
         const dlAnchorElem = document.createElement('a'); 
         dlAnchorElem.setAttribute("href", dataStr); 
         dlAnchorElem.setAttribute("download", `TTE_Backup_${new Date().toISOString().split('T')[0]}.json`); 
@@ -1036,53 +1147,53 @@
     }
     
     window.importData = (event) => { 
-        const file = event.target.files[0]; 
+        const file = event.target.files[0];
         if(!file) return; 
         const reader = new FileReader(); 
         reader.onload = function(e) { 
             try { 
-                const imported = JSON.parse(e.target.result); 
+                const imported = JSON.parse(e.target.result);
                 if(imported.profile && imported.legs) { 
-                    window.appState = imported; 
+                    window.appState = imported;
                     saveData(); 
                     
                     window.lastRestoreTime = new Date().toLocaleString();
                     localStorage.setItem('lastRestoreTime', window.lastRestoreTime);
                     updateBackupUI();
                     
-                    showModal("SUCCESS / सफलता", "Backup restored!\nबैकअप रीस्टोर हो गया!", "success", false, () => { location.reload(); }); 
+                    showModal("SUCCESS / सफलता", "Backup restored!\nबैकअप रीस्टोर हो गया!", "success", false, () => { location.reload(); });
                 } else { 
-                    throw new Error("Invalid Format"); 
+                    throw new Error("Invalid Format");
                 } 
             } catch(err) { 
-                showModal("ERROR / त्रुटि", "Invalid backup file.\nअमान्य बैकअप फ़ाइल।", "error", false); 
+                showModal("ERROR / त्रुटि", "Invalid backup file.\nअमान्य बैकअप फ़ाइल।", "error", false);
             } 
         }; 
-        reader.readAsText(file); 
+        reader.readAsText(file);
     }
     
     window.manageLeg = (id, train, dep, arr) => { 
         document.getElementById('manage-type').value = 'duty';
         document.getElementById('manage-id').value = id; 
         document.getElementById('manage-msg').innerText = `Tr: ${train} | ${dep} ➔ ${arr}`; 
-        document.getElementById('manage-modal').classList.remove('hidden'); 
+        document.getElementById('manage-modal').classList.remove('hidden');
     }
     window.manageNonDuty = (id, type, from, to) => {
         document.getElementById('manage-type').value = 'nonduty';
         document.getElementById('manage-id').value = id; 
         let dateStr = (from === to) ? formatDate(from) : `${formatDate(from)} to ${formatDate(to)}`;
-        document.getElementById('manage-msg').innerText = `${type.toUpperCase()} | ${dateStr}`; 
+        document.getElementById('manage-msg').innerText = `${type.toUpperCase()} | ${dateStr}`;
         document.getElementById('manage-modal').classList.remove('hidden');
     }
-    window.closeManage = () => { document.getElementById('manage-modal').classList.add('hidden'); }
+    window.closeManage = () => { document.getElementById('manage-modal').classList.add('hidden');
+    }
     
     window.triggerEdit = () => { 
         let mType = document.getElementById('manage-type').value;
         const id = parseInt(document.getElementById('manage-id').value);
         const leg = window.appState.legs.find(l => l.id === id); 
         window.editModeId = id; 
-        closeManage(); 
-        
+        closeManage();
         if (mType === 'nonduty') {
             window.switchAddTab('nonduty');
             document.getElementById('nonduty-type').value = leg.dutyType;
@@ -1094,128 +1205,141 @@
             document.getElementById('trip-train').value = leg.train; 
             document.getElementById('trip-dep-stn').innerHTML = `<option value="${leg.depStn}">${leg.depStn}</option>` + document.getElementById('trip-dep-stn').innerHTML;
             document.getElementById('trip-dep-stn').value = leg.depStn; 
-            document.getElementById('trip-dep-time').value = leg.depTime; 
+            document.getElementById('trip-dep-time').value = leg.depTime;
             document.getElementById('trip-arr-date').value = leg.arrDate; 
             document.getElementById('trip-arr-stn').value = leg.arrStn; 
             document.getElementById('trip-arr-time').value = leg.arrTime; 
         }
-        navTo('screen-add'); 
+        navTo('screen-add');
     }
     
-    window.triggerDelete = () => { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
+    window.triggerDelete = () => { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value));
+    }
     
     window.saveLeg = () => { 
-        const leg = { id: window.editModeId ? window.editModeId : Date.now(), isNonDuty: false, depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
-        if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR / त्रुटि", "All fields are mandatory.\nसभी फील्ड्स अनिवार्य हैं।", "error", false); 
-        if(leg.depStn === leg.arrStn) return showModal("ERROR / त्रुटि", "From and To stations cannot be same.\nप्रस्थान और गंतव्य स्टेशन समान नहीं हो सकते।", "error", false); 
-        if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR / त्रुटि", "Arrival must be after Departure.\nआगमन का समय प्रस्थान के बाद होना चाहिए।", "error", false); 
-        
-        if(!window.appState.legs) window.appState.legs = []; 
-        let testLegs = [...window.appState.legs]; 
-        if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
-        testLegs.push(leg);
-        testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
-        
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
-        let dutyOnly = testLegs.filter(l => !l.isNonDuty);
-        let idx = dutyOnly.findIndex(l => l.id === leg.id); let prev = idx > 0 ? dutyOnly[idx-1] : null;
-        
-        if(prev) {
-            let prevArrDt = new Date(`${prev.arrDate}T${prev.arrTime}`);
-            let currDepDt = new Date(`${leg.depDate}T${leg.depTime}`);
-            if(currDepDt < prevArrDt) { return showModal("TIME ERROR / समय त्रुटि", `Departure time cannot be before previous arrival time (${formatDate(prev.arrDate)} ${prev.arrTime}).\nप्रस्थान का समय पिछले आगमन समय से पहले नहीं हो सकता।`, "error", false); }
+        try {
+            const leg = { id: window.editModeId ?
+            window.editModeId : Date.now(), isNonDuty: false, depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value };
+            
+            if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR / त्रुटि", "All fields are mandatory.\nसभी फील्ड्स अनिवार्य हैं।", "error", false);
+            if(leg.depStn === leg.arrStn) return showModal("ERROR / त्रुटि", "From and To stations cannot be same.\nप्रस्थान और गंतव्य स्टेशन समान नहीं हो सकते।", "error", false);
+            if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR / त्रुटि", "Arrival must be after Departure.\nआगमन का समय प्रस्थान के बाद होना चाहिए।", "error", false);
+            
+            if(!window.appState.legs) window.appState.legs = []; 
+            let testLegs = [...window.appState.legs]; 
+            if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
+            
+            testLegs.push(leg);
+            testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
+            
+            const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
+            let dutyOnly = testLegs.filter(l => !l.isNonDuty);
+            let idx = dutyOnly.findIndex(l => l.id === leg.id); 
+            let prev = idx > 0 ? dutyOnly[idx-1] : null;
+            
+            if(prev) {
+                let prevArrDt = new Date(`${prev.arrDate}T${prev.arrTime}`);
+                let currDepDt = new Date(`${leg.depDate}T${leg.depTime}`);
+                if(currDepDt < prevArrDt) { return showModal("TIME ERROR / समय त्रुटि", `Departure time cannot be before previous arrival time (${formatDate(prev.arrDate)} ${prev.arrTime}).\nप्रस्थान का समय पिछले आगमन समय से पहले नहीं हो सकता।`, "error", false);
+                }
 
-            if(hqGroup.includes(prev.arrStn)) {
-                if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at HQ. New journey must start from HQ.\nपिछली यात्रा मुख्यालय पर समाप्त हुई थी। नई यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
+                if(hqGroup.includes(prev.arrStn)) {
+                    if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at HQ. New journey must start from HQ.\nपिछली यात्रा मुख्यालय पर समाप्त हुई थी। नई यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
+                } else {
+                    if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.\nपिछली यात्रा ${prev.arrStn} पर समाप्त हुई थी। आपको वहीं से शुरू करना होगा।`, "error", false);
+                }
             } else {
-                if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.\nपिछली यात्रा ${prev.arrStn} पर समाप्त हुई थी। आपको वहीं से शुरू करना होगा।`, "error", false);
+                if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Your very first duty journey must start from HQ.\nआपकी पहली यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
             }
-        } else {
-            if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Your very first duty journey must start from HQ.\nआपकी पहली यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
+            
+            window.appState.legs = testLegs;
+            document.getElementById('trip-train').value = ''; 
+            document.getElementById('trip-dep-date').value = ''; 
+            document.getElementById('trip-dep-time').value = ''; 
+            document.getElementById('trip-arr-date').value = ''; 
+            document.getElementById('trip-arr-stn').value = ''; 
+            document.getElementById('trip-arr-time').value = '';
+            document.getElementById('trip-dep-stn').value = leg.arrStn;
+            
+            window.editModeId = null;
+            saveData(); navTo('screen-dashboard'); 
+        } catch (err) {
+            showModal("Save Error", "An error occurred while saving. Please ensure all inputs are correct.", "error", false);
+            console.error(err);
         }
-        
-        window.appState.legs = testLegs; 
-        
-        document.getElementById('trip-train').value = ''; 
-        document.getElementById('trip-dep-date').value = ''; 
-        document.getElementById('trip-dep-time').value = ''; 
-        document.getElementById('trip-arr-date').value = ''; 
-        document.getElementById('trip-arr-stn').value = ''; 
-        document.getElementById('trip-arr-time').value = ''; 
-        document.getElementById('trip-dep-stn').value = leg.arrStn;
-        
-        window.editModeId = null;
-        saveData(); navTo('screen-dashboard'); 
     }
 
     window.saveNonDuty = () => {
-        const type = document.getElementById('nonduty-type').value;
-        const from = document.getElementById('nonduty-from').value;
-        const to = document.getElementById('nonduty-to').value;
-        if(!from || !to) return showModal("ERROR / त्रुटि", "Dates are mandatory.", "error", false);
-        if(new Date(from) > new Date(to)) return showModal("ERROR / त्रुटि", "From Date cannot be after To Date.", "error", false);
-        
-        let overlap = false;
-        let fromD = new Date(`${from}T00:00:00`);
-        let toD = new Date(`${to}T23:59:59`);
-        
-        if(window.appState.legs) {
-            window.appState.legs.forEach(l => {
-                if(l.id === window.editModeId) return;
-                let lStart = new Date(`${l.depDate}T${l.depTime || '00:00'}`);
-                let lEnd = new Date(`${l.arrDate}T${l.arrTime || '23:59'}`);
-                if (fromD <= lEnd && toD >= lStart) overlap = true;
-            });
-        }
-        
-        const finalizeSave = () => {
-            const hq = window.appState.profile.hq || 'HQ';
-            const leg = { id: window.editModeId || Date.now(), isNonDuty: true, dutyType: type, fromDate: from, toDate: to, depDate: from, depTime: '00:00', arrDate: to, arrTime: '23:59', depStn: hq, arrStn: hq, train: 'NON-DUTY' };
+        try {
+            const type = document.getElementById('nonduty-type').value;
+            const from = document.getElementById('nonduty-from').value;
+            const to = document.getElementById('nonduty-to').value;
+            if(!from || !to) return showModal("ERROR / त्रुटि", "Dates are mandatory.", "error", false);
+            if(new Date(from) > new Date(to)) return showModal("ERROR / त्रुटि", "From Date cannot be after To Date.", "error", false);
             
-            if(!window.appState.legs) window.appState.legs = [];
-            let testLegs = [...window.appState.legs]; 
-            if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
-            testLegs.push(leg);
-            testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+            let overlap = false;
+            let fromD = new Date(`${from}T00:00:00`);
+            let toD = new Date(`${to}T23:59:59`);
             
-            window.appState.legs = testLegs;
-            document.getElementById('nonduty-from').value = '';
-            document.getElementById('nonduty-to').value = '';
-            window.editModeId = null;
-            saveData(); navTo('screen-dashboard'); 
-        };
+            if(window.appState.legs) {
+                window.appState.legs.forEach(l => {
+                    if(l.id === window.editModeId) return;
+                    let lStart = new Date(`${l.depDate}T${l.depTime || '00:00'}`);
+                    let lEnd = new Date(`${l.arrDate}T${l.arrTime || '23:59'}`);
+                    if (fromD <= lEnd && toD >= lStart) overlap = true;
+                });
+            }
+            
+            const finalizeSave = () => {
+                const hq = window.appState.profile.hq || 'HQ';
+                const leg = { id: window.editModeId || Date.now(), isNonDuty: true, dutyType: type, fromDate: from, toDate: to, depDate: from, depTime: '00:00', arrDate: to, arrTime: '23:59', depStn: hq, arrStn: hq, train: 'NON-DUTY' };
+                
+                if(!window.appState.legs) window.appState.legs = [];
+                let testLegs = [...window.appState.legs]; 
+                if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
+                testLegs.push(leg);
+                testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+                
+                window.appState.legs = testLegs;
+                document.getElementById('nonduty-from').value = '';
+                document.getElementById('nonduty-to').value = '';
+                window.editModeId = null;
+                saveData(); navTo('screen-dashboard'); 
+            };
 
-        if(overlap) {
-            showModal("WARNING / चेतावनी", "Warning: The selected dates overlap with an existing journey or leave!\nचेतावनी: चयनित तिथियां मौजूदा प्रविष्टि के साथ ओवरलैप हो रही हैं।", "warning", true, (proceed) => {
-                if(proceed) finalizeSave();
-            });
-        } else {
-            finalizeSave();
+            if(overlap) {
+                showModal("WARNING / चेतावनी", "Warning: The selected dates overlap with an existing journey or leave!\nचेतावनी: चयनित तिथियां मौजूदा प्रविष्टि के साथ ओवरलैप हो रही हैं।", "warning", true, (proceed) => {
+                    if(proceed) finalizeSave();
+                });
+            } else {
+                finalizeSave();
+            }
+        } catch (err) {
+            showModal("Save Error", "An error occurred while saving. Please ensure all inputs are correct.", "error", false);
+            console.error(err);
         }
     }
 
     window.renderAllLogs = () => { 
-        const container = document.getElementById('all-logs-container'); container.innerHTML = ''; 
-        if(!window.appState.legs || window.appState.legs.length === 0) { container.innerHTML = '<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries yet.</p>'; return; } 
+        const container = document.getElementById('all-logs-container');
+        container.innerHTML = ''; 
+        if(!window.appState.legs || window.appState.legs.length === 0) { container.innerHTML = '<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries yet.</p>';
+        return; } 
         
         const selectedMonth = document.getElementById('all-logs-year').value + '-' + document.getElementById('all-logs-month').value;
-        
         let headerHTML = `<div style="position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 10px 2px; background: var(--table-header-bg); border-bottom: 2px solid var(--table-border); font-size: 11px; font-weight: 900; color: var(--table-header-text); text-transform: uppercase; text-align: center; margin-bottom: 0; box-shadow: 0 4px 6px rgba(0,0,0,0.15); height: 45px; align-items: center; transition: background 0.3s, color 0.3s, border 0.3s;">
             <div style="text-align: left; padding-left: 5px;">TRAIN</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
         </div>`;
-        
         let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
         let filteredLegs = sortedLegs.filter(leg => leg.depDate.startsWith(selectedMonth));
-        
         if(filteredLegs.length === 0) {
             container.innerHTML = `<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries found for ${selectedMonth}. Try changing the filter above.</p>`; return;
         }
 
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
         const dutyOnlyAll = window.appState.legs.filter(l => !l.isNonDuty);
         const allCycles = buildCycles(dutyOnlyAll);
         let legDirectionMap = {};
-        
         allCycles.forEach(cycle => {
             let maxGap = -1; let splitIdx = 0;
             for(let i=0; i < cycle.length - 1; i++) {
@@ -1228,18 +1352,16 @@
                 legDirectionMap[leg.id] = (idx <= splitIdx) ? 'up' : 'down';
             });
         });
-
         let htmlElements = [];
         
         for(let i = 0; i < filteredLegs.length; i++) {
             let leg = filteredLegs[i];
-            
             if (leg.isNonDuty) {
-                let bgCol = ""; let textCol = "var(--text)";
+                let bgCol = "";
+                let textCol = "var(--text)";
                 if(leg.dutyType === 'Rest') bgCol = "rgba(34, 197, 94, 0.4)";
                 else if(leg.dutyType === 'Leave') bgCol = "rgba(59, 130, 246, 0.4)";
                 else if(leg.dutyType === 'COCL') bgCol = "rgba(234, 179, 8, 0.4)";
-                
                 let dateStr = (leg.fromDate === leg.toDate) ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}`;
                 htmlElements.push(`<div style="grid-column: 1 / -1; background: ${bgCol}; color: ${textCol}; font-weight: bold; padding: 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;" onclick="window.manageNonDuty(${leg.id}, '${leg.dutyType}', '${leg.fromDate}', '${leg.toDate}')">🌴 ${leg.dutyType.toUpperCase()} : ${dateStr}</div>`);
             } else {
@@ -1247,7 +1369,6 @@
                 let rowColor = dir === 'up' ? 'var(--row-up-bg)' : 'var(--row-down-bg)';
                 let shortDep = formatDate(leg.depDate).substring(0, 6); 
                 let shortArr = formatDate(leg.arrDate).substring(0, 6);
-                
                 htmlElements.push(`<div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; align-items: center; padding: 14px 2px; border-bottom: 1px solid var(--border); font-size: 12px; text-align: center; background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;" onclick="window.manageLeg(${leg.id}, '${leg.train}', '${leg.depStn}', '${leg.arrStn}')">
                     <div style="text-align: left; font-weight: bold; color: var(--row-text); padding-left: 5px; font-size: 11px; transition: color 0.3s;">${leg.train}</div>
                     <div style="color: var(--row-blue-text); font-weight: bold; font-size: 11px; transition: color 0.3s;">${shortDep}</div>
@@ -1268,7 +1389,7 @@
                         if (leg.arrStn !== next.depStn) { isBroken = true; expectedStr = `${leg.arrStn} to ${next.depStn}`; } 
                     }
                     if (isBroken) { 
-                        htmlElements.push(`<div style="background: var(--danger-bg); border: 1px dashed var(--danger-border); color: var(--danger-text); padding: 10px; text-align: center; font-size: 12px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s;">⚠️ CHAIN BREAK: Missing duty journey for ${expectedStr}</div>`); 
+                        htmlElements.push(`<div style="background: var(--danger-bg); border: 1px dashed var(--danger-border); color: var(--danger-text); padding: 10px; text-align: center; font-size: 12px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s;">⚠️ CHAIN BREAK: Missing duty journey for ${expectedStr}</div>`);
                     }
                 }
             }
@@ -1288,57 +1409,71 @@
     function deleteLeg(id) { 
         showModal("WARNING / चेतावनी", "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nक्या आप वाकई इसे हटाना चाहते हैं?", "warning", true, (proceed) => {
             if(proceed) { window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); window.renderAllLogs(); updateDashboardUI(); }
-        }); 
+        });
     }
     
-    function calculateAbsenceHours(startDt, endDt) { return (new Date(endDt) - new Date(startDt)) / 3600000; }
-    function getTAPercentage(hours) { if(hours > 12) return 100; if(hours > 6) return 70; if(hours > 0) return 30; return 0; }
+    function calculateAbsenceHours(startDt, endDt) { return (new Date(endDt) - new Date(startDt)) / 3600000;
+    }
+    function getTAPercentage(hours) { if(hours > 12) return 100; if(hours > 6) return 70;
+    if(hours > 0) return 30; return 0; }
     
-    function buildCycles(legs) { let cycles = []; let current = []; const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; if(!legs) return cycles; legs.forEach(l => { current.push(l); if(hqGroup.includes(l.arrStn)) { cycles.push([...current]); current = []; } }); if (current.length > 0) { cycles.push([...current]); } return cycles; }
+    function buildCycles(legs) { let cycles = [];
+    let current = []; const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; if(!legs) return cycles;
+    legs.forEach(l => { current.push(l); if(hqGroup.includes(l.arrStn)) { cycles.push([...current]); current = []; } }); if (current.length > 0) { cycles.push([...current]);
+    } return cycles; }
     
     function calculateCycleTA(cycle) { 
-        if(cycle.length === 0) return []; 
+        if(cycle.length === 0) return [];
         let start = new Date(`${cycle[0].depDate}T${cycle[0].depTime}`); 
         let end = new Date(`${cycle[cycle.length-1].arrDate}T${cycle[cycle.length-1].arrTime}`); 
         
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; 
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])];
         if(!hqGroup.includes(cycle[cycle.length-1].arrStn)) {
             let extendedEnd = new Date(`${cycle[cycle.length-1].arrDate}T23:59:59`);
             if(extendedEnd > end) end = extendedEnd;
         }
 
-        let dailyTA = {}; let tempStart = new Date(start); 
+        let dailyTA = {};
+        let tempStart = new Date(start); 
         while(tempStart < end) { 
-            let tempEnd = new Date(tempStart); tempEnd.setHours(23,59,59,999); 
+            let tempEnd = new Date(tempStart);
+            tempEnd.setHours(23,59,59,999); 
             if(tempEnd > end) tempEnd = end; 
-            const pad = n => String(n).padStart(2,'0'); const dateKey = `${tempStart.getFullYear()}-${pad(tempStart.getMonth()+1)}-${pad(tempStart.getDate())}`; 
+            const pad = n => String(n).padStart(2,'0'); const dateKey = `${tempStart.getFullYear()}-${pad(tempStart.getMonth()+1)}-${pad(tempStart.getDate())}`;
             const hrs = calculateAbsenceHours(tempStart, tempEnd); 
-            if(!dailyTA[dateKey]) dailyTA[dateKey] = 0; dailyTA[dateKey] += hrs; tempStart = new Date(tempEnd.getTime() + 1); 
+            if(!dailyTA[dateKey]) dailyTA[dateKey] = 0; dailyTA[dateKey] += hrs; tempStart = new Date(tempEnd.getTime() + 1);
         } 
-        let results = []; for(let date in dailyTA) { let pct = getTAPercentage(dailyTA[date]); results.push({date, pct, rate: Math.min(pct * (window.appState.profile.tarate/100), window.appState.profile.tarate) }); } return results; 
+        let results = [];
+        for(let date in dailyTA) { let pct = getTAPercentage(dailyTA[date]); results.push({date, pct, rate: Math.min(pct * (window.appState.profile.tarate/100), window.appState.profile.tarate) }); } return results;
     }
     
-    function getSplitLegs(cycle) { let printLegs = []; const pad = n => String(n).padStart(2,'0'); cycle.forEach(leg => { if (leg.depDate === leg.arrDate) { printLegs.push({ id: leg.id, date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: leg.arrTime, depStn: leg.depStn, arrStn: leg.arrStn, originalLeg: leg }); } else { printLegs.push({ id: leg.id + '_1', date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: '-', depStn: leg.depStn, arrStn: '-', originalLeg: leg }); let start = new Date(`${leg.depDate}T${leg.depTime}`); let gap = new Date(start); gap.setDate(gap.getDate() + 1); let gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; while(gapStr < leg.arrDate) { printLegs.push({ id: leg.id + '_' + gap.getTime(), date: gapStr, train: leg.train, depTime: '-', arrTime: '-', depStn: '-', arrStn: '-', originalLeg: leg }); gap.setDate(gap.getDate() + 1); gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; } printLegs.push({ id: leg.id + '_2', date: leg.arrDate, train: leg.train, depTime: '-', arrTime: leg.arrTime, depStn: '-', arrStn: leg.arrStn, originalLeg: leg }); } }); printLegs.sort((a, b) => { let tA = a.depTime !== '-' ? a.depTime : (a.arrTime !== '-' ? a.arrTime : '00:00'); let tB = b.depTime !== '-' ? b.depTime : (b.arrTime !== '-' ? b.arrTime : '00:00'); return new Date(`${a.date}T${tA}`) - new Date(`${b.date}T${tB}`); }); return printLegs; }
+    function getSplitLegs(cycle) { let printLegs = [];
+    const pad = n => String(n).padStart(2,'0'); cycle.forEach(leg => { if (leg.depDate === leg.arrDate) { printLegs.push({ id: leg.id, date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: leg.arrTime, depStn: leg.depStn, arrStn: leg.arrStn, originalLeg: leg }); } else { printLegs.push({ id: leg.id + '_1', date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: '-', depStn: leg.depStn, arrStn: '-', originalLeg: leg }); let start = new Date(`${leg.depDate}T${leg.depTime}`); let gap = new Date(start); gap.setDate(gap.getDate() + 1); let gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; while(gapStr < leg.arrDate) { printLegs.push({ id: leg.id + '_' + gap.getTime(), date: gapStr, train: leg.train, depTime: '-', arrTime: '-', depStn: '-', arrStn: '-', originalLeg: leg }); gap.setDate(gap.getDate() + 
+    1); gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; } printLegs.push({ id: leg.id + '_2', date: leg.arrDate, train: leg.train, depTime: '-', arrTime: leg.arrTime, depStn: '-', arrStn: leg.arrStn, originalLeg: leg });
+    } }); printLegs.sort((a, b) => { let tA = a.depTime !== '-' ? a.depTime : (a.arrTime !== '-' ? a.arrTime : '00:00'); let tB = b.depTime !== '-' ? b.depTime : (b.arrTime !== '-' ? b.arrTime : '00:00'); return new Date(`${a.date}T${tA}`) - new Date(`${b.date}T${tB}`); });
+    return printLegs; }
     
     function extractNDALegs(mo) { 
-        const [year, month] = mo.split('-').map(Number); 
-        const ndaStart = new Date(year, month - 2, 16, 0, 0, 0); 
+        const [year, month] = mo.split('-').map(Number);
+        const ndaStart = new Date(year, month - 2, 16, 0, 0, 0);
         const ndaEnd = new Date(year, month - 1, 15, 23, 59, 59); 
-        let ndaData = []; let totalNdaMinutes = 0; 
+        let ndaData = []; let totalNdaMinutes = 0;
         if(!window.appState.legs) return { ndaData, totalNdaMinutes }; 
         
         let dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
         const cycles = buildCycles(dutyOnly); 
-        let dutyLegs = []; 
+        let dutyLegs = [];
         cycles.forEach(cycle => { 
             if(cycle.length <= 1) { dutyLegs.push(cycle); } else { 
                 let maxGap = -1; let splitIdx = 0; 
                 for(let i=0; i < cycle.length - 1; i++) { 
-                    let arrT = new Date(`${cycle[i].arrDate}T${cycle[i].arrTime}`); let depT = new Date(`${cycle[i+1].depDate}T${cycle[i+1].depTime}`); 
+                    let arrT = new Date(`${cycle[i].arrDate}T${cycle[i].arrTime}`); let depT = 
+                    new Date(`${cycle[i+1].depDate}T${cycle[i+1].depTime}`); 
                     let gap = (depT - arrT); if(gap > maxGap) { maxGap = gap; splitIdx = i; } 
                 } 
                 dutyLegs.push(cycle.slice(0, splitIdx + 1)); dutyLegs.push(cycle.slice(splitIdx + 1)); 
             } 
+        
         }); 
         
         dutyLegs.forEach(duty => { 
@@ -1354,24 +1489,26 @@
                     if(h >= 22 || h < 6) { 
                         if(nFromStr === "") nFromStr = `${String(current.getHours()).padStart(2,'0')}:${String(current.getMinutes()).padStart(2,'0')}`; 
                         let nextBound = new Date(current); 
-                        if(h >= 22) { nextBound.setDate(nextBound.getDate()+1); nextBound.setHours(6,0,0,0); } else { nextBound.setHours(6,0,0,0); } 
-                        if(nextBound > signOff) nextBound = new Date(signOff); 
+                        if(h >= 22) { nextBound.setDate(nextBound.getDate()+1); nextBound.setHours(6,0,0,0); } else { nextBound.setHours(6,0,0,0);
+                        } 
+                        if(nextBound > signOff) nextBound = new Date(signOff);
                         legNdaMins += (nextBound - current) / 60000; 
                         nToStr = `${String(nextBound.getHours()).padStart(2,'0')}:${String(nextBound.getMinutes()).padStart(2,'0')}`; 
                         current = nextBound; 
-                    } else { current.setHours(22,0,0,0); } 
+                    } else { current.setHours(22,0,0,0);
+                    } 
                 } 
                 if(legNdaMins > 0) { 
-                    totalNdaMinutes += legNdaMins; 
-                    ndaData.push({ trips: duty, fromStn: firstTrip.depStn, toStn: lastTrip.arrStn, signOn, signOff, nFromStr, nToStr, mins: legNdaMins }); 
+                    totalNdaMinutes += legNdaMins;
+                    ndaData.push({ trips: duty, fromStn: firstTrip.depStn, toStn: lastTrip.arrStn, signOn, signOff, nFromStr, nToStr, mins: legNdaMins });
                 } 
             } 
-        }); 
+        });
         return { ndaData, totalNdaMinutes }; 
     }
     
     window.switchTab = (tab) => { 
-        currentTab = tab; 
+        currentTab = tab;
         document.getElementById('tab-ta').classList.remove('active'); 
         document.getElementById('tab-nda').classList.remove('active'); 
         document.getElementById(`tab-${tab}`).classList.add('active'); 
@@ -1379,7 +1516,6 @@
         const today = new Date();
         const year = today.getFullYear();
         const month = today.getMonth() + 1;
-
         if(tab === 'ta') {
             document.getElementById('report-month-hidden').value = `${year}-${String(month).padStart(2,'0')}`;
             document.getElementById('rep-ta-row').style.borderBottom = 'none';
@@ -1391,7 +1527,8 @@
             let ndaM = month;
             if (today.getDate() > 15) {
                 ndaM += 1;
-                if (ndaM > 12) { ndaM -= 12; ndaY += 1; }
+                if (ndaM > 12) { ndaM -= 12; ndaY += 1;
+                }
             }
             document.getElementById('report-month-hidden').value = `${ndaY}-${String(ndaM).padStart(2,'0')}`;
             document.getElementById('rep-ta-row').style.borderBottom = '1px dashed rgba(0,0,0,0.1)';
@@ -1402,17 +1539,24 @@
         updateReportUI(); 
     }
     
-    window.changeMonth = (delta) => { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); updateDashboardUI(); }
+    window.changeMonth = (delta) => { let moInput = document.getElementById('report-month-hidden');
+    let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI();
+    updateDashboardUI(); }
 
-    function updateReportUI() { const mo = document.getElementById('report-month-hidden').value; const [y, m] = mo.split('-').map(Number); const curDt = new Date(y, m-1); const moName = curDt.toLocaleString('default',{month:'short'}); const yrName = curDt.getFullYear(); const prevD = new Date(y, m - 2, 16); const currD = new Date(y, m - 1, 15); const strFrom = `${String(prevD.getDate()).padStart(2,'0')}-${prevD.toLocaleString('default',{month:'short'})}-${String(prevD.getFullYear()).slice(-2)}`; const strTo = `${String(currD.getDate()).padStart(2,'0')}-${currD.toLocaleString('default',{month:'short'})}-${String(currD.getFullYear()).slice(-2)}`; 
+    function updateReportUI() { const mo = document.getElementById('report-month-hidden').value; const [y, m] = mo.split('-').map(Number);
+    const curDt = new Date(y, m-1); const moName = curDt.toLocaleString('default',{month:'short'}); const yrName = curDt.getFullYear();
+    const prevD = new Date(y, m - 2, 16); const currD = new Date(y, m - 1, 15);
+    const strFrom = `${String(prevD.getDate()).padStart(2,'0')}-${prevD.toLocaleString('default',{month:'short'})}-${String(prevD.getFullYear()).slice(-2)}`; const strTo = `${String(currD.getDate()).padStart(2,'0')}-${currD.toLocaleString('default',{month:'short'})}-${String(currD.getFullYear()).slice(-2)}`; 
         
         const generateBtn = document.getElementById('generate-btn'); 
-        let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
+        let dutyOnly = window.appState.legs ?
+        window.appState.legs.filter(l => !l.isNonDuty) : [];
 
         if(currentTab === 'ta') { 
             generateBtn.style.background = "#16a34a";
             document.getElementById('report-slider-text').innerText = `${moName} ${yrName}`; document.getElementById('ta-extras').classList.remove('hidden'); generateBtn.innerText = "Generate TA Journal PDF"; 
-            let totalTA = 0; let eCount = 0; const cycles = buildCycles(dutyOnly); cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); cycle.forEach(leg => { if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { eCount++; } }); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
+            let totalTA = 0; let eCount = 0;
+            const cycles = buildCycles(dutyOnly); cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); cycle.forEach(leg => { if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { eCount++; } }); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); });
             document.getElementById('rep-count').innerText = eCount; document.getElementById('rep-val').innerText = '₹' + totalTA;
         } else { 
             generateBtn.style.background = "#9333ea";
@@ -1427,11 +1571,12 @@
                 totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
                 remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
                 document.getElementById('rep-count').innerText = nda.ndaData.length;
-                
                 if (totalEligibleHours > 0) {
-                    const basicPayRaw = window.appState.profile && window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
+                    const basicPayRaw = window.appState.profile && window.appState.profile.basicpay ?
+                    parseFloat(window.appState.profile.basicpay) : 0;
                     const basicPay = basicPayRaw > 43600 ? 43600 : basicPayRaw;
-                    const daPct = window.appState.profile && window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
+                    const daPct = window.appState.profile && window.appState.profile.da ?
+                    parseFloat(window.appState.profile.da) : 0;
                     const daAllowance = basicPay * (daPct / 100);
                     const hourlyRate = (basicPay + daAllowance) / 200;
                     const unitHours = (totalEligibleHours / 6).toFixed(2);
@@ -1448,37 +1593,45 @@
     window.triggerGenerate = () => { 
         const mo = document.getElementById('report-month-hidden').value;
         if(!window.appState || !window.appState.profile) return showModal("Loading", "Cloud data is still syncing. Please wait a moment.", "warning", false);
-        
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
         if(dutyOnly.length === 0) return showModal("Empty", "No entries to generate.", "warning", false);
-
         let sortedLegs = [...dutyOnly].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
         let hasBreak = false; let breakMsg = "";
         
         for (let i = 0; i < sortedLegs.length - 1; i++) {
-            let curr = sortedLegs[i]; let next = sortedLegs[i+1];
-            if (hqGroup.includes(curr.arrStn)) { if (!hqGroup.includes(next.depStn)) { hasBreak = true; breakMsg = `HQ to ${next.depStn}`; break; } } else { if (curr.arrStn !== next.depStn) { hasBreak = true; breakMsg = `${curr.arrStn} to ${next.depStn}`; break; } }
+            let curr = sortedLegs[i];
+            let next = sortedLegs[i+1];
+            if (hqGroup.includes(curr.arrStn)) { if (!hqGroup.includes(next.depStn)) { hasBreak = true; breakMsg = `HQ to ${next.depStn}`; break;
+            } } else { if (curr.arrStn !== next.depStn) { hasBreak = true; breakMsg = `${curr.arrStn} to ${next.depStn}`; break;
+            } }
         }
-        if (hasBreak) { return showModal("INVALID CYCLE / अमान्य चक्र", `Invalid Cycle detected. You have a broken link connecting [${breakMsg}].\n\nPlease add the missing connecting journey in All Journey before generating the PDF.`, "error", false); }
+        if (hasBreak) { return showModal("INVALID CYCLE / अमान्य चक्र", `Invalid Cycle detected. You have a broken link connecting [${breakMsg}].\n\nPlease add the missing connecting journey in All Journey before generating the PDF.`, "error", false);
+        }
 
-        if(currentTab === 'ta') { generateTAPDF(); } else { 
+        if(currentTab === 'ta') { generateTAPDF();
+        } else { 
             showModal("NOTICE / सूचना", "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month.\nपूर्ण NDA जनरेट करने के लिए, पिछले महीने की 16 तारीख से Journey भरना सुनिश्चित करें।", "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
         } 
     }
     
-    window.closePreview = () => { document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = ''; }
+    window.closePreview = () => { document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden');
+    document.getElementById('preview-content').innerHTML = ''; }
 
-    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING / चेतावनी", "Working Days and Earnings are empty. Generate partial PDF anyway?\nवर्किंग डेज और अर्निंग्स खाली हैं। क्या आप फिर भी PDF जनरेट करना चाहते हैं?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
+    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim();
+        const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING / चेतावनी", "Working Days and Earnings are empty. Generate partial PDF anyway?\nवर्किंग डेज और अर्निंग्स खाली हैं। क्या आप फिर भी PDF जनरेट करना चाहते हैं?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); });
+        } else { buildTAPreview(mo, wDays, earn); } }
 
     function buildTAPreview(mo, wDays, earn) {
-        const p = window.appState.profile; if(!p) return; const monthStr = new Date(mo+'-01').toLocaleString('default', {month:'long', year:'numeric'}).toUpperCase();
-        let tbodyHtml = ""; let totalAmount = 0; let counts = {30:0, 70:0, 100:0}; let validLegs = []; 
+        const p = window.appState.profile;
+        if(!p) return; const monthStr = new Date(mo+'-01').toLocaleString('default', {month:'long', year:'numeric'}).toUpperCase();
+        let tbodyHtml = ""; let totalAmount = 0;
+        let counts = {30:0, 70:0, 100:0}; let validLegs = []; 
         let dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
-        const cycles = buildCycles(dutyOnly); let taResultsAll = [];
+        const cycles = buildCycles(dutyOnly);
+        let taResultsAll = [];
         cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
         cycles.forEach(cycle => { let splitCycle = getSplitLegs(cycle); let legsByDate = {}; splitCycle.forEach(pl => { if(!legsByDate[pl.date]) legsByDate[pl.date] = []; legsByDate[pl.date].push(pl); }); splitCycle.forEach((item, idx) => { if(!item.date.startsWith(mo)) return; let isLastOfDay = false; if(legsByDate[item.date]) { const lastLegForDate = legsByDate[item.date][legsByDate[item.date].length - 1]; isLastOfDay = (lastLegForDate.id === item.id); } const matchingTA = taResultsAll.find(r => r.date === item.date); validLegs.push({item, isLastOfDay, matchingTA}); }); });
-
         let isSquished = validLegs.length > 43;
         let pCell = isSquished ? "1px" : "2px";
         let fCell = isSquished ? "9px" : "10px";
@@ -1505,7 +1658,6 @@
         const p = window.appState.profile; if(!p) return;
         const [year, month] = mo.split('-').map(Number); const prevD = new Date(year, month - 2, 16); const currD = new Date(year, month - 1, 15);
         const strFrom = `${String(prevD.getDate()).padStart(2,'0')}-${prevD.toLocaleString('default',{month:'short'})}-${String(prevD.getFullYear()).slice(-2)}`; const strTo = `${String(currD.getDate()).padStart(2,'0')}-${currD.toLocaleString('default',{month:'short'})}-${String(currD.getFullYear()).slice(-2)}`;
-
         let tbodyHtml = ""; 
         let totalH = 0; let totalM = 0;
         const isGazetted = p.empType === 'Gazetted';
@@ -1515,13 +1667,12 @@
             nda = extractNDALegs(mo);
             totalH = Math.floor(nda.totalNdaMinutes / 60);
             totalM = Math.round(nda.totalNdaMinutes % 60);
-            
             nda.ndaData.forEach(duty => { 
                 const rs = duty.trips.length; 
                 const signOnStr = `${String(duty.signOn.getHours()).padStart(2,'0')}:${String(duty.signOn.getMinutes()).padStart(2,'0')}`; 
                 const signOffStr = `${String(duty.signOff.getHours()).padStart(2,'0')}:${String(duty.signOff.getMinutes()).padStart(2,'0')}`; 
                 const hStr = String(Math.floor(duty.mins / 60)).padStart(2,'0') + ":" + String(Math.round(duty.mins % 60)).padStart(2,'0'); 
-                
+         
                 duty.trips.forEach((trip, idx) => { 
                     tbodyHtml += `<tr>`; 
                     tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${formatDate(trip.depDate)}</td>`; 
