@@ -12,8 +12,7 @@
         :root { 
             --bg: #f8fafc; 
             --card: #ffffff; 
-            --border: #cbd5e1; 
-            /* Premium 3D Multi-layered Shadow */
+            --border: #e2e8f0; 
             --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.6);
             --text: #1e293b; 
             --text-muted: #475569;
@@ -22,13 +21,13 @@
             --purple: #a855f7;
             --yellow: #eab308;
             --red: #ef4444;
-            --input-bg: #f1f5f9; /* Light Grey Input Fillers */
+            --input-bg: #f1f5f9; 
             --input-disabled: #e2e8f0;
             --modal-bg: #ffffff;
             --top-bar-bg: #0f172a;
             
             --row-up-bg: #ffffff;
-            --row-down-bg: #e2e8f0; /* Slightly more grey */
+            --row-down-bg: #e2e8f0; 
             --row-text: #000000;
             --row-blue-text: #1e40af;
             --row-muted-text: #475569;
@@ -38,12 +37,10 @@
             --table-border: #a5b4fc;
         }
 
-        /* METALLIC DARK MODE OVERHAUL */
         body.dark-mode {
             --bg: #000000;
             --card: #111111;
             --border: #333333; 
-            /* Premium 3D Dark Shadow */
             --shadow: 0 10px 15px -3px rgba(0,0,0,0.6), 0 4px 6px -2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
             --text: #ffffff;
             --text-muted: #a3a3a3;
@@ -83,17 +80,16 @@
         }
         .hidden { display: none !important; }
         
-        /* Layout */
-        .top-bar { background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.5); border-bottom: 1px solid var(--border); transition: background 0.3s; }
+        .top-bar { background: var(--top-bar-bg); color: white; padding: 0 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.5); border-bottom: 1px solid var(--border); transition: background 0.3s; }
         body.dark-mode .top-bar { border-bottom: none; } 
         
         .dash-header { min-height: 80px; }
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; line-height: 1.2; }
-        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: bold; }
+        
+        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; position: absolute; left: 5px; top: 0; bottom: 0; font-weight: bold; }
         
         .screen-content { padding: 15px; padding-bottom: 90px; max-width: 600px; margin: 0 auto; }
         
-        /* 3D Premium Elements */
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: var(--shadow); transition: background 0.3s, border 0.3s; }
         .nav-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; }
         .nav-card:active { transform: translateY(3px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
@@ -102,13 +98,12 @@
         .nav-icon { font-size: 24px; margin-bottom: 8px; display: inline-block; }
         .nav-title { font-weight: bold; font-size: 13px; margin-bottom: 4px; text-transform: uppercase; color: var(--text); }
         .nav-desc { font-size: 11px; color: var(--text-muted); }
+        .stat-value { font-size: 20px; font-weight: bold; margin-bottom: 4px; }
         
-        /* Perfectly Rounded Inputs & Muted Labels */
         input, select { width: 100%; padding: 10px 14px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 12px; margin-top: 4px; font-size: 15px; font-weight: bold; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; }
         input:disabled { background: var(--input-disabled); color: var(--text-muted); border-style: dashed; }
         .profile-lbl { font-size: 13px; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 2px; }
         
-        /* Pill Buttons */
         button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); box-shadow: var(--shadow); transition: background 0.3s; }
         button:active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
         
@@ -129,7 +124,6 @@
         #custom-modal, #manage-modal, #help-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
-        /* BOTTOM NAVIGATION BAR */
         .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
         .bottom-icon { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; flex-shrink: 0; }
         .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
@@ -138,7 +132,6 @@
         .nav-fab { position: absolute; top: -20px; width: 56px; height: 56px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 6px 15px rgba(0,0,0,0.6); border: 4px solid var(--top-bar-bg); cursor: pointer; z-index: 4001; transition: background 0.3s, border 0.3s; }
         .nav-fab:active { opacity: 0.8; transform: scale(0.95); }
         
-        /* PRINT PREVIEW */
         #preview-wrapper { padding-top: 20px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; }
         
@@ -184,6 +177,10 @@
             if (user) {
                 window.currentUid = user.uid;
                 onValue(ref(window.db, 'users/' + user.uid), (snapshot) => {
+                    window.lastSyncTime = new Date().toLocaleTimeString();
+                    const syncLbl = document.getElementById('sync-time-lbl');
+                    if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
+
                     const data = snapshot.val();
                     if (data) {
                         window.appState = data;
@@ -201,14 +198,6 @@
                 window.navTo('screen-login');
             }
         });
-        
-        window.checkGazetted = (isManualClick) => {
-            const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
-            const drop = document.getElementById('reg-payscale-dropdown');
-            const txt = document.getElementById('reg-payscale-text');
-            if (isGaz) { drop.classList.add('hidden'); txt.classList.remove('hidden'); if (isManualClick) showModal("NOTICE", "NDA is only paid up to Pay Level-7.", "warning", false); } 
-            else { drop.classList.remove('hidden'); txt.classList.add('hidden'); }
-        };
     </script>
 </head>
 <body>
@@ -219,25 +208,25 @@
     </div>
     <div id="preview-floating-btns" style="position: fixed; right: -5px; top: 83%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px;">
         <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.print()">🖨️ Print</div>
-        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.closePreview()">❌ Close</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="closePreview()">❌ Close</div>
     </div>
 </div>
 
 <div id="ui-wrapper">
-    <div id="global-back-btn" class="floating-back hidden" onclick="window.navTo('screen-dashboard')">◀ Back</div>
+    <div id="global-back-btn" class="floating-back hidden" onclick="navTo('screen-dashboard')">◀ Back</div>
 
     <div class="bottom-bar hidden" id="main-bottom-bar">
-        <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
+        <div class="bottom-icon" id="theme-toggle" onclick="toggleTheme()">🌙</div>
         <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
-        <div class="bottom-icon" onclick="window.showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
+        <div class="bottom-icon" onclick="showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
         
         <div class="nav-fab-wrapper">
-            <div class="nav-fab" id="main-fab-btn" onclick="window.switchAddTab('duty'); window.navTo('screen-add');">+</div>
+            <div class="nav-fab" id="main-fab-btn" onclick="switchAddTab('duty'); navTo('screen-add');">+</div>
         </div>
         
-        <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
-        <div class="bottom-icon" onclick="window.showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
-        <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
+        <div class="bottom-icon" onclick="shareApp()">🔗</div>
+        <div class="bottom-icon" onclick="showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
+        <div class="bottom-icon" onclick="showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
     </div>
 
     <div id="custom-modal" class="hidden">
@@ -268,16 +257,16 @@
             <input type="hidden" id="manage-id">
             <input type="hidden" id="manage-type">
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button style="background: var(--blue);" onclick="window.triggerEdit()">✏️ Edit</button>
-                <button style="background: var(--red);" onclick="window.triggerDelete()">🗑️ Delete</button>
-                <button style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;" onclick="window.closeManage()">Cancel</button>
+                <button style="background: var(--blue);" onclick="triggerEdit()">✏️ Edit</button>
+                <button style="background: var(--red);" onclick="triggerDelete()">🗑️ Delete</button>
+                <button style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;" onclick="closeManage()">Cancel</button>
             </div>
         </div>
     </div>
 
     <div id="screen-login" class="hidden" style="position: relative; min-height: 100vh; width: 100vw; background-color: #0f172a; background-image: url('./login-bg.png'); background-size: cover; background-position: center bottom; background-repeat: no-repeat;">
         <div style="position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
-            <button style="border-radius: 30px; font-size: 15px; padding: 12px 24px; background: #ffffff; color: #1e293b; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; width: max-content; gap: 10px; font-weight: bold; cursor: pointer;" onclick="window.login()">
+            <button style="border-radius: 30px; font-size: 15px; padding: 12px 24px; background: #ffffff; color: #1e293b; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; width: max-content; gap: 10px; font-weight: bold; cursor: pointer;" onclick="login()">
                 <svg style="width: 24px; height: 24px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
                 Sign in with Google
             </button>
@@ -288,7 +277,7 @@
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn hidden" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">◀ Back</button>
                 <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; margin: 0; letter-spacing: 0.5px;">PROFILE SETUP</h1>
             </div>
         </div>
@@ -318,7 +307,7 @@
             <div class="card">
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                     <div style="flex: 1;"><label class="profile-lbl">Employee Type</label>
-                        <select id="reg-emp-type" onchange="window.checkGazetted(true)">
+                        <select id="reg-emp-type" onchange="checkGazetted(true)">
                             <option value="Non-Gazetted">NON-GAZETTED</option>
                             <option value="Gazetted">GAZETTED</option>
                         </select>
@@ -364,11 +353,11 @@
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button id="btn-edit-profile" type="button" onclick="window.unlockProfile()" style="flex: 1; background: var(--blue);">Edit Profile</button>
-                <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
+                <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; background: var(--blue);">Edit Profile</button>
+                <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
-            <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.0</div>
+            <button style="margin-top: 10px; background: var(--red);" onclick="logout()">Sign Out</button>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v1.3</div>
         </div>
     </div>
 
@@ -393,35 +382,35 @@
                 <h4 style="margin: 0 0 10px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Recent Entries</h4>
                 <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"></div>
                 
-                <button onclick="window.switchAddTab('duty'); window.navTo('screen-add');" style="margin-top: 15px; padding: 12px; border-radius: 30px;">+ Add Journey Entry</button>
+                <button onclick="switchAddTab('duty'); navTo('screen-add');" style="margin-top: 15px; padding: 12px; border-radius: 12px;">+ Add Journey Entry</button>
             </div>
             
             <div style="margin-bottom: 10px;">
                 <div class="grid-2">
-                    <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
+                    <div class="nav-card" onclick="switchTab('ta'); navTo('screen-reports');">
                         <div class="nav-title" id="dash-ta-val" style="font-size: 20px; color: var(--green); text-transform: none;">₹0</div>
                         <div class="nav-desc" id="dash-ta-lbl" style="color: var(--text); font-weight: bold; opacity: 1;">TA This Month</div>
                     </div>
-                    <div class="nav-card" onclick="window.switchTab('nda'); window.navTo('screen-reports');">
+                    <div class="nav-card" onclick="switchTab('nda'); navTo('screen-reports');">
                         <div class="nav-title" id="dash-nda-val" style="font-size: 20px; color: var(--blue); text-transform: none;">0:00 Hrs</div>
                         <div class="nav-desc" id="dash-nda-lbl" style="color: var(--text); font-weight: bold; opacity: 1;">NDA</div>
                     </div>
-                    <div class="nav-card" onclick="window.navTo('screen-all')">
+                    <div class="nav-card" onclick="navTo('screen-all')">
                         <div class="nav-icon">📋</div>
                         <div class="nav-title" style="color: var(--purple);">ALL JOURNEY</div>
                         <div class="nav-desc">View, edit, delete</div>
                     </div>
-                    <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
+                    <div class="nav-card" onclick="switchTab('ta'); navTo('screen-reports');">
                         <div class="nav-icon">🖨️</div>
                         <div class="nav-title" style="color: var(--blue);">GENERATE PDF</div>
                         <div class="nav-desc">TA Journal / NDA Bill</div>
                     </div>
-                    <div class="nav-card" onclick="window.navTo('screen-register')">
+                    <div class="nav-card" onclick="navTo('screen-register')">
                         <div class="nav-icon" style="position: relative; display: inline-block;">👤<div id="profile-alert-badge" class="notification-dot hidden">!</div></div>
                         <div class="nav-title" style="color: var(--yellow);">PROFILE SETUP</div>
                         <div class="nav-desc">Stations, pay details</div>
                     </div>
-                    <div class="nav-card" onclick="window.navTo('screen-backup')">
+                    <div class="nav-card" onclick="navTo('screen-backup')">
                         <div class="nav-icon">💾</div>
                         <div class="nav-title" style="color: var(--red);">BACKUP DATA</div>
                         <div class="nav-desc">Save your data</div>
@@ -434,15 +423,15 @@
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+                <button class="back-btn" onclick="navTo('screen-dashboard')">◀ Back</button>
                 <h1>ADD JOURNEY</h1>
             </div>
         </div>
         <div class="screen-content">
             <p style="text-align: center; font-size: 13px; color: var(--red); margin-top: 0; margin-bottom: 15px; font-weight: 900;">↔️ Swipe left or right to switch tabs</p>
             <div class="tab-container" style="margin-bottom: 15px;">
-                <button id="tab-duty" class="tab-btn active" onclick="window.switchAddTab('duty')">Duty Journey</button>
-                <button id="tab-nonduty" class="tab-btn" onclick="window.switchAddTab('nonduty')">Rest/Leave/COCL</button>
+                <button id="tab-duty" class="tab-btn active" onclick="switchAddTab('duty')">Duty Journey</button>
+                <button id="tab-nonduty" class="tab-btn" onclick="switchAddTab('nonduty')">Rest/Leave/COCL</button>
             </div>
 
             <div id="form-duty">
@@ -464,11 +453,11 @@
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; padding: 8px; border-right: 1px solid var(--border);">
                             <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 2px;">Departure Time</label>
-                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; padding: 8px;">
+                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="formatTimeInput(this)" maxlength="4" style="margin: 0; padding: 8px;">
                         </div>
                         <div style="flex: 1; padding: 8px;">
                             <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Time</label>
-                            <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; padding: 8px;">
+                            <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="formatTimeInput(this)" maxlength="4" style="margin: 0; padding: 8px;">
                         </div>
                     </div>
                     <div style="display: flex;">
@@ -508,8 +497,8 @@
                 </div>
             </div>
 
-            <button id="btn-save-duty" onclick="window.saveLeg()">Save This Journey</button>
-            <button id="btn-save-nonduty" class="hidden" style="background: var(--green);" onclick="window.saveNonDuty()">Save Record</button>
+            <button id="btn-save-duty" onclick="saveLeg()">Save This Journey</button>
+            <button id="btn-save-nonduty" class="hidden" style="background: var(--green);" onclick="saveNonDuty()">Save Record</button>
             
             <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px; color: var(--text);" id="recent-duty-title">Recent Duty Entries</h3>
             <div id="recent-logs-add" style="border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border);"></div>
@@ -519,7 +508,7 @@
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+                <button class="back-btn" onclick="navTo('screen-dashboard')">◀ Back</button>
                 <h1>ALL JOURNEY</h1>
             </div>
         </div>
@@ -528,12 +517,12 @@
             
             <div style="display: flex; gap: 10px; margin: 0 auto 15px auto; width: 100%; align-items: center; background: var(--input-bg); padding: 12px 15px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow);">
                 <label style="font-size: 14px; font-weight: 900; color: var(--text); white-space: nowrap;">Filter:</label>
-                <select id="all-logs-month" onchange="window.renderAllLogs()" style="margin: 0; padding: 8px; width: 48%;">
+                <select id="all-logs-month" onchange="renderAllLogs()" style="margin: 0; padding: 8px; width: 48%;">
                     <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
                     <option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option>
                     <option value="09">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
                 </select>
-                <select id="all-logs-year" onchange="window.renderAllLogs()" style="margin: 0; padding: 8px; width: 48%;">
+                <select id="all-logs-year" onchange="renderAllLogs()" style="margin: 0; padding: 8px; width: 48%;">
                     <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
                     <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
                 </select>
@@ -551,7 +540,7 @@
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+                <button class="back-btn" onclick="navTo('screen-dashboard')">◀ Back</button>
                 <h1>GENERATE PDF</h1>
             </div>
         </div>
@@ -559,14 +548,14 @@
             <p style="text-align: center; font-size: 13px; color: var(--red); margin-top: 0; margin-bottom: 15px; font-weight: 900;">↔️ Swipe left or right to switch tabs</p>
             
             <div class="tab-container" style="margin-bottom: 15px;">
-                <button class="tab-btn active" id="tab-ta" onclick="window.switchTab('ta')">TA Journal</button>
-                <button class="tab-btn" id="tab-nda" onclick="window.switchTab('nda')">NDA Bill</button>
+                <button class="tab-btn active" id="tab-ta" onclick="switchTab('ta')">TA Journal</button>
+                <button class="tab-btn" id="tab-nda" onclick="switchTab('nda')">NDA Bill</button>
             </div>
             
             <div class="slider-bar" style="color: var(--text); background: var(--input-bg);">
-                <button class="slider-btn" onclick="window.changeMonth(-1)" style="padding: 8px 15px;">❮</button>
+                <button class="slider-btn" onclick="changeMonth(-1)" style="padding: 8px 15px;">❮</button>
                 <span id="report-slider-text" style="font-weight: bold; font-size: 16px;">Jun 2026</span>
-                <button class="slider-btn" onclick="window.changeMonth(1)" style="padding: 8px 15px;">❯</button>
+                <button class="slider-btn" onclick="changeMonth(1)" style="padding: 8px 15px;">❯</button>
             </div>
             <input type="hidden" id="report-month-hidden"> 
             
@@ -582,7 +571,7 @@
                     <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Working Days</label><input type="number" id="pdf-work-days" placeholder="Enter Days" style="text-align: center;"></div>
                     <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Earnings</label><input type="number" id="pdf-earnings" placeholder="Enter ₹" style="text-align: center;"></div>
                 </div>
-                <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate PDF Document</button>
+                <button style="margin-top: 20px;" id="generate-btn" onclick="triggerGenerate()">Generate PDF Document</button>
             </div>
         </div>
     </div>
@@ -590,7 +579,7 @@
     <div id="screen-backup" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+                <button class="back-btn" onclick="navTo('screen-dashboard')">◀ Back</button>
                 <h1>BACKUP & RESTORE</h1>
             </div>
         </div>
@@ -598,24 +587,75 @@
             <div class="card">
                 <h3 style="color: var(--purple);">Manual Backup</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Save a physical backup file to your phone.</p>
-                <button onclick="window.exportData()" style="background: var(--purple);">Download Backup File</button>
+                <button onclick="exportData()" style="background: var(--purple);">Download Backup File</button>
                 <div id="manual-backup-time" style="font-size: 11px; color: var(--blue); font-weight: bold; margin-top: 8px; text-align: center;"></div>
             </div>
             <div class="card">
                 <h3 style="color: var(--yellow);">Restore from File</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Import a previously downloaded backup file.</p>
                 <button onclick="document.getElementById('import-file').click()" style="background: var(--yellow); color: white;">Choose File & Restore</button>
-                <input type="file" id="import-file" class="hidden" accept=".json" onchange="window.importData(event)">
+                <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
                 <div id="restore-backup-time" style="font-size: 11px; color: var(--blue); font-weight: bold; margin-top: 8px; text-align: center;"></div>
             </div>
             <div class="card">
                 <h3 style="color: var(--green);">Cloud Sync Status</h3>
                 <p style="font-size: 14px; font-weight: bold; color: var(--text); margin-bottom: 5px;">Your data is actively syncing to Google.</p>
-                <p style="font-size: 13px; font-weight: bold; color: var(--blue); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);" id="sync-time-lbl">Last Synced: Never</p>
+                <p style="font-size: 13px; font-weight: bold; color: var(--text-muted); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);" id="sync-time-lbl">Last Synced: Never</p>
             </div>
         </div>
     </div>
 </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    const app = initializeApp({
+        apiKey: "AIzaSyClDJ3enyipS3sHJujYJTkxdunvvVgju64",
+        authDomain: "tte-journal.firebaseapp.com",
+        databaseURL: "https://tte-journal-default-rtdb.firebaseio.com",
+        projectId: "tte-journal"
+    });
+
+    window.db = getDatabase(app);
+    window.auth = getAuth(app);
+    window.provider = new GoogleAuthProvider();
+    window.firebaseSet = set;
+    window.firebaseRef = ref;
+
+    window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
+    window.logout = () => signOut(window.auth).then(() => window.location.reload());
+
+    onAuthStateChanged(window.auth, (user) => {
+        if (user) {
+            window.currentUid = user.uid;
+            onValue(ref(window.db, 'users/' + user.uid), (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    window.appState = data;
+                    if (!window.appState.legs) window.appState.legs = [];
+                    if (document.getElementById('screen-register').classList.contains('hidden')) {
+                        navTo('screen-dashboard');
+                    }
+                } else {
+                    window.appState = { profile: null, legs: [] };
+                    navTo('screen-register'); 
+                }
+            });
+        } else {
+            window.currentUid = null;
+            navTo('screen-login');
+        }
+    });
+    
+    // Register PWA Service Worker inside Module
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js').catch(err => console.log('SW setup failed', err));
+        });
+    }
+</script>
 
 <script>
     window.appState = { profile: null, legs: [] }; 
@@ -624,13 +664,6 @@
     window.lastRestoreTime = localStorage.getItem('lastRestoreTime') || 'Never';
     window.currentAddTab = 'duty';
     let currentTab = 'ta';
-
-    /* ----- EXPLICIT GLOBAL BINDINGS TO PREVENT CRASHES ----- */
-    window.navTo = navTo;
-    window.showModal = showModal;
-    window.openSettings = openSettings;
-    window.unlockProfile = unlockProfile;
-    window.updateDashboardUI = updateDashboardUI;
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
     function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
@@ -642,26 +675,26 @@
         if(rUI) rUI.innerText = "Last Restored: " + window.lastRestoreTime;
     }
     
-    window.toggleTheme = () => {
+    function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
         localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
         document.getElementById('theme-toggle').innerText = isDark ? '☀️' : '🌙';
         
         if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
-        if (!document.getElementById('screen-all').classList.contains('hidden')) window.renderAllLogs();
-    };
+        if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
+    }
     
-    window.shareApp = () => {
+    function shareApp() {
         const shareUrl = 'https://sanjeev-ccts.github.io/tte-journal/';
         if (navigator.share) {
             navigator.share({ title: 'TTE LOG', url: shareUrl }).catch(console.error);
         } else {
             showModal("Share Link", `Copy this link:\n${shareUrl}`, "success", false);
         }
-    };
+    }
     
-    window.showNotifications = () => {
+    function showNotifications() {
         let notifs = window.globalNotifications || [];
         if (notifs.length === 0) {
             showModal("Notifications", "You are all caught up! No active warnings.", "success", false);
@@ -670,7 +703,7 @@
             showModal("Attention Required", htmlList, "warning", false);
             document.getElementById('modal-msg').innerHTML = htmlList;
         }
-    };
+    }
 
     window.onload = () => { 
         const savedTheme = localStorage.getItem('app_theme');
@@ -721,18 +754,18 @@
             if(!document.getElementById('screen-reports').classList.contains('hidden')) {
                 touchendX = e.changedTouches[0].screenX; 
                 let diff = touchendX - touchstartX;
-                if (diff < -50 && currentTab === 'ta') { window.switchTab('nda'); }
-                else if (diff > 50 && currentTab === 'nda') { window.switchTab('ta'); }
+                if (diff < -50 && currentTab === 'ta') { switchTab('nda'); }
+                else if (diff > 50 && currentTab === 'nda') { switchTab('ta'); }
             } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
                 touchendX = e.changedTouches[0].screenX; 
                 let diff = touchendX - touchstartX;
-                if (diff < -50 && window.currentAddTab === 'duty') { window.switchAddTab('nonduty'); }
-                else if (diff > 50 && window.currentAddTab === 'nonduty') { window.switchAddTab('duty'); }
+                if (diff < -50 && window.currentAddTab === 'duty') { switchAddTab('nonduty'); }
+                else if (diff > 50 && window.currentAddTab === 'nonduty') { switchAddTab('duty'); }
             }
         }, {passive: true});
     };
     
-    window.formatTimeInput = (el) => {
+    function formatTimeInput(el) {
         let val = el.value.replace(/\D/g, '');
         if (!val) return;
         if (val.length <= 2) {
@@ -751,9 +784,9 @@
             if(m > 59) m = 59;
             el.value = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0');
         }
-    };
+    }
     
-    window.switchAddTab = function(tab) {
+    function switchAddTab(tab) {
         window.currentAddTab = tab;
         const btnSaveDuty = document.getElementById('btn-save-duty');
         const btnSaveNonduty = document.getElementById('btn-save-nonduty');
@@ -794,7 +827,7 @@
                 rcHTMLAdd = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No Non-Duty entries found.</p>';
             } else {
                 let sortedNonDuty = [...nondutyOnly].sort((a,b) => new Date(b.fromDate) - new Date(a.fromDate));
-                let recentAddArr = sortedNonDuty.slice(0, 5); // Capped to 5
+                let recentAddArr = sortedNonDuty.slice(0, 5); 
                 let theadND = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Type</th><th style="padding: 8px 2px;">Date Range</th></tr></thead>`;
                 rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadND}<tbody>`;
                 recentAddArr.forEach((leg, i) => {
@@ -809,7 +842,7 @@
                 rcHTMLAdd = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No Duty entries found.</p>';
             } else {
                 let sortedDuty = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
-                let recentAddArr = sortedDuty.slice(0, 5); // Capped to 5
+                let recentAddArr = sortedDuty.slice(0, 5); 
                 let theadDuty = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
                 rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadDuty}<tbody>`;
                 recentAddArr.forEach((leg, i) => {
@@ -821,7 +854,7 @@
             }
         }
         if(rcAdd) rcAdd.innerHTML = rcHTMLAdd;
-    };
+    }
     
     function navTo(screenId) { 
         if (screenId !== 'screen-add' && window.editModeId) {
@@ -836,7 +869,7 @@
         }
         
         if(screenId === 'screen-reports') {
-            window.switchTab(currentTab); 
+            switchTab(currentTab); 
         }
         
         ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
@@ -849,7 +882,7 @@
         }
         
         if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
-        if(screenId === 'screen-all') { window.renderAllLogs(); checkGlobalNotifications(); }
+        if(screenId === 'screen-all') { renderAllLogs(); checkGlobalNotifications(); }
         if(screenId === 'screen-reports') updateReportUI(); 
         if(screenId === 'screen-backup') updateBackupUI(); 
         if(screenId === 'screen-register') {
@@ -903,7 +936,7 @@
         document.getElementById('btn-save-profile').style.display = 'block';
     }
 
-    window.checkGazetted = (isManualClick) => {
+    function checkGazetted(isManualClick) {
         const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
         const drop = document.getElementById('reg-payscale-dropdown');
         const txt = document.getElementById('reg-payscale-text');
@@ -917,7 +950,7 @@
             drop.classList.remove('hidden'); 
             txt.classList.add('hidden');
         }
-    };
+    }
 
     function openSettings() { 
         const p = window.appState.profile || {}; 
@@ -938,7 +971,7 @@
             document.getElementById('reg-payscale-dropdown').classList.remove('hidden');
             document.getElementById('reg-payscale-text').classList.add('hidden');
         }
-        window.checkGazetted(false); 
+        checkGazetted(false); 
         
         document.getElementById('reg-gradepay').value = p.gradepay || ''; 
         document.getElementById('reg-da').value = p.da || ''; 
@@ -962,6 +995,15 @@
         }
         checkProfileNotifications(); 
     }   
+    
+    function setDAReminder() {
+        let m = new Date().getMonth();
+        if (m === 2) localStorage.setItem('da_remind_month', '4'); 
+        if (m === 8) localStorage.setItem('da_remind_month', '10'); 
+        document.getElementById('da-warning-msg').classList.add('hidden');
+        showModal("Reminder Set", "You will be reminded again on the 1st of next month.", "success", false);
+        checkGlobalNotifications();
+    }
     
     function checkGlobalNotifications() {
         window.globalNotifications = [];
@@ -1057,9 +1099,28 @@
         } else {
             if(alertBox) alertBox.classList.add('hidden');
         }
+        
+        let daWarningDiv = document.getElementById('da-warning-msg');
+        let daReminded = localStorage.getItem('da_remind_month');
+        let showDA = false; let showRemindBtn = false;
+        const m = today.getMonth(); 
+        const d = today.getDate();
+        if ((m === 2 && d >= 1 && d <= 3) || (m === 8 && d >= 1 && d <= 3)) { showDA = true; showRemindBtn = true; }
+        if (m === 3 && d >= 1 && d <= 3 && daReminded === '4') { showDA = true; }
+        if (m === 9 && d >= 1 && d <= 3 && daReminded === '10') { showDA = true; }
+
+        if (showDA) {
+            let remBtnHtml = showRemindBtn ? `<br><span style="text-decoration:underline; cursor:pointer; font-weight:bold; color:var(--text); display:inline-block; margin-top:5px;" onclick="setDAReminder()">⏳ Remind me next month</span>` : '';
+            if(daWarningDiv) {
+                daWarningDiv.innerHTML = `⚠️ Change the DA% if applicable.` + remBtnHtml;
+                daWarningDiv.classList.remove('hidden');
+            }
+        } else {
+            if(daWarningDiv) daWarningDiv.classList.add('hidden');
+        }
     }
 
-    window.saveProfile = () => { 
+    function saveProfile() { 
         try { 
             const getVal = id => document.getElementById(id).value.trim().toUpperCase(); 
             const empTypeVal = document.getElementById('reg-emp-type').value;
@@ -1075,14 +1136,14 @@
             saveData(); 
             lockProfile();
             checkProfileNotifications();
-            window.navTo('screen-dashboard'); 
+            navTo('screen-dashboard'); 
             showModal("Success", "Profile Saved & Synced!", "success", false); 
         } catch(e) { 
             showModal("Save Error", e.message, "error", false); 
         } 
     }
     
-    window.exportData = () => { 
+    function exportData() { 
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState)); 
         const dlAnchorElem = document.createElement('a'); 
         dlAnchorElem.setAttribute("href", dataStr); 
@@ -1094,7 +1155,7 @@
         updateBackupUI();
     }
     
-    window.importData = (event) => { 
+    function importData(event) { 
         const file = event.target.files[0]; 
         if(!file) return; 
         const reader = new FileReader(); 
@@ -1120,55 +1181,50 @@
         reader.readAsText(file); 
     }
     
-    window.manageLeg = (id, train, dep, arr) => { 
+    function manageLeg(id, train, dep, arr) { 
         document.getElementById('manage-type').value = 'duty';
         document.getElementById('manage-id').value = id; 
         document.getElementById('manage-msg').innerText = `Tr: ${train} | ${dep} ➔ ${arr}`; 
         document.getElementById('manage-modal').classList.remove('hidden'); 
     }
-    window.manageNonDuty = (id, type, from, to) => {
+    function manageNonDuty(id, type, from, to) {
         document.getElementById('manage-type').value = 'nonduty';
         document.getElementById('manage-id').value = id; 
         let dateStr = (from === to) ? formatDate(from) : `${formatDate(from)} to ${formatDate(to)}`;
         document.getElementById('manage-msg').innerText = `${type.toUpperCase()} | ${dateStr}`; 
         document.getElementById('manage-modal').classList.remove('hidden');
     }
-    window.closeManage = () => { document.getElementById('manage-modal').classList.add('hidden'); }
+    function closeManage() { document.getElementById('manage-modal').classList.add('hidden'); }
     
-    window.triggerEdit = () => { 
+    function triggerEdit() { 
         let mType = document.getElementById('manage-type').value;
         const id = parseInt(document.getElementById('manage-id').value);
         const leg = window.appState.legs.find(l => l.id === id); 
         window.editModeId = id; 
-        window.closeManage(); 
+        closeManage(); 
         
         if (mType === 'nonduty') {
-            window.switchAddTab('nonduty');
+            switchAddTab('nonduty');
             document.getElementById('nonduty-type').value = leg.dutyType;
             document.getElementById('nonduty-from').value = leg.fromDate;
             document.getElementById('nonduty-to').value = leg.toDate;
         } else {
-            window.switchAddTab('duty');
+            switchAddTab('duty');
             document.getElementById('trip-dep-date').value = leg.depDate; 
             document.getElementById('trip-train').value = leg.train; 
-            
-            const stnSelect = document.getElementById('trip-dep-stn');
-            if(stnSelect) {
-                stnSelect.innerHTML = `<option value="${leg.depStn}">${leg.depStn}</option>` + stnSelect.innerHTML;
-                stnSelect.value = leg.depStn; 
-            }
-            
+            document.getElementById('trip-dep-stn').innerHTML = `<option value="${leg.depStn}">${leg.depStn}</option>` + document.getElementById('trip-dep-stn').innerHTML;
+            document.getElementById('trip-dep-stn').value = leg.depStn; 
             document.getElementById('trip-dep-time').value = leg.depTime; 
             document.getElementById('trip-arr-date').value = leg.arrDate; 
             document.getElementById('trip-arr-stn').value = leg.arrStn; 
             document.getElementById('trip-arr-time').value = leg.arrTime; 
         }
-        window.navTo('screen-add'); 
+        navTo('screen-add'); 
     }
     
-    window.triggerDelete = () => { window.closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
+    function triggerDelete() { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
     
-    window.saveLeg = () => { 
+    function saveLeg() { 
         const leg = { id: window.editModeId ? window.editModeId : Date.now(), isNonDuty: false, depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
         if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR", "All fields are mandatory.", "error", false); 
         if(leg.depStn === leg.arrStn) return showModal("ERROR", "From and To stations cannot be same.", "error", false); 
@@ -1209,10 +1265,10 @@
         document.getElementById('trip-dep-stn').value = leg.arrStn;
         
         window.editModeId = null;
-        saveData(); window.navTo('screen-dashboard'); 
+        saveData(); navTo('screen-dashboard'); 
     }
 
-    window.saveNonDuty = () => {
+    function saveNonDuty() {
         const type = document.getElementById('nonduty-type').value;
         const from = document.getElementById('nonduty-from').value;
         const to = document.getElementById('nonduty-to').value;
@@ -1246,7 +1302,7 @@
             document.getElementById('nonduty-from').value = '';
             document.getElementById('nonduty-to').value = '';
             window.editModeId = null;
-            saveData(); window.navTo('screen-dashboard'); 
+            saveData(); navTo('screen-dashboard'); 
         };
 
         if(overlap) {
@@ -1258,7 +1314,7 @@
         }
     }
 
-    window.renderAllLogs = () => { 
+    function renderAllLogs() { 
         const container = document.getElementById('all-logs-container'); container.innerHTML = ''; 
         if(!window.appState.legs || window.appState.legs.length === 0) { container.innerHTML = '<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries yet.</p>'; return; } 
         
@@ -1304,14 +1360,14 @@
                 if(leg.dutyType === 'COCL') bgCol = "rgba(234, 179, 8, 0.4)";
                 
                 let dateStr = (leg.fromDate === leg.toDate) ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}`;
-                htmlElements.push(`<div style="grid-column: 1 / -1; background: ${bgCol}; color: var(--text); font-weight: bold; padding: 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;" onclick="window.manageNonDuty(${leg.id}, '${leg.dutyType}', '${leg.fromDate}', '${leg.toDate}')">🌴 ${leg.dutyType.toUpperCase()} : ${dateStr}</div>`);
+                htmlElements.push(`<div style="grid-column: 1 / -1; background: ${bgCol}; color: var(--text); font-weight: bold; padding: 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;" onclick="manageNonDuty(${leg.id}, '${leg.dutyType}', '${leg.fromDate}', '${leg.toDate}')">🌴 ${leg.dutyType.toUpperCase()} : ${dateStr}</div>`);
             } else {
                 let dir = legDirectionMap[leg.id];
                 let rowColor = dir === 'up' ? 'var(--row-up-bg)' : 'var(--row-down-bg)';
                 let shortDep = formatDate(leg.depDate).substring(0, 6); 
                 let shortArr = formatDate(leg.arrDate).substring(0, 6);
                 
-                htmlElements.push(`<div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; align-items: center; padding: 14px 2px; border-bottom: 1px solid var(--border); font-size: 12px; text-align: center; background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;" onclick="window.manageLeg(${leg.id}, '${leg.train}', '${leg.depStn}', '${leg.arrStn}')">
+                htmlElements.push(`<div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; align-items: center; padding: 14px 2px; border-bottom: 1px solid var(--border); font-size: 12px; text-align: center; background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;" onclick="manageLeg(${leg.id}, '${leg.train}', '${leg.depStn}', '${leg.arrStn}')">
                     <div style="text-align: left; font-weight: bold; color: var(--row-text); padding-left: 5px; font-size: 11px; transition: color 0.3s;">${leg.train}</div>
                     <div style="color: var(--row-blue-text); font-weight: bold; font-size: 11px; transition: color 0.3s;">${shortDep}</div>
                     <div style="font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</div>
@@ -1350,7 +1406,7 @@
     
     function deleteLeg(id) { 
         showModal("WARNING", "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?", "warning", true, (proceed) => {
-            if(proceed) { window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); window.renderAllLogs(); updateDashboardUI(); }
+            if(proceed) { window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); renderAllLogs(); updateDashboardUI(); }
         }); 
     }
     
@@ -1433,7 +1489,7 @@
         return { ndaData, totalNdaMinutes }; 
     }
     
-    window.switchTab = (tab) => { 
+    function switchTab(tab) { 
         currentTab = tab; 
         document.getElementById('tab-ta').classList.remove('active'); 
         document.getElementById('tab-nda').classList.remove('active'); 
@@ -1465,7 +1521,7 @@
         updateReportUI(); 
     }
     
-    window.changeMonth = (delta) => { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); updateDashboardUI(); }
+    function changeMonth(delta) { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); updateDashboardUI(); }
 
     function updateReportUI() { const mo = document.getElementById('report-month-hidden').value; const [y, m] = mo.split('-').map(Number); const curDt = new Date(y, m-1); const moName = curDt.toLocaleString('default',{month:'short'}); const yrName = curDt.getFullYear(); const prevD = new Date(y, m - 2, 16); const currD = new Date(y, m - 1, 15); const strFrom = `${String(prevD.getDate()).padStart(2,'0')}-${prevD.toLocaleString('default',{month:'short'})}-${String(prevD.getFullYear()).slice(-2)}`; const strTo = `${String(currD.getDate()).padStart(2,'0')}-${currD.toLocaleString('default',{month:'short'})}-${String(currD.getFullYear()).slice(-2)}`; 
         
@@ -1510,7 +1566,7 @@
         } 
     }
     
-    window.triggerGenerate = () => { 
+    function triggerGenerate() { 
         const mo = document.getElementById('report-month-hidden').value;
         if(!window.appState || !window.appState.profile) return showModal("Loading", "Cloud data is still syncing. Please wait a moment.", "warning", false);
         
@@ -1531,6 +1587,25 @@
             showModal("NOTICE", "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month.", "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
         } 
     }
+
+    /* Assign Local Script Functions to Global Window to prevent PDF crashes */
+    window.triggerGenerate = triggerGenerate;
+    window.changeMonth = changeMonth;
+    window.switchTab = switchTab;
+    window.renderAllLogs = renderAllLogs;
+    window.saveLeg = saveLeg;
+    window.saveNonDuty = saveNonDuty;
+    window.triggerDelete = triggerDelete;
+    window.triggerEdit = triggerEdit;
+    window.closeManage = closeManage;
+    window.manageNonDuty = manageNonDuty;
+    window.manageLeg = manageLeg;
+    window.importData = importData;
+    window.exportData = exportData;
+    window.saveProfile = saveProfile;
+    window.setDAReminder = setDAReminder;
+    
+    window.closePreview = () => { document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = ''; }
 
     function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING", "Working Days and Earnings are empty. Generate partial PDF anyway?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
 
@@ -1615,13 +1690,6 @@
 
         const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">NIGHT DUTY BILL</div><table style="margin: 0 auto 20px auto; font-size: 12px; text-align: left; border: none; width: auto; line-height: 1.8;"><tr><td style="padding-right: 30px;">Name: <b>${p.name}</b></td><td>Designation: <b>${p.desig}</b></td></tr><tr><td>H.Q.: <b>${p.hq}/NR</b></td><td>ROP: <span style="float: right; font-weight: bold;">p.m.</span></td></tr><tr><td>P.F. No.: <b>${p.pf}</b></td><td>BU No.: <b>${p.bu}</b></td></tr><tr><td>Period From: <b>${strFrom}</b></td><td>To: <b>${strTo}</b></td></tr></table><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 15px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">From</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">To</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign On</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Dep.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Arrival</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign Off</th><th colspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px;">Night Duty</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Night<br>Hours</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">From</th><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">To</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="10" style="text-align: right; border: 1px solid black; padding: 12px 10px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-weight: bold; font-size: 12px;">${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}</td></tr></tfoot></table><div style="margin-top: 20px;"><div style="font-weight: bold; font-size: 12px; margin-bottom: 40px;">Total Night Duty Hours = ${totalH} Hours ${totalM} Minutes</div><table style="border: none; width: 300px; text-align: left; font-size: 12px; line-height: 1.8; float: right; margin-right: 20px;"><tr><td style="text-align: right; padding-right: 10px;">Signature:</td><td style="text-align: left;">...................................................</td></tr><tr><td style="text-align: right; padding-right: 10px;">Name:</td><td style="text-align: left;"><b>${p.name}</b></td></tr><tr><td style="text-align: right; padding-right: 10px;">Designation:</td><td style="text-align: left;"><b>${p.desig}</b></td></tr></table><div style="clear: both;"></div></div></div>`;
         document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
-    }
-    
-    // PWA Service Worker Registration
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./service-worker.js').catch(err => console.log('SW setup failed', err));
-        });
     }
 </script>
 </body>
