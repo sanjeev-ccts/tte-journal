@@ -40,6 +40,7 @@
             --table-border: #a5b4fc;
         }
 
+        /* METALLIC DARK MODE OVERHAUL */
         body.dark-mode {
             --bg: #000000;
             --card: #111111;
@@ -131,18 +132,22 @@
         #custom-modal, #manage-modal, #help-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
-        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-evenly; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 10px; }
-        .bottom-icon { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; }
-        .bell-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+        /* SHIELDED BOTTOM NAVIGATION BAR */
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
+        .bottom-icon { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; flex-shrink: 0; }
+        .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
         
-        .nav-fab { width: 56px; height: 56px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: normal; margin-top: -24px; box-shadow: 0 6px 15px rgba(0,0,0,0.6); border: 4px solid var(--top-bar-bg); cursor: pointer; z-index: 4001; transition: background 0.3s, border 0.3s; }
+        /* The Protected '+' FAB Button */
+        .nav-fab-wrapper { position: relative; width: 56px; height: 56px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
+        .nav-fab { position: absolute; top: -20px; width: 56px; height: 56px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 6px 15px rgba(0,0,0,0.6); border: 4px solid var(--top-bar-bg); cursor: pointer; z-index: 4001; transition: background 0.3s, border 0.3s; }
+        .nav-fab:active { opacity: 0.8; transform: scale(0.95); }
         
         /* PRINT PREVIEW */
         #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; }
         
-        .notification-dot { position: absolute; top: 5px; right: 5px; width: 14px; height: 14px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; transition: box-shadow 0.3s; }
+        .notification-dot { position: absolute; top: 5px; right: 5px; width: 14px; height: 14px; background: var(--red); border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; transition: box-shadow 0.3s; }
 
         @media screen {
             .page-break { border-top: 2px dashed #cbd5e1; margin-top: 30px; padding-top: 30px; position: relative; }
@@ -189,16 +194,16 @@
                         window.appState = data;
                         if (!window.appState.legs) window.appState.legs = [];
                         if (document.getElementById('screen-register').classList.contains('hidden')) {
-                            navTo('screen-dashboard');
+                            window.navTo('screen-dashboard');
                         }
                     } else {
                         window.appState = { profile: null, legs: [] };
-                        openSettings(); 
+                        window.openSettings(); 
                     }
                 });
             } else {
                 window.currentUid = null;
-                navTo('screen-login');
+                window.navTo('screen-login');
             }
         });
         
@@ -215,7 +220,7 @@
 
 <div id="preview-wrapper" class="hidden">
     <div id="preview-controls">
-        <button onclick="closePreview()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #64748b;">← Back</button>
+        <button onclick="window.closePreview()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #64748b;">← Back</button>
         <button onclick="window.print()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #10b981; color: white;">🖨️ Print</button>
     </div>
     <div id="preview-content-scale">
@@ -224,16 +229,19 @@
 </div>
 
 <div id="ui-wrapper">
-    <div id="global-back-btn" class="floating-back hidden" onclick="navTo('screen-dashboard')">◀ Back</div>
+    <div id="global-back-btn" class="floating-back hidden" onclick="window.navTo('screen-dashboard')">◀ Back</div>
 
-    <!-- NEW BOTTOM NAVIGATION BAR -->
     <div class="bottom-bar hidden" id="main-bottom-bar">
         <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
         <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
-        <div class="bottom-icon" onclick="showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
-        <div class="nav-fab" onclick="window.switchAddTab('duty'); navTo('screen-add');">+</div>
+        <div class="bottom-icon" onclick="window.showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
+        
+        <div class="nav-fab-wrapper">
+            <div class="nav-fab" onclick="window.switchAddTab('duty'); window.navTo('screen-add');">+</div>
+        </div>
+        
         <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
-        <div class="bottom-icon" onclick="showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
+        <div class="bottom-icon" onclick="window.showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
         <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
     </div>
 
@@ -251,8 +259,8 @@
                 <h3 style="color: var(--text); margin: 0; text-transform: uppercase;">Help & Support</h3>
             </div>
             <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 20px; font-weight: bold;">Got suggestions, facing errors, or need help? Reach out directly!</p>
-            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: inline-block; width: 100%; background: #3b82f6; color: white; padding: 12px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px;">✉️ Email Developer</a>
-            <a href="https://wa.me/918116002746" target="_blank" style="display: inline-block; width: 100%; background: #25D366; color: white; padding: 12px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 15px;">💬 WhatsApp (Chat Only)</a>
+            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: inline-block; width: 100%; background: var(--blue); color: white; padding: 12px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px;">✉️ Email Developer</a>
+            <a href="https://wa.me/918116002746" target="_blank" style="display: inline-block; width: 100%; background: var(--green); color: white; padding: 12px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 15px;">💬 WhatsApp (Chat Only)</a>
             <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;">Close</button>
         </div>
     </div>
@@ -265,9 +273,9 @@
             <input type="hidden" id="manage-id">
             <input type="hidden" id="manage-type">
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button style="background: var(--blue);" onclick="triggerEdit()">✏️ Edit</button>
-                <button style="background: var(--red);" onclick="triggerDelete()">🗑️ Delete</button>
-                <button style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;" onclick="closeManage()">Cancel</button>
+                <button style="background: var(--blue);" onclick="window.triggerEdit()">✏️ Edit</button>
+                <button style="background: var(--red);" onclick="window.triggerDelete()">🗑️ Delete</button>
+                <button style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;" onclick="window.closeManage()">Cancel</button>
             </div>
         </div>
     </div>
@@ -282,11 +290,10 @@
         </div>
     </div>
 
-    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn hidden" id="profile-back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn hidden" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
                 <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; margin: 0; letter-spacing: 0.5px;">PROFILE SETUP</h1>
             </div>
         </div>
@@ -362,15 +369,14 @@
             </div>
 
             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; background: var(--blue);">Edit Profile</button>
-                <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
+                <button id="btn-edit-profile" type="button" onclick="window.unlockProfile()" style="flex: 1; background: var(--blue);">Edit Profile</button>
+                <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
             <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v1.1</div>
         </div>
     </div>
 
-    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar dash-header">
             <div class="top-bar-content">
@@ -395,32 +401,32 @@
             
             <div style="margin-bottom: 10px;">
                 <div class="grid-2">
-                    <div class="nav-card" onclick="currentTab='ta'; navTo('screen-reports');">
+                    <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
                         <div class="stat-value" id="dash-ta-val" style="color: var(--green);">₹0</div>
                         <div class="nav-title">TA this month</div>
                         <div class="nav-desc">Total earned</div>
                     </div>
-                    <div class="nav-card" onclick="currentTab='nda'; navTo('screen-reports');">
+                    <div class="nav-card" onclick="window.switchTab('nda'); window.navTo('screen-reports');">
                         <div class="stat-value" id="dash-nda-val" style="color: var(--blue);">0:00 Hrs</div>
                         <div class="nav-title">NDA Hours</div>
                         <div class="nav-desc" id="dash-nda-lbl">₹0</div>
                     </div>
-                    <div class="nav-card" onclick="navTo('screen-all')">
+                    <div class="nav-card" onclick="window.navTo('screen-all')">
                         <div class="nav-icon">📋</div>
                         <div class="nav-title" style="color: var(--purple);">ALL JOURNEY</div>
                         <div class="nav-desc">View, edit, delete</div>
                     </div>
-                    <div class="nav-card" onclick="currentTab='ta'; navTo('screen-reports');">
+                    <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
                         <div class="nav-icon">🖨️</div>
                         <div class="nav-title" style="color: var(--blue);">GENERATE PDF</div>
                         <div class="nav-desc">TA Journal / NDA Bill</div>
                     </div>
-                    <div class="nav-card" onclick="navTo('screen-register')">
+                    <div class="nav-card" onclick="window.navTo('screen-register')">
                         <div class="nav-icon" style="position: relative; display: inline-block;">👤<div id="profile-alert-badge" class="notification-dot hidden">!</div></div>
                         <div class="nav-title" style="color: var(--yellow);">PROFILE SETUP</div>
                         <div class="nav-desc">Stations, pay details</div>
                     </div>
-                    <div class="nav-card" onclick="navTo('screen-backup')">
+                    <div class="nav-card" onclick="window.navTo('screen-backup')">
                         <div class="nav-icon">💾</div>
                         <div class="nav-title" style="color: var(--red);">BACKUP DATA</div>
                         <div class="nav-desc">Save your data</div>
@@ -430,11 +436,10 @@
         </div>
     </div>
 
-    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
                 <h1>ADD JOURNEY</h1>
             </div>
         </div>
@@ -508,7 +513,7 @@
                 </div>
             </div>
 
-            <button id="btn-save-duty" onclick="saveLeg()">Save This Journey</button>
+            <button id="btn-save-duty" onclick="window.saveLeg()">Save This Journey</button>
             <button id="btn-save-nonduty" class="hidden" onclick="window.saveNonDuty()">Save Record</button>
             
             <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px; color: var(--text);" id="recent-duty-title">Recent Duty Entries</h3>
@@ -516,11 +521,10 @@
         </div>
     </div>
 
-    <!-- ALL JOURNEY -->
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
                 <h1>ALL JOURNEY</h1>
             </div>
         </div>
@@ -529,12 +533,12 @@
             
             <div style="display: flex; gap: 10px; margin: 0 auto 15px auto; width: 100%; align-items: center; background: var(--card); padding: 12px 15px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow);">
                 <label style="font-size: 14px; font-weight: 900; color: var(--text); white-space: nowrap;">Filter:</label>
-                <select id="all-logs-month" onchange="renderAllLogs()" style="margin: 0; padding: 8px; width: 48%;">
+                <select id="all-logs-month" onchange="window.renderAllLogs()" style="margin: 0; padding: 8px; width: 48%;">
                     <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
                     <option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option>
                     <option value="09">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
                 </select>
-                <select id="all-logs-year" onchange="renderAllLogs()" style="margin: 0; padding: 8px; width: 48%;">
+                <select id="all-logs-year" onchange="window.renderAllLogs()" style="margin: 0; padding: 8px; width: 48%;">
                     <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
                     <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
                 </select>
@@ -549,11 +553,10 @@
         </div>
     </div>
 
-    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
                 <h1>GENERATE PDF</h1>
             </div>
         </div>
@@ -561,15 +564,15 @@
             <p style="text-align: center; font-size: 13px; color: var(--danger-border); margin-top: 0; margin-bottom: 15px; font-weight: 900;">↔️ Swipe left or right to switch tabs</p>
             
             <div class="tab-container" style="margin-bottom: 15px;">
-                <button class="tab-btn active" id="tab-ta" onclick="switchTab('ta')">TA Journal</button>
-                <button class="tab-btn" id="tab-nda" onclick="switchTab('nda')">NDA Bill</button>
+                <button class="tab-btn active" id="tab-ta" onclick="window.switchTab('ta')">TA Journal</button>
+                <button class="tab-btn" id="tab-nda" onclick="window.switchTab('nda')">NDA Bill</button>
             </div>
             
             <div class="card" style="padding: 10px; margin-bottom: 15px;">
                 <div class="slider-bar" style="padding: 5px; color: var(--text); display: flex; justify-content: space-between; align-items: center;">
-                    <button class="slider-btn" onclick="changeMonth(-1)" style="padding: 8px 15px;">❮</button>
+                    <button class="slider-btn" onclick="window.changeMonth(-1)" style="padding: 8px 15px;">❮</button>
                     <span id="report-slider-text" style="font-weight: bold; font-size: 16px;">Jun 2026</span>
-                    <button class="slider-btn" onclick="changeMonth(1)" style="padding: 8px 15px;">❯</button>
+                    <button class="slider-btn" onclick="window.changeMonth(1)" style="padding: 8px 15px;">❯</button>
                 </div>
                 <input type="hidden" id="report-month-hidden"> 
             </div>
@@ -580,20 +583,21 @@
                 <div class="summary-row" id="rep-ta-row" style="color: var(--text);"><span id="rep-val-label">Total TA</span><span id="rep-val" style="font-weight: bold; color: var(--green);">₹0</span></div>
                 <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA Amount</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--blue);">₹0</span></div>
                 
+                <p style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 10px; margin-bottom: 0; text-align: center;">💡 To check previous history, use the ❮ ❯ arrows above to change the month.</p>
+                
                 <div id="ta-extras" style="display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 15px;">
                     <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Working Days</label><input type="number" id="pdf-work-days" placeholder="Enter Days" style="text-align: center;"></div>
                     <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Earnings</label><input type="number" id="pdf-earnings" placeholder="Enter ₹" style="text-align: center;"></div>
                 </div>
-                <button style="margin-top: 20px;" id="generate-btn" onclick="triggerGenerate()">Generate PDF Document</button>
+                <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate PDF Document</button>
             </div>
         </div>
     </div>
 
-    <!-- BACKUP -->
     <div id="screen-backup" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
                 <h1>BACKUP & RESTORE</h1>
             </div>
         </div>
@@ -601,14 +605,14 @@
             <div class="card">
                 <h3 style="color: var(--purple);">Manual Backup</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Save a physical backup file to your phone.</p>
-                <button onclick="exportData()" style="background: var(--purple);">Download Backup File</button>
+                <button onclick="window.exportData()" style="background: var(--purple);">Download Backup File</button>
                 <div id="manual-backup-time" style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 8px; text-align: center;"></div>
             </div>
             <div class="card">
                 <h3 style="color: var(--yellow);">Restore from File</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Import a previously downloaded backup file.</p>
                 <button onclick="document.getElementById('import-file').click()" style="background: var(--yellow); color: white;">Choose File & Restore</button>
-                <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
+                <input type="file" id="import-file" class="hidden" accept=".json" onchange="window.importData(event)">
                 <div id="restore-backup-time" style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 8px; text-align: center;"></div>
             </div>
             <div class="card">
@@ -627,7 +631,12 @@
     window.lastRestoreTime = localStorage.getItem('lastRestoreTime') || 'Never';
     window.currentAddTab = 'duty';
     let currentTab = 'ta';
+
+    /* ----- EXPLICIT GLOBAL BINDINGS ----- */
     window.navTo = navTo;
+    window.showModal = showModal;
+    window.openSettings = openSettings;
+    window.unlockProfile = unlockProfile;
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
     function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
@@ -646,7 +655,7 @@
         document.getElementById('theme-toggle').innerText = isDark ? '☀️' : '🌙';
         
         if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
-        if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
+        if (!document.getElementById('screen-all').classList.contains('hidden')) window.renderAllLogs();
     };
     
     window.shareApp = () => {
@@ -668,8 +677,6 @@
             document.getElementById('modal-msg').innerHTML = htmlList;
         }
     };
-
-    window.navTo = navTo;
 
     window.onload = () => { 
         const savedTheme = localStorage.getItem('app_theme');
@@ -720,8 +727,8 @@
             if(!document.getElementById('screen-reports').classList.contains('hidden')) {
                 touchendX = e.changedTouches[0].screenX; 
                 let diff = touchendX - touchstartX;
-                if (diff < -50 && currentTab === 'ta') { switchTab('nda'); }
-                else if (diff > 50 && currentTab === 'nda') { switchTab('ta'); }
+                if (diff < -50 && currentTab === 'ta') { window.switchTab('nda'); }
+                else if (diff > 50 && currentTab === 'nda') { window.switchTab('ta'); }
             } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
                 touchendX = e.changedTouches[0].screenX; 
                 let diff = touchendX - touchstartX;
@@ -787,7 +794,7 @@
         }
         
         if(screenId === 'screen-reports') {
-            switchTab(currentTab); 
+            window.switchTab(currentTab); 
         }
         
         ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
@@ -800,7 +807,7 @@
         }
         
         if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
-        if(screenId === 'screen-all') { renderAllLogs(); checkGlobalNotifications(); }
+        if(screenId === 'screen-all') { window.renderAllLogs(); checkGlobalNotifications(); }
         if(screenId === 'screen-reports') updateReportUI(); 
         if(screenId === 'screen-backup') updateBackupUI(); 
         if(screenId === 'screen-register') {
@@ -826,7 +833,7 @@
     function showModal(title, msg, type, showCancel, callback) { 
         const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
         document.getElementById('modal-title').innerText = title; 
-        document.getElementById('modal-msg').innerText = msg;
+        document.getElementById('modal-msg').innerHTML = msg; // Supports HTML for notifications
         const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); 
         if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
         btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; 
@@ -842,6 +849,8 @@
         const saveBtn = document.getElementById('btn-save-profile');
         if(editBtn) editBtn.style.display = 'block';
         if(saveBtn) saveBtn.style.display = 'none';
+        const pbb = document.getElementById('profile-back-btn');
+        if(pbb) pbb.classList.remove('hidden');
     }
 
     function unlockProfile() {
@@ -851,22 +860,6 @@
         document.getElementById('btn-edit-profile').style.display = 'none';
         document.getElementById('btn-save-profile').style.display = 'block';
     }
-
-    window.checkGazetted = (isManualClick) => {
-        const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
-        const drop = document.getElementById('reg-payscale-dropdown');
-        const txt = document.getElementById('reg-payscale-text');
-        if (isGaz) {
-            drop.classList.add('hidden'); 
-            txt.classList.remove('hidden');
-            if (isManualClick) {
-                showModal("NOTICE / सूचना", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false);
-            }
-        } else {
-            drop.classList.remove('hidden'); 
-            txt.classList.add('hidden');
-        }
-    };
 
     function openSettings() { 
         const p = window.appState.profile || {}; 
@@ -880,10 +873,13 @@
         
         if (empTypeVal === 'Gazetted') {
             document.getElementById('reg-payscale-text').value = p.payscale || '';
+            document.getElementById('reg-payscale-dropdown').classList.add('hidden');
+            document.getElementById('reg-payscale-text').classList.remove('hidden');
         } else {
             document.getElementById('reg-payscale-dropdown').value = p.payscale || '';
+            document.getElementById('reg-payscale-dropdown').classList.remove('hidden');
+            document.getElementById('reg-payscale-text').classList.add('hidden');
         }
-        window.checkGazetted(false); 
         
         document.getElementById('reg-gradepay').value = p.gradepay || ''; 
         document.getElementById('reg-da').value = p.da || ''; 
@@ -900,6 +896,8 @@
         
         if (!p.name) {
             unlockProfile();
+            const pbb = document.getElementById('profile-back-btn');
+            if(pbb) pbb.classList.add('hidden');
         } else {
             lockProfile();
         }
@@ -990,38 +988,15 @@
             if (aDays < 0) { validMsg += "Your Checking Authority has expired! "; hasWarning = true; }
             else if (aDays <= 20) { validMsg += `Your Checking Authority expires in ${Math.ceil(aDays)} days. `; hasWarning = true; }
         }
-        const m = today.getMonth(); 
-        const d = today.getDate();
-        if ((m === 6 && d <= 3) || (m === 0 && d <= 3)) { 
-            validMsg += "Reminder: Did your Basic Pay change? Please update it if applicable. ";
-            hasWarning = true;
-        }
         
         const alertBox = document.getElementById('profile-alert-box');
         const alertMsg = document.getElementById('profile-alert-msg');
         
         if (hasWarning) {
-            if(alertMsg) alertMsg.innerText = validMsg + (validMsg.includes("expired") || validMsg.includes("expires") ? "Please extend your validity soon." : "");
+            if(alertMsg) alertMsg.innerText = validMsg;
             if(alertBox) alertBox.classList.remove('hidden');
         } else {
             if(alertBox) alertBox.classList.add('hidden');
-        }
-        
-        let daWarningDiv = document.getElementById('da-warning-msg');
-        let daReminded = localStorage.getItem('da_remind_month');
-        let showDA = false; let showRemindBtn = false;
-        if ((m === 2 && d >= 1 && d <= 3) || (m === 8 && d >= 1 && d <= 3)) { showDA = true; showRemindBtn = true; }
-        if (m === 3 && d >= 1 && d <= 3 && daReminded === '4') { showDA = true; }
-        if (m === 9 && d >= 1 && d <= 3 && daReminded === '10') { showDA = true; }
-
-        if (showDA) {
-            let remBtnHtml = showRemindBtn ? `<br><span style="text-decoration:underline; cursor:pointer; font-weight:bold; color:var(--text); display:inline-block; margin-top:5px;" onclick="window.setDAReminder()">⏳ Remind me next month</span>` : '';
-            if(daWarningDiv) {
-                daWarningDiv.innerHTML = `⚠️ Change the DA% if applicable.` + remBtnHtml;
-                daWarningDiv.classList.remove('hidden');
-            }
-        } else {
-            if(daWarningDiv) daWarningDiv.classList.add('hidden');
         }
     }
 
@@ -1266,14 +1241,14 @@
                 else if(leg.dutyType === 'COCL') bgCol = "rgba(234, 179, 8, 0.4)";
                 
                 let dateStr = (leg.fromDate === leg.toDate) ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}`;
-                htmlElements.push(`<div style="grid-column: 1 / -1; background: ${bgCol}; color: ${textCol}; font-weight: bold; padding: 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;" onclick="manageNonDuty(${leg.id}, '${leg.dutyType}', '${leg.fromDate}', '${leg.toDate}')">🌴 ${leg.dutyType.toUpperCase()} : ${dateStr}</div>`);
+                htmlElements.push(`<div style="grid-column: 1 / -1; background: ${bgCol}; color: ${textCol}; font-weight: bold; padding: 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;" onclick="window.manageNonDuty(${leg.id}, '${leg.dutyType}', '${leg.fromDate}', '${leg.toDate}')">🌴 ${leg.dutyType.toUpperCase()} : ${dateStr}</div>`);
             } else {
                 let dir = legDirectionMap[leg.id];
                 let rowColor = dir === 'up' ? 'var(--row-up-bg)' : 'var(--row-down-bg)';
                 let shortDep = formatDate(leg.depDate).substring(0, 6); 
                 let shortArr = formatDate(leg.arrDate).substring(0, 6);
                 
-                htmlElements.push(`<div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; align-items: center; padding: 14px 2px; border-bottom: 1px solid var(--border); font-size: 12px; text-align: center; background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;" onclick="manageLeg(${leg.id}, '${leg.train}', '${leg.depStn}', '${leg.arrStn}')">
+                htmlElements.push(`<div style="display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; align-items: center; padding: 14px 2px; border-bottom: 1px solid var(--border); font-size: 12px; text-align: center; background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;" onclick="window.manageLeg(${leg.id}, '${leg.train}', '${leg.depStn}', '${leg.arrStn}')">
                     <div style="text-align: left; font-weight: bold; color: var(--row-text); padding-left: 5px; font-size: 11px; transition: color 0.3s;">${leg.train}</div>
                     <div style="color: var(--row-blue-text); font-weight: bold; font-size: 11px; transition: color 0.3s;">${shortDep}</div>
                     <div style="font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</div>
@@ -1312,7 +1287,7 @@
     
     function deleteLeg(id) { 
         showModal("WARNING / चेतावनी", "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nक्या आप वाकई इसे हटाना चाहते हैं?", "warning", true, (proceed) => {
-            if(proceed) { window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); renderAllLogs(); updateDashboardUI(); }
+            if(proceed) { window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); window.renderAllLogs(); updateDashboardUI(); }
         }); 
     }
     
