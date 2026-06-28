@@ -12,78 +12,51 @@
         :root { 
             --bg: #f8fafc; 
             --card: #ffffff; 
-            --border: #cbd5e1; 
+            --border: #e2e8f0; 
             --text: #1e293b; 
             --text-muted: #64748b;
             --blue: #1e40af; 
-            --input-bg: #ffffff;
+            --input-bg: #f8fafc;
             --input-disabled: #f1f5f9;
-            --input-tint-bg: #e0e7ff;
-            --input-tint-border: #c7d2fe;
             --modal-bg: #ffffff;
             --top-bar-bg: #0f172a;
             
             --danger-bg: #fef2f2; --danger-border: #ef4444; --danger-text: #991b1b;
             --warning-bg: #fffbeb; --warning-border: #f59e0b; --warning-text: #92400e;
             
-            --blue-card-bg: #e0f2fe; --blue-card-border: #7dd3fc; --blue-text: #0369a1;
-            --orange-card-bg: #ffedd5; --orange-card-border: #fdba74; --orange-text: #c2410c;
-            --pink-card-bg: #fae8ff; --pink-card-border: #f9a8d4;
-            --green-card-bg: #dcfce7; --green-card-border: #86efac; --green-text: #166534;
-            --indigo-card-bg: #eef2ff; --indigo-card-border: #818cf8; --indigo-text: #4338ca;
-            --purple-card-bg: #f3e8ff; --purple-card-border: #d8b4fe; --purple-text: #7e22ce;
-            --yellow-card-bg: #fef3c7; --yellow-card-border: #fcd34d; --yellow-text: #b45309;
-            --red-card-bg: #fee2e2; --red-card-border: #fca5a5; --red-text: #b91c1c;
-            
-            --green-box-bg: #a7f3d0; --green-box-border: #34d399; --green-box-val: #065f46; --green-box-lbl: #047857;
-            --blue-box-bg: #bae6fd; --blue-box-border: #38bdf8; --blue-box-val: #0c4a6e; --blue-box-lbl: #075985;
-            
-            --row-up-bg: #f0fdf4;
-            --row-down-bg: #fff7ed;
-            --row-text: black;
+            --row-up-bg: #ffffff;
+            --row-down-bg: #f1f5f9;
+            --row-text: #000000;
             --row-blue-text: #1e40af;
+            --row-muted-text: #475569;
             --table-header-bg: #e0e7ff;
             --table-header-text: #3730a3;
             --table-border: #a5b4fc;
         }
 
-        /* METALLIC DARK MODE: Black/Gray Shades with White, Red, Yellow, Blue Accents */
+        /* METALLIC DARK MODE OVERHAUL */
         body.dark-mode {
             --bg: #000000;
-            --card: #0a0a0a;
-            --border: #2a2a2a; /* Muted grey border */
+            --card: #111111;
+            --border: #333333; 
             --text: #ffffff;
-            --text-muted: #d4d4d4;
+            --text-muted: #a3a3a3;
             --blue: #3b82f6;
-            --input-bg: #0a0a0a;
-            --input-disabled: #141414;
-            --input-tint-bg: #111111;
-            --input-tint-border: #3b82f6;
-            --modal-bg: #111111;
-            --top-bar-bg: #0a0a0a;
+            --input-bg: #000000;
+            --input-disabled: #0a0a0a;
+            --modal-bg: #161616;
+            --top-bar-bg: #1a1a1a; 
             
-            --danger-bg: #111111; --danger-border: #ef4444; --danger-text: #ef4444;
-            --warning-bg: #111111; --warning-border: #eab308; --warning-text: #eab308;
+            --danger-bg: #1e1e1e; --danger-border: #ef4444; --danger-text: #f87171;
+            --warning-bg: #1e1e1e; --warning-border: #eab308; --warning-text: #fcd34d;
             
-            /* Various Black/Gray Shades */
-            --blue-card-bg: #111111; --blue-card-border: #3b82f6; --blue-text: #3b82f6;
-            --orange-card-bg: #141414; --orange-card-border: #eab308; --orange-text: #eab308;
-            --pink-card-bg: #181818; --pink-card-border: #ffffff;
-            --green-card-bg: #0d0d0d; --green-card-border: #eab308; --green-text: #ffffff;
-            --indigo-card-bg: #111111; --indigo-card-border: #3b82f6; --indigo-text: #ffffff;
-            --purple-card-bg: #161616; --purple-card-border: #eab308; --purple-text: #eab308;
-            --yellow-card-bg: #111111; --yellow-card-border: #3b82f6; --yellow-text: #ffffff;
-            --red-card-bg: #141414; --red-card-border: #ef4444; --red-text: #ef4444;
-            
-            --green-box-bg: #111111; --green-box-border: #eab308; --green-box-val: #eab308; --green-box-lbl: #ffffff;
-            --blue-box-bg: #111111; --blue-box-border: #3b82f6; --blue-box-val: #3b82f6; --blue-box-lbl: #ffffff;
-            
-            --row-up-bg: #141414; /* Light black */
-            --row-down-bg: #0a0a0a; /* Deep black */
+            --row-up-bg: #111111; 
+            --row-down-bg: #1a1a1a; 
             --row-text: #ffffff;
-            --row-blue-text: #eab308; /* High contrast yellow for times/dates */
-            --table-header-bg: #181818;
-            --table-header-text: #3b82f6;
+            --row-blue-text: #3b82f6; 
+            --row-muted-text: #a3a3a3;
+            --table-header-bg: #1a1a1a;
+            --table-header-text: #ffffff;
             --table-border: #333333;
         }
 
@@ -102,58 +75,59 @@
         }
         .hidden { display: none !important; }
         
-        .top-bar { background: var(--top-bar-bg); color: white; padding: 12px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.3); max-width: 600px; margin: 0 auto; width: 100%; border-bottom: 2px solid #334155; transition: background 0.3s; }
-        .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); max-width: 100%; white-space: nowrap; line-height: 1.2; }
+        .top-bar { background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-bottom: 1px solid var(--border); transition: background 0.3s; }
+        .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; max-width: 100%; white-space: nowrap; line-height: 1.2; }
         .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; position: absolute; left: 15px; font-weight: bold; }
         
-        .screen-content { padding: 15px; padding-bottom: 60px; max-width: 600px; margin: 0 auto; }
+        .screen-content { padding: 15px; padding-bottom: 90px; max-width: 600px; margin: 0 auto; }
         
-        .card { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s; }
-        .profile-sec { padding: 15px; border-radius: 8px; margin-bottom: 15px; border-bottom-width: 4px; transition: background 0.3s, border 0.3s; }
-        .stat-box { border-radius: 8px; padding: 12px; display: flex; flex-direction: column; justify-content: center; border-bottom-width: 4px; cursor: pointer; transition: transform 0.1s, background 0.3s, border 0.3s; }
-        .stat-box:active { transform: translateY(3px); border-bottom-width: 1px; margin-top: 3px; }
-        .nav-card { border-radius: 8px; padding: 12px; display: flex; flex-direction: column; cursor: pointer; border-bottom-width: 4px; transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; }
-        .nav-card:active { transform: translateY(3px); border-bottom-width: 1px; margin-top: 3px; }
+        /* Unified 3D Light Borders - No Colors */
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: background 0.3s, border 0.3s; }
+        .profile-sec { padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid var(--border); background: var(--card); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: background 0.3s, border 0.3s; }
+        .nav-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 15px; display: flex; flex-direction: column; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; }
+        .nav-card:active { transform: translateY(3px); box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
-        .stat-value { font-size: 18px; font-weight: bold; margin-bottom: 2px; }
-        .stat-label { font-size: 12px; font-weight: 600; }
-        .nav-icon { font-size: 20px; margin-bottom: 5px; }
-        .nav-title { font-weight: bold; font-size: 13px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .nav-desc { font-size: 11px; opacity: 0.8; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; }
+        .nav-icon { font-size: 24px; margin-bottom: 8px; display: inline-block; }
+        .nav-title { font-weight: bold; font-size: 13px; margin-bottom: 4px; text-transform: uppercase; color: var(--text); }
+        .nav-desc { font-size: 11px; color: var(--text-muted); }
         
-        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 6px; margin-top: 4px; font-size: 15px; font-weight: bold; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); border-bottom-width: 2px; transition: background 0.3s, color 0.3s, border 0.3s; }
-        input:disabled { background: var(--input-disabled); color: var(--text-muted); border-style: dashed; box-shadow: none; }
-        .profile-lbl { font-size: 13px; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 2px; transition: color 0.3s; }
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 6px; margin-top: 4px; font-size: 15px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s; }
+        input:disabled { background: var(--input-disabled); color: var(--text-muted); border-style: dashed; }
+        .profile-lbl { font-size: 13px; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 2px; }
         
-        button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); box-shadow: 0 4px 6px rgba(0,0,0,0.15); border-bottom: 3px solid rgba(0,0,0,0.2); transition: background 0.3s; }
-        button:active { opacity: 0.8; transform: translateY(2px); border-bottom-width: 1px; margin-top: 2px; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); box-shadow: 0 4px 6px rgba(0,0,0,0.15); transition: background 0.3s; }
+        button:active { opacity: 0.8; transform: translateY(2px); }
         
-        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background: var(--green-card-bg); color: var(--green-text); transition: background 0.3s, color 0.3s; border: 1px solid var(--green-card-border); }
-        .status-dot { width: 8px; height: 8px; background: var(--green-card-border); border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: background 0.3s; }
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; background: var(--input-bg); color: var(--text); border: 1px solid var(--border); transition: background 0.3s, color 0.3s; }
+        .status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         
-        .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.5); z-index: 5000; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; transition: right 0.3s; }
+        /* Draggable Floating Button */
+        .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.5); z-index: 5000; cursor: grab; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; touch-action: none; }
+        .floating-back:active { cursor: grabbing; }
         
-        .tab-container { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-bottom-width: 3px; transition: background 0.3s, border 0.3s; }
-        .tab-btn { flex: 1; padding: 12px; background: var(--card); color: var(--text-muted); font-weight: bold; border-radius: 0; margin: 0; text-align: center; cursor: pointer; box-shadow: none; border-bottom: none; transition: background 0.3s, color 0.3s; }
+        .tab-container { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 30px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: background 0.3s, border 0.3s; }
+        .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; }
         .tab-btn.active { background: var(--blue); color: white; }
-        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; font-weight: bold; color: var(--indigo-text); transition: color 0.3s; }
-        .slider-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 5px 12px; border-radius: 6px; width: auto; margin: 0; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-bottom-width: 2px; transition: background 0.3s, color 0.3s, border 0.3s; }
-        .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed rgba(0,0,0,0.1); font-size: 14px; }
         
         #custom-modal, #manage-modal, #help-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
-        #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; text-align: center; border-top: 6px solid var(--blue); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: background 0.3s; }
+        #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: background 0.3s; }
         
-        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 44px; background: var(--top-bar-bg); display: flex; justify-content: space-around; align-items: center; z-index: 4000; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); border-top: 2px solid #334155; transition: background 0.3s; }
-        .bottom-icon { width: 30px; height: 30px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; }
+        /* BOTTOM NAVIGATION BAR */
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-evenly; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.4); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 10px; }
+        .bottom-icon { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; }
         .bottom-icon:active { background: rgba(255,255,255,0.1); }
-        .bell-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .bell-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         
+        /* The '+' FAB Button */
+        .nav-fab { width: 50px; height: 50px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; font-weight: normal; margin-top: -20px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); border: 3px solid var(--top-bar-bg); cursor: pointer; z-index: 4001; transition: background 0.3s, border 0.3s; }
+        
+        /* PRINT PREVIEW */
         #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; }
         
-        .notification-dot { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; transition: box-shadow 0.3s; }
+        .notification-dot { position: absolute; top: 5px; right: 5px; width: 14px; height: 14px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; transition: box-shadow 0.3s; }
 
         @media screen {
             .page-break { border-top: 2px dashed #cbd5e1; margin-top: 30px; padding-top: 30px; position: relative; }
@@ -195,6 +169,10 @@
             if (user) {
                 window.currentUid = user.uid;
                 onValue(ref(window.db, 'users/' + user.uid), (snapshot) => {
+                    window.lastSyncTime = new Date().toLocaleTimeString();
+                    const syncLbl = document.getElementById('sync-time-lbl');
+                    if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
+
                     const data = snapshot.val();
                     if (data) {
                         window.appState = data;
@@ -204,7 +182,7 @@
                         }
                     } else {
                         window.appState = { profile: null, legs: [] };
-                        navTo('screen-register');
+                        openSettings(); 
                     }
                 });
             } else {
@@ -233,8 +211,8 @@
         <div id="preview-content"></div>
     </div>
     <div id="preview-floating-btns" style="position: fixed; right: -5px; top: 82%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px;">
-        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; gap: 8px; transition: right 0.3s;" onclick="window.print()">🖨️ Print</div>
-        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; gap: 8px; transition: right 0.3s;" onclick="closePreview()">❌ Close</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; gap: 8px;" onclick="window.print()">🖨️ Print</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; gap: 8px;" onclick="closePreview()">❌ Close</div>
     </div>
 </div>
 
@@ -244,6 +222,8 @@
     <div class="bottom-bar hidden" id="main-bottom-bar">
         <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
         <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
+        <div class="bottom-icon" onclick="showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
+        <div class="nav-fab" onclick="window.switchAddTab('duty'); navTo('screen-add');">+</div>
         <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
         <div class="bottom-icon" onclick="showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
         <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
@@ -258,21 +238,21 @@
     </div>
     
     <div id="help-modal" class="hidden">
-        <div style="background: var(--modal-bg); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border-top: 6px solid var(--blue); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: background 0.3s;">
-            <div style="background: var(--indigo-card-bg); padding: 10px; border-radius: 8px; border: 2px solid var(--indigo-card-border); margin-bottom: 15px;">
-                <h3 style="color: var(--indigo-text); margin: 0; text-transform: uppercase;">Help & Support</h3>
+        <div style="background: var(--modal-bg); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: background 0.3s;">
+            <div style="background: var(--card); padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
+                <h3 style="color: var(--text); margin: 0; text-transform: uppercase;">Help & Support</h3>
             </div>
             <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 20px; font-weight: bold;">Got suggestions, facing errors, or need help? Reach out directly!</p>
-            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: inline-block; width: 100%; background: #3b82f6; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px;">✉️ Email Developer</a>
-            <a href="https://wa.me/918116002746" target="_blank" style="display: inline-block; width: 100%; background: #25D366; color: white; padding: 12px; border-radius: 8px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 15px;">💬 WhatsApp (Chat Only)</a>
-            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border-radius: 8px; border: 1px solid var(--border); box-shadow: none;">Close</button>
+            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: inline-block; width: 100%; background: #3b82f6; color: white; padding: 12px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px;">✉️ Email Developer</a>
+            <a href="https://wa.me/918116002746" target="_blank" style="display: inline-block; width: 100%; background: #25D366; color: white; padding: 12px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 15px;">💬 WhatsApp (Chat Only)</a>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border-radius: 30px; border: 1px solid var(--border); box-shadow: none;">Close</button>
         </div>
     </div>
 
     <div id="manage-modal" class="hidden">
-        <div style="background: var(--modal-bg); padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; border: 2px solid var(--blue); margin: auto; transition: background 0.3s;">
+        <div style="background: var(--modal-bg); padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; border: 1px solid var(--border); margin: auto; transition: background 0.3s;">
             <div style="font-size: 30px; margin-bottom: 10px;">⚙️</div>
-            <h3 style="margin-top:0; font-size: 18px; color: var(--blue);">Manage Entry</h3>
+            <h3 style="margin-top:0; font-size: 18px; color: var(--text);">Manage Entry</h3>
             <p id="manage-msg" style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; font-weight: bold;"></p>
             <input type="hidden" id="manage-id">
             <input type="hidden" id="manage-type">
@@ -294,7 +274,6 @@
         </div>
     </div>
 
-    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -304,18 +283,17 @@
         </div>
         <div class="screen-content">
             
-            <div id="profile-alert-box" class="hidden" style="background: var(--danger-bg); border: 2px solid var(--border); border-left: 4px solid var(--danger-border); padding: 12px; margin-bottom: 15px; font-size: 13px; color: var(--danger-text); border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); transition: background 0.3s, color 0.3s, border 0.3s;">
+            <div id="profile-alert-box" class="hidden" style="background: var(--danger-bg); border: 1px solid var(--border); border-left: 4px solid var(--danger-border); padding: 12px; margin-bottom: 15px; font-size: 13px; color: var(--danger-text); border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s;">
                 <b style="display: block; margin-bottom: 5px;">⚠️ Action Required:</b>
                 <span id="profile-alert-msg"></span>
             </div>
 
-            <div style="background: var(--warning-bg); border: 2px solid var(--border); border-left: 4px solid var(--warning-border); padding: 12px; margin-bottom: 15px; font-size: 13px; color: var(--warning-text); border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); transition: background 0.3s, color 0.3s, border 0.3s;">
-                <b>Note:</b> Please fill out this data carefully. It will be used directly for your TA/NDA calculations and PDF generation.<br>
-                <b style="margin-top: 5px; display: inline-block;">नोट:</b> कृपया इस डेटा को ध्यानपूर्वक भरें। इसका उपयोग सीधे आपके TA/NDA गणना और PDF जनरेशन के लिए किया जाएगा।
+            <div style="background: var(--warning-bg); border: 1px solid var(--border); border-left: 4px solid var(--warning-border); padding: 12px; margin-bottom: 15px; font-size: 13px; color: var(--warning-text); border-radius: 4px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s;">
+                <b>Note:</b> Please fill out this data carefully. It will be used directly for your TA/NDA calculations and PDF generation.
             </div>
         
-            <div class="card" style="border: 2px solid var(--border); padding: 10px;">
-                <div class="profile-sec" style="background: var(--blue-card-bg); border: 2px solid var(--blue-card-border);">
+            <div class="card">
+                <div class="profile-sec">
                     <div style="margin-bottom: 10px;"><label class="profile-lbl">Full Name</label><input type="text" id="reg-name" style="text-transform: uppercase;"></div>
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                         <div style="flex: 1;"><label class="profile-lbl">P.F. No.</label><input type="text" id="reg-pf"></div>
@@ -327,7 +305,7 @@
                     </div>
                 </div>
 
-                <div class="profile-sec" style="background: var(--orange-card-bg); border: 2px solid var(--orange-card-border);">
+                <div class="profile-sec">
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                         <div style="flex: 1;"><label class="profile-lbl">Employee Type</label>
                             <select id="reg-emp-type" onchange="window.checkGazetted(true)">
@@ -364,92 +342,92 @@
                     </div>
                 </div>
 
-                <div class="profile-sec" style="background: var(--pink-card-bg); border: 2px solid var(--pink-card-border);">
+                <div class="profile-sec">
                     <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1;"><label class="profile-lbl">Pass No.</label><input type="text" id="reg-pass"></div><div style="flex: 1;"><label class="profile-lbl">Pass Validity</label><input type="date" id="reg-passval"></div></div>
                     <div style="display: flex; gap: 10px; margin-bottom: 5px;"><div style="flex: 1;"><label class="profile-lbl">Checking Authority No.</label><input type="text" id="reg-auth"></div><div style="flex: 1;"><label class="profile-lbl">Authority Validity</label><input type="date" id="reg-authval"></div></div>
                 </div>
 
-                <div class="profile-sec" style="background: var(--green-card-bg); border: 2px solid var(--green-card-border);">
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Main HQ Station <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">(Codes only)</span></label><input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;"></div>
-                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Nearby HQs <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">(Codes, comma separated)</span></label><input type="text" id="reg-nearby" placeholder="e.g. BCY, BSBS" style="text-transform: uppercase;"></div>
-                    <div style="margin-bottom: 5px;"><label class="profile-lbl">Outward Destinations <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">(Codes, comma separated)</span></label><input type="text" id="reg-dest" placeholder="e.g. LKO, PRYJ, DDU" style="text-transform: uppercase;"></div>
+                <div class="profile-sec">
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Main HQ Station</label><input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;"></div>
+                    <div style="margin-bottom: 10px;"><label class="profile-lbl">Nearby HQs</label><input type="text" id="reg-nearby" placeholder="e.g. BCY, BSBS" style="text-transform: uppercase;"></div>
+                    <div style="margin-bottom: 5px;"><label class="profile-lbl">Outward Destinations</label><input type="text" id="reg-dest" placeholder="e.g. LKO, PRYJ, DDU" style="text-transform: uppercase;"></div>
                 </div>
 
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
-                    <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #4f46e5; color: white; font-weight: bold; font-size: 15px; cursor: pointer; border-bottom: 3px solid #3730a3;">Edit Profile</button>
-                    <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #22c55e; color: white; font-weight: bold; font-size: 15px; display: none; cursor: pointer; border-bottom: 3px solid #16a34a;">💾 Save & Lock</button>
+                    <button id="btn-edit-profile" type="button" onclick="unlockProfile()" style="flex: 1; background: #4f46e5;">Edit Profile</button>
+                    <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; background: #22c55e; display: none;">💾 Save & Lock</button>
                 </div>
-                <button style="margin-top: 10px; background: #ef4444; color: white; border-bottom: 3px solid #b91c1c;" onclick="window.logout()">Sign Out</button>
-                <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v1.5 (Dark Mode Ready)</div>
+                <button style="margin-top: 10px; background: #ef4444;" onclick="window.logout()">Sign Out</button>
+                <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v1.0</div>
             </div>
         </div>
     </div>
 
-    <!-- COMPACT DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
-        <div class="top-bar" style="padding: 10px 20px; min-height: 68px;">
-            <div class="top-bar-content" style="justify-content: center;">
+        <div class="top-bar">
+            <div class="top-bar-content">
                 <div style="text-align: center;">
-                    <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
-                        <h1 id="dash-title" style="text-transform: uppercase; font-size: 20px; font-weight: 900; color: #fde047; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">TTE LOG</h1>
+                    <div style="display: inline-block; background: var(--card); padding: 8px 20px; border-radius: 30px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
+                        <h1 id="dash-title">TTE LOG</h1>
                     </div>
-                    <div class="subtitle" id="dash-subtitle" style="text-align: center; margin-top: 5px; font-size: 14px; color: #e2e8f0; font-weight: normal;">Hi, User</div>
                 </div>
             </div>
         </div>
-        <div class="screen-content" style="padding-bottom: 60px;">
+        <div class="screen-content">
             
-            <div class="card card-3d" style="border: 3px solid var(--indigo-card-border); background: var(--indigo-card-bg); padding: 12px; margin-bottom: 10px;">
+            <div class="card" style="padding: 12px; margin-bottom: 10px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3 style="margin: 0; font-size: 16px; color: var(--indigo-text);">Duty Status</h3>
-                    <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
+                    <h3 style="margin: 0; font-size: 16px; color: var(--text);">Duty Status</h3>
+                    <div class="status-badge" id="duty-status-badge"><span id="duty-status-text">At HQ</span></div>
                 </div>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 10px;" id="duty-status-desc">Ready to log your next journey.</p>
-                <button onclick="window.switchAddTab('duty'); navTo('screen-add');" style="background: #4f46e5; border-bottom-color: #3730a3; margin-bottom: 10px;">+ Add Journey Entry</button>
+                <button onclick="window.switchAddTab('duty'); navTo('screen-add');" style="margin-bottom: 10px; padding: 10px;">+ Add Journey Entry</button>
                 
                 <hr style="border: 0; border-top: 1px dashed var(--border); margin: 0 0 10px 0;">
-                <h4 style="margin: 0 0 8px 0; font-size: 12px; color: var(--indigo-text); text-transform: uppercase; letter-spacing: 0.5px;">Recent Entries</h4>
-                <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 6px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"></div>
+                <h4 style="margin: 0 0 8px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Recent Entries</h4>
+                <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 6px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"></div>
             </div>
             
-            <div class="card card-3d" style="border: 3px solid var(--indigo-card-border); padding: 12px; background: var(--pink-card-bg); margin-bottom: 10px;">
-                <div class="grid-2" style="margin-bottom: 0; gap: 10px;">
-                    <div class="stat-box" onclick="currentTab='ta'; navTo('screen-reports');" style="background: var(--green-box-bg); border: 2px solid var(--green-box-border); padding: 12px;">
-                        <div class="stat-value" id="dash-ta-val" style="color: var(--green-box-val); font-size: 18px;">₹0</div>
-                        <div class="stat-label" id="dash-ta-lbl" style="color: var(--green-box-lbl);">TA this month</div>
+            <div style="margin-bottom: 10px;">
+                <div class="grid-2">
+                    <div class="nav-card" onclick="currentTab='ta'; navTo('screen-reports');">
+                        <div class="stat-value" id="dash-ta-val">₹0</div>
+                        <div class="stat-label" id="dash-ta-lbl" style="color: var(--text-muted);">TA this month</div>
                     </div>
-                    <div class="stat-box" onclick="currentTab='nda'; navTo('screen-reports');" style="background: var(--blue-box-bg); border: 2px solid var(--blue-box-border); padding: 12px;">
-                        <div class="stat-value" id="dash-nda-val" style="color: var(--blue-box-val); font-size: 18px;">0:00 Hrs</div>
-                        <div class="stat-label" id="dash-nda-lbl" style="color: var(--blue-box-lbl);">NDA (---), ₹0</div>
+                    <div class="nav-card" onclick="currentTab='nda'; navTo('screen-reports');">
+                        <div class="stat-value" id="dash-nda-val">0:00 Hrs</div>
+                        <div class="stat-label" id="dash-nda-lbl" style="color: var(--text-muted);">NDA (---), ₹0</div>
                     </div>
-                    <div class="nav-card" onclick="navTo('screen-all')" style="background: var(--blue-card-bg); border: 2px solid var(--blue-card-border); padding: 12px;">
-                        <div class="nav-icon" style="font-size: 20px; margin-bottom: 5px;">📋</div>
-                        <div class="nav-title" style="color: var(--blue-text); font-size: 13px;">ALL JOURNEY</div>
+                    <div class="nav-card" onclick="navTo('screen-all')">
+                        <div class="nav-icon">📋</div>
+                        <div class="nav-title">ALL JOURNEY</div>
+                        <div class="nav-desc">View, edit, delete</div>
                     </div>
-                    <div class="nav-card" onclick="currentTab='ta'; navTo('screen-reports');" style="background: var(--purple-card-bg); border: 2px solid var(--purple-card-border); padding: 12px;">
-                        <div class="nav-icon" style="font-size: 20px; margin-bottom: 5px;">🖨️</div>
-                        <div class="nav-title" style="color: var(--purple-text); font-size: 13px;">GENERATE PDF</div>
+                    <div class="nav-card" onclick="currentTab='ta'; navTo('screen-reports');">
+                        <div class="nav-icon">🖨️</div>
+                        <div class="nav-title">GENERATE PDF</div>
+                        <div class="nav-desc">TA Journal / NDA Bill</div>
                     </div>
-                    <!-- FIX 1 ENFORCED: Properly links to strict lock sequence -->
-                    <div class="nav-card" onclick="navTo('screen-register')" style="background: var(--yellow-card-bg); border: 2px solid var(--yellow-card-border); padding: 12px;">
-                        <div class="nav-icon" style="position: relative; display: inline-block; font-size: 20px; margin-bottom: 5px;">👤<div id="profile-alert-badge" class="notification-dot hidden">!</div></div>
-                        <div class="nav-title" style="color: var(--yellow-text); font-size: 13px;">PROFILE SETUP</div>
+                    <div class="nav-card" onclick="navTo('screen-register')">
+                        <div class="nav-icon" style="position: relative; display: inline-block;">👤<div id="profile-alert-badge" class="notification-dot hidden">!</div></div>
+                        <div class="nav-title">PROFILE SETUP</div>
+                        <div class="nav-desc">Stations, pay details</div>
                     </div>
-                    <div class="nav-card" onclick="navTo('screen-backup')" style="background: var(--red-card-bg); border: 2px solid var(--red-card-border); padding: 12px;">
-                        <div class="nav-icon" style="font-size: 20px; margin-bottom: 5px;">💾</div>
-                        <div class="nav-title" style="color: var(--red-text); font-size: 13px;">BACKUP DATA</div>
+                    <div class="nav-card" onclick="navTo('screen-backup')">
+                        <div class="nav-icon">💾</div>
+                        <div class="nav-title">BACKUP DATA</div>
+                        <div class="nav-desc">Save your data</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">ADD JOURNEY</h1>
+                <h1>ADD JOURNEY</h1>
             </div>
         </div>
         <div class="screen-content">
@@ -460,39 +438,39 @@
             </div>
 
             <div id="form-duty">
-                <div style="background: var(--indigo-card-bg); border: 2px solid var(--indigo-card-border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s;">
-                    <div style="padding: 8px; border-bottom: 2px solid var(--indigo-card-border);">
-                        <label style="font-size: 14px; font-weight: 900; color: var(--indigo-text); display: block; margin-bottom: 4px;">Train No.</label>
-                        <input type="text" id="trip-train" style="margin: 0; border: 1px solid var(--input-tint-border); background: var(--input-tint-bg); color: var(--text); border-radius: 4px; padding: 8px;">
+                <div class="card" style="padding:0; overflow:hidden;">
+                    <div style="padding: 8px; border-bottom: 1px solid var(--border);">
+                        <label style="font-size: 14px; font-weight: 900; color: var(--text); display: block; margin-bottom: 4px;">Train No.</label>
+                        <input type="text" id="trip-train" style="margin: 0; border: 1px solid var(--border); border-radius: 4px; padding: 8px;">
                     </div>
-                    <div style="display: flex; border-bottom: 2px solid var(--indigo-card-border);">
-                        <div style="flex: 1; padding: 8px; border-right: 2px solid var(--indigo-card-border);">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--indigo-text); display: block; margin-bottom: 4px;">Departure Date</label>
-                            <input type="date" id="trip-dep-date" style="margin: 0; border: 1px solid var(--input-tint-border); background: var(--input-tint-bg); color: var(--text); border-radius: 4px; padding: 8px;">
+                    <div style="display: flex; border-bottom: 1px solid var(--border);">
+                        <div style="flex: 1; padding: 8px; border-right: 1px solid var(--border);">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Departure Date</label>
+                            <input type="date" id="trip-dep-date" style="margin: 0; border: 1px solid var(--border); border-radius: 4px; padding: 8px;">
                         </div>
                         <div style="flex: 1; padding: 8px;">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--indigo-text); display: block; margin-bottom: 4px;">Arrival Date</label>
-                            <input type="date" id="trip-arr-date" style="margin: 0; border: 1px solid var(--input-tint-border); background: var(--input-tint-bg); color: var(--text); border-radius: 4px; padding: 8px;">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Arrival Date</label>
+                            <input type="date" id="trip-arr-date" style="margin: 0; border: 1px solid var(--border); border-radius: 4px; padding: 8px;">
                         </div>
                     </div>
-                    <div style="display: flex; border-bottom: 2px solid var(--indigo-card-border);">
-                        <div style="flex: 1; padding: 8px; border-right: 2px solid var(--indigo-card-border);">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--indigo-text); display: block; margin-bottom: 4px;">Departure Time</label>
-                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; border: 1px solid var(--input-tint-border); background: var(--input-tint-bg); color: var(--text); border-radius: 4px; padding: 8px;">
+                    <div style="display: flex; border-bottom: 1px solid var(--border);">
+                        <div style="flex: 1; padding: 8px; border-right: 1px solid var(--border);">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Departure Time</label>
+                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; border: 1px solid var(--border); border-radius: 4px; padding: 8px;">
                         </div>
                         <div style="flex: 1; padding: 8px;">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--indigo-text); display: block; margin-bottom: 4px;">Arrival Time</label>
-                            <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; border: 1px solid var(--input-tint-border); background: var(--input-tint-bg); color: var(--text); border-radius: 4px; padding: 8px;">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Arrival Time</label>
+                            <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; border: 1px solid var(--border); border-radius: 4px; padding: 8px;">
                         </div>
                     </div>
                     <div style="display: flex;">
-                        <div style="flex: 1; padding: 8px; border-right: 2px solid var(--indigo-card-border);">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--indigo-text); display: block; margin-bottom: 4px;">Station From</label>
-                            <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; border: 1px solid var(--input-tint-border); background: var(--input-tint-bg); color: var(--text); border-radius: 4px; text-transform: uppercase; padding: 8px;">
+                        <div style="flex: 1; padding: 8px; border-right: 1px solid var(--border);">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Station From</label>
+                            <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; border: 1px solid var(--border); border-radius: 4px; text-transform: uppercase; padding: 8px;">
                         </div>
                         <div style="flex: 1; padding: 8px;">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--indigo-text); display: block; margin-bottom: 4px;">Station To</label>
-                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; border: 1px solid var(--input-tint-border); background: var(--input-tint-bg); color: var(--text); border-radius: 4px; text-transform: uppercase; padding: 8px;">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Station To</label>
+                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; border: 1px solid var(--border); border-radius: 4px; text-transform: uppercase; padding: 8px;">
                             <datalist id="stn-list"></datalist>
                         </div>
                     </div>
@@ -500,10 +478,10 @@
             </div>
 
             <div id="form-nonduty" class="hidden">
-                <div style="background: var(--green-card-bg); border: 2px solid var(--green-card-border); border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s;">
+                <div class="card">
                     <div style="margin-bottom: 15px;">
-                        <label style="font-size: 14px; font-weight: 900; color: var(--green-text); display: block; margin-bottom: 5px;">Type of Non-Duty</label>
-                        <select id="nonduty-type" style="margin: 0; border: 1px solid var(--green-card-border); background: var(--card); color: var(--text); border-radius: 4px;">
+                        <label style="font-size: 14px; font-weight: 900; color: var(--text); display: block; margin-bottom: 5px;">Type of Non-Duty</label>
+                        <select id="nonduty-type" style="margin: 0; border-radius: 4px;">
                             <option value="Rest">Rest</option>
                             <option value="Leave">Leave</option>
                             <option value="COCL">COCL</option>
@@ -511,91 +489,89 @@
                     </div>
                     <div style="display: flex; gap: 10px;">
                         <div style="flex: 1;">
-                            <label style="font-size: 13px; font-weight: bold; color: var(--green-text); display: block; margin-bottom: 5px;">From Date</label>
-                            <input type="date" id="nonduty-from" style="margin: 0; border: 1px solid var(--green-card-border); background: var(--card); color: var(--text); border-radius: 4px;">
+                            <label style="font-size: 13px; font-weight: bold; color: var(--text); display: block; margin-bottom: 5px;">From Date</label>
+                            <input type="date" id="nonduty-from" style="margin: 0; border-radius: 4px;">
                         </div>
                         <div style="flex: 1;">
-                            <label style="font-size: 13px; font-weight: bold; color: var(--green-text); display: block; margin-bottom: 5px;">To Date</label>
-                            <input type="date" id="nonduty-to" style="margin: 0; border: 1px solid var(--green-card-border); background: var(--card); color: var(--text); border-radius: 4px;">
+                            <label style="font-size: 13px; font-weight: bold; color: var(--text); display: block; margin-bottom: 5px;">To Date</label>
+                            <input type="date" id="nonduty-to" style="margin: 0; border-radius: 4px;">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <button id="btn-save-duty" onclick="saveLeg()" style="background: #4f46e5; border-bottom-color: #3730a3;">Save This Journey</button>
-            <button id="btn-save-nonduty" class="hidden" onclick="window.saveNonDuty()" style="background: #22c55e; border-bottom-color: #166534;">Save Record</button>
+            <button id="btn-save-duty" onclick="saveLeg()">Save This Journey</button>
+            <button id="btn-save-nonduty" class="hidden" onclick="window.saveNonDuty()">Save Record</button>
             
             <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px; color: var(--text);" id="recent-duty-title">Recent Duty Entries</h3>
-            <div id="recent-logs-add" style="border-radius: 6px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"></div>
+            <div id="recent-logs-add" style="border-radius: 6px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border);"></div>
         </div>
     </div>
 
-    <!-- ALL JOURNEY -->
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">ALL JOURNEY</h1>
+                <h1>ALL JOURNEY</h1>
             </div>
         </div>
         <div class="screen-content">
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button onclick="window.switchAddTab('duty'); navTo('screen-add')" style="flex: 1; background: #4f46e5; border-bottom-color: #3730a3;">+ Add Journey Entry</button>
+                <button onclick="window.switchAddTab('duty'); navTo('screen-add')" style="flex: 1;">+ Add Journey Entry</button>
             </div>
-            <p style="font-size: 16px; color: var(--blue); text-align: center; margin-top: 0; font-weight: 900;">👆 Tap any row below to Edit or Delete<br><span style="font-size: 14px; color: var(--danger-border); font-weight: bold;">एडिट या डिलीट करने के लिए किसी भी पंक्ति पर टैप करें</span></p>
+            <p style="font-size: 16px; color: var(--text); text-align: center; margin-top: 0; font-weight: 900;">👆 Tap any row below to Edit or Delete<br><span style="font-size: 14px; color: var(--danger-border); font-weight: bold;">एडिट या डिलीट करने के लिए किसी भी पंक्ति पर टैप करें</span></p>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 15px; align-items: center; background: var(--blue-card-bg); padding: 10px 12px; border-radius: 8px; border: 2px solid var(--blue-card-border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); justify-content: center; height: 45px; transition: background 0.3s, border 0.3s;">
-                <label style="font-size: 14px; font-weight: 900; color: var(--blue-text); white-space: nowrap;">Filter:</label>
-                <select id="all-logs-month" onchange="renderAllLogs()" style="margin: 0; border: 1px solid var(--blue-card-border); background: var(--card); padding: 6px; width: 30%; flex: none; border-radius: 6px; color: var(--text); border-bottom-width: 2px;">
+            <div style="display: flex; gap: 10px; margin: 0 auto 15px auto; width: max-content; align-items: center; background: var(--card); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <label style="font-size: 14px; font-weight: 900; color: var(--text); white-space: nowrap;">Filter:</label>
+                <select id="all-logs-month" onchange="renderAllLogs()" style="margin: 0; padding: 6px; width: auto; border-radius: 6px; border-bottom-width: 2px;">
                     <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
                     <option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option>
                     <option value="09">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
                 </select>
-                <select id="all-logs-year" onchange="renderAllLogs()" style="margin: 0; border: 1px solid var(--blue-card-border); background: var(--card); padding: 6px; width: 30%; flex: none; border-radius: 6px; color: var(--text); border-bottom-width: 2px;">
+                <select id="all-logs-year" onchange="renderAllLogs()" style="margin: 0; padding: 6px; width: auto; border-radius: 6px; border-bottom-width: 2px;">
                     <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
                     <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
                 </select>
             </div>
             
-            <div id="all-logs-container" style="width: 100%; max-height: 525px; overflow-y: auto; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; background: var(--card); transition: background 0.3s;"></div>
+            <div id="all-logs-container" style="width: 100%; max-height: 525px; overflow-y: auto; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative; background: var(--card);"></div>
             
             <div style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 15px;">
-                <span style="color: var(--green-text); background: var(--row-up-bg); padding: 6px 12px; border-radius: 4px; border: 2px solid var(--green-card-border); transition: background 0.3s, color 0.3s, border 0.3s;">🟩 Up Train</span>
-                <span style="color: var(--warning-text); background: var(--row-down-bg); padding: 6px 12px; border-radius: 4px; border: 2px solid var(--orange-card-border); transition: background 0.3s, color 0.3s, border 0.3s;">🟧 Down Train</span>
+                <span style="color: var(--row-text); background: var(--row-up-bg); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border);">🟩 Up Train</span>
+                <span style="color: var(--row-text); background: var(--row-down-bg); padding: 6px 12px; border-radius: 4px; border: 1px solid var(--border);">🟧 Down Train</span>
             </div>
         </div>
     </div>
 
-    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">GENERATE PDF</h1>
+                <h1>GENERATE PDF</h1>
             </div>
         </div>
         <div class="screen-content" id="reports-swipe-zone" style="min-height: 80vh; width: 100%;">
             <p style="text-align: center; font-size: 13px; color: var(--danger-border); margin-top: 0; margin-bottom: 15px; font-weight: 900;">↔️ Swipe left or right to switch tabs</p>
             <div class="tab-container"><button class="tab-btn active" id="tab-ta" onclick="switchTab('ta')">TA Journal</button><button class="tab-btn" id="tab-nda" onclick="switchTab('nda')">NDA Bill</button></div>
             
-            <div style="background: var(--indigo-card-bg); border: 2px solid var(--indigo-card-border); border-radius: 8px; padding: 5px 10px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s;">
-                <div class="slider-bar" style="padding: 5px 15px; color: var(--indigo-text);"><button class="slider-btn" onclick="changeMonth(-1)">❮</button><span id="report-slider-text">Jun 2026</span><button class="slider-btn" onclick="changeMonth(1)">❯</button></div>
+            <div class="card" style="padding: 5px 10px; margin-bottom: 15px;">
+                <div class="slider-bar" style="padding: 5px 15px; color: var(--text);"><button class="slider-btn" onclick="changeMonth(-1)">❮</button><span id="report-slider-text">Jun 2026</span><button class="slider-btn" onclick="changeMonth(1)">❯</button></div>
                 <input type="hidden" id="report-month-hidden"> 
             </div>
             
-            <div class="card" id="report-summary-card" style="border: 2px solid var(--blue-card-border); background: var(--blue-card-bg);">
-                <h3 style="font-size: 15px; color: var(--blue-text);">Summary</h3>
+            <div class="card" id="report-summary-card">
+                <h3 style="font-size: 15px;">Summary</h3>
                 <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count">0</span></div>
                 <div class="summary-row" id="rep-ta-row" style="color: var(--text);"><span id="rep-val-label">Total TA</span><span id="rep-val">₹0</span></div>
                 <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA Amount</span><span id="rep-nda-amt">₹0</span></div>
                 
-                <p style="font-size: 11px; color: var(--blue-text); font-weight: bold; margin-top: 10px; margin-bottom: 0; text-align: center;">💡 To check previous history, use the ❮ ❯ arrows above to change the month.</p>
+                <p style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 10px; margin-bottom: 0; text-align: center;">💡 To check previous history, use the ❮ ❯ arrows above to change the month.</p>
                 
-                <div id="ta-extras" style="display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed rgba(0,0,0,0.1); padding-top: 15px;">
-                    <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Working Days</label><input type="number" id="pdf-work-days" placeholder="Enter Days" style="border: 2px solid var(--border); font-size: 14px; font-weight: bold; text-align: center;"></div>
-                    <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Earnings</label><input type="number" id="pdf-earnings" placeholder="Enter ₹" style="border: 2px solid var(--border); font-size: 14px; font-weight: bold; text-align: center;"></div>
+                <div id="ta-extras" style="display: flex; gap: 10px; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 15px;">
+                    <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Working Days</label><input type="number" id="pdf-work-days" placeholder="Enter Days" style="text-align: center;"></div>
+                    <div style="flex: 1;"><label style="font-size: 12px; font-weight: bold; color: var(--text); display: block; margin-bottom: 4px;">Earnings</label><input type="number" id="pdf-earnings" placeholder="Enter ₹" style="text-align: center;"></div>
                 </div>
-                <button style="margin-top: 15px; background: #10b981; border-bottom-color: #059669;" id="generate-btn" onclick="triggerGenerate()">Generate PDF Document</button>
+                <button style="margin-top: 15px;" id="generate-btn" onclick="triggerGenerate()">Generate PDF Document</button>
             </div>
         </div>
     </div>
@@ -604,27 +580,27 @@
         <div class="top-bar">
             <div class="top-bar-content">
                 <button class="back-btn" onclick="navTo('screen-dashboard')">← Back</button>
-                <h1 style="text-transform: uppercase; font-size: 16px; font-weight: 900; color: #fde047; text-shadow: 1px 1px 3px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">BACKUP & RESTORE</h1>
+                <h1>BACKUP & RESTORE</h1>
             </div>
         </div>
         <div class="screen-content">
-            <div class="card" style="border: 2px solid var(--purple-card-border); background: var(--purple-card-bg); margin-bottom: 15px;">
-                <h3 style="color: var(--purple-text);">Manual Backup</h3>
+            <div class="card">
+                <h3>Manual Backup</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Save a physical backup file to your phone.</p>
-                <button onclick="exportData()" style="background: #a855f7; border-bottom-color: #7e22ce;">Download Backup File</button>
-                <div id="manual-backup-time" style="font-size: 11px; color: var(--purple-text); font-weight: bold; margin-top: 8px; text-align: center;"></div>
+                <button onclick="exportData()">Download Backup File</button>
+                <div id="manual-backup-time" style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 8px; text-align: center;"></div>
             </div>
-            <div class="card" style="border: 2px solid var(--warning-border); background: var(--warning-bg); margin-bottom: 15px;">
-                <h3 style="color: var(--warning-text);">Restore from File</h3>
+            <div class="card">
+                <h3>Restore from File</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Import a previously downloaded backup file.</p>
-                <button onclick="document.getElementById('import-file').click()" style="background: #f59e0b; color: white; border-bottom-color: #b45309;">Choose File & Restore</button>
+                <button onclick="document.getElementById('import-file').click()">Choose File & Restore</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="importData(event)">
-                <div id="restore-backup-time" style="font-size: 11px; color: var(--warning-text); font-weight: bold; margin-top: 8px; text-align: center;"></div>
+                <div id="restore-backup-time" style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 8px; text-align: center;"></div>
             </div>
-            <div class="card" style="border: 2px solid var(--green-card-border); background: var(--green-card-bg); margin-bottom: 15px;">
-                <h3 style="color: var(--green-text);">Cloud Sync Status</h3>
+            <div class="card">
+                <h3>Cloud Sync Status</h3>
                 <p style="font-size: 14px; font-weight: bold; color: var(--text); margin-bottom: 5px;">Your data is actively syncing to Google.</p>
-                <p style="font-size: 13px; font-weight: bold; color: var(--green-text); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--green-card-border);" id="sync-time-lbl">Last Synced: Never</p>
+                <p style="font-size: 13px; font-weight: bold; color: var(--text-muted); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);" id="sync-time-lbl">Last Synced: Never</p>
             </div>
         </div>
     </div>
@@ -694,6 +670,27 @@
         document.getElementById('report-month-hidden').value = currentMonthStr; 
         document.getElementById('all-logs-month').value = month;
         document.getElementById('all-logs-year').value = year.toString();
+
+        const fBtn = document.getElementById('global-back-btn');
+        if(fBtn) {
+            let startY, startTop;
+            fBtn.addEventListener('touchstart', function(e) {
+                startY = e.touches[0].clientY;
+                startTop = parseInt(window.getComputedStyle(fBtn).top, 10);
+                fBtn.style.transition = 'none';
+            }, {passive: true});
+            fBtn.addEventListener('touchmove', function(e) {
+                let y = e.touches[0].clientY;
+                let newTop = startTop + (y - startY);
+                if(newTop < 60) newTop = 60;
+                if(newTop > window.innerHeight - 60) newTop = window.innerHeight - 60;
+                fBtn.style.top = newTop + 'px';
+                e.preventDefault();
+            }, {passive: false});
+            fBtn.addEventListener('touchend', function(e) {
+                fBtn.style.transition = 'right 0.3s';
+            }, {passive: true});
+        }
 
         let touchstartX = 0;
         let touchendX = 0;
@@ -782,7 +779,7 @@
         
         const bBar = document.getElementById('main-bottom-bar');
         if(bBar) {
-            if(screenId === 'screen-login' || screenId === 'screen-reports') { bBar.classList.add('hidden'); } else { bBar.classList.remove('hidden'); }
+            if(screenId === 'screen-login') { bBar.classList.add('hidden'); } else { bBar.classList.remove('hidden'); }
         }
         
         if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
@@ -813,8 +810,6 @@
         const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
         document.getElementById('modal-title').innerText = title; 
         document.getElementById('modal-msg').innerText = msg;
-        box.style.borderTopColor = type === 'error' ? 'var(--red)' : (type === 'warning' ? 'var(--orange)' : 'var(--green)'); 
-        document.getElementById('modal-title').style.color = box.style.borderTopColor; 
         const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); 
         if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
         btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; 
@@ -830,6 +825,8 @@
         const saveBtn = document.getElementById('btn-save-profile');
         if(editBtn) editBtn.style.display = 'block';
         if(saveBtn) saveBtn.style.display = 'none';
+        const pbb = document.getElementById('profile-back-btn');
+        if(pbb) pbb.classList.remove('hidden');
     }
 
     function unlockProfile() {
@@ -888,6 +885,8 @@
         
         if (!p.name) {
             unlockProfile();
+            const pbb = document.getElementById('profile-back-btn');
+            if(pbb) pbb.classList.add('hidden');
         } else {
             lockProfile();
         }
@@ -1274,10 +1273,10 @@
                     <div style="text-align: left; font-weight: bold; color: var(--row-text); padding-left: 5px; font-size: 11px; transition: color 0.3s;">${leg.train}</div>
                     <div style="color: var(--row-blue-text); font-weight: bold; font-size: 11px; transition: color 0.3s;">${shortDep}</div>
                     <div style="font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</div>
-                    <div style="color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${leg.depTime}</div>
+                    <div style="color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.depTime}</div>
                     <div style="color: var(--row-blue-text); font-weight: bold; font-size: 11px; transition: color 0.3s;">${shortArr}</div>
                     <div style="font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</div>
-                    <div style="color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</div>
+                    <div style="color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</div>
                 </div>`);
                 
                 let nextDutyIdx = filteredLegs.findIndex((l, idx) => idx > i && !l.isNonDuty);
@@ -1428,13 +1427,13 @@
         
         if(badge) {
             if(dutyOnly.length === 0) { 
-                badge.style.background = 'var(--green-card-bg)'; badge.style.color = 'var(--green-text)'; dot.style.background = 'var(--green-card-border)'; badge.style.border = '1px solid var(--green-card-border)'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
+                badge.style.background = 'var(--input-bg)'; badge.style.color = 'var(--green-text)'; dot.style.background = 'var(--green-card-border)'; badge.style.border = '1px solid var(--border)'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
             } else { 
                 const lastLeg = dutyOnly[dutyOnly.length - 1]; 
                 if(hqGroup.includes(lastLeg.arrStn)) { 
-                    badge.style.background = 'var(--green-card-bg)'; badge.style.color = 'var(--green-text)'; dot.style.background = 'var(--green-card-border)'; badge.style.border = '1px solid var(--green-card-border)'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
+                    badge.style.background = 'var(--input-bg)'; badge.style.color = 'var(--green-text)'; dot.style.background = 'var(--green-card-border)'; badge.style.border = '1px solid var(--border)'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
                 } else { 
-                    badge.style.background = 'var(--warning-bg)'; badge.style.color = 'var(--warning-text)'; dot.style.background = 'var(--warning-border)'; badge.style.border = '1px solid var(--warning-border)'; txt.innerText = `At ${lastLeg.arrStn}`; desc.innerText = 'On duty. Awaiting return leg to HQ.'; 
+                    badge.style.background = 'var(--input-bg)'; badge.style.color = 'var(--warning-text)'; dot.style.background = 'var(--warning-border)'; badge.style.border = '1px solid var(--warning-border)'; txt.innerText = `At ${lastLeg.arrStn}`; desc.innerText = 'On duty. Awaiting return leg to HQ.'; 
                 } 
             } 
         }
@@ -1456,7 +1455,7 @@
         let ndaMDash = todayDash.getMonth() + 1;
         if(todayDash.getDate() > 15) {
             ndaMDash += 1;
-            if(ndaMDash > 12) { ndaMDash = 1; ndaYDash += 1; }
+            if(ndaMDash > 12) { ndaMDash -= 12; ndaYDash += 1; }
         }
         let ndaMoStrDash = `${ndaYDash}-${String(ndaMDash).padStart(2, '0')}`;
         
@@ -1523,7 +1522,7 @@
             } else {
                 let sortedNonDuty = [...nondutyOnly].sort((a,b) => new Date(b.fromDate) - new Date(a.fromDate));
                 recentAddArr = sortedNonDuty.slice(0, 7);
-                let theadND = `<thead style="background: var(--pink-card-bg); color: var(--pink-card-border); position: sticky; top: 0; border-bottom: 2px solid var(--pink-card-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Type</th><th style="padding: 8px 2px;">Date Range</th></tr></thead>`;
+                let theadND = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Type</th><th style="padding: 8px 2px;">Date Range</th></tr></thead>`;
                 rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadND}<tbody>`;
                 recentAddArr.forEach((leg, i) => {
                     let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
@@ -1543,7 +1542,7 @@
                 recentAddArr.forEach((leg, i) => {
                     let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
                     let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
-                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.train}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</td></tr>`; 
+                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.train}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</td><td style="padding: 10px 2px; color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</td><td style="padding: 10px 2px; color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</td></tr>`; 
                 });
                 rcHTMLAdd += `</tbody></table>`;
             }
@@ -1592,12 +1591,12 @@
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
 
         if(currentTab === 'ta') { 
-            tabTa.style.background = "#10b981"; tabTa.style.color = "white"; tabNda.style.background = "var(--card)"; tabNda.style.color = "var(--text-muted)"; summaryCard.style.background = "var(--blue-card-bg)"; summaryCard.style.borderColor = "var(--blue-card-border)"; generateBtn.style.background = "#10b981";
+            tabTa.style.background = "#10b981"; tabTa.style.color = "white"; tabNda.style.background = "var(--card)"; tabNda.style.color = "var(--text-muted)"; generateBtn.style.background = "#10b981";
             document.getElementById('report-slider-text').innerText = `${moName} ${yrName}`; document.getElementById('ta-extras').classList.remove('hidden'); generateBtn.innerText = "Generate TA Journal PDF"; 
             let totalTA = 0; let eCount = 0; const cycles = buildCycles(dutyOnly); cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); cycle.forEach(leg => { if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { eCount++; } }); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
             document.getElementById('rep-count').innerText = eCount; document.getElementById('rep-val').innerText = '₹' + totalTA;
         } else { 
-            tabNda.style.background = "#a855f7"; tabNda.style.color = "white"; tabTa.style.background = "var(--card)"; tabTa.style.color = "var(--text-muted)"; summaryCard.style.background = "var(--purple-card-bg)"; summaryCard.style.borderColor = "var(--purple-card-border)"; generateBtn.style.background = "#a855f7";
+            tabNda.style.background = "#a855f7"; tabNda.style.color = "white"; tabTa.style.background = "var(--card)"; tabTa.style.color = "var(--text-muted)"; generateBtn.style.background = "#a855f7";
             document.getElementById('report-slider-text').innerText = `${strFrom} to ${strTo}`; document.getElementById('ta-extras').classList.add('hidden'); generateBtn.innerText = "Generate NDA Bill PDF"; 
             
             let totalEligibleHours = 0;
