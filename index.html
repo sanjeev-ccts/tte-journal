@@ -47,7 +47,7 @@
             --table-border: #a5b4fc;
         }
 
-        /* NEW DARK MODE: Black, White, Red, Yellow, Blue ONLY */
+        /* DARK MODE: Black, White, Red, Yellow, Blue ONLY */
         body.dark-mode {
             --bg: #000000;
             --card: #0a0a0a;
@@ -87,7 +87,18 @@
         }
 
         * { box-sizing: border-box; font-family: system-ui, sans-serif; }
-        body { background: var(--bg); color: var(--text); margin: 0; padding: 0; font-size: 15px; -webkit-tap-highlight-color: transparent; transition: background 0.3s, color 0.3s; }
+        body { 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 0; 
+            font-size: 15px; 
+            -webkit-tap-highlight-color: transparent; 
+            transition: background 0.3s, color 0.3s; 
+            overflow-x: hidden; /* Prevents side-sliding */
+            overscroll-behavior-x: none; /* Prevents browser history swipe */
+            width: 100vw;
+        }
         .hidden { display: none !important; }
         
         /* Layout */
@@ -95,22 +106,22 @@
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); max-width: 100%; white-space: nowrap; line-height: 1.2; }
         .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; position: absolute; left: 15px; font-weight: bold; }
         
-        .screen-content { padding: 15px; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
+        .screen-content { padding: 15px; padding-bottom: 60px; max-width: 600px; margin: 0 auto; }
         
         /* Elements */
-        .card { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 6px 10px -2px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s; }
+        .card { background: var(--card); border: 2px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s; }
         .profile-sec { padding: 15px; border-radius: 8px; margin-bottom: 15px; border-bottom-width: 4px; transition: background 0.3s, border 0.3s; }
-        .stat-box { border-radius: 10px; padding: 15px; display: flex; flex-direction: column; justify-content: center; border-bottom-width: 4px; cursor: pointer; transition: transform 0.1s, background 0.3s, border 0.3s; }
+        .stat-box { border-radius: 8px; padding: 12px; display: flex; flex-direction: column; justify-content: center; border-bottom-width: 4px; cursor: pointer; transition: transform 0.1s, background 0.3s, border 0.3s; }
         .stat-box:active { transform: translateY(3px); border-bottom-width: 1px; margin-top: 3px; }
-        .nav-card { border-radius: 10px; padding: 15px; display: flex; flex-direction: column; cursor: pointer; border-bottom-width: 4px; transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; }
+        .nav-card { border-radius: 8px; padding: 12px; display: flex; flex-direction: column; cursor: pointer; border-bottom-width: 4px; transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; }
         .nav-card:active { transform: translateY(3px); border-bottom-width: 1px; margin-top: 3px; }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .stat-value { font-size: 20px; font-weight: bold; margin-bottom: 2px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
+        .stat-value { font-size: 18px; font-weight: bold; margin-bottom: 2px; }
         .stat-label { font-size: 12px; font-weight: 600; }
-        .nav-icon { font-size: 24px; margin-bottom: 8px; }
-        .nav-title { font-weight: bold; font-size: 15px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .nav-desc { font-size: 12px; opacity: 0.8; }
+        .nav-icon { font-size: 20px; margin-bottom: 5px; }
+        .nav-title { font-weight: bold; font-size: 13px; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .nav-desc { font-size: 11px; opacity: 0.8; }
         
         input, select { width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 6px; margin-top: 4px; font-size: 15px; font-weight: bold; box-shadow: inset 0 2px 4px rgba(0,0,0,0.06); border-bottom-width: 2px; transition: background 0.3s, color 0.3s, border 0.3s; }
         input:disabled { background: var(--input-disabled); color: var(--text-muted); border-style: dashed; box-shadow: none; }
@@ -119,8 +130,10 @@
         button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); box-shadow: 0 4px 6px rgba(0,0,0,0.15); border-bottom: 3px solid rgba(0,0,0,0.2); transition: background 0.3s; }
         button:active { opacity: 0.8; transform: translateY(2px); border-bottom-width: 1px; margin-top: 2px; }
         
-        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background: var(--green-card-bg); color: var(--green-text); box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); transition: background 0.3s, color 0.3s; }
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; background: var(--green-card-bg); color: var(--green-text); transition: background 0.3s, color 0.3s; border: 1px solid var(--green-card-border); }
         .status-dot { width: 8px; height: 8px; background: var(--green-card-border); border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: background 0.3s; }
+        
+        .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.5); z-index: 5000; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; transition: right 0.3s; }
         
         .tab-container { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-bottom-width: 3px; transition: background 0.3s, border 0.3s; }
         .tab-btn { flex: 1; padding: 12px; background: var(--card); color: var(--text-muted); font-weight: bold; border-radius: 0; margin: 0; text-align: center; cursor: pointer; box-shadow: none; border-bottom: none; transition: background 0.3s, color 0.3s; }
@@ -132,17 +145,19 @@
         #custom-modal, #manage-modal, #help-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 8px; width: 90%; max-width: 350px; text-align: center; border-top: 6px solid var(--blue); box-shadow: 0 10px 25px rgba(0,0,0,0.5); transition: background 0.3s; }
         
-        /* BOTTOM NAVIGATION BAR */
-        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 35px; background: var(--top-bar-bg); display: flex; justify-content: space-around; align-items: center; z-index: 4000; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); border-top: 2px solid #334155; transition: background 0.3s; }
-        .bottom-icon { width: 26px; height: 26px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; font-size: 13px; color: white; cursor: pointer; position: relative; }
+        /* BOTTOM NAVIGATION BAR (Height Increased to 44px) */
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 44px; background: var(--top-bar-bg); display: flex; justify-content: space-around; align-items: center; z-index: 4000; box-shadow: 0 -2px 10px rgba(0,0,0,0.3); border-top: 2px solid #334155; transition: background 0.3s; }
+        .bottom-icon { width: 30px; height: 30px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.4); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; }
         .bottom-icon:active { background: rgba(255,255,255,0.1); }
-        .bell-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .bell-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         
         /* PRINT PREVIEW */
         #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
         #preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; }
         
+        .notification-dot { position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; background: #ef4444; border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: bold; transition: box-shadow 0.3s; }
+
         @media screen {
             .page-break { border-top: 2px dashed #cbd5e1; margin-top: 30px; padding-top: 30px; position: relative; }
             .page-break::before { content: "✂️ PAGE BREAK"; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #cbd5e1; color: #334155; padding: 2px 10px; border-radius: 10px; font-size: 10px; font-weight: bold; }
@@ -192,7 +207,7 @@
                         }
                     } else {
                         window.appState = { profile: null, legs: [] };
-                        openSettings();
+                        openSettings(); // Fixed: Directly opens locked settings
                     }
                 });
             } else {
@@ -227,6 +242,10 @@
 </div>
 
 <div id="ui-wrapper">
+    <!-- Restored Floating Back Button -->
+    <div id="global-back-btn" class="floating-back hidden" onclick="navTo('screen-dashboard')">◀ Back</div>
+
+    <!-- NEW BOTTOM NAVIGATION BAR -->
     <div class="bottom-bar hidden" id="main-bottom-bar">
         <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
         <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
@@ -270,6 +289,7 @@
         </div>
     </div>
 
+    <!-- LOGIN INTERFACE -->
     <div id="screen-login" class="hidden" style="position: relative; min-height: 100vh; width: 100vw; background-color: #0f172a; background-image: url('./login-bg.png'); background-size: cover; background-position: center bottom; background-repeat: no-repeat;">
         <div style="position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
             <button style="border-radius: 30px; font-size: 15px; padding: 12px 24px; background: #ffffff; color: #1e293b; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; width: max-content; gap: 10px; font-weight: bold; cursor: pointer;" onclick="window.login()">
@@ -280,6 +300,7 @@
         </div>
     </div>
 
+    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -354,58 +375,69 @@
                     <button id="btn-save-profile" type="button" onclick="saveProfile()" style="flex: 1; padding: 12px; border-radius: 8px; border: none; background: #22c55e; color: white; font-weight: bold; font-size: 15px; display: none; cursor: pointer; border-bottom: 3px solid #16a34a;">💾 Save & Lock</button>
                 </div>
                 <button style="margin-top: 10px; background: #ef4444; color: white; border-bottom: 3px solid #b91c1c;" onclick="window.logout()">Sign Out</button>
-                <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v4.18 (Dark Mode Ready)</div>
+                <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v1.4</div>
             </div>
         </div>
     </div>
 
+    <!-- COMPACT DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
-        <div class="top-bar" style="padding: 15px 20px; min-height: 85px;">
+        <div class="top-bar" style="padding: 10px 20px; min-height: 68px;">
             <div class="top-bar-content" style="justify-content: center;">
                 <div style="text-align: center;">
                     <div style="display: inline-block; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.15);">
                         <h1 id="dash-title" style="text-transform: uppercase; font-size: 20px; font-weight: 900; color: #fde047; text-shadow: 2px 2px 4px rgba(0,0,0,0.4); margin: 0; letter-spacing: 0.5px;">TTE LOG</h1>
                     </div>
-                    <div class="subtitle" id="dash-subtitle" style="text-align: center; margin-top: 10px; font-size: 14px; color: #e2e8f0; font-weight: bold;">Hi, User</div>
+                    <div class="subtitle" id="dash-subtitle" style="text-align: center; margin-top: 5px; font-size: 14px; color: #e2e8f0; font-weight: normal;">Hi, User</div>
                 </div>
             </div>
         </div>
-        <div class="screen-content">
+        <!-- Reduced bottom padding to prevent vertical scrolling -->
+        <div class="screen-content" style="padding-bottom: 60px;">
             
-            <div class="card card-3d" style="border: 3px solid var(--indigo-card-border); background: var(--indigo-card-bg);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div class="card card-3d" style="border: 3px solid var(--indigo-card-border); background: var(--indigo-card-bg); padding: 12px; margin-bottom: 10px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3 style="margin: 0; font-size: 16px; color: var(--indigo-text);">Duty Status</h3>
                     <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
                 </div>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 15px;" id="duty-status-desc">Ready to log your next journey.</p>
                 <button onclick="window.switchAddTab('duty'); navTo('screen-add');" style="background: #4f46e5; border-bottom-color: #3730a3;">+ Add Journey Entry</button>
-                
-                <hr style="border: 0; border-top: 2px dashed var(--border); margin: 20px 0 15px 0;">
-                <h4 style="margin: 0 0 10px 0; font-size: 14px; color: var(--indigo-text); text-transform: uppercase; letter-spacing: 0.5px;">Recent Entries</h4>
-                <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 6px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05);"></div>
             </div>
             
-            <div class="card card-3d" style="border: 3px solid var(--indigo-card-border); padding: 15px; background: var(--row-up-bg);">
-                <div class="grid-2" style="margin-bottom: 0;">
-                    <div class="stat-box" onclick="currentTab='ta'; navTo('screen-reports');" style="background: var(--green-box-bg); border: 2px solid var(--green-box-border);"><div class="stat-value" id="dash-ta-val" style="color: var(--green-box-val);">₹0</div><div class="stat-label" id="dash-ta-lbl" style="color: var(--green-box-lbl);">TA this month</div></div>
-                    <div class="stat-box" onclick="currentTab='nda'; navTo('screen-reports');" style="background: var(--blue-box-bg); border: 2px solid var(--blue-box-border);"><div class="stat-value" id="dash-nda-val" style="color: var(--blue-box-val);">0:00 Hrs</div><div class="stat-label" id="dash-nda-lbl" style="color: var(--blue-box-lbl);">NDA (---), ₹0</div></div>
-                </div>
-            </div>
-
-            <div class="card card-3d" style="border: 3px solid var(--indigo-card-border); padding: 15px; background: var(--pink-card-bg);">
-                <div class="grid-2" style="margin-bottom: 0;">
-                    <div class="nav-card" onclick="navTo('screen-all')" style="background: var(--blue-card-bg); border: 2px solid var(--blue-card-border);"><div class="nav-icon">📋</div><div class="nav-title" style="color: var(--blue-text);">ALL JOURNEY</div><div class="nav-desc" style="color: var(--blue-text); opacity: 0.8;">View, edit, delete</div></div>
-                    <div class="nav-card" onclick="currentTab='ta'; navTo('screen-reports');" style="background: var(--purple-card-bg); border: 2px solid var(--purple-card-border);"><div class="nav-icon">🖨️</div><div class="nav-title" style="color: var(--purple-text);">GENERATE PDF</div><div class="nav-desc" style="color: var(--purple-text); opacity: 0.8;">TA Journal / NDA Bill</div></div>
-                    <div class="nav-card" onclick="openSettings()" style="background: var(--yellow-card-bg); border: 2px solid var(--yellow-card-border);">
-                        <div class="nav-icon" style="position: relative; display: inline-block;">👤</div>
-                        <div class="nav-title" style="color: var(--yellow-text);">PROFILE SETUP</div><div class="nav-desc" style="color: var(--yellow-text); opacity: 0.8;">Stations, pay details</div>
+            <div class="card card-3d" style="border: 3px solid var(--indigo-card-border); padding: 12px; background: var(--pink-card-bg); margin-bottom: 10px;">
+                <!-- Consolidated Grid combining Stats and Nav links to save vertical space -->
+                <div class="grid-2" style="margin-bottom: 0; gap: 10px;">
+                    <div class="stat-box" onclick="currentTab='ta'; navTo('screen-reports');" style="background: var(--green-box-bg); border: 2px solid var(--green-box-border); padding: 12px;">
+                        <div class="stat-value" id="dash-ta-val" style="color: var(--green-box-val); font-size: 18px;">₹0</div>
+                        <div class="stat-label" id="dash-ta-lbl" style="color: var(--green-box-lbl);">TA this month</div>
                     </div>
-                    <div class="nav-card" onclick="navTo('screen-backup')" style="background: var(--red-card-bg); border: 2px solid var(--red-card-border);"><div class="nav-icon">💾</div><div class="nav-title" style="color: var(--red-text);">BACKUP DATA</div><div class="nav-desc" style="color: var(--red-text); opacity: 0.8;">Save your data</div></div>
+                    <div class="stat-box" onclick="currentTab='nda'; navTo('screen-reports');" style="background: var(--blue-box-bg); border: 2px solid var(--blue-box-border); padding: 12px;">
+                        <div class="stat-value" id="dash-nda-val" style="color: var(--blue-box-val); font-size: 18px;">0:00 Hrs</div>
+                        <div class="stat-label" id="dash-nda-lbl" style="color: var(--blue-box-lbl);">NDA (---), ₹0</div>
+                    </div>
+                    <div class="nav-card" onclick="navTo('screen-all')" style="background: var(--blue-card-bg); border: 2px solid var(--blue-card-border); padding: 12px;">
+                        <div class="nav-icon" style="font-size: 20px; margin-bottom: 5px;">📋</div>
+                        <div class="nav-title" style="color: var(--blue-text); font-size: 13px;">ALL JOURNEY</div>
+                    </div>
+                    <div class="nav-card" onclick="currentTab='ta'; navTo('screen-reports');" style="background: var(--purple-card-bg); border: 2px solid var(--purple-card-border); padding: 12px;">
+                        <div class="nav-icon" style="font-size: 20px; margin-bottom: 5px;">🖨️</div>
+                        <div class="nav-title" style="color: var(--purple-text); font-size: 13px;">GENERATE PDF</div>
+                    </div>
+                    <!-- FIX: Ensure Profile box calls openSettings() directly so inputs are securely locked before screen loads -->
+                    <div class="nav-card" onclick="openSettings()" style="background: var(--yellow-card-bg); border: 2px solid var(--yellow-card-border); padding: 12px;">
+                        <div class="nav-icon" style="position: relative; display: inline-block; font-size: 20px; margin-bottom: 5px;">👤<div id="profile-alert-badge" class="notification-dot hidden">!</div></div>
+                        <div class="nav-title" style="color: var(--yellow-text); font-size: 13px;">PROFILE SETUP</div>
+                    </div>
+                    <div class="nav-card" onclick="navTo('screen-backup')" style="background: var(--red-card-bg); border: 2px solid var(--red-card-border); padding: 12px;">
+                        <div class="nav-icon" style="font-size: 20px; margin-bottom: 5px;">💾</div>
+                        <div class="nav-title" style="color: var(--red-text); font-size: 13px;">BACKUP DATA</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -420,6 +452,7 @@
                 <button id="tab-nonduty" class="tab-btn" onclick="window.switchAddTab('nonduty')">Rest/Leave/COCL</button>
             </div>
 
+            <!-- Duty Form -->
             <div id="form-duty">
                 <div style="background: var(--indigo-card-bg); border: 2px solid var(--indigo-card-border); border-radius: 8px; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s;">
                     <div style="padding: 8px; border-bottom: 2px solid var(--indigo-card-border);">
@@ -460,6 +493,7 @@
                 </div>
             </div>
 
+            <!-- Non-Duty Form -->
             <div id="form-nonduty" class="hidden">
                 <div style="background: var(--green-card-bg); border: 2px solid var(--green-card-border); border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-bottom-width: 4px; transition: background 0.3s, border 0.3s;">
                     <div style="margin-bottom: 15px;">
@@ -491,6 +525,7 @@
         </div>
     </div>
 
+    <!-- ALL JOURNEY -->
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -526,6 +561,7 @@
         </div>
     </div>
 
+    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
@@ -618,10 +654,11 @@
     };
     
     window.shareApp = () => {
+        const shareUrl = 'https://sanjeev-ccts.github.io/tte-journal/';
         if (navigator.share) {
-            navigator.share({ title: 'TTE LOG', url: window.location.href }).catch(console.error);
+            navigator.share({ title: 'TTE LOG', url: shareUrl }).catch(console.error);
         } else {
-            showModal("Share Link", `Copy this link:\n${window.location.href}`, "success", false);
+            showModal("Share Link", `Copy this link:\n${shareUrl}`, "success", false);
         }
     };
     
@@ -632,7 +669,6 @@
         } else {
             let htmlList = `<div style="text-align:left; font-size:13px; line-height:1.6;">` + notifs.map(n => `• ${n}`).join('<br><br>') + `</div>`;
             showModal("Attention Required", htmlList, "warning", false);
-            // Replace innerText with innerHTML safely for the modal message
             document.getElementById('modal-msg').innerHTML = htmlList;
         }
     };
@@ -749,7 +785,7 @@
         if(screenId === 'screen-reports') updateReportUI(); 
         if(screenId === 'screen-backup') updateBackupUI(); 
         if(screenId === 'screen-register') {
-            openSettings(); // Fix: Enforce data population and locking
+            openSettings(); 
         }
         
         const gBack = document.getElementById('global-back-btn');
@@ -771,7 +807,7 @@
     function showModal(title, msg, type, showCancel, callback) { 
         const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
         document.getElementById('modal-title').innerText = title; 
-        document.getElementById('modal-msg').innerText = msg; // Reset to text by default
+        document.getElementById('modal-msg').innerText = msg;
         box.style.borderTopColor = type === 'error' ? 'var(--red)' : (type === 'warning' ? 'var(--orange)' : 'var(--green)'); 
         document.getElementById('modal-title').style.color = box.style.borderTopColor; 
         const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); 
@@ -850,7 +886,7 @@
         } else {
             lockProfile();
         }
-        checkProfileNotifications(); // Local check for the profile screen warnings
+        checkProfileNotifications(); 
     }   
     
     window.setDAReminder = () => {
@@ -898,7 +934,6 @@
                 window.globalNotifications.push("DA% Update: Please update your DA% in Profile Setup if a new rate is applicable.");
             }
 
-            // Chain Break Check
             if(window.appState.legs && window.appState.legs.length > 0) {
                 const hqGroup = [p.hq, ...(p.nearby || [])]; 
                 const dutyOnlyAll = window.appState.legs.filter(l => !l.isNonDuty);
@@ -927,7 +962,6 @@
     }
 
     function checkProfileNotifications() {
-        // Local check just for the profile screen warning box
         const p = window.appState.profile;
         if(!p) return;
         
@@ -998,6 +1032,7 @@
             if(!window.appState.legs) window.appState.legs = []; 
             saveData(); 
             lockProfile();
+            checkProfileNotifications();
             navTo('screen-dashboard'); 
             showModal("Success / सफलता", "Profile Saved & Synced!\nप्रोफाइल सेव हो गई है!", "success", false); 
         } catch(e) { 
@@ -1234,10 +1269,10 @@
                     <div style="text-align: left; font-weight: bold; color: var(--row-text); padding-left: 5px; font-size: 11px; transition: color 0.3s;">${leg.train}</div>
                     <div style="color: var(--row-blue-text); font-weight: bold; font-size: 11px; transition: color 0.3s;">${shortDep}</div>
                     <div style="font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</div>
-                    <div style="color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.depTime}</div>
+                    <div style="color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${leg.depTime}</div>
                     <div style="color: var(--row-blue-text); font-weight: bold; font-size: 11px; transition: color 0.3s;">${shortArr}</div>
                     <div style="font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</div>
-                    <div style="color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</div>
+                    <div style="color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</div>
                 </div>`);
                 
                 let nextDutyIdx = filteredLegs.findIndex((l, idx) => idx > i && !l.isNonDuty);
@@ -1353,16 +1388,17 @@
     }
     
     function updateDashboardUI() { 
-        let firstName = window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
+        let firstName = window.appState.profile && window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
         firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(); 
         document.getElementById('dash-subtitle').innerText = `Hi, ${firstName}`; 
         
         checkProfileNotifications();
         checkGlobalNotifications();
 
-        const safeNearby = window.appState.profile.nearby || []; 
-        const safeDest = window.appState.profile.dest || []; 
-        const allStns = [window.appState.profile.hq, ...safeNearby, ...safeDest, 'DDU']; 
+        const p = window.appState.profile || {};
+        const safeNearby = p.nearby || []; 
+        const safeDest = p.dest || []; 
+        const allStns = [p.hq, ...safeNearby, ...safeDest, 'DDU']; 
         const stnHtml = [...new Set(allStns)].filter(s=>s).map(s => `<option value="${s}">${s}</option>`).join(''); 
         
         const dList = document.getElementById('stn-list');
@@ -1370,31 +1406,33 @@
         const depStnSelect = document.getElementById('trip-dep-stn');
         
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
-        if(!window.editModeId) {
+        if(!window.editModeId && depStnSelect) {
             if(dutyOnly.length > 0) {
                 let sortedLegs = [...dutyOnly].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
                 depStnSelect.value = sortedLegs[sortedLegs.length - 1].arrStn;
             } else { 
-                depStnSelect.value = window.appState.profile.hq || ''; 
+                depStnSelect.value = p.hq || ''; 
             } 
         }
         
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
+        const hqGroup = [p.hq, ...(p.nearby || [])]; 
         const badge = document.getElementById('duty-status-badge'); 
         const dot = document.getElementById('duty-status-dot'); 
         const txt = document.getElementById('duty-status-text'); 
         const desc = document.getElementById('duty-status-desc'); 
         
-        if(dutyOnly.length === 0) { 
-            badge.style.background = 'var(--green-card-bg)'; badge.style.color = 'var(--green-text)'; dot.style.background = 'var(--green-card-border)'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
-        } else { 
-            const lastLeg = dutyOnly[dutyOnly.length - 1]; 
-            if(hqGroup.includes(lastLeg.arrStn)) { 
-                badge.style.background = 'var(--green-card-bg)'; badge.style.color = 'var(--green-text)'; dot.style.background = 'var(--green-card-border)'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
+        if(badge) {
+            if(dutyOnly.length === 0) { 
+                badge.style.background = 'var(--green-card-bg)'; badge.style.color = 'var(--green-text)'; dot.style.background = 'var(--green-card-border)'; badge.style.border = '1px solid var(--green-card-border)'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
             } else { 
-                badge.style.background = 'var(--warning-bg)'; badge.style.color = 'var(--warning-text)'; dot.style.background = 'var(--warning-border)'; txt.innerText = `At ${lastLeg.arrStn}`; desc.innerText = 'On duty. Awaiting return leg to HQ.'; 
+                const lastLeg = dutyOnly[dutyOnly.length - 1]; 
+                if(hqGroup.includes(lastLeg.arrStn)) { 
+                    badge.style.background = 'var(--green-card-bg)'; badge.style.color = 'var(--green-text)'; dot.style.background = 'var(--green-card-border)'; badge.style.border = '1px solid var(--green-card-border)'; txt.innerText = 'At HQ'; desc.innerText = 'Ready to log your next outward journey.'; 
+                } else { 
+                    badge.style.background = 'var(--warning-bg)'; badge.style.color = 'var(--warning-text)'; dot.style.background = 'var(--warning-border)'; badge.style.border = '1px solid var(--warning-border)'; txt.innerText = `At ${lastLeg.arrStn}`; desc.innerText = 'On duty. Awaiting return leg to HQ.'; 
+                } 
             } 
-        } 
+        }
         
         const todayStr = new Date();
         const curY = todayStr.getFullYear();
@@ -1402,12 +1440,13 @@
         const mo = `${curY}-${curM}`; 
         
         const moName = todayStr.toLocaleString('default',{month:'short'}); 
-        document.getElementById('dash-ta-lbl').innerText = `TA this month (${moName})`; 
+        if(document.getElementById('dash-ta-lbl')) document.getElementById('dash-ta-lbl').innerText = `TA this month (${moName})`; 
         
         let totalTA = 0; const cycles = buildCycles(dutyOnly); 
         cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
-        document.getElementById('dash-ta-val').innerText = '₹' + totalTA; 
+        if(document.getElementById('dash-ta-val')) document.getElementById('dash-ta-val').innerText = '₹' + totalTA; 
         
+        // Dynamic NDA Month Selection based on current date
         let todayDash = new Date();
         let ndaYDash = todayDash.getFullYear();
         let ndaMDash = todayDash.getMonth() + 1;
@@ -1418,7 +1457,7 @@
         let ndaMoStrDash = `${ndaYDash}-${String(ndaMDash).padStart(2, '0')}`;
         
         const nda = extractNDALegs(ndaMoStrDash); 
-        const isGazetted = window.appState.profile.empType === 'Gazetted';
+        const isGazetted = p.empType === 'Gazetted';
         let totalEligibleHours = 0;
         let remainingMinutes = 0;
         let ndaAmt = 0;
@@ -1427,9 +1466,9 @@
             totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
             remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
             if (totalEligibleHours > 0) {
-                const basicPayRaw = window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
+                const basicPayRaw = p.basicpay ? parseFloat(p.basicpay) : 0;
                 const basicPay = basicPayRaw > 43600 ? 43600 : basicPayRaw;
-                const daPct = window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
+                const daPct = p.da ? parseFloat(p.da) : 0;
                 
                 const daAllowance = basicPay * (daPct / 100);
                 const hourlyRate = (basicPay + daAllowance) / 200;
@@ -1445,31 +1484,11 @@
         let m2Str = m2Date.toLocaleString('default', {month:'short'});
         
         const ndaHrsStr = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')}`;
-        document.getElementById('dash-nda-val').innerText = `${ndaHrsStr} Hrs`;
-        document.getElementById('dash-nda-lbl').innerText = `NDA (${m1Str}-${m2Str}), ₹${Math.round(ndaAmt)}`;
+        if(document.getElementById('dash-nda-val')) document.getElementById('dash-nda-val').innerText = `${ndaHrsStr} Hrs`;
+        if(document.getElementById('dash-nda-lbl')) document.getElementById('dash-nda-lbl').innerText = `NDA (${m1Str}-${m2Str}), ₹${Math.round(ndaAmt)}`;
         
-        const rcDash = document.getElementById('recent-logs-dash');
         const rcAdd = document.getElementById('recent-logs-add');
-        let rcHTMLDash = ''; let rcHTMLAdd = '';
-        
-        if(dutyOnly.length === 0) { 
-            rcHTMLDash = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No entries yet. Tap "Add Journey Entry" to begin.</p>'; 
-        } else { 
-            let sortedAll = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
-            let recentDashArr = sortedAll.slice(0, 3);
-            
-            let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
-            
-            rcHTMLDash = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0;">${theadCommon}<tbody>`;
-
-            recentDashArr.forEach((leg, i) => { 
-                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
-                let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
-                rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.train}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</td></tr>`; 
-            });
-            rcHTMLDash += `</tbody></table>`;
-        } 
-        if(rcDash) rcDash.innerHTML = rcHTMLDash;
+        let rcHTMLAdd = '';
         
         let recentAddArr = [];
         if(window.currentAddTab === 'nonduty') {
@@ -1484,7 +1503,7 @@
                 recentAddArr.forEach((leg, i) => {
                     let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
                     let dateStr = (leg.fromDate === leg.toDate) ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}`;
-                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.dutyType.toUpperCase()}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${dateStr}</td></tr>`;
+                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.dutyType.toUpperCase()}</td><td style="padding: 10px 2px; color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${dateStr}</td></tr>`;
                 });
                 rcHTMLAdd += `</tbody></table>`;
             }
@@ -1499,7 +1518,7 @@
                 recentAddArr.forEach((leg, i) => {
                     let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
                     let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
-                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.train}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</td></tr>`; 
+                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.train}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</td><td style="padding: 10px 2px; color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</td><td style="padding: 10px 2px; color: var(--text-muted); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</td></tr>`; 
                 });
                 rcHTMLAdd += `</tbody></table>`;
             }
@@ -1559,7 +1578,7 @@
             let totalEligibleHours = 0;
             let remainingMinutes = 0;
             let ndaAmt = 0;
-            const isGazetted = window.appState.profile.empType === 'Gazetted';
+            const isGazetted = window.appState.profile && window.appState.profile.empType === 'Gazetted';
             if (!isGazetted) {
                 const nda = extractNDALegs(mo);
                 totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
@@ -1567,9 +1586,9 @@
                 document.getElementById('rep-count').innerText = nda.ndaData.length;
                 
                 if (totalEligibleHours > 0) {
-                    const basicPayRaw = window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
+                    const basicPayRaw = window.appState.profile && window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
                     const basicPay = basicPayRaw > 43600 ? 43600 : basicPayRaw;
-                    const daPct = window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
+                    const daPct = window.appState.profile && window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
                     const daAllowance = basicPay * (daPct / 100);
                     const hourlyRate = (basicPay + daAllowance) / 200;
                     const unitHours = (totalEligibleHours / 6).toFixed(2);
