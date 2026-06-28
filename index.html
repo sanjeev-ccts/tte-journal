@@ -10,27 +10,24 @@
 
     <style>
         :root { 
-            --bg: #f1f5f9; 
-            --card: #f8fafc; 
-            --border: #cbd5e1; 
-            --shadow: 0 8px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --bg: #f8fafc; 
+            --card: #ffffff; 
+            --border: #e2e8f0; 
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
             --text: #1e293b; 
-            --text-muted: #475569;
-            --blue: #2563eb; 
-            --green: #16a34a;
-            --purple: #9333ea;
-            --yellow: #ca8a04;
-            --red: #dc2626;
+            --text-muted: #64748b;
+            --blue: #3b82f6; 
+            --green: #22c55e;
+            --purple: #a855f7;
+            --yellow: #eab308;
+            --red: #ef4444;
             --input-bg: #ffffff;
             --input-disabled: #f1f5f9;
             --modal-bg: #ffffff;
             --top-bar-bg: #0f172a;
             
-            --danger-bg: #fef2f2; --danger-border: #ef4444; --danger-text: #991b1b;
-            --warning-bg: #fffbeb; --warning-border: #f59e0b; --warning-text: #92400e;
-            
             --row-up-bg: #ffffff;
-            --row-down-bg: #e2e8f0;
+            --row-down-bg: #f1f5f9;
             --row-text: #000000;
             --row-blue-text: #1e40af;
             --row-muted-text: #475569;
@@ -40,12 +37,11 @@
             --table-border: #a5b4fc;
         }
 
-        /* METALLIC DARK MODE OVERHAUL */
         body.dark-mode {
             --bg: #000000;
             --card: #111111;
             --border: #333333; 
-            --shadow: 0 10px 25px -5px rgba(0,0,0,0.8), 0 8px 10px -6px rgba(0,0,0,0.6);
+            --shadow: 0 4px 10px rgba(0,0,0,0.5);
             --text: #ffffff;
             --text-muted: #a3a3a3;
             --blue: #3b82f6;
@@ -56,13 +52,10 @@
             --input-bg: #000000;
             --input-disabled: #0a0a0a;
             --modal-bg: #161616;
-            --top-bar-bg: #1a1a1a; 
-            
-            --danger-bg: #1e1e1e; --danger-border: #ef4444; --danger-text: #f87171;
-            --warning-bg: #1e1e1e; --warning-border: #eab308; --warning-text: #fcd34d;
+            --top-bar-bg: #0f172a; /* Kept same as light mode as requested */
             
             --row-up-bg: #111111; 
-            --row-down-bg: #222222; 
+            --row-down-bg: #1a1a1a; 
             --row-text: #ffffff;
             --row-blue-text: #3b82f6; 
             --row-muted-text: #a3a3a3;
@@ -87,17 +80,15 @@
         }
         .hidden { display: none !important; }
         
-        /* Layout */
         .top-bar { background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.5); border-bottom: 1px solid var(--border); transition: background 0.3s; }
-        .dash-header { min-height: 80px; }
+        body.dark-mode .top-bar { border-bottom: none; } /* Fix dark mode weird line */
+        
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; line-height: 1.2; }
-        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; gap: 5px; position: absolute; left: 15px; font-weight: bold; }
+        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; position: absolute; left: 15px; font-weight: bold; }
         
         .screen-content { padding: 15px; padding-bottom: 90px; max-width: 600px; margin: 0 auto; }
         
-        /* 3D Elevated Elements */
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: var(--shadow); transition: background 0.3s, border 0.3s; }
-        .profile-sec { padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid var(--border); background: var(--card); box-shadow: var(--shadow); transition: background 0.3s, border 0.3s; }
         .nav-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; }
         .nav-card:active { transform: translateY(3px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         
@@ -107,17 +98,18 @@
         .nav-desc { font-size: 11px; color: var(--text-muted); }
         .stat-value { font-size: 20px; font-weight: bold; margin-bottom: 4px; }
         
-        /* Rounded Inputs & Colored Labels */
-        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 12px; margin-top: 4px; font-size: 15px; font-weight: bold; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); transition: background 0.3s, color 0.3s, border 0.3s; }
+        /* Rounded Inputs & Muted Labels */
+        input, select { width: 100%; padding: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 12px; margin-top: 4px; font-size: 15px; font-weight: bold; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; }
         input:disabled { background: var(--input-disabled); color: var(--text-muted); border-style: dashed; }
-        .profile-lbl { font-size: 13px; font-weight: 800; color: var(--blue); display: block; margin-bottom: 2px; }
+        .profile-lbl { font-size: 13px; font-weight: 800; color: #475569; display: block; margin-bottom: 2px; }
+        body.dark-mode .profile-lbl { color: #94a3b8; }
         
         /* Pill Buttons */
         button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); box-shadow: var(--shadow); transition: background 0.3s; }
         button:active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
         
-        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid var(--border); transition: background 0.3s, color 0.3s; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: bold; background: #dcfce7; color: #166534; transition: background 0.3s, color 0.3s; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 1px 2px rgba(0,0,0,0.3); }
         
         .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.6); z-index: 5000; cursor: grab; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; touch-action: none; }
         .floating-back:active { cursor: grabbing; }
@@ -132,22 +124,20 @@
         #custom-modal, #manage-modal, #help-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 12px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
-        /* SHIELDED BOTTOM NAVIGATION BAR */
-        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
+        /* BOTTOM NAVIGATION BAR */
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); transition: background 0.3s; padding: 0 15px; }
         .bottom-icon { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; flex-shrink: 0; }
         .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
         
-        /* The Protected '+' FAB Button */
+        /* Protected '+' FAB Button */
         .nav-fab-wrapper { position: relative; width: 56px; height: 56px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
         .nav-fab { position: absolute; top: -20px; width: 56px; height: 56px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 6px 15px rgba(0,0,0,0.6); border: 4px solid var(--top-bar-bg); cursor: pointer; z-index: 4001; transition: background 0.3s, border 0.3s; }
-        .nav-fab:active { opacity: 0.8; transform: scale(0.95); }
         
         /* PRINT PREVIEW */
-        #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
-        #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        #preview-wrapper { padding-top: 20px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; }
         
-        .notification-dot { position: absolute; top: 5px; right: 5px; width: 14px; height: 14px; background: var(--red); border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; transition: box-shadow 0.3s; }
+        .notification-dot { position: absolute; top: 5px; right: 5px; width: 14px; height: 14px; background: var(--red); border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; }
 
         @media screen {
             .page-break { border-top: 2px dashed #cbd5e1; margin-top: 30px; padding-top: 30px; position: relative; }
@@ -155,7 +145,7 @@
         }
         @media print {
             body { background: white !important; margin: 0 !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; color-adjust: exact !important; print-color-adjust: exact !important; }
-            #ui-wrapper, #preview-controls, #preview-floating-btns, .bottom-bar { display: none !important; }
+            #ui-wrapper, #preview-floating-btns, .bottom-bar { display: none !important; }
             #preview-wrapper { display: block !important; padding: 0 !important; margin: 0 !important; background: white !important; position: static; overflow: visible !important; }
             #preview-content-scale { transform: scale(1) !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; }
             .page-break { border: none !important; margin-top: 0 !important; padding-top: 80px !important; page-break-before: always !important; }
@@ -198,7 +188,7 @@
                         }
                     } else {
                         window.appState = { profile: null, legs: [] };
-                        window.openSettings(); 
+                        window.navTo('screen-register'); 
                     }
                 });
             } else {
@@ -206,25 +196,17 @@
                 window.navTo('screen-login');
             }
         });
-        
-        window.checkGazetted = (isManualClick) => {
-            const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
-            const drop = document.getElementById('reg-payscale-dropdown');
-            const txt = document.getElementById('reg-payscale-text');
-            if (isGaz) { drop.classList.add('hidden'); txt.classList.remove('hidden'); if (isManualClick) showModal("NOTICE", "NDA is only paid up to Pay Level-7.", "warning", false); } 
-            else { drop.classList.remove('hidden'); txt.classList.add('hidden'); }
-        };
     </script>
 </head>
 <body>
 
 <div id="preview-wrapper" class="hidden">
-    <div id="preview-controls">
-        <button onclick="window.closePreview()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #64748b;">← Back</button>
-        <button onclick="window.print()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #10b981; color: white;">🖨️ Print</button>
-    </div>
     <div id="preview-content-scale">
         <div id="preview-content"></div>
+    </div>
+    <div id="preview-floating-btns" style="position: fixed; right: -5px; top: 83%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px;">
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.print()">🖨️ Print</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: -2px 4px 10px rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.closePreview()">❌ Close</div>
     </div>
 </div>
 
@@ -237,7 +219,7 @@
         <div class="bottom-icon" onclick="window.showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
         
         <div class="nav-fab-wrapper">
-            <div class="nav-fab" onclick="window.switchAddTab('duty'); window.navTo('screen-add');">+</div>
+            <div class="nav-fab" id="main-fab-btn" onclick="window.switchAddTab('duty'); window.navTo('screen-add');">+</div>
         </div>
         
         <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
@@ -248,7 +230,7 @@
     <div id="custom-modal" class="hidden">
         <div id="modal-box">
             <h3 id="modal-title" style="margin-top:0; font-size: 18px; color: var(--text);">Message</h3>
-            <p id="modal-msg" style="font-size: 14px; white-space: pre-wrap; color: var(--text-muted); margin-bottom: 20px; text-align: left;"></p>
+            <p id="modal-msg" style="font-size: 14px; white-space: pre-wrap; color: var(--text-muted); margin-bottom: 20px; text-align: center;"></p>
             <div style="display: flex; gap: 10px; justify-content: center;"><button id="modal-cancel" class="hidden" style="flex: 1; margin: 0; background: #64748b;">CANCEL</button><button id="modal-ok" style="flex: 1; margin: 0; background: var(--blue);">OK</button></div>
         </div>
     </div>
@@ -352,7 +334,6 @@
                     <div style="flex: 1; position: relative;">
                         <label class="profile-lbl">DA (%)</label>
                         <input type="number" id="reg-da" placeholder="e.g. 50">
-                        <div id="da-warning-msg" class="hidden" style="color: var(--red); font-size: 11px; font-weight: bold; margin-top: 5px;"></div>
                     </div>
                 </div>
             </div>
@@ -373,7 +354,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v1.1</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v1.3</div>
         </div>
     </div>
 
@@ -381,7 +362,7 @@
         <div class="top-bar dash-header">
             <div class="top-bar-content">
                 <div style="text-align: center;">
-                    <div style="display: inline-block; background: transparent; padding: 8px 25px; border-radius: 30px; border: 2px solid var(--border);">
+                    <div style="display: inline-block; background: transparent; padding: 6px 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.2);">
                         <h1 id="dash-title">TTE LOG</h1>
                     </div>
                 </div>
@@ -392,24 +373,26 @@
             <div class="card" style="padding: 15px; margin-bottom: 15px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                     <h3 style="margin: 0; font-size: 16px; color: var(--text);">Duty Status</h3>
-                    <div class="status-badge" id="duty-status-badge"><span id="duty-status-text">At HQ</span></div>
+                    <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
                 </div>
                 <hr style="border: 0; border-top: 1px dashed var(--border); margin: 15px 0 10px 0;">
                 <h4 style="margin: 0 0 10px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Recent Entries</h4>
                 <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 6px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"></div>
+                
+                <button onclick="window.switchAddTab('duty'); window.navTo('screen-add');" style="margin-top: 15px; padding: 12px; border-radius: 12px;">+ Add Journey Entry</button>
             </div>
             
             <div style="margin-bottom: 10px;">
                 <div class="grid-2">
                     <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
                         <div class="stat-value" id="dash-ta-val" style="color: var(--green);">₹0</div>
-                        <div class="nav-title">TA this month</div>
+                        <div class="nav-title" id="dash-ta-lbl">TA this month</div>
                         <div class="nav-desc">Total earned</div>
                     </div>
                     <div class="nav-card" onclick="window.switchTab('nda'); window.navTo('screen-reports');">
                         <div class="stat-value" id="dash-nda-val" style="color: var(--blue);">0:00 Hrs</div>
-                        <div class="nav-title">NDA Hours</div>
-                        <div class="nav-desc" id="dash-nda-lbl">₹0</div>
+                        <div class="nav-title" id="dash-nda-lbl">NDA</div>
+                        <div class="nav-desc" id="dash-nda-money">₹0</div>
                     </div>
                     <div class="nav-card" onclick="window.navTo('screen-all')">
                         <div class="nav-icon">📋</div>
@@ -439,7 +422,7 @@
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
                 <h1>ADD JOURNEY</h1>
             </div>
         </div>
@@ -452,38 +435,38 @@
 
             <div id="form-duty">
                 <div class="card" style="padding:0; overflow:hidden;">
-                    <div style="padding: 12px; border-bottom: 1px solid var(--border);">
-                        <label style="font-size: 13px; font-weight: 900; color: var(--blue); display: block; margin-bottom: 4px;">Train No.</label>
-                        <input type="text" id="trip-train" style="margin: 0;">
+                    <div style="padding: 8px; border-bottom: 1px solid var(--border);">
+                        <label style="font-size: 13px; font-weight: 900; color: var(--blue); display: block; margin-bottom: 2px;">Train No.</label>
+                        <input type="text" id="trip-train" style="margin: 0; padding: 8px;">
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
-                        <div style="flex: 1; padding: 12px; border-right: 1px solid var(--border);">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Departure Date</label>
-                            <input type="date" id="trip-dep-date" style="margin: 0;">
+                        <div style="flex: 1; padding: 8px; border-right: 1px solid var(--border);">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 2px;">Departure Date</label>
+                            <input type="date" id="trip-dep-date" style="margin: 0; padding: 8px;">
                         </div>
-                        <div style="flex: 1; padding: 12px;">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Arrival Date</label>
-                            <input type="date" id="trip-arr-date" style="margin: 0;">
+                        <div style="flex: 1; padding: 8px;">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Date</label>
+                            <input type="date" id="trip-arr-date" style="margin: 0; padding: 8px;">
                         </div>
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
-                        <div style="flex: 1; padding: 12px; border-right: 1px solid var(--border);">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Departure Time</label>
-                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0;">
+                        <div style="flex: 1; padding: 8px; border-right: 1px solid var(--border);">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 2px;">Departure Time</label>
+                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; padding: 8px;">
                         </div>
-                        <div style="flex: 1; padding: 12px;">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Arrival Time</label>
-                            <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0;">
+                        <div style="flex: 1; padding: 8px;">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Time</label>
+                            <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; padding: 8px;">
                         </div>
                     </div>
                     <div style="display: flex;">
-                        <div style="flex: 1; padding: 12px; border-right: 1px solid var(--border);">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Station From</label>
-                            <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; text-transform: uppercase;">
+                        <div style="flex: 1; padding: 8px; border-right: 1px solid var(--border);">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 2px;">Station From</label>
+                            <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; text-transform: uppercase; padding: 8px;">
                         </div>
-                        <div style="flex: 1; padding: 12px;">
-                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 4px;">Station To</label>
-                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; text-transform: uppercase;">
+                        <div style="flex: 1; padding: 8px;">
+                            <label style="font-size: 12px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 2px;">Station To</label>
+                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; text-transform: uppercase; padding: 8px;">
                             <datalist id="stn-list"></datalist>
                         </div>
                     </div>
@@ -514,7 +497,7 @@
             </div>
 
             <button id="btn-save-duty" onclick="window.saveLeg()">Save This Journey</button>
-            <button id="btn-save-nonduty" class="hidden" onclick="window.saveNonDuty()">Save Record</button>
+            <button id="btn-save-nonduty" class="hidden" style="background: var(--green);" onclick="window.saveNonDuty()">Save Record</button>
             
             <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px; color: var(--text);" id="recent-duty-title">Recent Duty Entries</h3>
             <div id="recent-logs-add" style="border-radius: 6px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border);"></div>
@@ -524,7 +507,7 @@
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
                 <h1>ALL JOURNEY</h1>
             </div>
         </div>
@@ -556,7 +539,7 @@
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
                 <h1>GENERATE PDF</h1>
             </div>
         </div>
@@ -568,20 +551,18 @@
                 <button class="tab-btn" id="tab-nda" onclick="window.switchTab('nda')">NDA Bill</button>
             </div>
             
-            <div class="card" style="padding: 10px; margin-bottom: 15px;">
-                <div class="slider-bar" style="padding: 5px; color: var(--text); display: flex; justify-content: space-between; align-items: center;">
-                    <button class="slider-btn" onclick="window.changeMonth(-1)" style="padding: 8px 15px;">❮</button>
-                    <span id="report-slider-text" style="font-weight: bold; font-size: 16px;">Jun 2026</span>
-                    <button class="slider-btn" onclick="window.changeMonth(1)" style="padding: 8px 15px;">❯</button>
-                </div>
-                <input type="hidden" id="report-month-hidden"> 
+            <div class="slider-bar" style="color: var(--text);">
+                <button class="slider-btn" onclick="window.changeMonth(-1)" style="padding: 8px 15px;">❮</button>
+                <span id="report-slider-text" style="font-weight: bold; font-size: 16px;">Jun 2026</span>
+                <button class="slider-btn" onclick="window.changeMonth(1)" style="padding: 8px 15px;">❯</button>
             </div>
+            <input type="hidden" id="report-month-hidden"> 
             
             <div class="card" id="report-summary-card">
                 <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">Summary</h3>
                 <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
                 <div class="summary-row" id="rep-ta-row" style="color: var(--text);"><span id="rep-val-label">Total TA</span><span id="rep-val" style="font-weight: bold; color: var(--green);">₹0</span></div>
-                <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA Amount</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--blue);">₹0</span></div>
+                <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA Amount</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
                 
                 <p style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 10px; margin-bottom: 0; text-align: center;">💡 To check previous history, use the ❮ ❯ arrows above to change the month.</p>
                 
@@ -597,26 +578,26 @@
     <div id="screen-backup" class="hidden">
         <div class="top-bar">
             <div class="top-bar-content">
-                <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
+                <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
                 <h1>BACKUP & RESTORE</h1>
             </div>
         </div>
         <div class="screen-content">
             <div class="card">
-                <h3 style="color: var(--purple);">Manual Backup</h3>
+                <h3 style="color: var(--text);">Manual Backup</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Save a physical backup file to your phone.</p>
                 <button onclick="window.exportData()" style="background: var(--purple);">Download Backup File</button>
-                <div id="manual-backup-time" style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 8px; text-align: center;"></div>
+                <div id="manual-backup-time" style="font-size: 11px; color: var(--blue); font-weight: bold; margin-top: 8px; text-align: center;"></div>
             </div>
             <div class="card">
-                <h3 style="color: var(--yellow);">Restore from File</h3>
+                <h3 style="color: var(--text);">Restore from File</h3>
                 <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Import a previously downloaded backup file.</p>
                 <button onclick="document.getElementById('import-file').click()" style="background: var(--yellow); color: white;">Choose File & Restore</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="window.importData(event)">
-                <div id="restore-backup-time" style="font-size: 11px; color: var(--text-muted); font-weight: bold; margin-top: 8px; text-align: center;"></div>
+                <div id="restore-backup-time" style="font-size: 11px; color: var(--blue); font-weight: bold; margin-top: 8px; text-align: center;"></div>
             </div>
             <div class="card">
-                <h3 style="color: var(--green);">Cloud Sync Status</h3>
+                <h3 style="color: var(--text);">Cloud Sync Status</h3>
                 <p style="font-size: 14px; font-weight: bold; color: var(--text); margin-bottom: 5px;">Your data is actively syncing to Google.</p>
                 <p style="font-size: 13px; font-weight: bold; color: var(--text-muted); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);" id="sync-time-lbl">Last Synced: Never</p>
             </div>
@@ -632,11 +613,12 @@
     window.currentAddTab = 'duty';
     let currentTab = 'ta';
 
-    /* ----- EXPLICIT GLOBAL BINDINGS ----- */
+    /* ----- EXPLICIT GLOBAL BINDINGS TO PREVENT CRASHES ----- */
     window.navTo = navTo;
     window.showModal = showModal;
     window.openSettings = openSettings;
     window.unlockProfile = unlockProfile;
+    window.updateDashboardUI = updateDashboardUI;
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
     function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
@@ -761,24 +743,64 @@
     
     window.switchAddTab = function(tab) {
         window.currentAddTab = tab;
+        const btnSaveDuty = document.getElementById('btn-save-duty');
+        const btnSaveNonduty = document.getElementById('btn-save-nonduty');
+        
         if (tab === 'duty') {
             document.getElementById('tab-duty').classList.add('active');
             document.getElementById('tab-nonduty').classList.remove('active');
             document.getElementById('form-duty').classList.remove('hidden');
             document.getElementById('form-nonduty').classList.add('hidden');
-            document.getElementById('btn-save-duty').classList.remove('hidden');
-            document.getElementById('btn-save-nonduty').classList.add('hidden');
+            btnSaveDuty.classList.remove('hidden');
+            btnSaveNonduty.classList.add('hidden');
             document.getElementById('recent-duty-title').innerText = "Recent Duty Entries";
         } else {
             document.getElementById('tab-nonduty').classList.add('active');
             document.getElementById('tab-duty').classList.remove('active');
             document.getElementById('form-nonduty').classList.remove('hidden');
             document.getElementById('form-duty').classList.add('hidden');
-            document.getElementById('btn-save-nonduty').classList.remove('hidden');
-            document.getElementById('btn-save-duty').classList.add('hidden');
+            btnSaveNonduty.classList.remove('hidden');
+            btnSaveDuty.classList.add('hidden');
             document.getElementById('recent-duty-title').innerText = "Recent Non-Duty Entries";
         }
-        updateDashboardUI();
+        
+        const rcAdd = document.getElementById('recent-logs-add');
+        let rcHTMLAdd = '';
+        let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
+        
+        if(window.currentAddTab === 'nonduty') {
+            let nondutyOnly = window.appState.legs ? window.appState.legs.filter(l => l.isNonDuty) : [];
+            if(nondutyOnly.length === 0) {
+                rcHTMLAdd = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No Non-Duty entries found.</p>';
+            } else {
+                let sortedNonDuty = [...nondutyOnly].sort((a,b) => new Date(b.fromDate) - new Date(a.fromDate));
+                let recentAddArr = sortedNonDuty.slice(0, 7);
+                let theadND = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Type</th><th style="padding: 8px 2px;">Date Range</th></tr></thead>`;
+                rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadND}<tbody>`;
+                recentAddArr.forEach((leg, i) => {
+                    let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
+                    let dateStr = (leg.fromDate === leg.toDate) ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}`;
+                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text);">${leg.dutyType.toUpperCase()}</td><td style="padding: 10px 2px; color: var(--text-muted); font-weight: bold;">${dateStr}</td></tr>`;
+                });
+                rcHTMLAdd += `</tbody></table>`;
+            }
+        } else {
+            if(dutyOnly.length === 0) {
+                rcHTMLAdd = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No Duty entries found.</p>';
+            } else {
+                let sortedDuty = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+                let recentAddArr = sortedDuty.slice(0, 3);
+                let theadDuty = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
+                rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadDuty}<tbody>`;
+                recentAddArr.forEach((leg, i) => {
+                    let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
+                    let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
+                    rcHTMLAdd += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text);">${leg.train}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold;">${shortDep}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text);">${leg.depStn}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold;">${leg.depTime}</td><td style="padding: 10px 2px; color: var(--row-blue-text); font-weight: bold;">${shortArr}</td><td style="padding: 10px 2px; font-weight: bold; color: var(--row-text);">${leg.arrStn}</td><td style="padding: 10px 2px; color: var(--row-muted-text); font-weight: bold;">${leg.arrTime}</td></tr>`; 
+                });
+                rcHTMLAdd += `</tbody></table>`;
+            }
+        }
+        if(rcAdd) rcAdd.innerHTML = rcHTMLAdd;
     };
     
     function navTo(screenId) { 
@@ -833,7 +855,7 @@
     function showModal(title, msg, type, showCancel, callback) { 
         const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
         document.getElementById('modal-title').innerText = title; 
-        document.getElementById('modal-msg').innerHTML = msg; // Supports HTML for notifications
+        document.getElementById('modal-msg').innerHTML = msg; 
         const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); 
         if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
         btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; 
@@ -849,8 +871,6 @@
         const saveBtn = document.getElementById('btn-save-profile');
         if(editBtn) editBtn.style.display = 'block';
         if(saveBtn) saveBtn.style.display = 'none';
-        const pbb = document.getElementById('profile-back-btn');
-        if(pbb) pbb.classList.remove('hidden');
     }
 
     function unlockProfile() {
@@ -860,6 +880,22 @@
         document.getElementById('btn-edit-profile').style.display = 'none';
         document.getElementById('btn-save-profile').style.display = 'block';
     }
+
+    window.checkGazetted = (isManualClick) => {
+        const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
+        const drop = document.getElementById('reg-payscale-dropdown');
+        const txt = document.getElementById('reg-payscale-text');
+        if (isGaz) {
+            drop.classList.add('hidden'); 
+            txt.classList.remove('hidden');
+            if (isManualClick) {
+                showModal("NOTICE", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false);
+            }
+        } else {
+            drop.classList.remove('hidden'); 
+            txt.classList.add('hidden');
+        }
+    };
 
     function openSettings() { 
         const p = window.appState.profile || {}; 
@@ -873,13 +909,10 @@
         
         if (empTypeVal === 'Gazetted') {
             document.getElementById('reg-payscale-text').value = p.payscale || '';
-            document.getElementById('reg-payscale-dropdown').classList.add('hidden');
-            document.getElementById('reg-payscale-text').classList.remove('hidden');
         } else {
             document.getElementById('reg-payscale-dropdown').value = p.payscale || '';
-            document.getElementById('reg-payscale-dropdown').classList.remove('hidden');
-            document.getElementById('reg-payscale-text').classList.add('hidden');
         }
+        window.checkGazetted(false); 
         
         document.getElementById('reg-gradepay').value = p.gradepay || ''; 
         document.getElementById('reg-da').value = p.da || ''; 
@@ -896,8 +929,6 @@
         
         if (!p.name) {
             unlockProfile();
-            const pbb = document.getElementById('profile-back-btn');
-            if(pbb) pbb.classList.add('hidden');
         } else {
             lockProfile();
         }
@@ -1006,7 +1037,7 @@
             const empTypeVal = document.getElementById('reg-emp-type').value;
             const payScaleVal = empTypeVal === 'Gazetted' ? getVal('reg-payscale-text') : getVal('reg-payscale-dropdown');
             
-            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !payScaleVal || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !document.getElementById('reg-basicpay').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR / त्रुटि", "All profile fields are mandatory to fill.\nसभी फ़ील्ड भरना अनिवार्य है।", "error", false);
+            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !payScaleVal || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !document.getElementById('reg-basicpay').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR", "All profile fields are mandatory to fill.", "error", false);
             
             window.appState.profile = { 
                 name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), empType: empTypeVal, payscale: payScaleVal, gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, basicpay: document.getElementById('reg-basicpay').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
@@ -1016,8 +1047,8 @@
             saveData(); 
             lockProfile();
             checkProfileNotifications();
-            navTo('screen-dashboard'); 
-            showModal("Success / सफलता", "Profile Saved & Synced!\nप्रोफाइल सेव हो गई है!", "success", false); 
+            window.navTo('screen-dashboard'); 
+            showModal("Success", "Profile Saved & Synced!", "success", false); 
         } catch(e) { 
             showModal("Save Error", e.message, "error", false); 
         } 
@@ -1050,12 +1081,12 @@
                     localStorage.setItem('lastRestoreTime', window.lastRestoreTime);
                     updateBackupUI();
                     
-                    showModal("SUCCESS / सफलता", "Backup restored!\nबैकअप रीस्टोर हो गया!", "success", false, () => { location.reload(); }); 
+                    showModal("SUCCESS", "Backup restored!", "success", false, () => { location.reload(); }); 
                 } else { 
                     throw new Error("Invalid Format"); 
                 } 
             } catch(err) { 
-                showModal("ERROR / त्रुटि", "Invalid backup file.\nअमान्य बैकअप फ़ाइल।", "error", false); 
+                showModal("ERROR", "Invalid backup file.", "error", false); 
             } 
         }; 
         reader.readAsText(file); 
@@ -1081,7 +1112,7 @@
         const id = parseInt(document.getElementById('manage-id').value);
         const leg = window.appState.legs.find(l => l.id === id); 
         window.editModeId = id; 
-        closeManage(); 
+        window.closeManage(); 
         
         if (mType === 'nonduty') {
             window.switchAddTab('nonduty');
@@ -1099,16 +1130,16 @@
             document.getElementById('trip-arr-stn').value = leg.arrStn; 
             document.getElementById('trip-arr-time').value = leg.arrTime; 
         }
-        navTo('screen-add'); 
+        window.navTo('screen-add'); 
     }
     
-    window.triggerDelete = () => { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
+    window.triggerDelete = () => { window.closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
     
     window.saveLeg = () => { 
         const leg = { id: window.editModeId ? window.editModeId : Date.now(), isNonDuty: false, depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
-        if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR / त्रुटि", "All fields are mandatory.\nसभी फील्ड्स अनिवार्य हैं।", "error", false); 
-        if(leg.depStn === leg.arrStn) return showModal("ERROR / त्रुटि", "From and To stations cannot be same.\nप्रस्थान और गंतव्य स्टेशन समान नहीं हो सकते।", "error", false); 
-        if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR / त्रुटि", "Arrival must be after Departure.\nआगमन का समय प्रस्थान के बाद होना चाहिए।", "error", false); 
+        if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR", "All fields are mandatory.", "error", false); 
+        if(leg.depStn === leg.arrStn) return showModal("ERROR", "From and To stations cannot be same.", "error", false); 
+        if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR", "Arrival must be after Departure.", "error", false); 
         
         if(!window.appState.legs) window.appState.legs = []; 
         let testLegs = [...window.appState.legs]; 
@@ -1123,15 +1154,15 @@
         if(prev) {
             let prevArrDt = new Date(`${prev.arrDate}T${prev.arrTime}`);
             let currDepDt = new Date(`${leg.depDate}T${leg.depTime}`);
-            if(currDepDt < prevArrDt) { return showModal("TIME ERROR / समय त्रुटि", `Departure time cannot be before previous arrival time (${formatDate(prev.arrDate)} ${prev.arrTime}).\nप्रस्थान का समय पिछले आगमन समय से पहले नहीं हो सकता।`, "error", false); }
+            if(currDepDt < prevArrDt) { return showModal("TIME ERROR", `Departure time cannot be before previous arrival time (${formatDate(prev.arrDate)} ${prev.arrTime}).`, "error", false); }
 
             if(hqGroup.includes(prev.arrStn)) {
-                if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at HQ. New journey must start from HQ.\nपिछली यात्रा मुख्यालय पर समाप्त हुई थी। नई यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
+                if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", `Previous journey ended at HQ. New journey must start from HQ.`, "error", false);
             } else {
-                if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR / त्रुटि", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.\nपिछली यात्रा ${prev.arrStn} पर समाप्त हुई थी। आपको वहीं से शुरू करना होगा।`, "error", false);
+                if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.`, "error", false);
             }
         } else {
-            if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR / त्रुटि", `Your very first duty journey must start from HQ.\nआपकी पहली यात्रा मुख्यालय से शुरू होनी चाहिए।`, "error", false);
+            if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", `Your very first duty journey must start from HQ.`, "error", false);
         }
         
         window.appState.legs = testLegs; 
@@ -1145,15 +1176,15 @@
         document.getElementById('trip-dep-stn').value = leg.arrStn;
         
         window.editModeId = null;
-        saveData(); navTo('screen-dashboard'); 
+        saveData(); window.navTo('screen-dashboard'); 
     }
 
     window.saveNonDuty = () => {
         const type = document.getElementById('nonduty-type').value;
         const from = document.getElementById('nonduty-from').value;
         const to = document.getElementById('nonduty-to').value;
-        if(!from || !to) return showModal("ERROR / त्रुटि", "Dates are mandatory.", "error", false);
-        if(new Date(from) > new Date(to)) return showModal("ERROR / त्रुटि", "From Date cannot be after To Date.", "error", false);
+        if(!from || !to) return showModal("ERROR", "Dates are mandatory.", "error", false);
+        if(new Date(from) > new Date(to)) return showModal("ERROR", "From Date cannot be after To Date.", "error", false);
         
         let overlap = false;
         let fromD = new Date(`${from}T00:00:00`);
@@ -1182,11 +1213,11 @@
             document.getElementById('nonduty-from').value = '';
             document.getElementById('nonduty-to').value = '';
             window.editModeId = null;
-            saveData(); navTo('screen-dashboard'); 
+            saveData(); window.navTo('screen-dashboard'); 
         };
 
         if(overlap) {
-            showModal("WARNING / चेतावनी", "Warning: The selected dates overlap with an existing journey or leave!\nचेतावनी: चयनित तिथियां मौजूदा प्रविष्टि के साथ ओवरलैप हो रही हैं।", "warning", true, (proceed) => {
+            showModal("WARNING", "Warning: The selected dates overlap with an existing journey or leave!", "warning", true, (proceed) => {
                 if(proceed) finalizeSave();
             });
         } else {
@@ -1286,7 +1317,7 @@
     }
     
     function deleteLeg(id) { 
-        showModal("WARNING / चेतावनी", "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nक्या आप वाकई इसे हटाना चाहते हैं?", "warning", true, (proceed) => {
+        showModal("WARNING", "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?", "warning", true, (proceed) => {
             if(proceed) { window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); window.renderAllLogs(); updateDashboardUI(); }
         }); 
     }
@@ -1370,6 +1401,106 @@
         return { ndaData, totalNdaMinutes }; 
     }
     
+    function updateDashboardUI() { 
+        let firstName = window.appState.profile && window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
+        firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(); 
+        
+        checkProfileNotifications();
+        checkGlobalNotifications();
+
+        let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
+        
+        const hqGroup = [window.appState.profile?.hq, ...(window.appState.profile?.nearby || [])]; 
+        const badge = document.getElementById('duty-status-badge'); 
+        const dot = document.getElementById('duty-status-dot'); 
+        const txt = document.getElementById('duty-status-text'); 
+        
+        if(badge) {
+            if(dutyOnly.length === 0) { 
+                badge.style.background = '#dcfce7'; badge.style.color = '#166534'; dot.style.background = '#22c55e'; txt.innerText = 'At HQ'; 
+            } else { 
+                const lastLeg = dutyOnly[dutyOnly.length - 1]; 
+                if(hqGroup.includes(lastLeg.arrStn)) { 
+                    badge.style.background = '#dcfce7'; badge.style.color = '#166534'; dot.style.background = '#22c55e'; txt.innerText = 'At HQ'; 
+                } else { 
+                    badge.style.background = '#fef3c7'; badge.style.color = '#b45309'; dot.style.background = '#eab308'; txt.innerText = `At ${lastLeg.arrStn}`; 
+                } 
+            } 
+        }
+        
+        const todayStr = new Date();
+        const curY = todayStr.getFullYear();
+        const curM = String(todayStr.getMonth()+1).padStart(2,'0');
+        const mo = `${curY}-${curM}`; 
+        
+        const moName = todayStr.toLocaleString('default',{month:'short'}); 
+        if(document.getElementById('dash-ta-lbl')) document.getElementById('dash-ta-lbl').innerText = `TA THIS MONTH (${moName})`; 
+        
+        let totalTA = 0; const cycles = buildCycles(dutyOnly); 
+        cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
+        if(document.getElementById('dash-ta-val')) document.getElementById('dash-ta-val').innerText = '₹' + totalTA; 
+        
+        let todayDash = new Date();
+        let ndaYDash = todayDash.getFullYear();
+        let ndaMDash = todayDash.getMonth() + 1;
+        if(todayDash.getDate() > 15) {
+            ndaMDash += 1;
+            if(ndaMDash > 12) { ndaMDash = 1; ndaYDash += 1; }
+        }
+        let ndaMoStrDash = `${ndaYDash}-${String(ndaMDash).padStart(2, '0')}`;
+        
+        const nda = extractNDALegs(ndaMoStrDash); 
+        const isGazetted = window.appState.profile && window.appState.profile.empType === 'Gazetted';
+        let totalEligibleHours = 0;
+        let remainingMinutes = 0;
+        let ndaAmt = 0;
+
+        if (!isGazetted) {
+            totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
+            remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
+            if (totalEligibleHours > 0) {
+                const basicPayRaw = window.appState.profile && window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
+                const basicPay = basicPayRaw > 43600 ? 43600 : basicPayRaw;
+                const daPct = window.appState.profile && window.appState.profile.da ? parseFloat(window.appState.profile.da) : 0;
+                const daAllowance = basicPay * (daPct / 100);
+                const hourlyRate = (basicPay + daAllowance) / 200;
+                const unitHours = (totalEligibleHours / 6).toFixed(2);
+                ndaAmt = parseFloat(unitHours) * hourlyRate;
+            }
+        }
+        
+        let m1Date = new Date(ndaYDash, ndaMDash - 2); 
+        let m2Date = new Date(ndaYDash, ndaMDash - 1); 
+        let m1Str = m1Date.toLocaleString('default', {month:'short'});
+        let m2Str = m2Date.toLocaleString('default', {month:'short'});
+        
+        const ndaHrsStr = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')}`;
+        if(document.getElementById('dash-nda-val')) document.getElementById('dash-nda-val').innerText = `${ndaHrsStr} Hrs`;
+        if(document.getElementById('dash-nda-lbl')) document.getElementById('dash-nda-lbl').innerText = `NDA (${m1Str}-${m2Str}) • ₹${Math.round(ndaAmt)}`;
+        
+        const rcDash = document.getElementById('recent-logs-dash');
+        let rcHTMLDash = '';
+        
+        if(dutyOnly.length === 0) { 
+            rcHTMLDash = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No entries yet.</p>'; 
+        } else { 
+            let sortedAll = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+            let recentDashArr = sortedAll.slice(0, 3);
+            
+            let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
+            
+            rcHTMLDash = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0;">${theadCommon}<tbody>`;
+
+            recentDashArr.forEach((leg, i) => { 
+                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
+                let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
+                rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.train}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</td></tr>`; 
+            });
+            rcHTMLDash += `</tbody></table>`;
+        } 
+        if(rcDash) rcDash.innerHTML = rcHTMLDash;
+    }
+    
     window.switchTab = (tab) => { 
         currentTab = tab; 
         document.getElementById('tab-ta').classList.remove('active'); 
@@ -1410,12 +1541,13 @@
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
 
         if(currentTab === 'ta') { 
-            generateBtn.style.background = "#16a34a";
+            generateBtn.style.background = "var(--green)";
             document.getElementById('report-slider-text').innerText = `${moName} ${yrName}`; document.getElementById('ta-extras').classList.remove('hidden'); generateBtn.innerText = "Generate TA Journal PDF"; 
             let totalTA = 0; let eCount = 0; const cycles = buildCycles(dutyOnly); cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); cycle.forEach(leg => { if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { eCount++; } }); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
             document.getElementById('rep-count').innerText = eCount; document.getElementById('rep-val').innerText = '₹' + totalTA;
+            document.getElementById('rep-val').style.color = "var(--green)";
         } else { 
-            generateBtn.style.background = "#9333ea";
+            generateBtn.style.background = "var(--purple)";
             document.getElementById('report-slider-text').innerText = `${strFrom} to ${strTo}`; document.getElementById('ta-extras').classList.add('hidden'); generateBtn.innerText = "Generate NDA Bill PDF"; 
             
             let totalEligibleHours = 0;
@@ -1442,6 +1574,7 @@
             }
             document.getElementById('rep-val').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`; 
             document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
+            document.getElementById('rep-val').style.color = "var(--purple)";
         } 
     }
     
@@ -1460,16 +1593,16 @@
             let curr = sortedLegs[i]; let next = sortedLegs[i+1];
             if (hqGroup.includes(curr.arrStn)) { if (!hqGroup.includes(next.depStn)) { hasBreak = true; breakMsg = `HQ to ${next.depStn}`; break; } } else { if (curr.arrStn !== next.depStn) { hasBreak = true; breakMsg = `${curr.arrStn} to ${next.depStn}`; break; } }
         }
-        if (hasBreak) { return showModal("INVALID CYCLE / अमान्य चक्र", `Invalid Cycle detected. You have a broken link connecting [${breakMsg}].\n\nPlease add the missing connecting journey in All Journey before generating the PDF.`, "error", false); }
+        if (hasBreak) { return showModal("INVALID CYCLE", `Invalid Cycle detected. You have a broken link connecting [${breakMsg}].\n\nPlease add the missing connecting journey in All Journey before generating the PDF.`, "error", false); }
 
         if(currentTab === 'ta') { generateTAPDF(); } else { 
-            showModal("NOTICE / सूचना", "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month.\nपूर्ण NDA जनरेट करने के लिए, पिछले महीने की 16 तारीख से Journey भरना सुनिश्चित करें।", "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
+            showModal("NOTICE", "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month.", "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
         } 
     }
     
     window.closePreview = () => { document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = ''; }
 
-    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING / चेतावनी", "Working Days and Earnings are empty. Generate partial PDF anyway?\nवर्किंग डेज और अर्निंग्स खाली हैं। क्या आप फिर भी PDF जनरेट करना चाहते हैं?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
+    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING", "Working Days and Earnings are empty. Generate partial PDF anyway?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
 
     function buildTAPreview(mo, wDays, earn) {
         const p = window.appState.profile; if(!p) return; const monthStr = new Date(mo+'-01').toLocaleString('default', {month:'long', year:'numeric'}).toUpperCase();
