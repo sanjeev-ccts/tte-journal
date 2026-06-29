@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TTE LOG</title>
+    <title>TTE LOGS</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="apple-touch-icon" href="./my-icon.png">
@@ -31,7 +31,7 @@
             --top-bar-bg: #0f172a;
             
             --row-up-bg: #ffffff;
-            --row-down-bg: #cbd5e1; /* Deepened Grey */
+            --row-down-bg: #cbd5e1; 
             --row-text: #000000;
             --row-blue-text: #1e40af;
             --row-muted-text: #475569;
@@ -64,7 +64,7 @@
             --top-bar-bg: #010409;
             
             --row-up-bg: #161b22;
-            --row-down-bg: #2d333b; /* Distinct Dark Mode Grey */
+            --row-down-bg: #2d333b; 
             --row-text: #e6edf3;
             --row-blue-text: #79c0ff;
             --row-muted-text: #8b949e;
@@ -99,16 +99,16 @@
         
         .dash-header { min-height: 80px; }
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; width: 100%; }
-        .dash-title-pill { font-size: 22px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1.5px solid rgba(253, 224, 71, 0.45); border-radius: 30px; padding: 4px 22px; display: inline-block; background: transparent; }
+        .dash-title-pill { font-size: 20px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1px solid rgba(253, 224, 71, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block; background: transparent; }
         
-        /* Updated Back Button alignment & font */
-        .back-btn { background: transparent !important; border: none !important; color: white !important; font-size: 15px; padding: 12px 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; position: absolute; left: 4px; top: 50%; transform: translateY(-50%); font-weight: 500; margin: 0; z-index: 1010; width: auto; outline: none; box-shadow: none !important; letter-spacing: 0.3px; border-radius: 0 !important; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        /* FIXED: Top Back Button overrides all snapping and aligns perfectly */
+        .back-btn { background: transparent !important; border: none !important; color: white !important; font-size: 15px; padding: 10px 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-weight: 500; margin: 0; z-index: 1010; outline: none; box-shadow: none !important; letter-spacing: 0.3px; border-radius: 8px !important; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        .back-btn:active { transform: translateY(-50%) scale(0.95) !important; opacity: 0.7; }
         
         .screen-content { padding: 15px; padding-bottom: 90px; max-width: 600px; margin: 0 auto; box-sizing: border-box; width: 100%; overflow-x: hidden; }
         
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: var(--shadow); transition: background 0.3s, border 0.3s; }
         
-        /* Unified Symmetrical Nav Cards */
         .nav-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; min-height: 92px; }
         .nav-card:active { transform: translateY(3px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         
@@ -118,17 +118,13 @@
         .nav-sub-text { font-size: 12px; color: var(--text-muted); font-weight: normal; }
         .nav-icon { font-size: 22px; margin-bottom: 5px; display: inline-block; }
         
-        /* Perfectly Rounded Inputs */
         input, select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 30px; margin-top: 4px; font-size: 14px; font-weight: 500; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; box-sizing: border-box; }
         input:disabled { background: var(--input-disabled); color: var(--text-muted); border-style: dashed; }
-        .card-row-input { margin-top: 2px !important; width: 100% !important; min-width: 0 !important; }
         .profile-lbl { font-size: 13px; font-weight: 800; color: var(--text-muted); display: block; margin-bottom: 2px; }
         
-        /* Pill Buttons */
         button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue); box-shadow: var(--shadow); transition: background 0.3s; }
         button:active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
         
-        /* Duty Status Badges */
         .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: background 0.3s; }
         
@@ -160,6 +156,9 @@
         #preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; }
         
         .notification-dot { position: absolute; top: 5px; right: 5px; width: 14px; height: 14px; background: var(--red); border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; }
+
+        /* Global Admin Overlay */
+        #admin-lock-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
 
         @media screen {
             .page-break { border-top: 2px dashed #cbd5e1; margin-top: 30px; padding-top: 30px; position: relative; }
@@ -193,6 +192,9 @@
         window.provider = new GoogleAuthProvider();
         window.firebaseSet = set;
         window.firebaseRef = ref;
+        
+        // ADMIN CONFIGURATION (Secure Email Match)
+        window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -200,16 +202,38 @@
         onAuthStateChanged(window.auth, (user) => {
             if (user) {
                 window.currentUid = user.uid;
-                onValue(ref(window.db, 'users/' + user.uid), (snapshot) => {
+                window.currentUserEmail = user.email;
+                
+                // Show Admin Gear if authorized
+                if(window.ADMIN_EMAILS.includes(user.email)) {
+                    document.getElementById('admin-gear-icon').classList.remove('hidden');
+                }
+
+                // Global Cloud Listener (Admin Settings & App Data)
+                onValue(ref(window.db, '/'), (snapshot) => {
+                    const fullData = snapshot.val() || {};
+                    const adminConfig = fullData.admin_config || {};
+                    const userData = fullData.users ? fullData.users[user.uid] : null;
+                    
                     window.lastSyncTime = new Date().toLocaleTimeString();
                     const syncLbl = document.getElementById('sync-time-lbl');
                     if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
 
-                    const data = snapshot.val();
-                    if (data) {
-                        window.appState = data;
+                    // Execute Maintenance Protocol
+                    if(adminConfig.maintenance && !window.ADMIN_EMAILS.includes(user.email)) {
+                        document.getElementById('admin-lock-overlay').classList.remove('hidden');
+                    } else {
+                        document.getElementById('admin-lock-overlay').classList.add('hidden');
+                    }
+
+                    // Apply Announcements
+                    window.adminAnnouncement = adminConfig.announcement || null;
+
+                    // Route User Logic
+                    if (userData) {
+                        window.appState = userData;
                         if (!window.appState.legs) window.appState.legs = [];
-                        if (document.getElementById('screen-register').classList.contains('hidden')) {
+                        if (document.getElementById('screen-register').classList.contains('hidden') && document.getElementById('screen-admin').classList.contains('hidden')) {
                             window.navTo('screen-dashboard');
                         }
                     } else {
@@ -219,6 +243,7 @@
                 });
             } else {
                 window.currentUid = null;
+                window.currentUserEmail = null;
                 window.navTo('screen-login');
             }
         });
@@ -226,9 +251,15 @@
 </head>
 <body>
 
+<div id="admin-lock-overlay" class="hidden">
+    <h1 style="font-size: 50px; margin: 0; color: var(--blue);">⚙️</h1>
+    <h2 style="color: var(--text); font-size: 24px;">System Upgrading</h2>
+    <p style="color: var(--text-muted); font-size: 15px;">The TTE LOGS platform is currently locked for a critical update to ensure data safety. We will be back online shortly.</p>
+</div>
+
 <div id="preview-wrapper" class="hidden">
     <div id="preview-controls">
-        <button onclick="window.closePreview()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #64748b;">← Back</button>
+        <button onclick="document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = '';" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #64748b;">← Back</button>
         <button onclick="window.print()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: var(--green); color: white;">🖨️ Print</button>
     </div>
     <div id="preview-content-scale">
@@ -236,16 +267,16 @@
     </div>
     <div id="preview-floating-btns" style="position: fixed; right: -5px; top: 83%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px;">
         <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.print()">🖨️ Print</div>
-        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.closePreview()">❌ Close</div>
+        <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = '';">❌ Close</div>
     </div>
 </div>
 
 <div id="ui-wrapper">
-    <div id="global-back-btn" class="floating-back hidden" onclick="window.navTo('screen-dashboard')">◀ Back</div>
+    <div id="global-back-btn" class="floating-back hidden" onclick="window.navTo('screen-dashboard')">← Back</div>
 
     <div class="bottom-bar hidden" id="main-bottom-bar">
         <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
-        <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
+        <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
         <div class="bottom-icon" onclick="window.showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
         
         <div class="nav-fab-wrapper">
@@ -254,8 +285,8 @@
         </div>
         
         <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
-        <div class="bottom-icon" onclick="window.showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
-        <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
+        <div class="bottom-icon" onclick="window.showModal('Support Us', 'TTE LOGS is Completely FREE!', 'success', false)">☕</div>
+        <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
     </div>
 
     <div id="trend-modal" class="hidden">
@@ -281,7 +312,7 @@
             <h3 style="color: var(--text); margin: 0 0 8px 0; font-size: 16px; font-weight: 900;">Help & Support</h3>
             <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 14px 0; line-height: 1.5;">Got suggestions or need help? Reach out directly!</p>
             <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 11px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 10px; box-sizing: border-box;">✉️ Email</a>
-            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--blue); color: white; border: none; padding: 11px 24px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; box-shadow: none;">Close</button>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); padding: 11px 24px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; box-shadow: none;">Close</button>
         </div>
     </div>
 
@@ -312,8 +343,11 @@
 
     <div id="screen-register" class="hidden">
         <div class="top-bar">
-            <button class="back-btn" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
-            <h1 style="color: #fde047;">PROFILE SETUP</h1>
+            <button class="back-btn hidden" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
+            <div class="top-bar-content" style="display:flex; justify-content:center; align-items:center; width:100%; position:relative;">
+                <h1 style="color: #fde047;">PROFILE SETUP</h1>
+                <div id="admin-gear-icon" class="hidden" style="position: absolute; right: 0; font-size: 20px; cursor: pointer; padding: 5px;" onclick="window.navTo('screen-admin')">⚙️</div>
+            </div>
         </div>
         <div class="screen-content">
             
@@ -391,13 +425,34 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.81</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.9</div>
+        </div>
+    </div>
+
+    <div id="screen-admin" class="hidden">
+        <div class="top-bar">
+            <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
+            <h1 style="color: var(--blue);">ADMIN DASHBOARD</h1>
+        </div>
+        <div class="screen-content">
+            <div class="card">
+                <h3 style="color: var(--red); margin: 0 0 5px 0;">Maintenance Mode</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin: 0 0 15px 0;">Activate to lock out non-admin users instantly.</p>
+                <button id="admin-maint-btn" onclick="window.toggleAdminMaint()" style="background: var(--card); color: var(--red); border: 2px solid var(--red);">Turn ON Maintenance</button>
+            </div>
+            <div class="card">
+                <h3 style="color: var(--blue); margin: 0 0 5px 0;">Global Announcement</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin: 0 0 10px 0;">Push a notification to all user devices.</p>
+                <input type="text" id="admin-broadcast-msg" placeholder="Enter alert message...">
+                <button style="margin-top: 15px;" onclick="window.sendAdminBroadcast()">Broadcast Notification</button>
+                <button style="margin-top: 10px; background: var(--card); color: var(--red); border: 1px dashed var(--red);" onclick="window.clearAdminBroadcast()">Clear Active Alert</button>
+            </div>
         </div>
     </div>
 
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar dash-header">
-            <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">DASHBOARD</span></h1>
+            <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
         </div>
         <div class="screen-content">
             
@@ -426,12 +481,12 @@
                     </div>
                     <div class="nav-card" onclick="window.navTo('screen-all')">
                         <div class="nav-icon">📋</div>
-                        <div class="nav-main-text" style="color: var(--blue);">All Journey</div>
+                        <div class="nav-main-text" style="color: var(--purple);">All Journey</div>
                         <div class="nav-sub-text">View, edit, delete</div>
                     </div>
                     <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
                         <div class="nav-icon">🖨️</div>
-                        <div class="nav-main-text" style="color: var(--green);">PDF</div>
+                        <div class="nav-main-text" style="color: var(--blue);">PDF</div>
                         <div class="nav-sub-text">TA Journal / NDA Bill</div>
                     </div>
                     <div class="nav-card" onclick="window.navTo('screen-register')">
@@ -441,7 +496,7 @@
                     </div>
                     <div class="nav-card" onclick="window.navTo('screen-backup')">
                         <div class="nav-icon">💾</div>
-                        <div class="nav-main-text" style="color: var(--purple);">Backup</div>
+                        <div class="nav-main-text" style="color: var(--red);">Backup</div>
                         <div class="nav-sub-text">Save your data</div>
                     </div>
                 </div>
@@ -585,6 +640,8 @@
                 <button class="tab-btn" id="tab-nda" onclick="window.switchTab('nda')">NDA Bill</button>
             </div>
             
+            <p style="font-size: 13px; color: var(--blue); font-weight: bold; margin: 0 0 10px 0; text-align: center;">💡 Use ❮ ❯ arrows below to check previous history.</p>
+
             <div class="slider-bar">
                 <button class="slider-btn" onclick="window.changeMonth(-1)">❮</button>
                 <span id="report-slider-text" style="font-weight: bold; font-size: 16px; color: var(--blue);">Jun 2026</span>
@@ -592,14 +649,12 @@
             </div>
             <input type="hidden" id="report-month-hidden"> 
             
-            <p style="font-size: 13px; color: var(--blue); font-weight: bold; margin-top: 0; margin-bottom: 15px; text-align: center;">💡 Use ❮ ❯ arrows above to check previous month history.</p>
-
             <div class="card" id="report-summary-card">
-                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center; cursor: pointer;" onclick="window.showTrendChart()"><span style="background: linear-gradient(135deg, #e0e7ff, #f0fdf4); color: #3730a3; border: 1.5px solid #a5b4fc; border-radius: 30px; padding: 5px 20px; display: inline-block;">📊 Summary</span></h3>
+                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center; cursor: pointer;" onclick="window.showTrendChart()"><span class="summary-pill" style="background: rgba(59, 130, 246, 0.1); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block;">📊 Summary</span></h3>
                 <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
                 <div class="summary-row" id="rep-ta-row" style="color: var(--text);"><span id="rep-val-label">Total TA</span><span id="rep-val" style="font-weight: bold; color: var(--green);">₹0</span></div>
                 <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
-                <p style="font-size: 13px; color: var(--blue); text-align: center; margin: 10px 0 0 0; font-weight: 500;" onclick="window.showTrendChart()">👆 Tap to view 6-month trend chart →</p>
+                <p style="font-size: 13px; color: var(--blue); text-align: center; margin: 10px 0 0 0; font-weight: 500; cursor:pointer;" onclick="window.showTrendChart()">👆 Tap Summary to view 6-month trend →</p>
                 
                 <div id="ta-extras" style="display: flex; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 15px; justify-content: center;">
                     <div style="flex: 1; min-width: 0; text-align: center; background: rgba(59, 130, 246, 0.05); padding: 12px; border-radius: 16px; border: 1.5px solid rgba(59, 130, 246, 0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
@@ -679,10 +734,36 @@
     window.showNotifications = showNotifications;
     window.switchAddTab = switchAddTab;
     window.formatTimeInput = formatTimeInput;
-    window.closePreview = closePreview;
     window.checkGazetted = checkGazetted;
     window.showTrendChart = showTrendChart;
     window.populateStnList = populateStnList;
+    
+    window.toggleAdminMaint = () => {
+        const cur = window.adminIsMaint || false;
+        if(window.firebaseSet && window.firebaseRef && window.db) {
+            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/maintenance'), !cur).then(() => {
+                showModal("Success", `Maintenance mode is now ${!cur ? "ON" : "OFF"}.`, "success", false);
+            });
+        }
+    };
+
+    window.sendAdminBroadcast = () => {
+        const msg = document.getElementById('admin-broadcast-msg').value.trim();
+        if(window.firebaseSet && window.firebaseRef && window.db) {
+            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/announcement'), msg).then(() => {
+                showModal("Success", `Message broadcasted globally.`, "success", false);
+                document.getElementById('admin-broadcast-msg').value = '';
+            });
+        }
+    };
+
+    window.clearAdminBroadcast = () => {
+        if(window.firebaseSet && window.firebaseRef && window.db) {
+            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/announcement'), null).then(() => {
+                showModal("Success", `Active alert cleared.`, "success", false);
+            });
+        }
+    };
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
     function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
@@ -731,51 +812,17 @@
             if(tt) tt.innerText = '☀️';
         }
         
-        const fBtn = document.getElementById('global-back-btn');
-        if(fBtn) {
-            let startY, startTop;
-            fBtn.addEventListener('touchstart', function(e) {
-                startY = e.touches[0].clientY;
-                startTop = parseInt(window.getComputedStyle(fBtn).top, 10);
-                fBtn.style.transition = 'none';
-            }, {passive: true});
-            fBtn.addEventListener('touchmove', function(e) {
-                let y = e.touches[0].clientY;
-                let newTop = startTop + (y - startY);
-                if(newTop < 60) newTop = 60;
-                if(newTop > window.innerHeight - 60) newTop = window.innerHeight - 60;
-                fBtn.style.top = newTop + 'px';
-                e.preventDefault();
-            }, {passive: false});
-            fBtn.addEventListener('touchend', function(e) {
-                fBtn.style.transition = 'right 0.3s';
-            }, {passive: true});
-        }
-
-                let startX = 0;
+        // FIXED SWIPE ENGINE
+        let startX = 0;
         document.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
         document.addEventListener('touchend', e => { 
             let diff = e.changedTouches[0].clientX - startX;
             if (Math.abs(diff) > 50) {
                 if (!document.getElementById('screen-reports').classList.contains('hidden')) {
-                    if (diff < 0) window.switchTab('nda'); else window.switchTab('ta');
+                    if (diff < 0) switchTab('nda'); else switchTab('ta');
                 } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
-                    if (diff < 0) window.switchAddTab('nonduty'); else window.switchAddTab('duty');
+                    if (diff < 0) switchAddTab('nonduty'); else switchAddTab('duty');
                 }
-            }
-        }, {passive: true});
-
-        document.addEventListener('touchend', e => { 
-            if(!document.getElementById('screen-reports').classList.contains('hidden')) {
-                touchendX = e.changedTouches[0].screenX; 
-                let diff = touchendX - touchstartX;
-                if (diff < -50 && currentTab === 'ta') { switchTab('nda'); }
-                else if (diff > 50 && currentTab === 'nda') { switchTab('ta'); }
-            } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
-                touchendX = e.changedTouches[0].screenX; 
-                let diff = touchendX - touchstartX;
-                if (diff < -50 && window.currentAddTab === 'duty') { switchAddTab('nonduty'); }
-                else if (diff > 50 && window.currentAddTab === 'nonduty') { switchAddTab('duty'); }
             }
         }, {passive: true});
     };
@@ -908,7 +955,7 @@
             switchTab(currentTab); 
         }
         
-        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
+        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register', 'screen-admin'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
         document.getElementById(screenId).classList.remove('hidden'); 
         window.scrollTo(0, 0); 
         
@@ -928,6 +975,15 @@
         const gBack = document.getElementById('global-back-btn');
         if(gBack) {
             if(screenId === 'screen-dashboard' || screenId === 'screen-login') { gBack.classList.add('hidden'); } else { gBack.classList.remove('hidden'); } 
+        }
+        
+        // Setup Admin Screen data
+        if(screenId === 'screen-admin') {
+            if(window.adminIsMaint) {
+                document.getElementById('admin-maint-btn').innerText = "Turn OFF Maintenance";
+            } else {
+                document.getElementById('admin-maint-btn').innerText = "Turn ON Maintenance";
+            }
         }
     }
 
@@ -1044,6 +1100,12 @@
     function checkGlobalNotifications() {
         window.globalNotifications = [];
         const p = window.appState.profile;
+        
+        // ADMIN ALERTS INJECTION
+        if(window.adminAnnouncement) {
+            window.globalNotifications.push(`📢 ADMIN: ${window.adminAnnouncement}`);
+        }
+
         if(p) {
             const today = new Date();
             today.setHours(0,0,0,0);
@@ -1571,12 +1633,14 @@
         currentTab = tab; 
         const tabTa = document.getElementById('tab-ta');
         const tabNda = document.getElementById('tab-nda');
+        const genBtn = document.getElementById('generate-btn');
         
         if(tab === 'ta') {
             tabTa.classList.add('active'); 
             tabNda.classList.remove('active'); 
             tabTa.style.background = 'var(--green)';
             tabNda.style.background = 'transparent';
+            genBtn.style.background = 'var(--green)';
             
             const today = new Date();
             document.getElementById('report-month-hidden').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,'0')}`;
@@ -1589,6 +1653,7 @@
             tabTa.classList.remove('active'); 
             tabNda.style.background = 'var(--purple)';
             tabTa.style.background = 'transparent';
+            genBtn.style.background = 'var(--purple)';
             
             const today = new Date();
             let ndaY = today.getFullYear();
@@ -1671,7 +1736,7 @@
             return `<div style="display:flex; flex-direction:column; align-items:center; flex:1; gap:4px;">
                 <div style="font-size:11px; font-weight:700; color:${color};">${topText}</div>
                 <div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:hidden;">
-                    <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px; display:flex; justify-content:center; align-items:flex-start;">
+                    <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px; display:flex; justify-content:center; align-items:center;">
                         ${insideHtml}
                     </div>
                 </div>
@@ -1705,14 +1770,14 @@
             if(dutyOnly.length === 0 || hqGroup.includes(dutyOnly[dutyOnly.length - 1].arrStn)) { 
                 badge.style.background = 'rgba(34, 197, 94, 0.4)'; 
                 badge.style.border = '1px solid rgba(34, 197, 94, 0.6)';
-                badge.style.color = document.body.classList.contains('dark-mode') ? '#4ade80' : '#166534'; 
+                badge.style.color = document.body.classList.contains('dark-mode') ? '#ffffff' : '#166534'; 
                 dot.style.background = 'rgba(34, 197, 94, 1)'; 
                 txt.innerText = 'At HQ'; 
             } else { 
                 const lastLeg = dutyOnly[dutyOnly.length - 1]; 
-                badge.style.background = 'rgba(234, 179, 8, 0.35)'; 
-                badge.style.border = '1px solid rgba(234, 179, 8, 0.7)';
-                badge.style.color = document.body.classList.contains('dark-mode') ? '#fde047' : '#854d0e'; 
+                badge.style.background = 'rgba(234, 179, 8, 0.7)'; 
+                badge.style.border = '1px solid rgba(234, 179, 8, 1)';
+                badge.style.color = document.body.classList.contains('dark-mode') ? '#000000' : '#854d0e'; 
                 dot.style.background = 'rgba(234, 179, 8, 1)'; 
                 txt.innerText = `${lastLeg.arrStn}`; 
             } 
@@ -1774,7 +1839,7 @@
             rcHTMLDash = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No entries yet.</p>'; 
         } else { 
             let sortedAll = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
-            let recentDashArr = sortedAll.slice(0, 4); // Capped to 4 entries
+            let recentDashArr = sortedAll.slice(0, 4); 
             
             let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
             
@@ -1796,13 +1861,11 @@
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
 
         if(currentTab === 'ta') { 
-            generateBtn.style.background = "var(--green)";
             document.getElementById('report-slider-text').innerText = `${moName} ${yrName}`; document.getElementById('ta-extras').classList.remove('hidden'); generateBtn.innerText = "Generate TA Journal PDF"; 
             let totalTA = 0; let eCount = 0; const cycles = buildCycles(dutyOnly); cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); cycle.forEach(leg => { if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { eCount++; } }); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
-            document.getElementById('rep-val').innerText = '₹' + totalTA;
+            document.getElementById('rep-count').innerText = eCount; document.getElementById('rep-val').innerText = '₹' + totalTA;
             document.getElementById('rep-val').style.color = "var(--green)";
         } else { 
-            generateBtn.style.background = "var(--purple)";
             document.getElementById('report-slider-text').innerText = `${strFrom} to ${strTo}`; document.getElementById('ta-extras').classList.add('hidden'); generateBtn.innerText = "Generate NDA Bill PDF"; 
             
             let totalEligibleHours = 0;
@@ -1813,6 +1876,7 @@
                 const nda = extractNDALegs(mo);
                 totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
                 remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
+                document.getElementById('rep-count').innerText = nda.ndaData.length;
                 
                 if (totalEligibleHours > 0) {
                     const basicPayRaw = window.appState.profile && window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
@@ -1824,7 +1888,7 @@
                     ndaAmt = parseFloat(unitHours) * hourlyRate;
                 }
             } else {
-                totalEligibleHours = 0;
+                document.getElementById('rep-count').innerText = "0";
             }
             document.getElementById('rep-val').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`; 
             document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
@@ -1883,6 +1947,59 @@
         let bHtml = ""; if(counts[30] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">30% x ${counts[30]}</td><td style="border: 1px solid black; padding: 2px;">${Math.floor(p.tarate*0.3)} x ${counts[30]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[30] * Math.floor(p.tarate*0.3)}</td></tr>`; if(counts[70] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">70% x ${counts[70]}</td><td style="border: 1px solid black; padding: 2px;">${Math.floor(p.tarate*0.7)} x ${counts[70]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[70] * Math.floor(p.tarate*0.7)}</td></tr>`; if(counts[100] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">100% x ${counts[100]}</td><td style="border: 1px solid black; padding: 2px;">${p.tarate} x ${counts[100]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[100] * p.tarate}</td></tr>`;
 
         const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 15px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="display: flex; justify-content: space-between; align-items: flex-start; font-weight: bold; margin-bottom: 8px;"><div style="width: 20%; font-size: 11px; text-align: left;">NR</div><div style="width: 60%; text-align: center; font-size: 14px;">TRAVELLING ALLOWANCE JOURNAL</div><div style="width: 20%; text-align: right; font-size: 11px;">G.A. 31/S.R.C./G-1677<br>G-6</div></div><div style="font-size: 11px; line-height: 1.5; margin-bottom: 12px;"><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 0px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Branch: <b>Commercial</b></td><td style="width: 21%;">Division: <b>LKO/NR</b></td><td style="width: 20%;">HQ: <b>${p.hq}/NR</b></td><td style="width: 17%; text-align: center;">P.F. No.: <b>${p.pf}</b></td><td style="width: 15%; text-align: right;">BU No: <b>${p.bu}</b></td></tr><tr style="height: 22px;"><td style="width: 27%; white-space: nowrap;">Journal of duties performed by Shri</td><td colspan="4" style="padding: 0;"><div style="display: flex; justify-content: space-between; align-items: center; width: 100%;"><div style="font-weight: bold; width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.name}</div><div style="text-align: left; padding-left: 10px; flex: 1; white-space: nowrap;">for which allowance for &nbsp;&nbsp;&nbsp;<b>${monthStr}</b></div><div style="text-align: right; white-space: nowrap;">is claimed.</div></div></td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 12px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Designation: <b>${p.desig}</b></td><td style="width: 21%;">Pay Scale: <b>${printPayScale}</b></td><td style="width: 26%;">Grade Pay: <b>${p.gradepay}</b></td><td style="width: 26%; text-align: right;">Date of appt: <b>${formatDate(p.appt)}</b></td></tr><tr style="height: 22px;"><td>Rule by which governed: <b>HOER</b></td><td>TA Rate: <b>@${p.tarate}</b></td><td>Checking Authority No.: <b>${p.auth}</b></td><td style="text-align: right;">Validity: <b>${formatDate(p.authval)}</b></td></tr><tr style="height: 22px;"><td>Card Pass No.: <b>${p.pass}</b></td><td>Validity: <b>${formatDate(p.passval)}</b></td><td colspan="2"></td></tr></table></div><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 5px; font-size: 10px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Month &<br>Date</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Left</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Arrived</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Station</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 6%;">TA %</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Objective of<br>Journey</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Rate = ${p.tarate}</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">From</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">To</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">Rs.</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">P.</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="8" style="text-align: right; border: 1px solid black; padding: 4px 6px; font-size: 11px;">TOTAL</td><td style="border: 1px solid black; padding: 4px 4px; font-size: 11px;">${totalAmount}</td><td style="border: 1px solid black; padding: 4px 4px; font-size: 11px;">00</td></tr></tfoot></table><div class="page-break"><div style="display: flex; align-items: flex-end; gap: 20px; margin-bottom: 15px;"><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px;"><tr><td colspan="2" style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">TA RATE</td><td style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">₹${p.tarate}</td></tr>${bHtml}<tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;"><td colspan="2" style="border: 1px solid black; padding: 2px;">TOTAL AMOUNT</td><td style="border: 1px solid black; padding: 2px;">₹${totalAmount}</td></tr></table><div style="font-weight: bold; font-size: 12px; padding-bottom: 5px;">Rupees ${numberToWords(totalAmount)} Only</div></div><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px; margin-bottom: 15px;"><tr><td style="border: 1px solid black; padding: 2px; font-weight: bold; width: 66%; background: #e5e5e5; -webkit-print-color-adjust: exact;">Working Days</td><td style="border: 1px solid black; padding: 2px; font-weight: bold;">${wDays||""}</td></tr><tr><td style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">Total Earnings</td><td style="border: 1px solid black; padding: 2px; font-weight: bold;">₹ ${earn||""}</td></tr></table><div style="font-size: 11px; line-height: 1.4;">It is certified that:<br>1. The TA claimed by me has not been claimed before and will not be claimed hereafter.<br>2. Conveyance charges claimed have actually been spent by me and according to local Municipal rates.<br>3. Cheapest mode of conveyance was utilized.<br>4. The journey performed by road for which conveyance have been claimed was over 1.6 KM<br><br><div style="text-align: right; margin-top: 10px;">...........................................................................<br>Signature of the Officer Claiming T.A.</div></div><div style="margin-top: 15px; font-size: 11px; line-height: 1.4;">I hereby certify that Shri <b>${p.name}</b> was absent on duty from his headquarters station during the period charged for in the bill on Railway business and that the officer performed the journey by Rail/Sea/ Air/ Road was allowed/ not allowed free pass of locomotion at the expense of Government local fund of Indian State.</div><div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px;"><div style="text-align: left;">Countersigned<br><br><br><br>Controlling Officer</div><div style="text-align: right;">...........................................................................<br>Signature of the Head of the office</div></div></div></div>`;
+        document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
+    }
+
+    function buildNDAPreview(mo) {
+        const p = window.appState.profile; if(!p) return;
+        const [year, month] = mo.split('-').map(Number); const prevD = new Date(year, month - 2, 16); const currD = new Date(year, month - 1, 15);
+        const strFrom = `${String(prevD.getDate()).padStart(2,'0')}-${prevD.toLocaleString('default',{month:'short'})}-${String(prevD.getFullYear()).slice(-2)}`; const strTo = `${String(currD.getDate()).padStart(2,'0')}-${currD.toLocaleString('default',{month:'short'})}-${String(currD.getFullYear()).slice(-2)}`;
+
+        let tbodyHtml = ""; 
+        let totalH = 0; let totalM = 0;
+        const isGazetted = p.empType === 'Gazetted';
+        let nda = { ndaData: [], totalNdaMinutes: 0 };
+        
+        if (!isGazetted) {
+            nda = extractNDALegs(mo);
+            totalH = Math.floor(nda.totalNdaMinutes / 60);
+            totalM = Math.round(nda.totalNdaMinutes % 60);
+            
+            nda.ndaData.forEach(duty => { 
+                const rs = duty.trips.length; 
+                const signOnStr = `${String(duty.signOn.getHours()).padStart(2,'0')}:${String(duty.signOn.getMinutes()).padStart(2,'0')}`; 
+                const signOffStr = `${String(duty.signOff.getHours()).padStart(2,'0')}:${String(duty.signOff.getMinutes()).padStart(2,'0')}`; 
+                const hStr = String(Math.floor(duty.mins / 60)).padStart(2,'0') + ":" + String(Math.round(duty.mins % 60)).padStart(2,'0'); 
+                
+                duty.trips.forEach((trip, idx) => { 
+                    tbodyHtml += `<tr>`; 
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${formatDate(trip.depDate)}</td>`; 
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.train}</td>`; 
+                    
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.depStn}</td>`; 
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.arrStn}</td>`; 
+
+                    if(idx === 0) { 
+                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${signOnStr}</td>`; 
+                    } 
+                    
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.depTime}</td>`; 
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.arrTime}</td>`; 
+                    
+                    if(idx === 0) { 
+                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${signOffStr}</td>`; 
+                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${duty.nFromStr}</td>`; 
+                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${duty.nToStr}</td>`; 
+                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle; font-weight: bold;">${hStr}</td>`; 
+                    } 
+                    tbodyHtml += `</tr>`; 
+                }); 
+            });
+        } else {
+            tbodyHtml = `<tr><td colspan="11" style="border: 1px solid black; padding: 15px; font-weight: bold; color: red;">Gazetted Employees are not eligible for Night Duty Allowance.</td></tr>`;
+        }
+
+        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">NIGHT DUTY BILL</div><table style="margin: 0 auto 20px auto; font-size: 12px; text-align: left; border: none; width: auto; line-height: 1.8;"><tr><td style="padding-right: 30px;">Name: <b>${p.name}</b></td><td>Designation: <b>${p.desig}</b></td></tr><tr><td>H.Q.: <b>${p.hq}/NR</b></td><td>ROP: <span style="float: right; font-weight: bold;">p.m.</span></td></tr><tr><td>P.F. No.: <b>${p.pf}</b></td><td>BU No.: <b>${p.bu}</b></td></tr><tr><td>Period From: <b>${strFrom}</b></td><td>To: <b>${strTo}</b></td></tr></table><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 15px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">From</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">To</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign On</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Dep.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Arrival</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign Off</th><th colspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px;">Night Duty</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Night<br>Hours</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">From</th><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">To</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="10" style="text-align: right; border: 1px solid black; padding: 12px 10px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-weight: bold; font-size: 12px;">${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}</td></tr></tfoot></table><div style="margin-top: 20px;"><div style="font-weight: bold; font-size: 12px; margin-bottom: 40px;">Total Night Duty Hours = ${totalH} Hours ${totalM} Minutes</div><table style="border: none; width: 300px; text-align: left; font-size: 12px; line-height: 1.8; float: right; margin-right: 20px;"><tr><td style="text-align: right; padding-right: 10px;">Signature:</td><td style="text-align: left;">...................................................</td></tr><tr><td style="text-align: right; padding-right: 10px;">Name:</td><td style="text-align: left;"><b>${p.name}</b></td></tr><tr><td style="text-align: right; padding-right: 10px;">Designation:</td><td style="text-align: left;"><b>${p.desig}</b></td></tr></table><div style="clear: both;"></div></div></div>`;
         document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
     }
 </script>
