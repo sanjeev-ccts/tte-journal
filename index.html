@@ -111,21 +111,21 @@
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; width: 100%; }
         .dash-title-pill { font-size: 22px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1.5px solid rgba(253, 224, 71, 0.45); border-radius: 30px; padding: 4px 22px; display: inline-block; background: transparent; }
         
-        .back-btn { background: transparent !important; border: none !important; color: white !important; font-size: 13px; padding: 8px 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-weight: 500; margin: 0; z-index: 1010; width: auto; outline: none; box-shadow: none !important; letter-spacing: 0.3px; border-radius: 0 !important; }
+        .back-btn { background: transparent !important; border: none !important; color: white !important; font-size: 13px; padding: 12px 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; position: absolute; left: 4px; top: 50%; transform: translateY(-50%); font-weight: 500; margin: 0; z-index: 1010; width: auto; outline: none; box-shadow: none !important; letter-spacing: 0.3px; border-radius: 0 !important; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         
         .screen-content { padding: 15px; padding-bottom: 90px; max-width: 600px; margin: 0 auto; box-sizing: border-box; width: 100%; overflow-x: hidden; }
         
         .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: var(--shadow); transition: background 0.3s, border 0.3s; }
         
         /* Unified Symmetrical Nav Cards */
-        .nav-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; min-height: 82px; }
+        .nav-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.1s, background 0.3s, border 0.3s; position: relative; min-height: 90px; }
         .nav-card:active { transform: translateY(3px); box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-bottom: 0; }
         
-        .nav-main-text { font-size: 15px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
+        .nav-main-text { font-size: 16px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
         .nav-sub-text { font-size: 11px; color: var(--text-muted); font-weight: normal; }
-        .nav-icon { font-size: 20px; margin-bottom: 5px; display: inline-block; }
+        .nav-icon { font-size: 21px; margin-bottom: 5px; display: inline-block; }
         
         /* Perfectly Rounded Inputs */
         input, select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 30px; margin-top: 4px; font-size: 14px; font-weight: 500; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; box-sizing: border-box; }
@@ -155,15 +155,16 @@
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; color: var(--text); }
         
-        #custom-modal, #manage-modal, #help-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        #custom-modal, #manage-modal, #help-modal, #trend-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
         .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
         .bottom-icon { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; flex-shrink: 0; }
         .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
         
-        .nav-fab-wrapper { position: relative; width: 64px; height: 64px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
-        .nav-fab { position: absolute; top: -19px; width: 64px; height: 64px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 6px 15px rgba(0,0,0,0.6); border: none; cursor: pointer; z-index: 4001; transition: background 0.3s; }
+        .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
+        .nav-fab-ring { position: absolute; top: -17px; width: 68px; height: 68px; border-radius: 50%; background: rgba(59,130,246,0.18); border: 2px solid rgba(59,130,246,0.35); z-index: 4000; pointer-events: none; }
+        .nav-fab { position: absolute; top: -17px; width: 64px; height: 64px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 6px 15px rgba(0,0,0,0.6); border: none; cursor: pointer; z-index: 4001; transition: background 0.3s; touch-action: manipulation; }
         
         #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
@@ -240,12 +241,14 @@
     <div id="preview-controls">
         <button onclick="window.closePreview()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #64748b;">← Back</button>
         <button onclick="window.print()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: var(--green); color: white;">🖨️ Print</button>
+        <button onclick="window.sharePreviewPDF()" style="margin:0; width: auto; padding: 8px 15px; border-radius: 30px; background: #0ea5e9; color: white;">📤 Share</button>
     </div>
     <div id="preview-content-scale">
         <div id="preview-content"></div>
     </div>
     <div id="preview-floating-btns" style="position: fixed; right: -5px; top: 83%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px;">
         <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.print()">🖨️ Print</div>
+        <div style="background: #0369a1; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.sharePreviewPDF()">📤 Share</div>
         <div style="background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px;" onclick="window.closePreview()">❌ Close</div>
     </div>
 </div>
@@ -259,12 +262,23 @@
         <div class="bottom-icon" onclick="window.showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
         
         <div class="nav-fab-wrapper">
+            <div class="nav-fab-ring"></div>
             <div class="nav-fab" id="main-fab-btn" onclick="window.switchAddTab('duty'); window.navTo('screen-add');">+</div>
         </div>
         
         <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
         <div class="bottom-icon" onclick="window.showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
         <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
+    </div>
+
+    <div id="trend-modal" class="hidden">
+        <div style="background: var(--modal-bg); padding: 20px; border-radius: 16px; width: 93%; max-width: 400px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--text);" id="trend-modal-title">6-Month TA Trend</h3>
+                <button onclick="document.getElementById('trend-modal').classList.add('hidden')" style="width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
+            </div>
+            <div id="trend-chart-area" style="width: 100%; overflow-x: auto;"></div>
+        </div>
     </div>
 
     <div id="custom-modal" class="hidden">
@@ -276,12 +290,11 @@
     </div>
     
     <div id="help-modal" class="hidden">
-        <div style="background: var(--modal-bg); padding: 18px 20px; border-radius: 16px; width: 85%; max-width: 300px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
-            <h3 style="color: var(--text); margin: 0 0 10px 0; font-size: 16px; font-weight: 900;">Help & Support</h3>
-            <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 14px 0; line-height: 1.5;">Got suggestions, errors, or need help? Reach out directly!</p>
-            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 10px; border-radius: 10px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 8px; box-sizing: border-box;">✉️ Email</a>
-            <a href="https://wa.me/918116002746" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--green); color: white; padding: 10px; border-radius: 10px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 12px; box-sizing: border-box;">💬 WhatsApp</a>
-            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: #64748b; color: white; border: none; padding: 9px 24px; border-radius: 10px; font-weight: bold; font-size: 13px; width: auto; box-shadow: none;">Close</button>
+        <div style="background: var(--modal-bg); padding: 18px 20px; border-radius: 16px; width: 80%; max-width: 280px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
+            <h3 style="color: var(--text); margin: 0 0 8px 0; font-size: 16px; font-weight: 900;">Help & Support</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 14px 0; line-height: 1.5;">Got suggestions or need help? Reach out directly!</p>
+            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 11px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 10px; box-sizing: border-box;">✉️ Email</a>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--blue); color: white; border: none; padding: 11px 24px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; box-shadow: none;">Close</button>
         </div>
     </div>
 
@@ -391,26 +404,32 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.7</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.8</div>
         </div>
     </div>
 
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar dash-header">
-            <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
+            <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">DASHBOARD</span></h1>
         </div>
         <div class="screen-content">
             
             <div class="card" style="padding: 15px; margin-bottom: 15px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <h3 style="margin: 0; font-size: 16px; color: var(--blue);">Duty Status</h3>
+                    <div>
+                        <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Welcome back,</div>
+                        <div style="font-size: 20px; font-weight: 900; color: var(--text);" id="dash-hi-name">Hello 👋</div>
+                    </div>
                     <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
                 </div>
                 <hr style="border: 0; border-top: 1px dashed var(--border); margin: 15px 0 10px 0;">
                 <h4 style="margin: 0 0 10px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Recent Entries</h4>
                 <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"></div>
                 
-                <button onclick="window.switchAddTab('duty'); window.navTo('screen-add');" style="margin-top: 15px; border-radius: 30px;">+ Add Journey Entry</button>
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button onclick="window.switchAddTab('duty'); window.navTo('screen-add');" style="flex: 1; border-radius: 30px; margin: 0; background: var(--blue);">+ Add Journey</button>
+                    <button onclick="window.navTo('screen-all');" style="flex: 1; border-radius: 30px; margin: 0; background: var(--text-muted);">✏️ Edit Journey</button>
+                </div>
             </div>
             
             <div style="margin-bottom: 10px;">
@@ -493,7 +512,7 @@
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
                             <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Station To</label>
-                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; width: 100%; text-transform: uppercase;">
+                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; width: 100%; text-transform: uppercase;" oninput="this.value=this.value.toUpperCase()" onfocus="window.populateStnList()">
                             <datalist id="stn-list"></datalist>
                         </div>
                     </div>
@@ -539,17 +558,18 @@
         <div class="screen-content">
             <p style="font-size: 13px; text-align: center; margin-top: 0; margin-bottom: 10px;"><span style="color: var(--red); font-weight: 700;">👆 Tap any row below to Edit or Delete</span></p>
             
-            <div style="display: flex; gap: 10px; margin: 0 auto 15px auto; width: 100%; align-items: center; background: var(--input-bg); padding: 12px 15px; border-radius: 30px; border: 1px solid var(--border); box-shadow: var(--shadow);">
-                <label style="font-size: 14px; font-weight: 900; color: var(--text); white-space: nowrap;">Filter:</label>
-                <select id="all-logs-month" onchange="window.renderAllLogs()" style="margin: 0; padding: 8px 15px; width: 48%; border-radius: 30px;">
+            <div style="display: flex; gap: 8px; margin: 0 auto 15px auto; width: 100%; align-items: center; background: var(--input-bg); padding: 10px 12px; border-radius: 30px; border: 1px solid var(--border); box-shadow: var(--shadow);">
+                <label style="font-size: 13px; font-weight: 900; color: var(--text); white-space: nowrap;">Filter:</label>
+                <select id="all-logs-month" onchange="window.renderAllLogs()" style="margin: 0; padding: 6px 8px; width: auto; flex: 1.2; border-radius: 30px; font-size: 13px;">
                     <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
                     <option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option>
                     <option value="09">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
                 </select>
-                <select id="all-logs-year" onchange="window.renderAllLogs()" style="margin: 0; padding: 8px 15px; width: 48%; border-radius: 30px;">
+                <select id="all-logs-year" onchange="window.renderAllLogs()" style="margin: 0; padding: 6px 8px; width: auto; flex: 1; border-radius: 30px; font-size: 13px;">
                     <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
                     <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
                 </select>
+                <input type="text" id="all-train-search" placeholder="🔍 Train" oninput="window.renderAllLogs()" style="margin: 0; padding: 6px 10px; flex: 1; border-radius: 30px; font-size: 13px; min-width: 0;">
                 <script>
                     (function(){
                         const t = new Date();
@@ -561,7 +581,7 @@
                 </script>
             </div>
             
-            <div id="all-logs-container" style="width: 100%; max-height: 525px; overflow-y: auto; border-radius: 12px; box-shadow: var(--shadow); position: relative; background: var(--card); border: 1px solid var(--border);"></div>
+            <div id="all-logs-container" style="width: 100%; max-height: 580px; overflow-y: auto; border-radius: 12px; box-shadow: var(--shadow); position: relative; background: var(--card); border: 1px solid var(--border);"></div>
             
             <div style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 15px;">
                 <span style="color: var(--row-text); background: var(--row-up-bg); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);">Up Train</span>
@@ -590,11 +610,11 @@
             </div>
             <input type="hidden" id="report-month-hidden"> 
             
-            <div class="card" id="report-summary-card">
-                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 15px; text-align: center;"><span style="background: linear-gradient(135deg, #e0e7ff, #f0fdf4); color: #3730a3; border: 1.5px solid #a5b4fc; border-radius: 30px; padding: 5px 20px; display: inline-block;">📊 Summary</span></h3>
-                <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
+            <div class="card" id="report-summary-card" onclick="window.showTrendChart()" style="cursor: pointer;">
+                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center;"><span style="background: linear-gradient(135deg, #e0e7ff, #f0fdf4); color: #3730a3; border: 1.5px solid #a5b4fc; border-radius: 30px; padding: 5px 20px; display: inline-block;">📊 Summary</span></h3>
                 <div class="summary-row" id="rep-ta-row" style="color: var(--text);"><span id="rep-val-label">Total TA</span><span id="rep-val" style="font-weight: bold; color: var(--green);">₹0</span></div>
-                <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA Amount</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
+                <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA Hours</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">0:00</span></div>
+                <p style="font-size: 11px; color: var(--blue); text-align: center; margin: 10px 0 0 0; font-weight: 500;">👆 Tap to view 6-month trend chart →</p>
                 
                 <div id="ta-extras" style="display: flex; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 15px; justify-content: center;">
                     <div style="flex: 1; min-width: 0; text-align: center; display: flex; flex-direction: column; align-items: center;">
@@ -618,23 +638,23 @@
             <h1>BACKUP & RESTORE</h1>
         </div>
         <div class="screen-content">
-            <div class="card">
-                <h3 style="color: var(--purple);">Manual Backup</h3>
-                <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Save a physical backup file to your phone.</p>
-                <button onclick="window.exportData()" style="background: var(--purple);">Download Backup File</button>
-                <div id="manual-backup-time" style="font-size: 11px; color: #0ea5e9; font-weight: bold; margin-top: 8px; text-align: center;"></div>
+            <div class="card" style="padding: 12px 15px; margin-bottom: 10px;">
+                <h3 style="color: var(--purple); margin: 0 0 4px 0; font-size: 15px;">Manual Backup</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px 0;">Save a physical backup file to your phone.</p>
+                <button onclick="window.exportData()" style="background: var(--purple); padding: 10px;">Download Backup File</button>
+                <div id="manual-backup-time" style="font-size: 11px; color: #0ea5e9; font-weight: bold; margin-top: 6px; text-align: center;"></div>
             </div>
-            <div class="card">
-                <h3 style="color: var(--yellow);">Restore from File</h3>
-                <p style="font-size: 13px; color: var(--text-muted); margin-top:0; margin-bottom:12px;">Import a previously downloaded backup file.</p>
-                <button onclick="document.getElementById('import-file').click()" style="background: var(--yellow); color: white;">Choose File & Restore</button>
+            <div class="card" style="padding: 12px 15px; margin-bottom: 10px;">
+                <h3 style="color: var(--yellow); margin: 0 0 4px 0; font-size: 15px;">Restore from File</h3>
+                <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px 0;">Import a previously downloaded backup file.</p>
+                <button onclick="document.getElementById('import-file').click()" style="background: var(--yellow); color: white; padding: 10px;">Choose File & Restore</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="window.importData(event)">
-                <div id="restore-backup-time" style="font-size: 11px; color: #0ea5e9; font-weight: bold; margin-top: 8px; text-align: center;"></div>
+                <div id="restore-backup-time" style="font-size: 11px; color: #0ea5e9; font-weight: bold; margin-top: 6px; text-align: center;"></div>
             </div>
-            <div class="card">
-                <h3 style="color: var(--green);">Cloud Sync Status</h3>
-                <p style="font-size: 14px; font-weight: bold; color: var(--text); margin-bottom: 5px;">Your data is actively syncing to Google.</p>
-                <p style="font-size: 13px; font-weight: bold; color: #0ea5e9; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border);" id="sync-time-lbl">Last Synced: Never</p>
+            <div class="card" style="padding: 12px 15px; margin-bottom: 10px;">
+                <h3 style="color: var(--green); margin: 0 0 4px 0; font-size: 15px;">Cloud Sync Status</h3>
+                <p style="font-size: 13px; font-weight: bold; color: var(--text); margin: 0 0 4px 0;">Your data is actively syncing to Google.</p>
+                <p style="font-size: 12px; font-weight: bold; color: #0ea5e9; margin: 0; padding-top: 8px; border-top: 1px dashed var(--border);" id="sync-time-lbl">Last Synced: Never</p>
             </div>
         </div>
     </div>
@@ -677,6 +697,9 @@
     window.formatTimeInput = formatTimeInput;
     window.closePreview = closePreview;
     window.checkGazetted = checkGazetted;
+    window.showTrendChart = showTrendChart;
+    window.sharePreviewPDF = sharePreviewPDF;
+    window.populateStnList = populateStnList;
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
     function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
@@ -768,6 +791,15 @@
         }, {passive: true});
     };
     
+    function populateStnList() {
+        const dl = document.getElementById('stn-list');
+        if (!dl || !window.appState.profile) return;
+        const p = window.appState.profile;
+        const allStns = [...new Set([p.hq, ...(p.nearby||[]), ...(p.dest||[])])].filter(Boolean);
+        dl.innerHTML = allStns.map(s => `<option value="${s}">`).join('');
+    }
+    window.populateStnList = populateStnList;
+
     function formatTimeInput(el) {
         let val = el.value.replace(/\D/g, '');
         if (!val) return;
@@ -871,6 +903,20 @@
             document.getElementById('nonduty-to').value = '';
         }
         
+        if(screenId === 'screen-add') {
+            populateStnList();
+            // Auto-fill departure station from last arrival if not in edit mode
+            if (!window.editModeId) {
+                const dutyLegs = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
+                if (dutyLegs.length > 0) {
+                    const sorted = [...dutyLegs].sort((a,b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+                    const lastLeg = sorted[0];
+                    const depStnEl = document.getElementById('trip-dep-stn');
+                    if (depStnEl && !depStnEl.value) depStnEl.value = lastLeg.arrStn;
+                }
+            }
+        }
+
         if(screenId === 'screen-reports') {
             switchTab(currentTab); 
         }
@@ -1262,8 +1308,17 @@
         document.getElementById('trip-arr-time').value = ''; 
         document.getElementById('trip-dep-stn').value = leg.arrStn;
         
+        const wasEditing = !!window.editModeId;
         window.editModeId = null;
-        saveData(); navTo('screen-dashboard'); 
+        saveData(); 
+        if (wasEditing) {
+            navTo('screen-all');
+        } else {
+            // Stay on add journey - just reset form and refresh recent entries
+            switchAddTab('duty');
+            updateDashboardUI();
+            showModal("Saved!", "Journey saved successfully.", "success", false);
+        }
     }
 
     function saveNonDuty() {
@@ -1299,8 +1354,16 @@
             window.appState.legs = testLegs;
             document.getElementById('nonduty-from').value = '';
             document.getElementById('nonduty-to').value = '';
+            const wasEditingND = !!window.editModeId;
             window.editModeId = null;
-            saveData(); navTo('screen-dashboard'); 
+            saveData(); 
+            if (wasEditingND) {
+                navTo('screen-all');
+            } else {
+                switchAddTab('nonduty');
+                updateDashboardUI();
+                showModal("Saved!", "Record saved successfully.", "success", false);
+            }
         };
 
         if(overlap) {
@@ -1317,6 +1380,7 @@
         if(!window.appState.legs || window.appState.legs.length === 0) { container.innerHTML = '<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries yet.</p>'; return; } 
         
         const selectedMonth = document.getElementById('all-logs-year').value + '-' + document.getElementById('all-logs-month').value;
+        const trainSearch = (document.getElementById('all-train-search') ? document.getElementById('all-train-search').value.trim().toUpperCase() : '');
         
         let headerHTML = `<div style="position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 10px 2px; background: var(--table-header-bg); border-bottom: 2px solid var(--table-border); font-size: 11px; font-weight: 900; color: var(--table-header-text); text-transform: uppercase; text-align: center; margin-bottom: 0; transition: background 0.3s, color 0.3s, border 0.3s;">
             <div style="text-align: left; padding-left: 5px;">TRAIN</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
@@ -1324,6 +1388,7 @@
         
         let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
         let filteredLegs = sortedLegs.filter(leg => leg.depDate.startsWith(selectedMonth));
+        if (trainSearch) { filteredLegs = filteredLegs.filter(leg => leg.isNonDuty ? false : (leg.train && leg.train.toUpperCase().includes(trainSearch))); }
         
         if(filteredLegs.length === 0) {
             container.innerHTML = `<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries found for ${selectedMonth}. Try changing the filter above.</p>`; return;
@@ -1528,9 +1593,81 @@
     
     function changeMonth(delta) { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); updateDashboardUI(); }
 
+    window.showTrendChart = showTrendChart;
+    window.sharePreviewPDF = sharePreviewPDF;
+
+    function sharePreviewPDF() {
+        const content = document.getElementById('preview-content');
+        if (!content) return;
+        // Use Web Share API if available (mobile)
+        const text = `TTE LOG - ${currentTab === 'ta' ? 'TA Journal' : 'NDA Bill'}`;
+        if (navigator.share) {
+            // Share the app link with a note since PDF binary share needs file
+            navigator.share({
+                title: text,
+                text: `Please find my ${currentTab === 'ta' ? 'TA Journal' : 'NDA Bill'} attached. (Generated via TTE LOG App)`,
+                url: 'https://sanjeev-ccts.github.io/tte-journal/'
+            }).catch(() => {
+                // Fallback: open print dialog which can save as PDF then share
+                showModal("Share PDF", "On your device:\n1. Tap 🖨️ Print\n2. Choose 'Save as PDF'\n3. Share the saved PDF via WhatsApp or Email.", "success", false);
+            });
+        } else {
+            const email = `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent('Please find my ' + text + ' generated via TTE LOG.')}`;
+            window.location.href = email;
+        }
+    }
+
+    function showTrendChart() {
+        if (!window.appState.legs || !window.appState.profile) return;
+        const isNDA = currentTab === 'nda';
+        const now = new Date();
+        let months = [];
+        for (let i = 5; i >= 0; i--) {
+            let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+        }
+        
+        const dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
+        const cycles = buildCycles(dutyOnly);
+        
+        let values = months.map(mo => {
+            if (isNDA) {
+                const { totalNdaMinutes } = extractNDALegs(mo);
+                return parseFloat((totalNdaMinutes / 60).toFixed(1));
+            } else {
+                let taResultsAll = [];
+                cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
+                const moResults = taResultsAll.filter(r => r.date.startsWith(mo));
+                return moResults.reduce((s, r) => s + (r.rate || 0), 0);
+            }
+        });
+
+        const labels = months.map(mo => { const d = new Date(mo + '-01'); return d.toLocaleString('default',{month:'short', year:'2-digit'}); });
+        const maxVal = Math.max(...values, 1);
+        const color = isNDA ? 'var(--purple)' : 'var(--green)';
+        const unit = isNDA ? ' hr' : '₹';
+
+        let barsHTML = values.map((v, i) => {
+            const pct = Math.round((v / maxVal) * 100);
+            return `<div style="display:flex; flex-direction:column; align-items:center; flex:1; gap:4px;">
+                <div style="font-size:10px; font-weight:700; color:${color};">${unit}${v}</div>
+                <div style="width:100%; background:var(--border); border-radius:6px; height:120px; display:flex; align-items:flex-end; overflow:hidden;">
+                    <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px;"></div>
+                </div>
+                <div style="font-size:10px; color:var(--text-muted); font-weight:500; text-align:center;">${labels[i]}</div>
+            </div>`;
+        }).join('');
+
+        document.getElementById('trend-modal-title').innerText = isNDA ? '6-Month NDA Trend (Hrs)' : '6-Month TA Trend (₹)';
+        document.getElementById('trend-chart-area').innerHTML = `<div style="display:flex; gap:6px; align-items:flex-end; padding:10px 0;">${barsHTML}</div>`;
+        document.getElementById('trend-modal').classList.remove('hidden');
+    }
+
     function updateDashboardUI() { 
         let firstName = window.appState.profile && window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
         firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(); 
+        const hiEl = document.getElementById('dash-hi-name');
+        if (hiEl) hiEl.innerText = `Hi, ${firstName} 👋`;
         
         checkProfileNotifications();
         checkGlobalNotifications();
@@ -1641,7 +1778,7 @@
             generateBtn.style.background = "var(--green)";
             document.getElementById('report-slider-text').innerText = `${moName} ${yrName}`; document.getElementById('ta-extras').classList.remove('hidden'); generateBtn.innerText = "Generate TA Journal PDF"; 
             let totalTA = 0; let eCount = 0; const cycles = buildCycles(dutyOnly); cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); cycle.forEach(leg => { if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { eCount++; } }); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
-            document.getElementById('rep-count').innerText = eCount; document.getElementById('rep-val').innerText = '₹' + totalTA;
+            document.getElementById('rep-val').innerText = '₹' + totalTA;
             document.getElementById('rep-val').style.color = "var(--green)";
         } else { 
             generateBtn.style.background = "var(--purple)";
@@ -1655,7 +1792,6 @@
                 const nda = extractNDALegs(mo);
                 totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
                 remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
-                document.getElementById('rep-count').innerText = nda.ndaData.length;
                 
                 if (totalEligibleHours > 0) {
                     const basicPayRaw = window.appState.profile && window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
@@ -1667,10 +1803,10 @@
                     ndaAmt = parseFloat(unitHours) * hourlyRate;
                 }
             } else {
-                document.getElementById('rep-count').innerText = "0";
+                totalEligibleHours = 0;
             }
             document.getElementById('rep-val').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`; 
-            document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
+            document.getElementById('rep-nda-amt').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`;
             document.getElementById('rep-val').style.color = "var(--purple)";
         } 
     }
@@ -1699,7 +1835,7 @@
 
     function closePreview() { document.getElementById('preview-wrapper').classList.add('hidden'); document.getElementById('ui-wrapper').classList.remove('hidden'); document.getElementById('preview-content').innerHTML = ''; }
 
-    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING", "Working Days and Earnings are empty. Generate partial PDF anyway?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
+    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING", "Working Days and Earnings are empty. Generate PDF anyway?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
 
     function buildTAPreview(mo, wDays, earn) {
         const p = window.appState.profile; if(!p) return; const monthStr = new Date(mo+'-01').toLocaleString('default', {month:'long', year:'numeric'}).toUpperCase();
