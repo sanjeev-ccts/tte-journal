@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TTE LOGS</title>
+    <title>TTE LOG</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="apple-touch-icon" href="./my-icon.png">
@@ -36,6 +36,10 @@
             --table-header-bg: #e0e7ff;
             --table-header-text: #3730a3;
             --table-border: #a5b4fc;
+            
+            --danger-bg: #fef2f2;
+            --danger-border: #fca5a5;
+            --danger-text: #991b1b;
         }
 
         body.dark-mode {
@@ -65,9 +69,13 @@
             --table-header-bg: #1a1a1a;
             --table-header-text: #ffffff;
             --table-border: #333333;
+            
+            --danger-bg: #2d0a0a;
+            --danger-border: #7f1d1d;
+            --danger-text: #fca5a5;
         }
 
-        * { box-sizing: border-box; font-family: system-ui, sans-serif; }
+        body.dark-mode .summary-pill { background: linear-gradient(135deg, #1e1b4b, #052e16) !important; color: #a5b4fc !important; border-color: #4338ca !important; }
         body { 
             background: var(--bg); 
             color: var(--text); 
@@ -87,8 +95,9 @@
         
         .dash-header { min-height: 80px; }
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; width: 100%; }
+        .dash-title-pill { font-size: 22px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1.5px solid rgba(253, 224, 71, 0.45); border-radius: 30px; padding: 4px 22px; display: inline-block; background: transparent; }
         
-        .back-btn { background: transparent; border: none; color: white; font-size: 16px; padding: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: bold; margin: 0; z-index: 1010; width: auto; }
+        .back-btn { background: transparent; border: none; color: white; font-size: 13px; padding: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-weight: bold; margin: 0; z-index: 1010; width: auto; outline: none; }
         
         .screen-content { padding: 15px; padding-bottom: 90px; max-width: 600px; margin: 0 auto; }
         
@@ -100,7 +109,7 @@
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0; }
         
-        .nav-main-text { font-size: 16px; font-weight: bold; margin-bottom: 5px; color: var(--text); }
+        .nav-main-text { font-size: 18px; font-weight: bold; margin-bottom: 5px; color: var(--text); }
         .nav-sub-text { font-size: 12px; color: var(--text-muted); font-weight: normal; }
         .nav-icon { font-size: 24px; margin-bottom: 8px; display: inline-block; }
         
@@ -114,14 +123,15 @@
         button:active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
         
         /* Duty Status Badges (Point 5) */
-        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 20px; font-size: 9px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s; }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: background 0.3s; }
+        .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,0.3); transition: background 0.3s; }
         
         .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); z-index: 5000; cursor: grab; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; touch-action: none; }
         .floating-back:active { cursor: grabbing; }
         
         .tab-container { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 30px; overflow: hidden; margin-bottom: 15px; box-shadow: var(--shadow); transition: background 0.3s, border 0.3s; }
         .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; }
+        .tab-btn.active { color: #ffffff !important; }
         
         /* Highly Compact Slider Bar (Point 9) */
         .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; font-weight: bold; color: var(--blue); transition: color 0.3s; border: 1px solid var(--border); border-radius: 30px; background: var(--input-bg); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px;}
@@ -136,8 +146,8 @@
         .bottom-icon { width: 32px; height: 32px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; flex-shrink: 0; }
         .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
         
-        .nav-fab-wrapper { position: relative; width: 56px; height: 56px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
-        .nav-fab { position: absolute; top: -20px; width: 56px; height: 56px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 6px 15px rgba(0,0,0,0.6); border: 4px solid var(--top-bar-bg); cursor: pointer; z-index: 4001; transition: background 0.3s, border 0.3s; }
+        .nav-fab-wrapper { position: relative; width: 64px; height: 64px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
+        .nav-fab { position: absolute; top: -19px; width: 64px; height: 64px; background: var(--blue); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 6px 15px rgba(0,0,0,0.6); border: none; cursor: pointer; z-index: 4001; transition: background 0.3s; }
         
         #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
@@ -237,7 +247,7 @@
         </div>
         
         <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
-        <div class="bottom-icon" onclick="window.showModal('Support Us', 'It is Completely FREE!', 'success', false)">☕</div>
+        <div class="bottom-icon" onclick="window.showModal('Support Us', 'TTE LOG is Completely FREE!', 'success', false)">☕</div>
         <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
     </div>
 
@@ -250,14 +260,12 @@
     </div>
     
     <div id="help-modal" class="hidden">
-        <div style="background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
-            <div style="background: var(--card); padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 15px;">
-                <h3 style="color: var(--text); margin: 0; text-transform: uppercase;">Help & Support</h3>
-            </div>
-            <p style="font-size: 13px; color: var(--text-muted); margin-top: 0; margin-bottom: 20px; font-weight: bold;">Got suggestions, facing errors, or need help? Reach out directly!</p>
-            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: inline-block; width: 100%; background: var(--blue); color: white; padding: 12px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 10px;">✉️ Email Developer</a>
-            <a href="https://wa.me/918116002746" target="_blank" style="display: inline-block; width: 100%; background: var(--green); color: white; padding: 12px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 14px; margin-bottom: 15px;">💬 WhatsApp (Chat Only)</a>
-            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); box-shadow: none;">Close</button>
+        <div style="background: var(--modal-bg); padding: 18px 20px; border-radius: 16px; width: 85%; max-width: 300px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
+            <h3 style="color: var(--text); margin: 0 0 10px 0; font-size: 16px; font-weight: 900;">Help & Support</h3>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 14px 0; line-height: 1.5;">Got suggestions, errors, or need help? Reach out directly!</p>
+            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 10px; border-radius: 10px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 8px; box-sizing: border-box;">✉️ Email</a>
+            <a href="https://wa.me/918116002746" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--green); color: white; padding: 10px; border-radius: 10px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 12px; box-sizing: border-box;">💬 WhatsApp</a>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: #64748b; color: white; border: none; padding: 9px 24px; border-radius: 10px; font-weight: bold; font-size: 13px; width: auto; box-shadow: none;">Close</button>
         </div>
     </div>
 
@@ -288,7 +296,7 @@
 
     <div id="screen-register" class="hidden">
         <div class="top-bar">
-            <button class="back-btn" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+            <button class="back-btn" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
             <h1 style="color: #fde047;">PROFILE SETUP</h1>
         </div>
         <div class="screen-content">
@@ -367,13 +375,13 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.5</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.6</div>
         </div>
     </div>
 
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar dash-header">
-            <h1 id="dash-title">TTE LOG</h1>
+            <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
         </div>
         <div class="screen-content">
             
@@ -401,22 +409,22 @@
                     </div>
                     <div class="nav-card" onclick="window.navTo('screen-all')">
                         <div class="nav-icon">📋</div>
-                        <div class="nav-main-text" style="color: var(--blue);">ALL JOURNEY</div>
+                        <div class="nav-main-text" style="color: var(--blue);">All Journey</div>
                         <div class="nav-sub-text">View, edit, delete</div>
                     </div>
                     <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
                         <div class="nav-icon">🖨️</div>
-                        <div class="nav-main-text" style="color: var(--blue);">GENERATE PDF</div>
+                        <div class="nav-main-text" style="color: var(--green);">PDF</div>
                         <div class="nav-sub-text">TA Journal / NDA Bill</div>
                     </div>
                     <div class="nav-card" onclick="window.navTo('screen-register')">
                         <div class="nav-icon" style="position: relative; display: inline-block;">👤<div id="profile-alert-badge" class="notification-dot hidden">!</div></div>
-                        <div class="nav-main-text" style="color: var(--yellow);">PROFILE SETUP</div>
+                        <div class="nav-main-text" style="color: var(--yellow);">Profile</div>
                         <div class="nav-sub-text">Stations, pay details</div>
                     </div>
                     <div class="nav-card" onclick="window.navTo('screen-backup')">
                         <div class="nav-icon">💾</div>
-                        <div class="nav-main-text" style="color: var(--red);">BACKUP DATA</div>
+                        <div class="nav-main-text" style="color: var(--purple);">Backup</div>
                         <div class="nav-sub-text">Save your data</div>
                     </div>
                 </div>
@@ -426,7 +434,7 @@
 
     <div id="screen-add" class="hidden">
         <div class="top-bar">
-            <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+            <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
             <h1>ADD JOURNEY</h1>
         </div>
         <div class="screen-content">
@@ -509,11 +517,11 @@
 
     <div id="screen-all" class="hidden">
         <div class="top-bar">
-            <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+            <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
             <h1>ALL JOURNEY</h1>
         </div>
         <div class="screen-content">
-            <p style="font-size: 13px; color: var(--text-muted); text-align: center; margin-top: 0; margin-bottom: 10px;"><span style="color: var(--blue);">Tap any row below to Edit or Delete</span><br><span style="color: var(--red);">एडिट या डिलीट करने के लिए किसी भी पंक्ति पर टैप करें</span></p>
+            <p style="font-size: 13px; text-align: center; margin-top: 0; margin-bottom: 10px;"><span style="color: var(--red); font-weight: 700;">👆 Tap any row below to Edit or Delete</span></p>
             
             <div style="display: flex; gap: 10px; margin: 0 auto 15px auto; width: 100%; align-items: center; background: var(--input-bg); padding: 12px 15px; border-radius: 30px; border: 1px solid var(--border); box-shadow: var(--shadow);">
                 <label style="font-size: 14px; font-weight: 900; color: var(--text); white-space: nowrap;">Filter:</label>
@@ -548,7 +556,7 @@
 
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
-            <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+            <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
             <h1>GENERATE PDF</h1>
         </div>
         <div class="screen-content" id="reports-swipe-zone" style="min-height: 80vh; width: 100%;">
@@ -567,12 +575,10 @@
             <input type="hidden" id="report-month-hidden"> 
             
             <div class="card" id="report-summary-card">
-                <h3 style="font-size: 16px; margin-bottom: 15px; text-align: center;">Summary</h3>
+                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 15px; text-align: center;"><span style="background: linear-gradient(135deg, #e0e7ff, #f0fdf4); color: #3730a3; border: 1.5px solid #a5b4fc; border-radius: 30px; padding: 5px 20px; display: inline-block;">📊 Summary</span></h3>
                 <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
                 <div class="summary-row" id="rep-ta-row" style="color: var(--text);"><span id="rep-val-label">Total TA</span><span id="rep-val" style="font-weight: bold; color: var(--green);">₹0</span></div>
                 <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA Amount</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
-                
-                <p style="font-size: 11px; color: var(--blue); font-weight: bold; margin-top: 10px; margin-bottom: 0; text-align: center;">💡 To check previous history, use the ❮ ❯ arrows above to change the month.</p>
                 
                 <div id="ta-extras" style="display: flex; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 15px; justify-content: center;">
                     <div style="flex: 1; text-align: center; display: flex; flex-direction: column; align-items: center;">
@@ -586,12 +592,13 @@
                 </div>
                 <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate PDF Document</button>
             </div>
+            <p style="font-size: 11px; color: var(--blue); font-weight: bold; margin-top: 0; margin-bottom: 10px; text-align: center;">💡 Use ❮ ❯ arrows above to check previous month history.</p>
         </div>
     </div>
 
     <div id="screen-backup" class="hidden">
         <div class="top-bar">
-            <button class="back-btn" onclick="window.navTo('screen-dashboard')">◀ Back</button>
+            <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
             <h1>BACKUP & RESTORE</h1>
         </div>
         <div class="screen-content">
@@ -1033,6 +1040,15 @@
                     } else { 
                         if (leg.arrStn !== next.depStn) { window.globalNotifications.push(`Chain Break: Missing journey for ${leg.arrStn} to ${next.depStn}`); } 
                     }
+                }
+                
+                // Check overlapping dates across all legs
+                let allLegsForOverlap = [...window.appState.legs].sort((a,b) => new Date(`${a.depDate}T${a.depTime||'00:00'}`) - new Date(`${b.depDate}T${b.depTime||'00:00'}`));
+                for(let i = 0; i < allLegsForOverlap.length - 1; i++) {
+                    let cur = allLegsForOverlap[i]; let nxt = allLegsForOverlap[i+1];
+                    let curEnd = new Date(`${cur.arrDate}T${cur.arrTime||'23:59'}`);
+                    let nxtStart = new Date(`${nxt.depDate}T${nxt.depTime||'00:00'}`);
+                    if(nxtStart < curEnd) { window.globalNotifications.push(`Overlapping Dates: Check entries around ${cur.arrDate}`); }
                 }
             }
         }
@@ -1515,16 +1531,16 @@
             if(dutyOnly.length === 0 || hqGroup.includes(dutyOnly[dutyOnly.length - 1].arrStn)) { 
                 badge.style.background = 'rgba(34, 197, 94, 0.4)'; 
                 badge.style.border = '1px solid rgba(34, 197, 94, 0.6)';
-                badge.style.color = '#166534'; 
+                badge.style.color = document.body.classList.contains('dark-mode') ? '#4ade80' : '#166534'; 
                 dot.style.background = 'rgba(34, 197, 94, 1)'; 
                 txt.innerText = 'At HQ'; 
             } else { 
                 const lastLeg = dutyOnly[dutyOnly.length - 1]; 
-                badge.style.background = 'rgba(249, 115, 22, 0.4)'; 
-                badge.style.border = '1px solid rgba(249, 115, 22, 0.6)';
-                badge.style.color = '#9a3412'; 
-                dot.style.background = 'rgba(249, 115, 22, 1)'; 
-                txt.innerText = `Away (${lastLeg.arrStn})`; 
+                badge.style.background = 'rgba(234, 179, 8, 0.35)'; 
+                badge.style.border = '1px solid rgba(234, 179, 8, 0.7)';
+                badge.style.color = document.body.classList.contains('dark-mode') ? '#fde047' : '#854d0e'; 
+                dot.style.background = 'rgba(234, 179, 8, 1)'; 
+                txt.innerText = `${lastLeg.arrStn}`; 
             } 
         }
         
