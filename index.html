@@ -94,15 +94,16 @@
         }
         .hidden { display: none !important; }
         
-        .top-bar { position: relative; background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: background 0.3s; }
+        .top-bar { position: relative; background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: background 0.3s; pointer-events: none; }
         body.dark-mode .top-bar { border-bottom: none; } 
+        .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; width: 100%; pointer-events: none; }
+        .top-bar-content { pointer-events: auto; display: flex; justify-content: center; align-items: center; width: 100%; position: relative; }
         
         .dash-header { min-height: 80px; }
-        .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; width: 100%; }
-        .dash-title-pill { font-size: 20px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1px solid rgba(253, 224, 71, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block; background: transparent; }
+        .dash-title-pill { font-size: 20px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1px solid rgba(253, 224, 71, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block; background: transparent; pointer-events: none; }
         
-        /* FIXED: Top Back Button overrides all snapping and aligns perfectly */
-        .back-btn { background: transparent !important; border: none !important; color: white !important; font-size: 15px; padding: 10px 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-weight: 500; margin: 0; z-index: 1010; outline: none; box-shadow: none !important; letter-spacing: 0.3px; border-radius: 8px !important; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        /* FIXED: Back button — precise tap target, isolated from top-bar */
+        .back-btn { background: transparent !important; border: none !important; color: white !important; font-size: 15px; padding: 10px 15px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; position: absolute; left: 5px; top: 50%; transform: translateY(-50%); font-weight: 500; margin: 0; z-index: 1010; outline: none; box-shadow: none !important; letter-spacing: 0.3px; border-radius: 8px !important; -webkit-tap-highlight-color: transparent; touch-action: manipulation; pointer-events: auto; }
         .back-btn:active { transform: translateY(-50%) scale(0.95) !important; opacity: 0.7; }
         
         .screen-content { padding: 15px; padding-bottom: 90px; max-width: 600px; margin: 0 auto; box-sizing: border-box; width: 100%; overflow-x: hidden; }
@@ -193,8 +194,11 @@
         window.firebaseSet = set;
         window.firebaseRef = ref;
         
-        // ADMIN CONFIGURATION (Secure Email Match)
+        // ADMIN CONFIGURATION
+        window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
+        window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
+        window.APP_VERSION = '3.0';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -204,12 +208,14 @@
                 window.currentUid = user.uid;
                 window.currentUserEmail = user.email;
                 
+                const isAdmin = (user.uid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(user.email);
+                
                 // Show Admin Gear if authorized
-                if(window.ADMIN_EMAILS.includes(user.email)) {
+                if(isAdmin) {
                     document.getElementById('admin-gear-icon').classList.remove('hidden');
                 }
 
-                // Global Cloud Listener (Admin Settings & App Data)
+                // Global Cloud Listener
                 onValue(ref(window.db, '/'), (snapshot) => {
                     const fullData = snapshot.val() || {};
                     const adminConfig = fullData.admin_config || {};
@@ -219,15 +225,49 @@
                     const syncLbl = document.getElementById('sync-time-lbl');
                     if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
 
-                    // Execute Maintenance Protocol
-                    if(adminConfig.maintenance && !window.ADMIN_EMAILS.includes(user.email)) {
+                    // Maintenance Protocol (bypass for admin)
+                    if(adminConfig.maintenance && !isAdmin) {
+                        const msg = adminConfig.maintenanceMsg || 'System is under maintenance. Please check back soon.';
+                        document.getElementById('admin-lock-msg').innerText = msg;
                         document.getElementById('admin-lock-overlay').classList.remove('hidden');
                     } else {
                         document.getElementById('admin-lock-overlay').classList.add('hidden');
                     }
 
-                    // Apply Announcements
+                    // Version Gate (bypass for admin)
+                    const reqVersion = adminConfig.required_version;
+                    if (reqVersion && reqVersion !== window.APP_VERSION && !isAdmin) {
+                        document.getElementById('version-gate-screen').classList.remove('hidden');
+                        document.getElementById('version-gate-msg').innerText = `Version ${reqVersion} is now required. Please reload or clear your browser cache to get the latest version.`;
+                        document.getElementById('ui-wrapper').classList.add('hidden');
+                        return;
+                    } else {
+                        document.getElementById('version-gate-screen').classList.add('hidden');
+                        document.getElementById('ui-wrapper').classList.remove('hidden');
+                    }
+
+                    // Announcements
                     window.adminAnnouncement = adminConfig.announcement || null;
+
+                    // DA/TA Broadcast — show banner if pending and user hasn't dismissed
+                    const daBroadcast = adminConfig.da_broadcast;
+                    if (daBroadcast && daBroadcast.active && !isAdmin) {
+                        window.pendingDaBroadcast = daBroadcast;
+                        let parts = [];
+                        if (daBroadcast.da) parts.push(`DA → ${daBroadcast.da}%`);
+                        if (daBroadcast.ta) parts.push(`TA Rate → ₹${daBroadcast.ta}`);
+                        const note = daBroadcast.note ? ` (${daBroadcast.note})` : '';
+                        document.getElementById('da-banner-text').innerText = parts.join(' | ') + note;
+                        document.getElementById('da-broadcast-banner').classList.remove('hidden');
+                    } else {
+                        document.getElementById('da-broadcast-banner').classList.add('hidden');
+                    }
+
+                    // Update admin UI if on admin screen
+                    window.adminIsMaint = adminConfig.maintenance || false;
+                    if (!document.getElementById('screen-admin').classList.contains('hidden')) {
+                        updateAdminUI(adminConfig);
+                    }
 
                     // Route User Logic
                     if (userData) {
@@ -254,7 +294,14 @@
 <div id="admin-lock-overlay" class="hidden">
     <h1 style="font-size: 50px; margin: 0; color: var(--blue);">⚙️</h1>
     <h2 style="color: var(--text); font-size: 24px;">System Upgrading</h2>
-    <p style="color: var(--text-muted); font-size: 15px;">The TTE LOGS platform is currently locked for a critical update to ensure data safety. We will be back online shortly.</p>
+    <p id="admin-lock-msg" style="color: var(--text-muted); font-size: 15px; max-width: 300px;">The TTE LOGS platform is currently locked for a critical update to ensure data safety. We will be back online shortly.</p>
+</div>
+
+<div id="version-gate-screen" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:99998; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
+    <div style="font-size:60px; margin-bottom:15px;">📱</div>
+    <h2 style="color:var(--text); margin:0 0 10px 0;">Update Required</h2>
+    <p id="version-gate-msg" style="color:var(--text-muted); font-size:14px; line-height:1.6; margin:0 0 25px 0; max-width:300px;"></p>
+    <button onclick="window.location.reload()" style="width:auto; padding:12px 30px; border-radius:30px; background:var(--blue);">🔄 Reload App</button>
 </div>
 
 <div id="preview-wrapper" class="hidden">
@@ -296,6 +343,48 @@
                 <button onclick="document.getElementById('trend-modal').classList.add('hidden')" style="width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
             </div>
             <div id="trend-chart-area" style="width: 100%; overflow-x: auto;"></div>
+        </div>
+    </div>
+
+    <div id="admin-pin-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:9000;">
+        <div style="background:var(--modal-bg); padding:25px 20px; border-radius:20px; width:85%; max-width:300px; text-align:center; border:1px solid var(--border); box-shadow:var(--shadow);">
+            <div style="font-size:36px; margin-bottom:8px;">⚙️</div>
+            <h3 style="color:var(--yellow); margin:0 0 5px 0; font-size:17px; font-weight:900;">Admin Access</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin:0 0 18px 0;">Enter 4-digit PIN to continue</p>
+            <div style="display:flex; gap:10px; justify-content:center; margin-bottom:18px;" id="pin-dots">
+                <div style="width:14px; height:14px; border-radius:50%; border:2px solid var(--border); background:var(--input-bg);" id="pd0"></div>
+                <div style="width:14px; height:14px; border-radius:50%; border:2px solid var(--border); background:var(--input-bg);" id="pd1"></div>
+                <div style="width:14px; height:14px; border-radius:50%; border:2px solid var(--border); background:var(--input-bg);" id="pd2"></div>
+                <div style="width:14px; height:14px; border-radius:50%; border:2px solid var(--border); background:var(--input-bg);" id="pd3"></div>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:12px;">
+                <button onclick="window.pinDigit('1')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">1</button>
+                <button onclick="window.pinDigit('2')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">2</button>
+                <button onclick="window.pinDigit('3')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">3</button>
+                <button onclick="window.pinDigit('4')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">4</button>
+                <button onclick="window.pinDigit('5')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">5</button>
+                <button onclick="window.pinDigit('6')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">6</button>
+                <button onclick="window.pinDigit('7')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">7</button>
+                <button onclick="window.pinDigit('8')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">8</button>
+                <button onclick="window.pinDigit('9')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">9</button>
+                <button onclick="window.pinClear()" style="padding:14px; font-size:14px; font-weight:700; background:var(--danger-bg); color:var(--red); border:1px solid var(--danger-border); border-radius:12px; box-shadow:none; margin:0;">CLR</button>
+                <button onclick="window.pinDigit('0')" style="padding:14px; font-size:20px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">0</button>
+                <button onclick="window.pinBack()" style="padding:14px; font-size:18px; font-weight:700; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:12px; box-shadow:none; margin:0;">⌫</button>
+            </div>
+            <button onclick="document.getElementById('admin-pin-modal').classList.add('hidden'); window.pinEntry='';" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none; padding:10px; border-radius:30px; font-size:13px; margin:0;">Cancel</button>
+            <p id="pin-error" style="color:var(--red); font-size:12px; font-weight:bold; margin:8px 0 0 0; min-height:16px;"></p>
+        </div>
+    </div>
+
+    <!-- DA BROADCAST APPLY BANNER (shown on dashboard) -->
+    <div id="da-broadcast-banner" class="hidden" style="position:fixed; top:65px; left:50%; transform:translateX(-50%); width:95%; max-width:580px; background:linear-gradient(135deg, var(--green), #16a34a); color:white; border-radius:12px; padding:12px 15px; z-index:5500; box-shadow:0 4px 15px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:space-between; gap:10px;">
+        <div style="flex:1; min-width:0;">
+            <div style="font-size:12px; font-weight:900; margin-bottom:3px;">📊 Admin Update Available</div>
+            <div id="da-banner-text" style="font-size:11px; opacity:0.9;"></div>
+        </div>
+        <div style="display:flex; gap:6px; flex-shrink:0;">
+            <button onclick="window.applyDaBroadcast()" style="background:white; color:#16a34a; padding:6px 12px; border-radius:20px; font-size:12px; font-weight:900; margin:0; width:auto; box-shadow:none;">Apply</button>
+            <button onclick="document.getElementById('da-broadcast-banner').classList.add('hidden')" style="background:rgba(255,255,255,0.2); color:white; padding:6px 10px; border-radius:20px; font-size:12px; margin:0; width:auto; box-shadow:none;">✕</button>
         </div>
     </div>
 
@@ -344,9 +433,9 @@
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <button class="back-btn hidden" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
-            <div class="top-bar-content" style="display:flex; justify-content:center; align-items:center; width:100%; position:relative;">
+            <div class="top-bar-content">
                 <h1 style="color: #fde047;">PROFILE SETUP</h1>
-                <div id="admin-gear-icon" class="hidden" style="position: absolute; right: 0; font-size: 20px; cursor: pointer; padding: 5px;" onclick="window.navTo('screen-admin')">⚙️</div>
+                <div id="admin-gear-icon" class="hidden" style="position: absolute; left: 0; font-size: 20px; cursor: pointer; padding: 5px; pointer-events: auto;" onclick="window.openAdminPIN()">⚙️</div>
             </div>
         </div>
         <div class="screen-content">
@@ -425,28 +514,87 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.9</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.0</div>
         </div>
     </div>
 
     <div id="screen-admin" class="hidden">
         <div class="top-bar">
-            <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
-            <h1 style="color: var(--blue);">ADMIN DASHBOARD</h1>
+            <button class="back-btn" onclick="window.navTo('screen-dashboard')" style="pointer-events:auto;">← Back</button>
+            <h1 style="color: var(--yellow);">⚙️ ADMIN</h1>
         </div>
         <div class="screen-content">
-            <div class="card">
-                <h3 style="color: var(--red); margin: 0 0 5px 0;">Maintenance Mode</h3>
-                <p style="font-size:12px; color:var(--text-muted); margin: 0 0 15px 0;">Activate to lock out non-admin users instantly.</p>
-                <button id="admin-maint-btn" onclick="window.toggleAdminMaint()" style="background: var(--card); color: var(--red); border: 2px solid var(--red);">Turn ON Maintenance</button>
+
+            <!-- MAINTENANCE MODE -->
+            <div class="card" style="border-left: 4px solid var(--red);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <h3 style="color:var(--red); margin:0; font-size:15px;">🔒 Maintenance Mode</h3>
+                    <div id="admin-maint-status" style="font-size:11px; font-weight:900; padding:3px 10px; border-radius:20px; background:rgba(34,197,94,0.2); color:var(--green);">OFF</div>
+                </div>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Lock all non-admin users out instantly. They see a maintenance screen until you lift it.</p>
+                <input type="text" id="admin-maint-msg" placeholder="Maintenance message to users..." style="margin-bottom:10px;">
+                <button id="admin-maint-btn" onclick="window.toggleAdminMaint()" style="background:var(--red);">Turn ON Maintenance</button>
             </div>
-            <div class="card">
-                <h3 style="color: var(--blue); margin: 0 0 5px 0;">Global Announcement</h3>
-                <p style="font-size:12px; color:var(--text-muted); margin: 0 0 10px 0;">Push a notification to all user devices.</p>
-                <input type="text" id="admin-broadcast-msg" placeholder="Enter alert message...">
-                <button style="margin-top: 15px;" onclick="window.sendAdminBroadcast()">Broadcast Notification</button>
-                <button style="margin-top: 10px; background: var(--card); color: var(--red); border: 1px dashed var(--red);" onclick="window.clearAdminBroadcast()">Clear Active Alert</button>
+
+            <!-- VERSION GATE -->
+            <div class="card" style="border-left: 4px solid var(--orange);">
+                <h3 style="color:var(--orange); margin:0 0 6px 0; font-size:15px;">📱 Version Gate</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Force users on old versions to update before they can proceed.</p>
+                <div style="display:flex; gap:10px; align-items:flex-end;">
+                    <div style="flex:1;">
+                        <label class="profile-lbl">Required Version</label>
+                        <input type="text" id="admin-version-input" placeholder="e.g. 3.0">
+                    </div>
+                    <button onclick="window.pushVersionGate()" style="flex:1; margin:0; background:var(--orange);">Push Version</button>
+                </div>
+                <div id="admin-version-active" style="font-size:11px; color:var(--text-muted); margin-top:8px; text-align:center;"></div>
             </div>
+
+            <!-- GLOBAL ANNOUNCEMENT -->
+            <div class="card" style="border-left: 4px solid var(--blue);">
+                <h3 style="color:var(--blue); margin:0 0 6px 0; font-size:15px;">📢 Global Announcement</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Push a bell notification to all users instantly.</p>
+                <input type="text" id="admin-broadcast-msg" placeholder="Enter announcement message...">
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="window.sendAdminBroadcast()" style="flex:1; margin:0; background:var(--blue);">📤 Broadcast</button>
+                    <button onclick="window.clearAdminBroadcast()" style="flex:1; margin:0; background:var(--card); color:var(--red); border:1px dashed var(--red); box-shadow:none;">✕ Clear</button>
+                </div>
+                <div id="admin-announce-active" style="font-size:11px; color:var(--blue); margin-top:8px; text-align:center; font-weight:bold;"></div>
+            </div>
+
+            <!-- DA / TA BROADCAST -->
+            <div class="card" style="border-left: 4px solid var(--green);">
+                <h3 style="color:var(--green); margin:0 0 6px 0; font-size:15px;">📊 DA / TA Rate Broadcast</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Push revised DA% or TA rate. Users get a one-tap apply prompt on their dashboard.</p>
+                <div style="display:flex; gap:10px; margin-bottom:10px;">
+                    <div style="flex:1; min-width:0;">
+                        <label class="profile-lbl">New DA (%)</label>
+                        <input type="number" id="admin-da-input" placeholder="e.g. 63">
+                    </div>
+                    <div style="flex:1; min-width:0;">
+                        <label class="profile-lbl">New TA Rate (₹)</label>
+                        <input type="number" id="admin-ta-input" placeholder="e.g. 1050">
+                    </div>
+                </div>
+                <input type="text" id="admin-da-note" placeholder="Note (e.g. 7th CPC revision w.e.f. Jan 2025)" style="margin-bottom:10px;">
+                <div style="display:flex; gap:10px;">
+                    <button onclick="window.pushDaBroadcast()" style="flex:1; margin:0; background:var(--green);">📤 Push Update</button>
+                    <button onclick="window.clearDaBroadcast()" style="flex:1; margin:0; background:var(--card); color:var(--red); border:1px dashed var(--red); box-shadow:none;">✕ Clear</button>
+                </div>
+                <div id="admin-da-active" style="font-size:11px; color:var(--green); margin-top:8px; text-align:center; font-weight:bold;"></div>
+            </div>
+
+            <!-- USER STATS -->
+            <div class="card" style="border-left: 4px solid var(--purple);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <h3 style="color:var(--purple); margin:0; font-size:15px;">👥 User Statistics</h3>
+                    <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 14px; font-size:12px; background:var(--purple); border-radius:20px;">Refresh</button>
+                </div>
+                <div id="admin-stats-area">
+                    <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh to load stats</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -737,21 +885,66 @@
     window.checkGazetted = checkGazetted;
     window.showTrendChart = showTrendChart;
     window.populateStnList = populateStnList;
+    // Admin bindings declared after admin functions are defined below
+    window.pinEntry = '';
     
+    window.openAdminPIN = function() {
+        window.pinEntry = '';
+        document.getElementById('pin-error').innerText = '';
+        [0,1,2,3].forEach(i => { document.getElementById('pd'+i).style.background = 'var(--input-bg)'; });
+        document.getElementById('admin-pin-modal').classList.remove('hidden');
+    };
+    
+    window.pinDigit = function(d) {
+        if (window.pinEntry.length >= 4) return;
+        window.pinEntry += d;
+        const idx = window.pinEntry.length - 1;
+        document.getElementById('pd'+idx).style.background = 'var(--blue)';
+        if (window.pinEntry.length === 4) {
+            setTimeout(() => {
+                if (window.pinEntry === window.ADMIN_PIN) {
+                    document.getElementById('admin-pin-modal').classList.add('hidden');
+                    window.pinEntry = '';
+                    window.navTo('screen-admin');
+                } else {
+                    document.getElementById('pin-error').innerText = '❌ Incorrect PIN. Try again.';
+                    window.pinEntry = '';
+                    [0,1,2,3].forEach(i => { document.getElementById('pd'+i).style.background = 'var(--input-bg)'; });
+                }
+            }, 200);
+        }
+    };
+    
+    window.pinBack = function() {
+        if (window.pinEntry.length === 0) return;
+        window.pinEntry = window.pinEntry.slice(0, -1);
+        document.getElementById('pd'+window.pinEntry.length).style.background = 'var(--input-bg)';
+    };
+    
+    window.pinClear = function() {
+        window.pinEntry = '';
+        [0,1,2,3].forEach(i => { document.getElementById('pd'+i).style.background = 'var(--input-bg)'; });
+        document.getElementById('pin-error').innerText = '';
+    };
+
+    // ========== ADMIN FIREBASE ACTIONS ==========
     window.toggleAdminMaint = () => {
         const cur = window.adminIsMaint || false;
+        const msg = document.getElementById('admin-maint-msg').value.trim() || 'System is under maintenance. We will be back soon.';
         if(window.firebaseSet && window.firebaseRef && window.db) {
-            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/maintenance'), !cur).then(() => {
-                showModal("Success", `Maintenance mode is now ${!cur ? "ON" : "OFF"}.`, "success", false);
+            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/maintenance'), !cur);
+            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/maintenanceMsg'), msg).then(() => {
+                showModal("Done", `Maintenance mode is now ${!cur ? "ON" : "OFF"}.`, "success", false);
             });
         }
     };
 
     window.sendAdminBroadcast = () => {
         const msg = document.getElementById('admin-broadcast-msg').value.trim();
+        if (!msg) return showModal("Error", "Please enter a message first.", "error", false);
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/announcement'), msg).then(() => {
-                showModal("Success", `Message broadcasted globally.`, "success", false);
+                showModal("Broadcasted!", `Message sent to all users.`, "success", false);
                 document.getElementById('admin-broadcast-msg').value = '';
             });
         }
@@ -760,10 +953,150 @@
     window.clearAdminBroadcast = () => {
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/announcement'), null).then(() => {
-                showModal("Success", `Active alert cleared.`, "success", false);
+                showModal("Cleared", "Active announcement removed.", "success", false);
             });
         }
     };
+
+    window.pushVersionGate = () => {
+        const v = document.getElementById('admin-version-input').value.trim();
+        if (!v) return showModal("Error", "Enter a version number.", "error", false);
+        if(window.firebaseSet && window.firebaseRef && window.db) {
+            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/required_version'), v).then(() => {
+                showModal("Done", `Version gate set to v${v}. Users on older versions will be blocked.`, "success", false);
+            });
+        }
+    };
+
+    window.pushDaBroadcast = () => {
+        const da = document.getElementById('admin-da-input').value.trim();
+        const ta = document.getElementById('admin-ta-input').value.trim();
+        const note = document.getElementById('admin-da-note').value.trim();
+        if (!da && !ta) return showModal("Error", "Enter DA% or TA Rate to broadcast.", "error", false);
+        const payload = { active: true, da: da || null, ta: ta || null, note: note || '', pushedOn: new Date().toLocaleDateString() };
+        if(window.firebaseSet && window.firebaseRef && window.db) {
+            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_broadcast'), payload).then(() => {
+                showModal("Pushed!", "DA/TA update sent. Users will see an apply prompt.", "success", false);
+                document.getElementById('admin-da-input').value = '';
+                document.getElementById('admin-ta-input').value = '';
+                document.getElementById('admin-da-note').value = '';
+            });
+        }
+    };
+
+    window.clearDaBroadcast = () => {
+        if(window.firebaseSet && window.firebaseRef && window.db) {
+            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_broadcast'), { active: false }).then(() => {
+                showModal("Cleared", "DA/TA broadcast removed.", "success", false);
+            });
+        }
+    };
+
+    // User applies DA/TA broadcast from banner
+    window.applyDaBroadcast = () => {
+        const b = window.pendingDaBroadcast;
+        if (!b || !window.appState.profile) return;
+        if (b.da) window.appState.profile.da = b.da;
+        if (b.ta) window.appState.profile.tarate = b.ta;
+        saveData();
+        document.getElementById('da-broadcast-banner').classList.add('hidden');
+        showModal("Applied!", `Profile updated: ${b.da ? 'DA = ' + b.da + '%' : ''} ${b.ta ? 'TA Rate = ₹' + b.ta : ''}`.trim(), "success", false);
+        updateDashboardUI();
+    };
+
+    window.loadAdminStats = () => {
+        if(!window.db) return;
+        const { onValue: ov, ref: rf } = { onValue: window._fbOnValue, ref: window._fbRef };
+        // Read from already-available full snapshot (we already have it from root listener)
+        const statsEl = document.getElementById('admin-stats-area');
+        if (!statsEl) return;
+        statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading...</p>';
+        
+        // Use firebase imported functions
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                const uids = Object.keys(users);
+                const total = uids.length;
+                let payBreak = {};
+                let recentCount = 0;
+                const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+                
+                uids.forEach(uid => {
+                    const u = users[uid];
+                    const pl = u.profile ? u.profile.payscale || 'Unknown' : 'No Profile';
+                    payBreak[pl] = (payBreak[pl] || 0) + 1;
+                    const legs = u.legs || [];
+                    if (legs.length > 0) recentCount++;
+                });
+                
+                const plRows = Object.entries(payBreak).sort((a,b) => b[1]-a[1]).map(([k,v]) => 
+                    `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text);">${k}</span><span style="color:var(--blue); font-weight:700;">${v}</span></div>`
+                ).join('');
+
+                statsEl.innerHTML = `
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                        <div style="background:var(--input-bg); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border);">
+                            <div style="font-size:28px; font-weight:900; color:var(--blue);">${total}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">Total Users</div>
+                        </div>
+                        <div style="background:var(--input-bg); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border);">
+                            <div style="font-size:28px; font-weight:900; color:var(--green);">${recentCount}</div>
+                            <div style="font-size:11px; color:var(--text-muted);">Active Users</div>
+                        </div>
+                    </div>
+                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Pay Level Breakdown</div>
+                    ${plRows || '<p style="color:var(--text-muted); font-size:13px;">No data</p>'}
+                `;
+            }).catch(() => {
+                statsEl.innerHTML = '<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load stats. Check Firebase rules.</p>';
+            });
+        });
+    };
+
+    function updateAdminUI(adminConfig) {
+        const isMaint = adminConfig.maintenance || false;
+        const maintBtn = document.getElementById('admin-maint-btn');
+        const maintStatus = document.getElementById('admin-maint-status');
+        if (maintBtn) {
+            maintBtn.innerText = isMaint ? 'Turn OFF Maintenance' : 'Turn ON Maintenance';
+            maintBtn.style.background = isMaint ? 'var(--green)' : 'var(--red)';
+        }
+        if (maintStatus) {
+            maintStatus.innerText = isMaint ? 'ON' : 'OFF';
+            maintStatus.style.background = isMaint ? 'rgba(239,68,68,0.2)' : 'rgba(34,197,94,0.2)';
+            maintStatus.style.color = isMaint ? 'var(--red)' : 'var(--green)';
+        }
+        if (document.getElementById('admin-maint-msg') && adminConfig.maintenanceMsg) {
+            document.getElementById('admin-maint-msg').placeholder = adminConfig.maintenanceMsg;
+        }
+        
+        const reqV = adminConfig.required_version;
+        const versionEl = document.getElementById('admin-version-active');
+        if (versionEl) versionEl.innerText = reqV ? `Active gate: v${reqV}` : 'No version gate active';
+        
+        const ann = adminConfig.announcement;
+        const annEl = document.getElementById('admin-announce-active');
+        if (annEl) annEl.innerText = ann ? `Active: "${ann}"` : 'No active announcement';
+        
+        const dab = adminConfig.da_broadcast;
+        const daEl = document.getElementById('admin-da-active');
+        if (daEl) {
+            if (dab && dab.active) {
+                let parts = [];
+                if (dab.da) parts.push(`DA: ${dab.da}%`);
+                if (dab.ta) parts.push(`TA: ₹${dab.ta}`);
+                daEl.innerText = `Active: ${parts.join(', ')}${dab.note ? ' — ' + dab.note : ''}`;
+            } else {
+                daEl.innerText = 'No active broadcast';
+            }
+        }
+    }
+    window.updateAdminUI = updateAdminUI;
+
+    window.toggleAdminMaint = window.toggleAdminMaint;
+    window.sendAdminBroadcast = window.sendAdminBroadcast;
+    window.clearAdminBroadcast = window.clearAdminBroadcast;
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
     function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
@@ -810,6 +1143,41 @@
             document.body.classList.add('dark-mode');
             const tt = document.getElementById('theme-toggle');
             if(tt) tt.innerText = '☀️';
+        }
+        
+        // DRAGGABLE FLOATING BACK BUTTON
+        const floatBack = document.getElementById('global-back-btn');
+        if (floatBack) {
+            let isDragging = false;
+            let startY = 0;
+            let startTop = 0;
+            
+            floatBack.addEventListener('touchstart', (e) => {
+                isDragging = false;
+                startY = e.touches[0].clientY;
+                startTop = floatBack.getBoundingClientRect().top;
+                e.stopPropagation();
+            }, { passive: true });
+            
+            floatBack.addEventListener('touchmove', (e) => {
+                const dy = e.touches[0].clientY - startY;
+                if (Math.abs(dy) > 5) isDragging = true;
+                if (isDragging) {
+                    let newTop = startTop + dy;
+                    const maxTop = window.innerHeight - floatBack.offsetHeight - 10;
+                    newTop = Math.max(10, Math.min(maxTop, newTop));
+                    floatBack.style.top = newTop + 'px';
+                    floatBack.style.transform = 'none';
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            floatBack.addEventListener('touchend', (e) => {
+                if (!isDragging) {
+                    window.navTo('screen-dashboard');
+                }
+                isDragging = false;
+            });
         }
         
         // FIXED SWIPE ENGINE
@@ -1713,33 +2081,36 @@
 
         let barsHTML = values.map((v, i) => {
             const pct = Math.round((v / maxVal) * 100);
-            let insideHtml = '';
+            
+            let topText = isNDA ? '' : `₹${v}`;
+            let ndaMoney = 0;
             
             if (isNDA && v > 0) {
-                let ndaMoney = 0;
                 const p = window.appState.profile;
-                const isGazetted = p && p.empType === 'Gazetted';
-                if (!isGazetted && p) {
+                if (p && p.empType !== 'Gazetted') {
                     const bp = parseFloat(p.basicpay) || 0;
                     const cappedBp = bp > 43600 ? 43600 : bp;
                     const da = parseFloat(p.da) || 0;
                     const rate = (cappedBp + (cappedBp * da / 100)) / 200;
                     ndaMoney = Math.round((v / 6) * rate);
                 }
-                if (ndaMoney > 0) {
-                    insideHtml = `<div style="writing-mode: vertical-rl; transform: rotate(180deg); color: white; font-size: 11px; font-weight: bold; padding: 6px 0; letter-spacing: 0.5px;">₹${ndaMoney}</div>`;
-                }
+                topText = ndaMoney > 0 ? `₹${ndaMoney}` : `${v}h`;
             }
-            
-            let topText = isNDA ? `${v} h` : `₹${v}`;
-            
+
+            // For NDA: money on top label, hours label centered in bar container
+            // For TA: money on top, bar fills normally
+            const barContainer = isNDA
+                ? `<div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:visible; position:relative;">
+                    <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px;"></div>
+                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); writing-mode:vertical-rl; transform:rotate(180deg) translateX(50%) translateY(50%); color:var(--text); font-size:10px; font-weight:800; white-space:nowrap; pointer-events:none;">${v > 0 ? v + ' h' : ''}</div>
+                   </div>`
+                : `<div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:hidden;">
+                    <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px;"></div>
+                   </div>`;
+
             return `<div style="display:flex; flex-direction:column; align-items:center; flex:1; gap:4px;">
-                <div style="font-size:11px; font-weight:700; color:${color};">${topText}</div>
-                <div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:hidden;">
-                    <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px; display:flex; justify-content:center; align-items:center;">
-                        ${insideHtml}
-                    </div>
-                </div>
+                <div style="font-size:11px; font-weight:700; color:${color}; min-height:16px;">${topText}</div>
+                ${barContainer}
                 <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-align:center; white-space:nowrap;">${labels[i]}</div>
             </div>`;
         }).join('');
