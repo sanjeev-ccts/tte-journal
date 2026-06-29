@@ -752,13 +752,19 @@
             }, {passive: true});
         }
 
-        let touchstartX = 0;
-        let touchendX = 0;
-        document.addEventListener('touchstart', e => { 
-            if(!document.getElementById('screen-reports').classList.contains('hidden') || !document.getElementById('screen-add').classList.contains('hidden')) {
-                touchstartX = e.changedTouches[0].screenX; 
+                let startX = 0;
+        document.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
+        document.addEventListener('touchend', e => { 
+            let diff = e.changedTouches[0].clientX - startX;
+            if (Math.abs(diff) > 50) {
+                if (!document.getElementById('screen-reports').classList.contains('hidden')) {
+                    if (diff < 0) window.switchTab('nda'); else window.switchTab('ta');
+                } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
+                    if (diff < 0) window.switchAddTab('nonduty'); else window.switchAddTab('duty');
+                }
             }
         }, {passive: true});
+
         document.addEventListener('touchend', e => { 
             if(!document.getElementById('screen-reports').classList.contains('hidden')) {
                 touchendX = e.changedTouches[0].screenX; 
