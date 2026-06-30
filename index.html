@@ -179,7 +179,7 @@
         .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; }
         .tab-btn.active { color: #ffffff !important; }
         
-        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; font-weight: bold; color: var(--green); transition: color 0.3s, background 0.3s, border 0.3s; border: 1.5px solid rgba(34, 197, 94, 0.4); border-radius: 30px; background: rgba(34, 197, 94, 0.1); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;}
+        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; font-weight: bold; color: var(--green); transition: color 0.3s, background 0.3s, border 0.3s; border: 1.5px solid rgba(34, 197, 94, 0.4); border-radius: 30px; background: rgba(34, 197, 94, 0.1); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;}
         .slider-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 32px; height: 32px; margin: 0; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; color: var(--text); }
@@ -220,7 +220,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const app = initializeApp({
@@ -235,90 +235,33 @@
         window.provider = new GoogleAuthProvider();
         window.firebaseSet = set;
         window.firebaseRef = ref;
-        
-        // ADMIN CONFIGURATION
-        window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
-        window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
-        window.ADMIN_PIN = '2580'; 
-        window.APP_VERSION = '3.3';
+        window.firebaseGet = get; 
 
-        window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
+        window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') window.showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
 
         onAuthStateChanged(window.auth, (user) => {
             if (user) {
                 window.currentUid = user.uid;
                 window.currentUserEmail = user.email;
+                window.isAdmin = (user.uid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(user.email);
                 
-                const isAdmin = (user.uid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(user.email);
-                
-                if(isAdmin) {
-                    document.getElementById('admin-gear-icon').classList.remove('hidden');
+                if(window.isAdmin) {
+                    const gear = document.getElementById('admin-gear-icon');
+                    if(gear) gear.classList.remove('hidden');
                 }
 
                 onValue(ref(window.db, '/'), (snapshot) => {
                     const fullData = snapshot.val() || {};
-                    const adminConfig = fullData.admin_config || {};
-                    const userData = fullData.users ? fullData.users[user.uid] : null;
-                    
-                    window.lastSyncTime = new Date().toLocaleTimeString();
-                    const syncLbl = document.getElementById('sync-time-lbl');
-                    if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
-
-                    if(adminConfig.maintenance && !isAdmin) {
-                        const msg = adminConfig.maintenanceMsg || 'System is under maintenance. Please check back soon.';
-                        document.getElementById('admin-lock-msg').innerText = msg;
-                        document.getElementById('admin-lock-overlay').classList.remove('hidden');
-                    } else {
-                        document.getElementById('admin-lock-overlay').classList.add('hidden');
-                    }
-
-                    const reqVersion = adminConfig.required_version;
-                    if (reqVersion && reqVersion !== window.APP_VERSION && !isAdmin) {
-                        document.getElementById('version-gate-screen').classList.remove('hidden');
-                        document.getElementById('version-gate-msg').innerText = `Version ${reqVersion} is now required. Please reload or clear your browser cache to get the latest version.`;
-                        document.getElementById('ui-wrapper').classList.add('hidden');
-                        return;
-                    } else {
-                        document.getElementById('version-gate-screen').classList.add('hidden');
-                        document.getElementById('ui-wrapper').classList.remove('hidden');
-                    }
-
-                    window.adminAnnouncement = adminConfig.announcement || null;
-
-                    const daBroadcast = adminConfig.da_broadcast;
-                    if (daBroadcast && daBroadcast.active && !isAdmin) {
-                        window.pendingDaBroadcast = daBroadcast;
-                        let parts = [];
-                        if (daBroadcast.da) parts.push(`DA → ${daBroadcast.da}%`);
-                        if (daBroadcast.ta) parts.push(`TA Rate → ₹${daBroadcast.ta}`);
-                        const note = daBroadcast.note ? ` (${daBroadcast.note})` : '';
-                        document.getElementById('da-banner-text').innerText = parts.join(' | ') + note;
-                        document.getElementById('da-broadcast-banner').classList.remove('hidden');
-                    } else {
-                        document.getElementById('da-broadcast-banner').classList.add('hidden');
-                    }
-
-                    window.adminIsMaint = adminConfig.maintenance || false;
-                    if (!document.getElementById('screen-admin').classList.contains('hidden')) {
-                        updateAdminUI(adminConfig);
-                    }
-
-                    if (userData) {
-                        window.appState = userData;
-                        if (!window.appState.legs) window.appState.legs = [];
-                        if (document.getElementById('screen-register').classList.contains('hidden') && document.getElementById('screen-admin').classList.contains('hidden')) {
-                            window.navTo('screen-dashboard');
-                        }
-                    } else {
-                        window.appState = { profile: null, legs: [] };
-                        window.navTo('screen-register'); 
+                    if(typeof window.processCloudData === 'function') {
+                        window.processCloudData(fullData);
                     }
                 });
             } else {
                 window.currentUid = null;
                 window.currentUserEmail = null;
-                window.navTo('screen-login');
+                window.isAdmin = false;
+                if(typeof window.navTo === 'function') window.navTo('screen-login');
             }
         });
     </script>
@@ -410,7 +353,6 @@
         </div>
     </div>
 
-    <!-- DA BROADCAST APPLY BANNER -->
     <div id="da-broadcast-banner" class="hidden" style="position:fixed; top:65px; left:50%; transform:translateX(-50%); width:95%; max-width:580px; background:linear-gradient(135deg, var(--green), #16a34a); color:white; border-radius:12px; padding:12px 15px; z-index:5500; box-shadow:0 4px 15px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:space-between; gap:10px;">
         <div style="flex:1; min-width:0;">
             <div style="font-size:12px; font-weight:900; margin-bottom:3px;">📊 Admin Update Available</div>
@@ -454,26 +396,14 @@
         </div>
     </div>
 
-    <div id="screen-login" class="hidden" style="position: relative; min-height: 100vh; width: 100vw; background-color: #0f172a; background-image: url('./login-bg.png'); background-size: cover; background-position: center bottom; background-repeat: no-repeat;">
-        <div style="position: absolute; bottom: 15%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
-            <button style="border-radius: 30px; font-size: 15px; padding: 12px 24px; background: #ffffff; color: #1e293b; border: none; box-shadow: 0 8px 20px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; width: max-content; gap: 10px; font-weight: bold; cursor: pointer;" onclick="window.login()">
-                <svg style="width: 24px; height: 24px;" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
-                Sign in with Google
-            </button>
-            <p style="color: #ffffff; font-size: 13px; font-weight: bold; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); letter-spacing: 0.5px;">Please wait a few seconds after sign in</p>
-        </div>
-    </div>
-
-    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <button class="back-btn hidden" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
             <div class="top-bar-content">
                 <h1 style="color: #fde047;">PROFILE SETUP</h1>
+                <div id="admin-gear-icon" class="admin-gear-btn hidden" onclick="window.openAdminPIN()">⚙️</div>
             </div>
-            <div id="admin-gear-icon" class="admin-gear-btn hidden" onclick="window.openAdminPIN()">⚙️</div>
         </div>
-        
         <div class="screen-content">
             
             <div id="profile-alert-box" class="hidden card" style="border-left: 4px solid var(--red); padding: 12px; margin-bottom: 15px;">
@@ -554,10 +484,9 @@
         </div>
     </div>
 
-    <!-- ADMIN DASHBOARD -->
     <div id="screen-admin" class="hidden">
         <div class="top-bar">
-            <button class="back-btn" onclick="window.navTo('screen-dashboard')" style="pointer-events:auto;">← Back</button>
+            <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
             <h1 style="color: var(--yellow);">⚙️ ADMIN</h1>
         </div>
         <div class="screen-content">
@@ -621,19 +550,18 @@
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <h3 style="color:var(--purple); margin:0; font-size:15px;">👥 User Statistics & Roster</h3>
                     <div style="display:flex; gap:5px;">
-                        <button onclick="window.viewUserRoster()" style="width:auto; margin:0; padding:5px 10px; font-size:11px; background:var(--card); color:var(--purple); border:1px solid var(--purple);">Directory</button>
-                        <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 10px; font-size:11px; background:var(--purple); border-radius:20px;">Refresh</button>
+                        <button onclick="window.viewUserRoster()" style="width:auto; margin:0; padding:5px 10px; font-size:11px; background:var(--card); color:var(--purple); border:1px solid var(--purple);">View Roster</button>
+                        <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 10px; font-size:11px; background:var(--purple); border-radius:20px;">Refresh Stats</button>
                     </div>
                 </div>
                 <div id="admin-stats-area">
-                    <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh to load stats</p>
+                    <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh or Roster to load data</p>
                 </div>
             </div>
 
         </div>
     </div>
 
-    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar dash-header">
             <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
@@ -688,7 +616,6 @@
         </div>
     </div>
 
-    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
@@ -772,7 +699,6 @@
         </div>
     </div>
 
-    <!-- ALL JOURNEY -->
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
@@ -813,7 +739,6 @@
         </div>
     </div>
 
-    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
@@ -831,15 +756,14 @@
 
             <div class="slider-bar" id="report-slider-bar">
                 <button class="slider-btn" onclick="window.changeMonth(-1)">❮</button>
-                <span id="report-slider-text" style="font-weight: 900; font-size: 17px; color: var(--green); letter-spacing: 0.3px;">Jun 2026</span>
+                <span id="report-slider-text" style="font-weight: 900; font-size: 15px; color: var(--green); letter-spacing: 0.3px;">Jun 2026</span>
                 <button class="slider-btn" onclick="window.changeMonth(1)">❯</button>
             </div>
             <input type="hidden" id="report-month-hidden"> 
             
             <div class="card" id="report-summary-card">
-                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center;"><span class="summary-pill" id="summary-pill-box" style="background: rgba(34, 197, 94, 0.1); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block;">📊 Summary</span></h3>
+                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center; cursor: pointer;" onclick="window.showTrendChart()"><span class="summary-pill" id="summary-pill-box" style="background: rgba(34, 197, 94, 0.1); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block;">📊 Summary</span></h3>
                 
-                <!-- TA SUMMARY ROWS -->
                 <div id="ta-summary-rows">
                     <div class="summary-row" style="color: var(--text);"><span>Total No. of Days</span><span id="rep-ta-days" style="font-weight: bold;">0</span></div>
                     <div class="summary-row" style="color: var(--text);"><span>Total No. of Trips</span><span id="rep-ta-trips" style="font-weight: bold;">0</span></div>
@@ -848,7 +772,6 @@
                     <div class="summary-row" id="rep-ta-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span id="rep-val-label" style="font-weight:800;">Total TA</span><span id="rep-val" style="font-weight: bold; color: var(--green);">₹0</span></div>
                 </div>
 
-                <!-- NDA SUMMARY ROWS -->
                 <div id="nda-summary-rows" class="hidden">
                     <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
                     <div class="summary-row" style="color: var(--text);"><span>Total No. of Night Trains</span><span id="rep-nda-trains" style="font-weight: bold;">0</span></div>
@@ -872,7 +795,6 @@
         </div>
     </div>
 
-    <!-- BACKUP -->
     <div id="screen-backup" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
@@ -902,46 +824,189 @@
 </div>
 
 <script>
-    // These functions and variables are native to the window.
+    // --- GLOBAL VARIABLES ---
+    window.APP_VERSION = '3.3';
+    window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
+    window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
+    window.ADMIN_PIN = '2580';
+    
     window.appState = { profile: null, legs: [] }; 
     window.editModeId = null; 
     window.lastManualBackup = localStorage.getItem('lastManualBackup') || 'Never';
     window.lastRestoreTime = localStorage.getItem('lastRestoreTime') || 'Never';
     window.currentAddTab = 'duty';
     let currentTab = 'ta';
-
-    /* ----- EXPLICIT GLOBAL BINDINGS TO PREVENT CRASHES ----- */
-    window.navTo = navTo;
-    window.showModal = showModal;
-    window.openSettings = openSettings;
-    window.unlockProfile = unlockProfile;
-    window.updateDashboardUI = updateDashboardUI;
-    window.triggerGenerate = triggerGenerate;
-    window.changeMonth = changeMonth;
-    window.switchTab = switchTab;
-    window.renderAllLogs = renderAllLogs;
-    window.saveLeg = saveLeg;
-    window.saveNonDuty = saveNonDuty;
-    window.triggerDelete = triggerDelete;
-    window.triggerEdit = triggerEdit;
-    window.closeManage = closeManage;
-    window.manageNonDuty = manageNonDuty;
-    window.manageLeg = manageLeg;
-    window.importData = importData;
-    window.exportData = exportData;
-    window.saveProfile = saveProfile;
-    window.setDAReminder = setDAReminder;
-    window.toggleTheme = toggleTheme;
-    window.shareApp = shareApp;
-    window.showNotifications = showNotifications;
-    window.switchAddTab = switchAddTab;
-    window.formatTimeInput = formatTimeInput;
-    window.checkGazetted = checkGazetted;
-    window.showTrendChart = showTrendChart;
-    window.populateStnList = populateStnList;
-    
     window.pinEntry = '';
-    
+
+    // --- DOM READY BINDINGS (Swipe, Headers, UI Setup) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const verEl = document.getElementById('app-version-display');
+        if (verEl) verEl.innerText = `App Version v${window.APP_VERSION}`;
+
+        const savedTheme = localStorage.getItem('app_theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            const tt = document.getElementById('theme-toggle');
+            if(tt) tt.innerText = '☀️';
+        }
+        
+        let startX = 0;
+        document.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
+        document.addEventListener('touchend', e => { 
+            let diff = e.changedTouches[0].clientX - startX;
+            if (Math.abs(diff) > 50) {
+                if (!document.getElementById('screen-reports').classList.contains('hidden')) {
+                    if (diff < 0) switchTab('nda'); else switchTab('ta');
+                } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
+                    if (diff < 0) switchAddTab('nonduty'); else switchAddTab('duty');
+                }
+            }
+        }, {passive: true});
+    });
+
+    // --- CLOUD DATA PROCESSOR (Called by Firebase Module safely) ---
+    window.processCloudData = function(fullData) {
+        const adminConfig = fullData.admin_config || {};
+        const userData = fullData.users ? fullData.users[window.currentUid] : null;
+        
+        window.lastSyncTime = new Date().toLocaleTimeString();
+        const syncLbl = document.getElementById('sync-time-lbl');
+        if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
+
+        if(adminConfig.maintenance && !window.isAdmin) {
+            const msg = adminConfig.maintenanceMsg || 'System is under maintenance. Please check back soon.';
+            const msgEl = document.getElementById('admin-lock-msg');
+            if(msgEl) msgEl.innerText = msg;
+            const ovEl = document.getElementById('admin-lock-overlay');
+            if(ovEl) ovEl.classList.remove('hidden');
+        } else {
+            const ovEl = document.getElementById('admin-lock-overlay');
+            if(ovEl) ovEl.classList.add('hidden');
+        }
+
+        const reqV = adminConfig.required_version;
+        if (reqV && reqV !== window.APP_VERSION && !window.isAdmin) {
+            const gateSc = document.getElementById('version-gate-screen');
+            if(gateSc) gateSc.classList.remove('hidden');
+            const gateMsg = document.getElementById('version-gate-msg');
+            if(gateMsg) gateMsg.innerText = `Version ${reqV} is now required. Please reload or clear your browser cache to get the latest version.`;
+            const uiWrap = document.getElementById('ui-wrapper');
+            if(uiWrap) uiWrap.classList.add('hidden');
+            return;
+        } else {
+            const gateSc = document.getElementById('version-gate-screen');
+            if(gateSc) gateSc.classList.add('hidden');
+            const uiWrap = document.getElementById('ui-wrapper');
+            if(uiWrap) uiWrap.classList.remove('hidden');
+        }
+
+        window.adminAnnouncement = adminConfig.announcement || null;
+
+        const daBroadcast = adminConfig.da_broadcast;
+        const banner = document.getElementById('da-broadcast-banner');
+        if (daBroadcast && daBroadcast.active && !window.isAdmin) {
+            window.pendingDaBroadcast = daBroadcast;
+            let parts = [];
+            if (daBroadcast.da) parts.push(`DA → ${daBroadcast.da}%`);
+            if (daBroadcast.ta) parts.push(`TA Rate → ₹${daBroadcast.ta}`);
+            const note = daBroadcast.note ? ` (${daBroadcast.note})` : '';
+            const bTxt = document.getElementById('da-banner-text');
+            if(bTxt) bTxt.innerText = parts.join(' | ') + note;
+            if(banner) banner.classList.remove('hidden');
+        } else {
+            if(banner) banner.classList.add('hidden');
+        }
+
+        window.adminIsMaint = adminConfig.maintenance || false;
+        const sAdmin = document.getElementById('screen-admin');
+        if (sAdmin && !sAdmin.classList.contains('hidden')) {
+            updateAdminUI(adminConfig);
+        }
+
+        if (userData) {
+            window.appState = userData;
+            if (!window.appState.legs) window.appState.legs = [];
+            
+            const sReg = document.getElementById('screen-register');
+            const sAdm = document.getElementById('screen-admin');
+            if (sReg && sReg.classList.contains('hidden') && sAdm && sAdm.classList.contains('hidden')) {
+                navTo('screen-dashboard');
+            }
+        } else {
+            window.appState = { profile: null, legs: [] };
+            navTo('screen-register'); 
+        }
+    };
+
+    // --- UI FUNCTIONS ---
+    window.navTo = function(screenId) { 
+        if (screenId !== 'screen-add' && window.editModeId) {
+            window.editModeId = null;
+            document.getElementById('trip-train').value = '';
+            document.getElementById('trip-dep-date').value = '';
+            document.getElementById('trip-dep-time').value = '';
+            document.getElementById('trip-arr-date').value = '';
+            document.getElementById('trip-arr-time').value = '';
+            document.getElementById('nonduty-from').value = '';
+            document.getElementById('nonduty-to').value = '';
+        }
+        
+        if(screenId === 'screen-add') {
+            populateStnList();
+            if (!window.editModeId) {
+                const dutyLegs = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
+                if (dutyLegs.length > 0) {
+                    const sorted = [...dutyLegs].sort((a,b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+                    const lastLeg = sorted[0];
+                    const depStnEl = document.getElementById('trip-dep-stn');
+                    if (depStnEl && !depStnEl.value) depStnEl.value = lastLeg.arrStn;
+                }
+            }
+        }
+
+        if(screenId === 'screen-reports') switchTab(currentTab); 
+        
+        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register', 'screen-admin'].forEach(id => { 
+            const el = document.getElementById(id); 
+            if(el) el.classList.add('hidden'); 
+        }); 
+        
+        const trg = document.getElementById(screenId);
+        if(trg) trg.classList.remove('hidden'); 
+        window.scrollTo(0, 0); 
+        
+        const bBar = document.getElementById('main-bottom-bar');
+        if(bBar) {
+            if(screenId === 'screen-login') bBar.classList.add('hidden'); 
+            else bBar.classList.remove('hidden');
+        }
+        
+        if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
+        if(screenId === 'screen-all') { renderAllLogs(); checkGlobalNotifications(); }
+        if(screenId === 'screen-reports') updateReportUI(); 
+        if(screenId === 'screen-backup') updateBackupUI(); 
+        if(screenId === 'screen-register') openSettings(); 
+        
+        const gBack = document.getElementById('global-back-btn');
+        if(gBack) {
+            if(screenId === 'screen-dashboard' || screenId === 'screen-login') gBack.classList.add('hidden'); 
+            else gBack.classList.remove('hidden'); 
+        }
+        
+        if(screenId === 'screen-admin') {
+            const mBtn = document.getElementById('admin-maint-btn');
+            if(mBtn) {
+                if(window.adminIsMaint) {
+                    mBtn.innerText = "Turn OFF Maintenance";
+                    mBtn.style.background = "var(--green)";
+                } else {
+                    mBtn.innerText = "Turn ON Maintenance";
+                    mBtn.style.background = "var(--red)";
+                }
+            }
+        }
+    };
+
     window.openAdminPIN = function() {
         window.pinEntry = '';
         document.getElementById('pin-error').innerText = '';
@@ -981,10 +1046,10 @@
         document.getElementById('pin-error').innerText = '';
     };
 
-    // ========== ADMIN FIREBASE ACTIONS ==========
     window.toggleAdminMaint = () => {
         const cur = window.adminIsMaint || false;
-        const msg = document.getElementById('admin-maint-msg').value.trim() || 'System is under maintenance. We will be back soon.';
+        const mInput = document.getElementById('admin-maint-msg');
+        const msg = mInput ? mInput.value.trim() || 'System is under maintenance. We will be back soon.' : 'System Maintenance';
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/maintenance'), !cur);
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/maintenanceMsg'), msg).then(() => {
@@ -994,12 +1059,13 @@
     };
 
     window.sendAdminBroadcast = () => {
-        const msg = document.getElementById('admin-broadcast-msg').value.trim();
+        const bInput = document.getElementById('admin-broadcast-msg');
+        const msg = bInput ? bInput.value.trim() : '';
         if (!msg) return showModal("Error", "Please enter a message first.", "error", false);
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/announcement'), msg).then(() => {
                 showModal("Broadcasted!", `Message sent to all users.`, "success", false);
-                document.getElementById('admin-broadcast-msg').value = '';
+                bInput.value = '';
             });
         }
     };
@@ -1013,7 +1079,8 @@
     };
 
     window.pushVersionGate = () => {
-        const v = document.getElementById('admin-version-input').value.trim();
+        const vInput = document.getElementById('admin-version-input');
+        const v = vInput ? vInput.value.trim() : '';
         if (!v) return showModal("Error", "Enter a version number.", "error", false);
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/required_version'), v).then(() => {
@@ -1023,17 +1090,20 @@
     };
 
     window.pushDaBroadcast = () => {
-        const da = document.getElementById('admin-da-input').value.trim();
-        const ta = document.getElementById('admin-ta-input').value.trim();
-        const note = document.getElementById('admin-da-note').value.trim();
+        const daIn = document.getElementById('admin-da-input');
+        const taIn = document.getElementById('admin-ta-input');
+        const nIn = document.getElementById('admin-da-note');
+        const da = daIn ? daIn.value.trim() : '';
+        const ta = taIn ? taIn.value.trim() : '';
+        const note = nIn ? nIn.value.trim() : '';
         if (!da && !ta) return showModal("Error", "Enter DA% or TA Rate to broadcast.", "error", false);
         const payload = { active: true, da: da || null, ta: ta || null, note: note || '', pushedOn: new Date().toLocaleDateString() };
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_broadcast'), payload).then(() => {
                 showModal("Pushed!", "DA/TA update sent. Users will see an apply prompt.", "success", false);
-                document.getElementById('admin-da-input').value = '';
-                document.getElementById('admin-ta-input').value = '';
-                document.getElementById('admin-da-note').value = '';
+                if(daIn) daIn.value = '';
+                if(taIn) taIn.value = '';
+                if(nIn) nIn.value = '';
             });
         }
     };
@@ -1052,91 +1122,87 @@
         if (b.da) window.appState.profile.da = b.da;
         if (b.ta) window.appState.profile.tarate = b.ta;
         saveData();
-        document.getElementById('da-broadcast-banner').classList.add('hidden');
+        const bnr = document.getElementById('da-broadcast-banner');
+        if(bnr) bnr.classList.add('hidden');
         showModal("Applied!", `Profile updated: ${b.da ? 'DA = ' + b.da + '%' : ''} ${b.ta ? 'TA Rate = ₹' + b.ta : ''}`.trim(), "success", false);
         updateDashboardUI();
     };
 
-    // User Roster Loader
     window.viewUserRoster = () => {
-        if(!window.db) return;
+        if(!window.db || !window.firebaseGet) return;
         const statsEl = document.getElementById('admin-stats-area');
         if (!statsEl) return;
         statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading User Directory...</p>';
         
-        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
-            get(r(window.db, 'users')).then(snap => {
-                const users = snap.val() || {};
-                let rosterHTML = `<div style="max-height: 250px; overflow-y: auto; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border);"><table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;">`;
-                rosterHTML += `<thead style="background: rgba(168, 85, 247, 0.2); color: var(--text); position: sticky; top: 0;"><tr><th style="padding: 6px;">Name</th><th style="padding: 6px;">Designation</th><th style="padding: 6px;">HQ</th><th style="padding: 6px;">Pass Exp</th></tr></thead><tbody>`;
+        window.firebaseGet(window.firebaseRef(window.db, 'users')).then(snap => {
+            const users = snap.val() || {};
+            let rosterHTML = `<div style="max-height: 350px; overflow-y: auto; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border);"><table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;">`;
+            rosterHTML += `<thead style="background: rgba(168, 85, 247, 0.2); color: var(--text); position: sticky; top: 0; z-index:10;"><tr><th style="padding: 6px;">Name</th><th style="padding: 6px;">Designation</th><th style="padding: 6px;">HQ</th><th style="padding: 6px;">Pass Exp</th></tr></thead><tbody>`;
+            
+            Object.keys(users).forEach((uid, index) => {
+                const u = users[uid].profile || {};
+                const name = u.name || 'Unknown User';
+                const desig = u.desig || '-';
+                const hq = u.hq || '-';
+                const passval = u.passval ? formatDate(u.passval) : '-';
+                const bg = index % 2 === 0 ? 'transparent' : 'rgba(0,0,0,0.03)';
                 
-                Object.keys(users).forEach((uid, index) => {
-                    const u = users[uid].profile || {};
-                    const name = u.name || 'Unknown User';
-                    const desig = u.desig || '-';
-                    const hq = u.hq || '-';
-                    const passval = u.passval ? formatDate(u.passval) : '-';
-                    const bg = index % 2 === 0 ? 'transparent' : 'rgba(0,0,0,0.03)';
-                    
-                    rosterHTML += `<tr style="background: ${bg}; border-bottom: 1px solid var(--border);">
-                        <td style="padding: 6px; font-weight: bold; color: var(--purple);">${name}</td>
-                        <td style="padding: 6px; color: var(--text-muted);">${desig}</td>
-                        <td style="padding: 6px; color: var(--text);">${hq}</td>
-                        <td style="padding: 6px; color: var(--text);">${passval}</td>
-                    </tr>`;
-                });
-                
-                rosterHTML += `</tbody></table></div>`;
-                statsEl.innerHTML = rosterHTML;
-            }).catch((e) => {
-                statsEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">Permission Denied. Did you update the Firebase Security Rules?</p>`;
+                rosterHTML += `<tr style="background: ${bg}; border-bottom: 1px solid var(--border);">
+                    <td style="padding: 6px; font-weight: bold; color: var(--purple);">${name}</td>
+                    <td style="padding: 6px; color: var(--text-muted);">${desig}</td>
+                    <td style="padding: 6px; color: var(--text);">${hq}</td>
+                    <td style="padding: 6px; color: var(--text);">${passval}</td>
+                </tr>`;
             });
+            
+            rosterHTML += `</tbody></table></div>`;
+            statsEl.innerHTML = rosterHTML;
+        }).catch((e) => {
+            statsEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">Permission Denied. Please ensure Firebase Rules are updated.</p>`;
         });
     };
 
     window.loadAdminStats = () => {
-        if(!window.db) return;
+        if(!window.db || !window.firebaseGet) return;
         const statsEl = document.getElementById('admin-stats-area');
         if (!statsEl) return;
         statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading Stats...</p>';
         
-        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
-            get(r(window.db, 'users')).then(snap => {
-                const users = snap.val() || {};
-                const uids = Object.keys(users);
-                const total = uids.length;
-                let payBreak = {};
-                let recentCount = 0;
-                
-                uids.forEach(uid => {
-                    const u = users[uid];
-                    const pl = u.profile ? u.profile.payscale || 'Unknown' : 'No Profile';
-                    payBreak[pl] = (payBreak[pl] || 0) + 1;
-                    const legs = u.legs || [];
-                    if (legs.length > 0) recentCount++;
-                });
-                
-                const plRows = Object.entries(payBreak).sort((a,b) => b[1]-a[1]).map(([k,v]) => 
-                    `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text);">${k}</span><span style="color:var(--blue); font-weight:700;">${v}</span></div>`
-                ).join('');
-
-                statsEl.innerHTML = `
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
-                        <div style="background:var(--input-bg); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border);">
-                            <div style="font-size:28px; font-weight:900; color:var(--blue);">${total}</div>
-                            <div style="font-size:11px; color:var(--text-muted);">Total Users</div>
-                        </div>
-                        <div style="background:var(--input-bg); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border);">
-                            <div style="font-size:28px; font-weight:900; color:var(--green);">${recentCount}</div>
-                            <div style="font-size:11px; color:var(--text-muted);">Active Users</div>
-                        </div>
-                    </div>
-                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Pay Level Breakdown</div>
-                    ${plRows || '<p style="color:var(--text-muted); font-size:13px;">No data</p>'}
-                `;
-            }).catch(() => {
-                statsEl.innerHTML = '<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load stats. Check Firebase rules.</p>';
+        window.firebaseGet(window.firebaseRef(window.db, 'users')).then(snap => {
+            const users = snap.val() || {};
+            const uids = Object.keys(users);
+            const total = uids.length;
+            let payBreak = {};
+            let recentCount = 0;
+            
+            uids.forEach(uid => {
+                const u = users[uid];
+                const pl = u.profile ? u.profile.payscale || 'Unknown' : 'No Profile';
+                payBreak[pl] = (payBreak[pl] || 0) + 1;
+                const legs = u.legs || [];
+                if (legs.length > 0) recentCount++;
             });
+            
+            const plRows = Object.entries(payBreak).sort((a,b) => b[1]-a[1]).map(([k,v]) => 
+                `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text);">${k}</span><span style="color:var(--blue); font-weight:700;">${v}</span></div>`
+            ).join('');
+
+            statsEl.innerHTML = `
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                    <div style="background:var(--input-bg); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border);">
+                        <div style="font-size:28px; font-weight:900; color:var(--blue);">${total}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Total Users</div>
+                    </div>
+                    <div style="background:var(--input-bg); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border);">
+                        <div style="font-size:28px; font-weight:900; color:var(--green);">${recentCount}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Active Users</div>
+                    </div>
+                </div>
+                <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Pay Level Breakdown</div>
+                ${plRows || '<p style="color:var(--text-muted); font-size:13px;">No data</p>'}
+            `;
+        }).catch(() => {
+            statsEl.innerHTML = '<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load stats. Check Firebase rules.</p>';
         });
     };
 
@@ -1153,8 +1219,9 @@
             maintStatus.style.background = isMaint ? 'rgba(239,68,68,0.2)' : 'rgba(34,197,94,0.2)';
             maintStatus.style.color = isMaint ? 'var(--red)' : 'var(--green)';
         }
-        if (document.getElementById('admin-maint-msg') && adminConfig.maintenanceMsg) {
-            document.getElementById('admin-maint-msg').placeholder = adminConfig.maintenanceMsg;
+        const msgEl = document.getElementById('admin-maint-msg');
+        if (msgEl && adminConfig.maintenanceMsg) {
+            msgEl.placeholder = adminConfig.maintenanceMsg;
         }
         
         const reqV = adminConfig.required_version;
@@ -1178,11 +1245,6 @@
             }
         }
     }
-    window.updateAdminUI = updateAdminUI;
-
-    window.toggleAdminMaint = window.toggleAdminMaint;
-    window.sendAdminBroadcast = window.sendAdminBroadcast;
-    window.clearAdminBroadcast = window.clearAdminBroadcast;
 
     function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
     function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
@@ -1198,10 +1260,14 @@
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
         localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
-        document.getElementById('theme-toggle').innerText = isDark ? '☀️' : '🌙';
+        const tBtn = document.getElementById('theme-toggle');
+        if(tBtn) tBtn.innerText = isDark ? '☀️' : '🌙';
         
-        if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
-        if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
+        const sDash = document.getElementById('screen-dashboard');
+        if (sDash && !sDash.classList.contains('hidden')) updateDashboardUI();
+        
+        const sAll = document.getElementById('screen-all');
+        if (sAll && !sAll.classList.contains('hidden')) renderAllLogs();
     }
     
     function shareApp() {
@@ -1222,75 +1288,6 @@
             showModal("Attention Required", htmlList, "warning", false);
         }
     }
-
-    window.onload = () => { 
-        // Dynamic Version Injection
-        const verEl = document.getElementById('app-version-display');
-        if (verEl) verEl.innerText = `App Version v${window.APP_VERSION}`;
-
-        const savedTheme = localStorage.getItem('app_theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            const tt = document.getElementById('theme-toggle');
-            if(tt) tt.innerText = '☀️';
-        }
-        
-        // DRAGGABLE FLOATING BACK BUTTON
-        const floatBack = document.getElementById('global-back-btn');
-        if (floatBack) {
-            let isDragging = false;
-            let startY = 0;
-            let startTop = 0;
-            
-            floatBack.addEventListener('touchstart', (e) => {
-                isDragging = false;
-                startY = e.touches[0].clientY;
-                startTop = floatBack.getBoundingClientRect().top;
-                e.stopPropagation();
-            }, { passive: true });
-            
-            floatBack.addEventListener('touchmove', (e) => {
-                const dy = e.touches[0].clientY - startY;
-                if (Math.abs(dy) > 8) isDragging = true;
-                if (isDragging) {
-                    let newTop = startTop + dy;
-                    const maxTop = window.innerHeight - floatBack.offsetHeight - 10;
-                    newTop = Math.max(10, Math.min(maxTop, newTop));
-                    floatBack.style.top = newTop + 'px';
-                    floatBack.style.transform = 'none';
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
-            }, { passive: false });
-            
-            floatBack.addEventListener('touchend', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                if (!isDragging) {
-                    window.navTo('screen-dashboard');
-                }
-                isDragging = false;
-            }, { passive: false });
-            
-            floatBack.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (!isDragging) window.navTo('screen-dashboard');
-            });
-        }
-        
-        let startX = 0;
-        document.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
-        document.addEventListener('touchend', e => { 
-            let diff = e.changedTouches[0].clientX - startX;
-            if (Math.abs(diff) > 50) {
-                if (!document.getElementById('screen-reports').classList.contains('hidden')) {
-                    if (diff < 0) switchTab('nda'); else switchTab('ta');
-                } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
-                    if (diff < 0) switchAddTab('nonduty'); else switchAddTab('duty');
-                }
-            }
-        }, {passive: true});
-    };
     
     function populateStnList() {
         const dl = document.getElementById('stn-list');
@@ -1327,29 +1324,34 @@
         const btnSaveNonduty = document.getElementById('btn-save-nonduty');
         const tabDutyBtn = document.getElementById('tab-duty');
         const tabNonDutyBtn = document.getElementById('tab-nonduty');
+        const rTitle = document.getElementById('recent-duty-title');
         
         if (tab === 'duty') {
-            tabDutyBtn.classList.add('active');
-            tabNonDutyBtn.classList.remove('active');
-            tabDutyBtn.style.background = 'var(--blue)';
-            tabNonDutyBtn.style.background = 'transparent';
+            if(tabDutyBtn) tabDutyBtn.classList.add('active');
+            if(tabNonDutyBtn) tabNonDutyBtn.classList.remove('active');
+            if(tabDutyBtn) tabDutyBtn.style.background = 'var(--blue)';
+            if(tabNonDutyBtn) tabNonDutyBtn.style.background = 'transparent';
             
-            document.getElementById('form-duty').classList.remove('hidden');
-            document.getElementById('form-nonduty').classList.add('hidden');
-            btnSaveDuty.classList.remove('hidden');
-            btnSaveNonduty.classList.add('hidden');
-            document.getElementById('recent-duty-title').innerText = "Recent Duty Entries";
+            const fDuty = document.getElementById('form-duty');
+            const fNonDuty = document.getElementById('form-nonduty');
+            if(fDuty) fDuty.classList.remove('hidden');
+            if(fNonDuty) fNonDuty.classList.add('hidden');
+            if(btnSaveDuty) btnSaveDuty.classList.remove('hidden');
+            if(btnSaveNonduty) btnSaveNonduty.classList.add('hidden');
+            if(rTitle) rTitle.innerText = "Recent Duty Entries";
         } else {
-            tabNonDutyBtn.classList.add('active');
-            tabDutyBtn.classList.remove('active');
-            tabNonDutyBtn.style.background = 'var(--green)';
-            tabDutyBtn.style.background = 'transparent';
+            if(tabNonDutyBtn) tabNonDutyBtn.classList.add('active');
+            if(tabDutyBtn) tabDutyBtn.classList.remove('active');
+            if(tabNonDutyBtn) tabNonDutyBtn.style.background = 'var(--green)';
+            if(tabDutyBtn) tabDutyBtn.style.background = 'transparent';
             
-            document.getElementById('form-nonduty').classList.remove('hidden');
-            document.getElementById('form-duty').classList.add('hidden');
-            btnSaveNonduty.classList.remove('hidden');
-            btnSaveDuty.classList.add('hidden');
-            document.getElementById('recent-duty-title').innerText = "Recent Non-Duty Entries";
+            const fDuty = document.getElementById('form-duty');
+            const fNonDuty = document.getElementById('form-nonduty');
+            if(fNonDuty) fNonDuty.classList.remove('hidden');
+            if(fDuty) fDuty.classList.add('hidden');
+            if(btnSaveNonduty) btnSaveNonduty.classList.remove('hidden');
+            if(btnSaveDuty) btnSaveDuty.classList.add('hidden');
+            if(rTitle) rTitle.innerText = "Recent Non-Duty Entries";
         }
         
         const rcAdd = document.getElementById('recent-logs-add');
@@ -1363,7 +1365,7 @@
             } else {
                 let sortedNonDuty = [...nondutyOnly].sort((a,b) => new Date(b.fromDate) - new Date(a.fromDate));
                 let recentAddArr = sortedNonDuty.slice(0, 5); 
-                let theadND = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Type</th><th style="padding: 8px 2px;">Date Range</th></tr></thead>`;
+                let theadND = `<thead style="background: rgba(59, 130, 246, 0.5); color: var(--text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Type</th><th style="padding: 8px 2px;">Date Range</th></tr></thead>`;
                 rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadND}<tbody>`;
                 recentAddArr.forEach((leg, i) => {
                     let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
@@ -1378,7 +1380,7 @@
             } else {
                 let sortedDuty = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
                 let recentAddArr = sortedDuty.slice(0, 5); 
-                let theadDuty = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
+                let theadDuty = `<thead style="background: rgba(59, 130, 246, 0.5); color: var(--text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
                 rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadDuty}<tbody>`;
                 recentAddArr.forEach((leg, i) => {
                     let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
@@ -1389,68 +1391,6 @@
             }
         }
         if(rcAdd) rcAdd.innerHTML = rcHTMLAdd;
-    }
-    
-    function navTo(screenId) { 
-        if (screenId !== 'screen-add' && window.editModeId) {
-            window.editModeId = null;
-            document.getElementById('trip-train').value = '';
-            document.getElementById('trip-dep-date').value = '';
-            document.getElementById('trip-dep-time').value = '';
-            document.getElementById('trip-arr-date').value = '';
-            document.getElementById('trip-arr-time').value = '';
-            document.getElementById('nonduty-from').value = '';
-            document.getElementById('nonduty-to').value = '';
-        }
-        
-        if(screenId === 'screen-add') {
-            populateStnList();
-            if (!window.editModeId) {
-                const dutyLegs = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
-                if (dutyLegs.length > 0) {
-                    const sorted = [...dutyLegs].sort((a,b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
-                    const lastLeg = sorted[0];
-                    const depStnEl = document.getElementById('trip-dep-stn');
-                    if (depStnEl && !depStnEl.value) depStnEl.value = lastLeg.arrStn;
-                }
-            }
-        }
-
-        if(screenId === 'screen-reports') {
-            switchTab(currentTab); 
-        }
-        
-        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register', 'screen-admin'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
-        document.getElementById(screenId).classList.remove('hidden'); 
-        window.scrollTo(0, 0); 
-        
-        const bBar = document.getElementById('main-bottom-bar');
-        if(bBar) {
-            if(screenId === 'screen-login') { bBar.classList.add('hidden'); } else { bBar.classList.remove('hidden'); }
-        }
-        
-        if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
-        if(screenId === 'screen-all') { renderAllLogs(); checkGlobalNotifications(); }
-        if(screenId === 'screen-reports') updateReportUI(); 
-        if(screenId === 'screen-backup') updateBackupUI(); 
-        if(screenId === 'screen-register') {
-            openSettings(); 
-        }
-        
-        const gBack = document.getElementById('global-back-btn');
-        if(gBack) {
-            if(screenId === 'screen-dashboard' || screenId === 'screen-login') { gBack.classList.add('hidden'); } else { gBack.classList.remove('hidden'); } 
-        }
-        
-        if(screenId === 'screen-admin') {
-            if(window.adminIsMaint) {
-                document.getElementById('admin-maint-btn').innerText = "Turn OFF Maintenance";
-                document.getElementById('admin-maint-btn').style.background = "var(--green)";
-            } else {
-                document.getElementById('admin-maint-btn').innerText = "Turn ON Maintenance";
-                document.getElementById('admin-maint-btn').style.background = "var(--red)";
-            }
-        }
     }
 
     function saveData() { 
@@ -1465,13 +1405,17 @@
     
     function showModal(title, msg, type, showCancel, callback) { 
         const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
-        document.getElementById('modal-title').innerText = title; 
-        document.getElementById('modal-msg').innerHTML = msg; 
+        const titleEl = document.getElementById('modal-title');
+        const msgEl = document.getElementById('modal-msg');
+        if(titleEl) titleEl.innerText = title; 
+        if(msgEl) msgEl.innerHTML = msg; 
         const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); 
-        if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
-        btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; 
-        btnCancel.onclick = () => { modal.classList.add('hidden'); if(callback) callback(false); }; 
-        modal.classList.remove('hidden'); 
+        if(btnCancel) {
+            if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
+            btnCancel.onclick = () => { if(modal) modal.classList.add('hidden'); if(callback) callback(false); }; 
+        }
+        if(btnOk) btnOk.onclick = () => { if(modal) modal.classList.add('hidden'); if(callback) callback(true); }; 
+        if(modal) modal.classList.remove('hidden'); 
     }
 
     function lockProfile() {
@@ -1490,59 +1434,63 @@
         document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
             inp.disabled = false;
         });
-        document.getElementById('btn-edit-profile').style.display = 'none';
-        document.getElementById('btn-save-profile').style.display = 'block';
+        const editBtn = document.getElementById('btn-edit-profile');
+        const saveBtn = document.getElementById('btn-save-profile');
+        if(editBtn) editBtn.style.display = 'none';
+        if(saveBtn) saveBtn.style.display = 'block';
     }
 
     function checkGazetted(isManualClick) {
-        const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
+        const empEl = document.getElementById('reg-emp-type');
+        if(!empEl) return;
+        const isGaz = empEl.value === 'Gazetted';
         const drop = document.getElementById('reg-payscale-dropdown');
         const txt = document.getElementById('reg-payscale-text');
         if (isGaz) {
-            drop.classList.add('hidden'); 
-            txt.classList.remove('hidden');
-            if (isManualClick) {
-                showModal("NOTICE", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false);
-            }
+            if(drop) drop.classList.add('hidden'); 
+            if(txt) txt.classList.remove('hidden');
+            if (isManualClick) showModal("NOTICE", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false);
         } else {
-            drop.classList.remove('hidden'); 
-            txt.classList.add('hidden');
+            if(drop) drop.classList.remove('hidden'); 
+            if(txt) txt.classList.add('hidden');
         }
     }
 
     function openSettings() { 
         const p = window.appState.profile || {}; 
-        document.getElementById('reg-name').value = p.name || ''; 
-        document.getElementById('reg-pf').value = p.pf || ''; 
-        document.getElementById('reg-bu').value = p.bu || ''; 
-        document.getElementById('reg-desig').value = p.desig || ''; 
+        
+        const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+        setVal('reg-name', p.name || '');
+        setVal('reg-pf', p.pf || '');
+        setVal('reg-bu', p.bu || '');
+        setVal('reg-desig', p.desig || '');
         
         const empTypeVal = p.empType || 'Non-Gazetted';
-        document.getElementById('reg-emp-type').value = empTypeVal;
+        setVal('reg-emp-type', empTypeVal);
         
+        const txt = document.getElementById('reg-payscale-text');
+        const drop = document.getElementById('reg-payscale-dropdown');
         if (empTypeVal === 'Gazetted') {
-            document.getElementById('reg-payscale-text').value = p.payscale || '';
-            document.getElementById('reg-payscale-dropdown').classList.add('hidden');
-            document.getElementById('reg-payscale-text').classList.remove('hidden');
+            if(txt) { txt.value = p.payscale || ''; txt.classList.remove('hidden'); }
+            if(drop) drop.classList.add('hidden');
         } else {
-            document.getElementById('reg-payscale-dropdown').value = p.payscale || '';
-            document.getElementById('reg-payscale-dropdown').classList.remove('hidden');
-            document.getElementById('reg-payscale-text').classList.add('hidden');
+            if(drop) { drop.value = p.payscale || ''; drop.classList.remove('hidden'); }
+            if(txt) txt.classList.add('hidden');
         }
         checkGazetted(false); 
         
-        document.getElementById('reg-gradepay').value = p.gradepay || ''; 
-        document.getElementById('reg-da').value = p.da || ''; 
-        document.getElementById('reg-basicpay').value = p.basicpay || ''; 
-        document.getElementById('reg-appt').value = p.appt || ''; 
-        document.getElementById('reg-tarate').value = p.tarate || ''; 
-        document.getElementById('reg-pass').value = p.pass || ''; 
-        document.getElementById('reg-passval').value = p.passval || ''; 
-        document.getElementById('reg-auth').value = p.auth || ''; 
-        document.getElementById('reg-authval').value = p.authval || ''; 
-        document.getElementById('reg-hq').value = p.hq || ''; 
-        document.getElementById('reg-nearby').value = (p.nearby || []).join(', '); 
-        document.getElementById('reg-dest').value = (p.dest || []).join(', '); 
+        setVal('reg-gradepay', p.gradepay || '');
+        setVal('reg-da', p.da || '');
+        setVal('reg-basicpay', p.basicpay || '');
+        setVal('reg-appt', p.appt || '');
+        setVal('reg-tarate', p.tarate || '');
+        setVal('reg-pass', p.pass || '');
+        setVal('reg-passval', p.passval || '');
+        setVal('reg-auth', p.auth || '');
+        setVal('reg-authval', p.authval || '');
+        setVal('reg-hq', p.hq || '');
+        setVal('reg-nearby', (p.nearby || []).join(', '));
+        setVal('reg-dest', (p.dest || []).join(', '));
         
         if (!p.name) {
             unlockProfile();
@@ -1558,7 +1506,8 @@
         let m = new Date().getMonth();
         if (m === 2) localStorage.setItem('da_remind_month', '4'); 
         if (m === 8) localStorage.setItem('da_remind_month', '10'); 
-        document.getElementById('da-warning-msg').classList.add('hidden');
+        const wMsg = document.getElementById('da-warning-msg');
+        if(wMsg) wMsg.classList.add('hidden');
         showModal("Reminder Set", "You will be reminded again on the 1st of next month.", "success", false);
         checkGlobalNotifications();
     }
@@ -1681,7 +1630,7 @@
         if (m === 9 && d >= 1 && d <= 3 && daReminded === '10') { showDA = true; }
 
         if (showDA) {
-            let remBtnHtml = showRemindBtn ? `<br><span style="text-decoration:underline; cursor:pointer; font-weight:bold; color:var(--text); display:inline-block; margin-top:5px;" onclick="setDAReminder()">⏳ Remind me next month</span>` : '';
+            let remBtnHtml = showRemindBtn ? `<br><span style="text-decoration:underline; cursor:pointer; font-weight:bold; color:var(--text); display:inline-block; margin-top:5px;" onclick="window.setDAReminder()">⏳ Remind me next month</span>` : '';
             if(daWarningDiv) {
                 daWarningDiv.innerHTML = `⚠️ Change the DA% if applicable.` + remBtnHtml;
                 daWarningDiv.classList.remove('hidden');
@@ -1691,16 +1640,23 @@
         }
     }
 
-    function saveProfile() { 
+    window.saveProfile = function() { 
         try { 
-            const getVal = id => document.getElementById(id).value.trim().toUpperCase(); 
-            const empTypeVal = document.getElementById('reg-emp-type').value;
+            const getVal = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
+            const empEl = document.getElementById('reg-emp-type');
+            const empTypeVal = empEl ? empEl.value : 'Non-Gazetted';
             const payScaleVal = empTypeVal === 'Gazetted' ? getVal('reg-payscale-text') : getVal('reg-payscale-dropdown');
             
-            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !payScaleVal || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !document.getElementById('reg-basicpay').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR", "All profile fields are mandatory to fill.", "error", false);
+            const gp = document.getElementById('reg-gradepay') ? document.getElementById('reg-gradepay').value : '';
+            const da = document.getElementById('reg-da') ? document.getElementById('reg-da').value : '';
+            const bp = document.getElementById('reg-basicpay') ? document.getElementById('reg-basicpay').value : '';
+
+            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !payScaleVal || !gp || !da || !bp || !getVal('reg-appt') || !getVal('reg-tarate') || !getVal('reg-hq')) {
+                return showModal("ERROR", "All profile fields are mandatory to fill.", "error", false);
+            }
             
             window.appState.profile = { 
-                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), empType: empTypeVal, payscale: payScaleVal, gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, basicpay: document.getElementById('reg-basicpay').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
+                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), empType: empTypeVal, payscale: payScaleVal, gradepay: gp, da: da, basicpay: bp, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
             }; 
             
             if(!window.appState.legs) window.appState.legs = []; 
@@ -1712,9 +1668,9 @@
         } catch(e) { 
             showModal("Save Error", e.message, "error", false); 
         } 
-    }
+    };
     
-    function exportData() { 
+    window.exportData = function() { 
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState)); 
         const dlAnchorElem = document.createElement('a'); 
         dlAnchorElem.setAttribute("href", dataStr); 
@@ -1724,9 +1680,9 @@
         window.lastManualBackup = new Date().toLocaleString();
         localStorage.setItem('lastManualBackup', window.lastManualBackup);
         updateBackupUI();
-    }
+    };
     
-    function importData(event) { 
+    window.importData = function(event) { 
         const file = event.target.files[0]; 
         if(!file) return; 
         const reader = new FileReader(); 
@@ -1750,39 +1706,60 @@
             } 
         }; 
         reader.readAsText(file); 
-    }
+    };
     
-    function manageLeg(id, train, dep, arr) { 
-        document.getElementById('manage-type').value = 'duty';
-        document.getElementById('manage-id').value = id; 
-        document.getElementById('manage-msg').innerText = `Tr: ${train} | ${dep} ➔ ${arr}`; 
-        document.getElementById('manage-modal').classList.remove('hidden'); 
-    }
-    function manageNonDuty(id, type, from, to) {
-        document.getElementById('manage-type').value = 'nonduty';
-        document.getElementById('manage-id').value = id; 
+    window.manageLeg = function(id, train, dep, arr) { 
+        const mt = document.getElementById('manage-type');
+        const mi = document.getElementById('manage-id');
+        const mm = document.getElementById('manage-msg');
+        if(mt) mt.value = 'duty';
+        if(mi) mi.value = id; 
+        if(mm) mm.innerText = `Tr: ${train} | ${dep} ➔ ${arr}`; 
+        const mod = document.getElementById('manage-modal');
+        if(mod) mod.classList.remove('hidden'); 
+    };
+    
+    window.manageNonDuty = function(id, type, from, to) {
+        const mt = document.getElementById('manage-type');
+        const mi = document.getElementById('manage-id');
+        const mm = document.getElementById('manage-msg');
+        if(mt) mt.value = 'nonduty';
+        if(mi) mi.value = id; 
         let dateStr = (from === to) ? formatDate(from) : `${formatDate(from)} to ${formatDate(to)}`;
-        document.getElementById('manage-msg').innerText = `${type.toUpperCase()} | ${dateStr}`; 
-        document.getElementById('manage-modal').classList.remove('hidden');
-    }
-    function closeManage() { document.getElementById('manage-modal').classList.add('hidden'); }
+        if(mm) mm.innerText = `${type.toUpperCase()} | ${dateStr}`; 
+        const mod = document.getElementById('manage-modal');
+        if(mod) mod.classList.remove('hidden');
+    };
     
-    function triggerEdit() { 
-        let mType = document.getElementById('manage-type').value;
-        const id = parseInt(document.getElementById('manage-id').value);
+    window.closeManage = function() { 
+        const mod = document.getElementById('manage-modal');
+        if(mod) mod.classList.add('hidden'); 
+    };
+    
+    window.triggerEdit = function() { 
+        const mt = document.getElementById('manage-type');
+        const mi = document.getElementById('manage-id');
+        if(!mt || !mi) return;
+        let mType = mt.value;
+        const id = parseInt(mi.value);
         const leg = window.appState.legs.find(l => l.id === id); 
         window.editModeId = id; 
-        closeManage(); 
+        window.closeManage(); 
         
         if (mType === 'nonduty') {
             switchAddTab('nonduty');
-            document.getElementById('nonduty-type').value = leg.dutyType;
-            document.getElementById('nonduty-from').value = leg.fromDate;
-            document.getElementById('nonduty-to').value = leg.toDate;
+            const nt = document.getElementById('nonduty-type');
+            const nf = document.getElementById('nonduty-from');
+            const nTo = document.getElementById('nonduty-to');
+            if(nt) nt.value = leg.dutyType;
+            if(nf) nf.value = leg.fromDate;
+            if(nTo) nTo.value = leg.toDate;
         } else {
             switchAddTab('duty');
-            document.getElementById('trip-dep-date').value = leg.depDate; 
-            document.getElementById('trip-train').value = leg.train; 
+            const tdd = document.getElementById('trip-dep-date');
+            const tt = document.getElementById('trip-train');
+            if(tdd) tdd.value = leg.depDate; 
+            if(tt) tt.value = leg.train; 
             
             const stnSelect = document.getElementById('trip-dep-stn');
             if(stnSelect) {
@@ -1790,18 +1767,37 @@
                 stnSelect.value = leg.depStn; 
             }
             
-            document.getElementById('trip-dep-time').value = leg.depTime; 
-            document.getElementById('trip-arr-date').value = leg.arrDate; 
-            document.getElementById('trip-arr-stn').value = leg.arrStn; 
-            document.getElementById('trip-arr-time').value = leg.arrTime; 
+            const tdt = document.getElementById('trip-dep-time');
+            const tad = document.getElementById('trip-arr-date');
+            const tas = document.getElementById('trip-arr-stn');
+            const tat = document.getElementById('trip-arr-time');
+            if(tdt) tdt.value = leg.depTime; 
+            if(tad) tad.value = leg.arrDate; 
+            if(tas) tas.value = leg.arrStn; 
+            if(tat) tat.value = leg.arrTime; 
         }
         navTo('screen-add'); 
-    }
+    };
     
-    function triggerDelete() { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
+    window.triggerDelete = function() { 
+        window.closeManage(); 
+        const mi = document.getElementById('manage-id');
+        if(mi) deleteLeg(parseInt(mi.value)); 
+    };
     
-    function saveLeg() { 
-        const leg = { id: window.editModeId ? window.editModeId : Date.now(), isNonDuty: false, depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
+    window.saveLeg = function() { 
+        const getVal = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
+        const leg = { 
+            id: window.editModeId ? window.editModeId : Date.now(), 
+            isNonDuty: false, 
+            depDate: document.getElementById('trip-dep-date').value, 
+            train: getVal('trip-train'), 
+            depStn: getVal('trip-dep-stn'), 
+            depTime: document.getElementById('trip-dep-time').value, 
+            arrDate: document.getElementById('trip-arr-date').value, 
+            arrStn: getVal('trip-arr-stn'), 
+            arrTime: document.getElementById('trip-arr-time').value 
+        }; 
         if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR", "All fields are mandatory.", "error", false); 
         if(leg.depStn === leg.arrStn) return showModal("ERROR", "From and To stations cannot be same.", "error", false); 
         if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR", "Arrival must be after Departure.", "error", false); 
@@ -1812,7 +1808,8 @@
         testLegs.push(leg);
         testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
         
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
+        const p = window.appState.profile || {};
+        const hqGroup = [p.hq, ...(p.nearby || [])]; 
         let dutyOnly = testLegs.filter(l => !l.isNonDuty);
         let idx = dutyOnly.findIndex(l => l.id === leg.id); let prev = idx > 0 ? dutyOnly[idx-1] : null;
         
@@ -1832,13 +1829,12 @@
         
         window.appState.legs = testLegs; 
         
-        document.getElementById('trip-train').value = ''; 
-        document.getElementById('trip-dep-date').value = ''; 
-        document.getElementById('trip-dep-time').value = ''; 
-        document.getElementById('trip-arr-date').value = ''; 
-        document.getElementById('trip-arr-stn').value = ''; 
-        document.getElementById('trip-arr-time').value = ''; 
-        document.getElementById('trip-dep-stn').value = leg.arrStn;
+        ['trip-train','trip-dep-date','trip-dep-time','trip-arr-date','trip-arr-stn','trip-arr-time'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.value = '';
+        });
+        const dStn = document.getElementById('trip-dep-stn');
+        if(dStn) dStn.value = leg.arrStn;
         
         const wasEditing = !!window.editModeId;
         window.editModeId = null;
@@ -1850,12 +1846,17 @@
             updateDashboardUI();
             showModal("Saved!", "Journey saved successfully.", "success", false);
         }
-    }
+    };
 
-    function saveNonDuty() {
-        const type = document.getElementById('nonduty-type').value;
-        const from = document.getElementById('nonduty-from').value;
-        const to = document.getElementById('nonduty-to').value;
+    window.saveNonDuty = function() {
+        const nt = document.getElementById('nonduty-type');
+        const nf = document.getElementById('nonduty-from');
+        const nTo = document.getElementById('nonduty-to');
+        if(!nt || !nf || !nTo) return;
+        const type = nt.value;
+        const from = nf.value;
+        const to = nTo.value;
+        
         if(!from || !to) return showModal("ERROR", "Dates are mandatory.", "error", false);
         if(new Date(from) > new Date(to)) return showModal("ERROR", "From Date cannot be after To Date.", "error", false);
         
@@ -1873,7 +1874,8 @@
         }
         
         const finalizeSave = () => {
-            const hq = window.appState.profile.hq || 'HQ';
+            const p = window.appState.profile || {};
+            const hq = p.hq || 'HQ';
             const leg = { id: window.editModeId || Date.now(), isNonDuty: true, dutyType: type, fromDate: from, toDate: to, depDate: from, depTime: '00:00', arrDate: to, arrTime: '23:59', depStn: hq, arrStn: hq, train: 'NON-DUTY' };
             
             if(!window.appState.legs) window.appState.legs = [];
@@ -1883,8 +1885,8 @@
             testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
             
             window.appState.legs = testLegs;
-            document.getElementById('nonduty-from').value = '';
-            document.getElementById('nonduty-to').value = '';
+            nf.value = '';
+            nTo.value = '';
             const wasEditingND = !!window.editModeId;
             window.editModeId = null;
             saveData(); 
@@ -1904,15 +1906,21 @@
         } else {
             finalizeSave();
         }
-    }
+    };
 
-    function renderAllLogs() { 
-        const container = document.getElementById('all-logs-container'); container.innerHTML = ''; 
+    window.renderAllLogs = function() { 
+        const container = document.getElementById('all-logs-container'); 
+        if(!container) return;
+        container.innerHTML = ''; 
         if(!window.appState.legs || window.appState.legs.length === 0) { container.innerHTML = '<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries yet.</p>'; return; } 
         
-        const selectedYear = document.getElementById('all-logs-year').value;
-        const selectedMonthStr = selectedYear + '-' + document.getElementById('all-logs-month').value;
-        const trainSearch = (document.getElementById('all-train-search') ? document.getElementById('all-train-search').value.trim().toUpperCase() : '');
+        const yEl = document.getElementById('all-logs-year');
+        const mEl = document.getElementById('all-logs-month');
+        if(!yEl || !mEl) return;
+        const selectedYear = yEl.value;
+        const selectedMonthStr = selectedYear + '-' + mEl.value;
+        const tsEl = document.getElementById('all-train-search');
+        const trainSearch = tsEl ? tsEl.value.trim().toUpperCase() : '';
         
         let headerHTML = `<div style="position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 10px 2px; background: var(--table-header-bg); border-bottom: 2px solid var(--table-border); font-size: 11px; font-weight: 900; color: var(--table-header-text); text-transform: uppercase; text-align: center; margin-bottom: 0; transition: background 0.3s, color 0.3s, border 0.3s;">
             <div style="text-align: left; padding-left: 5px;">TRAIN</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
@@ -1932,7 +1940,8 @@
             container.innerHTML = `<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries found. Try changing the filter.</p>`; return;
         }
 
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
+        const p = window.appState.profile || {};
+        const hqGroup = [p.hq, ...(p.nearby || [])]; 
         const dutyOnlyAll = window.appState.legs.filter(l => !l.isNonDuty);
         const allCycles = buildCycles(dutyOnlyAll);
         let legDirectionMap = {};
@@ -2007,7 +2016,7 @@
             }
         }
         container.innerHTML = headerHTML + `<div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; transition: border 0.3s;">` + htmlElements.reverse().join('') + `</div>`;
-    }
+    };
     
     function deleteLeg(id) { 
         showModal("WARNING", "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?", "warning", true, (proceed) => {
@@ -2018,14 +2027,26 @@
     function calculateAbsenceHours(startDt, endDt) { return (new Date(endDt) - new Date(startDt)) / 3600000; }
     function getTAPercentage(hours) { if(hours > 12) return 100; if(hours > 6) return 70; if(hours > 0) return 30; return 0; }
     
-    function buildCycles(legs) { let cycles = []; let current = []; const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; if(!legs) return cycles; legs.forEach(l => { current.push(l); if(hqGroup.includes(l.arrStn)) { cycles.push([...current]); current = []; } }); if (current.length > 0) { cycles.push([...current]); } return cycles; }
+    function buildCycles(legs) { 
+        let cycles = []; let current = []; 
+        const p = window.appState.profile || {};
+        const hqGroup = [p.hq, ...(p.nearby||[])]; 
+        if(!legs) return cycles; 
+        legs.forEach(l => { 
+            current.push(l); 
+            if(hqGroup.includes(l.arrStn)) { cycles.push([...current]); current = []; } 
+        }); 
+        if (current.length > 0) { cycles.push([...current]); } 
+        return cycles; 
+    }
     
     function calculateCycleTA(cycle) { 
         if(cycle.length === 0) return []; 
         let start = new Date(`${cycle[0].depDate}T${cycle[0].depTime}`); 
         let end = new Date(`${cycle[cycle.length-1].arrDate}T${cycle[cycle.length-1].arrTime}`); 
         
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; 
+        const p = window.appState.profile || {};
+        const hqGroup = [p.hq, ...(p.nearby||[])]; 
         if(!hqGroup.includes(cycle[cycle.length-1].arrStn)) {
             let extendedEnd = new Date(`${cycle[cycle.length-1].arrDate}T23:59:59`);
             if(extendedEnd > end) end = extendedEnd;
@@ -2039,7 +2060,13 @@
             const hrs = calculateAbsenceHours(tempStart, tempEnd); 
             if(!dailyTA[dateKey]) dailyTA[dateKey] = 0; dailyTA[dateKey] += hrs; tempStart = new Date(tempEnd.getTime() + 1); 
         } 
-        let results = []; for(let date in dailyTA) { let pct = getTAPercentage(dailyTA[date]); results.push({date, pct, rate: Math.min(pct * (window.appState.profile.tarate/100), window.appState.profile.tarate) }); } return results; 
+        let results = []; 
+        const rRate = p.tarate ? parseFloat(p.tarate) : 0;
+        for(let date in dailyTA) { 
+            let pct = getTAPercentage(dailyTA[date]); 
+            results.push({date, pct, rate: Math.min(pct * (rRate/100), rRate) }); 
+        } 
+        return results; 
     }
     
     function getSplitLegs(cycle) { let printLegs = []; const pad = n => String(n).padStart(2,'0'); cycle.forEach(leg => { if (leg.depDate === leg.arrDate) { printLegs.push({ id: leg.id, date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: leg.arrTime, depStn: leg.depStn, arrStn: leg.arrStn, originalLeg: leg }); } else { printLegs.push({ id: leg.id + '_1', date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: '-', depStn: leg.depStn, arrStn: '-', originalLeg: leg }); let start = new Date(`${leg.depDate}T${leg.depTime}`); let gap = new Date(start); gap.setDate(gap.getDate() + 1); let gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; while(gapStr < leg.arrDate) { printLegs.push({ id: leg.id + '_' + gap.getTime(), date: gapStr, train: leg.train, depTime: '-', arrTime: '-', depStn: '-', arrStn: '-', originalLeg: leg }); gap.setDate(gap.getDate() + 1); gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; } printLegs.push({ id: leg.id + '_2', date: leg.arrDate, train: leg.train, depTime: '-', arrTime: leg.arrTime, depStn: '-', arrStn: leg.arrStn, originalLeg: leg }); } }); printLegs.sort((a, b) => { let tA = a.depTime !== '-' ? a.depTime : (a.arrTime !== '-' ? a.arrTime : '00:00'); let tB = b.depTime !== '-' ? b.depTime : (b.arrTime !== '-' ? b.arrTime : '00:00'); return new Date(`${a.date}T${tA}`) - new Date(`${b.date}T${tB}`); }); return printLegs; }
@@ -2094,7 +2121,7 @@
         return { ndaData, totalNdaMinutes }; 
     }
     
-    function switchTab(tab) { 
+    window.switchTab = function(tab) { 
         currentTab = tab; 
         const tabTa = document.getElementById('tab-ta');
         const tabNda = document.getElementById('tab-nda');
@@ -2104,37 +2131,43 @@
         const summaryPill = document.getElementById('summary-pill-box');
         
         if(tab === 'ta') {
-            tabTa.classList.add('active'); 
-            tabNda.classList.remove('active'); 
-            tabTa.style.background = 'var(--green)';
-            tabNda.style.background = 'transparent';
-            genBtn.style.background = 'var(--green)';
+            if(tabTa) tabTa.classList.add('active'); 
+            if(tabNda) tabNda.classList.remove('active'); 
+            if(tabTa) tabTa.style.background = 'var(--green)';
+            if(tabNda) tabNda.style.background = 'transparent';
+            if(genBtn) genBtn.style.background = 'var(--green)';
             
-            sliderBar.style.background = 'rgba(34, 197, 94, 0.1)';
-            sliderBar.style.borderColor = 'rgba(34, 197, 94, 0.4)';
-            sliderText.style.color = 'var(--green)';
-            summaryPill.style.background = 'rgba(34, 197, 94, 0.1)';
-            summaryPill.style.borderColor = 'rgba(34, 197, 94, 0.4)';
-            summaryPill.style.color = 'var(--green)';
+            if(sliderBar) {
+                sliderBar.style.background = 'rgba(34, 197, 94, 0.1)';
+                sliderBar.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+            }
+            if(sliderText) sliderText.style.color = 'var(--green)';
+            if(summaryPill) {
+                summaryPill.style.background = 'rgba(34, 197, 94, 0.1)';
+                summaryPill.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+                summaryPill.style.color = 'var(--green)';
+            }
             
             const today = new Date();
-            document.getElementById('report-month-hidden').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,'0')}`;
-            document.getElementById('rep-ta-row').style.borderBottom = 'none';
-            document.getElementById('rep-ta-row').style.marginBottom = '0';
-            document.getElementById('rep-val-label').innerText = "Total TA";
+            const rmh = document.getElementById('report-month-hidden');
+            if(rmh) rmh.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,'0')}`;
         } else {
-            tabNda.classList.add('active'); 
-            tabTa.classList.remove('active'); 
-            tabNda.style.background = 'var(--purple)';
-            tabTa.style.background = 'transparent';
-            genBtn.style.background = 'var(--purple)';
+            if(tabNda) tabNda.classList.add('active'); 
+            if(tabTa) tabTa.classList.remove('active'); 
+            if(tabNda) tabNda.style.background = 'var(--purple)';
+            if(tabTa) tabTa.style.background = 'transparent';
+            if(genBtn) genBtn.style.background = 'var(--purple)';
             
-            sliderBar.style.background = 'rgba(168, 85, 247, 0.1)';
-            sliderBar.style.borderColor = 'rgba(168, 85, 247, 0.4)';
-            sliderText.style.color = 'var(--purple)';
-            summaryPill.style.background = 'rgba(168, 85, 247, 0.1)';
-            summaryPill.style.borderColor = 'rgba(168, 85, 247, 0.4)';
-            summaryPill.style.color = 'var(--purple)';
+            if(sliderBar) {
+                sliderBar.style.background = 'rgba(168, 85, 247, 0.1)';
+                sliderBar.style.borderColor = 'rgba(168, 85, 247, 0.4)';
+            }
+            if(sliderText) sliderText.style.color = 'var(--purple)';
+            if(summaryPill) {
+                summaryPill.style.background = 'rgba(168, 85, 247, 0.1)';
+                summaryPill.style.borderColor = 'rgba(168, 85, 247, 0.4)';
+                summaryPill.style.color = 'var(--purple)';
+            }
             
             const today = new Date();
             let ndaY = today.getFullYear();
@@ -2143,17 +2176,23 @@
                 ndaM += 1;
                 if (ndaM > 12) { ndaM -= 12; ndaY += 1; }
             }
-            document.getElementById('report-month-hidden').value = `${ndaY}-${String(ndaM).padStart(2,'0')}`;
-            document.getElementById('rep-ta-row').style.borderBottom = '1px dashed rgba(0,0,0,0.1)';
-            document.getElementById('rep-ta-row').style.marginBottom = '15px';
-            document.getElementById('rep-val-label').innerText = "Total NDA";
+            const rmh = document.getElementById('report-month-hidden');
+            if(rmh) rmh.value = `${ndaY}-${String(ndaM).padStart(2,'0')}`;
         }
         updateReportUI(); 
-    }
+    };
     
-    function changeMonth(delta) { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); window.updateDashboardUI(); }
+    window.changeMonth = function(delta) { 
+        const moInput = document.getElementById('report-month-hidden'); 
+        if(!moInput) return;
+        let [y, m] = moInput.value.split('-').map(Number); 
+        let d = new Date(y, m - 1 + delta, 1); 
+        moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; 
+        updateReportUI(); 
+        window.updateDashboardUI(); 
+    };
 
-    function showTrendChart() {
+    window.showTrendChart = function() {
         if (!window.appState.legs || !window.appState.profile) return;
         const isNDA = currentTab === 'nda';
         const now = new Date();
@@ -2225,12 +2264,15 @@
             </div>`;
         }).join('');
 
-        document.getElementById('trend-modal-title').innerText = isNDA ? '6-Month NDA Trend' : '6-Month TA Trend (₹)';
-        document.getElementById('trend-chart-area').innerHTML = `<div style="display:flex; gap:6px; align-items:flex-end; padding:10px 0;">${barsHTML}</div>`;
-        document.getElementById('trend-modal').classList.remove('hidden');
-    }
+        const tm = document.getElementById('trend-modal-title');
+        const tc = document.getElementById('trend-chart-area');
+        const mod = document.getElementById('trend-modal');
+        if(tm) tm.innerText = isNDA ? '6-Month NDA Trend' : '6-Month TA Trend (₹)';
+        if(tc) tc.innerHTML = `<div style="display:flex; gap:6px; align-items:flex-end; padding:10px 0;">${barsHTML}</div>`;
+        if(mod) mod.classList.remove('hidden');
+    };
 
-    function updateDashboardUI() { 
+    window.updateDashboardUI = function() { 
         let firstName = window.appState.profile && window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
         firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(); 
         const hiEl = document.getElementById('dash-hi-name');
@@ -2270,11 +2312,13 @@
         const mo = `${curY}-${curM}`; 
         
         const moName = todayStr.toLocaleString('default',{month:'short'}); 
-        if(document.getElementById('dash-ta-lbl')) document.getElementById('dash-ta-lbl').innerText = `TA this month (${moName})`; 
+        const dtLbl = document.getElementById('dash-ta-lbl');
+        if(dtLbl) dtLbl.innerText = `TA this month (${moName})`; 
         
         let totalTA = 0; const cycles = buildCycles(dutyOnly); 
         cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
-        if(document.getElementById('dash-ta-val')) document.getElementById('dash-ta-val').innerText = `₹${totalTA}`; 
+        const dtVal = document.getElementById('dash-ta-val');
+        if(dtVal) dtVal.innerText = `₹${totalTA}`; 
         
         let todayDash = new Date();
         let ndaYDash = todayDash.getFullYear();
@@ -2310,8 +2354,10 @@
         let m1Str = m1Date.toLocaleString('default', {month:'short'});
         let m2Str = m2Date.toLocaleString('default', {month:'short'});
         
-        if(document.getElementById('dash-nda-val')) document.getElementById('dash-nda-val').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`;
-        if(document.getElementById('dash-nda-lbl')) document.getElementById('dash-nda-lbl').innerText = `NDA (${m1Str}-${m2Str}), ₹${Math.round(ndaAmt)}`;
+        const dnVal = document.getElementById('dash-nda-val');
+        const dnLbl = document.getElementById('dash-nda-lbl');
+        if(dnVal) dnVal.innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`;
+        if(dnLbl) dnLbl.innerText = `NDA (${m1Str}-${m2Str}), ₹${Math.round(ndaAmt)}`;
         
         const rcDash = document.getElementById('recent-logs-dash');
         let rcHTMLDash = '';
@@ -2322,7 +2368,7 @@
             let sortedAll = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
             let recentDashArr = sortedAll.slice(0, 4); 
             
-            let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
+            let theadCommon = `<thead style="background: rgba(59, 130, 246, 0.5); color: var(--text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
             
             rcHTMLDash = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0;">${theadCommon}<tbody>`;
 
@@ -2334,18 +2380,34 @@
             rcHTMLDash += `</tbody></table>`;
         } 
         if(rcDash) rcDash.innerHTML = rcHTMLDash;
-    }
+    };
 
-    function updateReportUI() { const mo = document.getElementById('report-month-hidden').value; const [y, m] = mo.split('-').map(Number); const curDt = new Date(y, m-1); const moName = curDt.toLocaleString('default',{month:'short'}); const yrName = curDt.getFullYear(); const prevD = new Date(y, m - 2, 16); const currD = new Date(y, m - 1, 15); const strFrom = `${String(prevD.getDate()).padStart(2,'0')}-${prevD.toLocaleString('default',{month:'short'})}-${String(prevD.getFullYear()).slice(-2)}`; const strTo = `${String(currD.getDate()).padStart(2,'0')}-${currD.toLocaleString('default',{month:'short'})}-${String(currD.getFullYear()).slice(-2)}`; 
+    window.updateReportUI = function() { 
+        const rmh = document.getElementById('report-month-hidden');
+        if(!rmh) return;
+        const mo = rmh.value; 
+        const [y, m] = mo.split('-').map(Number); 
+        const curDt = new Date(y, m-1); 
+        const moName = curDt.toLocaleString('default',{month:'short'}); 
+        const yrName = curDt.getFullYear(); 
+        const prevD = new Date(y, m - 2, 16); 
+        const currD = new Date(y, m - 1, 15); 
+        const strFrom = `${String(prevD.getDate()).padStart(2,'0')}-${prevD.toLocaleString('default',{month:'short'})}-${String(prevD.getFullYear()).slice(-2)}`; 
+        const strTo = `${String(currD.getDate()).padStart(2,'0')}-${currD.toLocaleString('default',{month:'short'})}-${String(currD.getFullYear()).slice(-2)}`; 
         
         const generateBtn = document.getElementById('generate-btn'); 
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
         const taRows = document.getElementById('ta-summary-rows');
         const ndaRows = document.getElementById('nda-summary-rows');
+        const rst = document.getElementById('report-slider-text');
+        const te = document.getElementById('ta-extras');
 
         if(currentTab === 'ta') { 
-            if(taRows) taRows.classList.remove('hidden'); if(ndaRows) ndaRows.classList.add('hidden');
-            document.getElementById('report-slider-text').innerText = `${moName} ${yrName}`; document.getElementById('ta-extras').classList.remove('hidden'); generateBtn.innerText = "Generate TA Journal PDF"; 
+            if(taRows) taRows.classList.remove('hidden'); 
+            if(ndaRows) ndaRows.classList.add('hidden');
+            if(rst) rst.innerText = `${moName} ${yrName}`; 
+            if(te) te.classList.remove('hidden'); 
+            if(generateBtn) generateBtn.innerText = "Generate TA Journal PDF"; 
             
             let totalTA = 0; 
             let tripCount = 0;
@@ -2368,12 +2430,14 @@
                 
                 let upHasMonth = false;
                 let downHasMonth = false;
+                
                 cycle.forEach((leg, idx) => { 
                     if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { 
                         if (idx <= splitIdx) upHasMonth = true;
                         else downHasMonth = true;
                     } 
                 }); 
+                
                 if (upHasMonth || downHasMonth) tripCount++;
                 if (upHasMonth) upCount++;
                 if (downHasMonth) downCount++;
@@ -2384,15 +2448,26 @@
             const monthResults = taResultsAll.filter(r => r.date.startsWith(mo) && r.rate > 0);
             const uniqueDays = new Set(monthResults.map(r => r.date)).size;
 
-            if(document.getElementById('rep-ta-days')) document.getElementById('rep-ta-days').innerText = uniqueDays;
-            if(document.getElementById('rep-ta-trips')) document.getElementById('rep-ta-trips').innerText = tripCount;
-            if(document.getElementById('rep-ta-up')) document.getElementById('rep-ta-up').innerText = upCount;
-            if(document.getElementById('rep-ta-down')) document.getElementById('rep-ta-down').innerText = downCount;
-            document.getElementById('rep-val').innerText = '₹' + totalTA;
-            document.getElementById('rep-val').style.color = "var(--green)";
+            const dEl = document.getElementById('rep-ta-days');
+            const tEl = document.getElementById('rep-ta-trips');
+            const uEl = document.getElementById('rep-ta-up');
+            const dnEl = document.getElementById('rep-ta-down');
+            const valEl = document.getElementById('rep-val');
+            
+            if(dEl) dEl.innerText = uniqueDays;
+            if(tEl) tEl.innerText = tripCount;
+            if(uEl) uEl.innerText = upCount;
+            if(dnEl) dnEl.innerText = downCount;
+            if(valEl) {
+                valEl.innerText = '₹' + totalTA;
+                valEl.style.color = "var(--green)";
+            }
         } else { 
-            if(taRows) taRows.classList.add('hidden'); if(ndaRows) ndaRows.classList.remove('hidden');
-            document.getElementById('report-slider-text').innerText = `${strFrom} to ${strTo}`; document.getElementById('ta-extras').classList.add('hidden'); generateBtn.innerText = "Generate NDA Bill PDF"; 
+            if(taRows) taRows.classList.add('hidden'); 
+            if(ndaRows) ndaRows.classList.remove('hidden');
+            if(rst) rst.innerText = `${strFrom} to ${strTo}`; 
+            if(te) te.classList.add('hidden'); 
+            if(generateBtn) generateBtn.innerText = "Generate NDA Bill PDF"; 
             
             let totalEligibleHours = 0;
             let remainingMinutes = 0;
@@ -2403,7 +2478,8 @@
                 const nda = extractNDALegs(mo);
                 totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
                 remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
-                document.getElementById('rep-count').innerText = nda.ndaData.length;
+                const rc = document.getElementById('rep-count');
+                if(rc) rc.innerText = nda.ndaData.length;
                 
                 nda.ndaData.forEach(entry => {
                     entry.trips.forEach(trip => { if (trip.train) nightTrainCount++; });
@@ -2419,15 +2495,23 @@
                     ndaAmt = parseFloat(unitHours) * hourlyRate;
                 }
             } else {
-                document.getElementById('rep-count').innerText = "0";
+                const rc = document.getElementById('rep-count');
+                if(rc) rc.innerText = "0";
             }
-            if(document.getElementById('rep-nda-trains')) document.getElementById('rep-nda-trains').innerText = nightTrainCount;
-            document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
+            const rt = document.getElementById('rep-nda-trains');
+            const ra = document.getElementById('rep-nda-amt');
+            const rv = document.getElementById('rep-val'); // if mapping
+            
+            if(rt) rt.innerText = nightTrainCount;
+            if(ra) ra.innerText = `₹${Math.round(ndaAmt)}`;
+            // (Note: NDA value displayed in separate field based on logic)
         } 
-    }
+    };
     
-    function triggerGenerate() { 
-        const mo = document.getElementById('report-month-hidden').value;
+    window.triggerGenerate = function() { 
+        const rmh = document.getElementById('report-month-hidden');
+        if(!rmh) return;
+        const mo = rmh.value;
         if(!window.appState || !window.appState.profile) return showModal("Loading", "Cloud data is still syncing. Please wait a moment.", "warning", false);
         
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
@@ -2446,9 +2530,23 @@
         if(currentTab === 'ta') { generateTAPDF(); } else { 
             showModal("NOTICE", "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month.", "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
         } 
-    }
+    };
 
-    function generateTAPDF() { const wDays = document.getElementById('pdf-work-days').value.trim(); const earn = document.getElementById('pdf-earnings').value.trim(); const mo = document.getElementById('report-month-hidden').value; if(!wDays || !earn) { showModal("WARNING", "Working Days and Earnings are empty. Generate PDF anyway?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); } else { buildTAPreview(mo, wDays, earn); } }
+    function generateTAPDF() { 
+        const pwd = document.getElementById('pdf-work-days');
+        const pe = document.getElementById('pdf-earnings');
+        const rmh = document.getElementById('report-month-hidden');
+        if(!pwd || !pe || !rmh) return;
+        
+        const wDays = pwd.value.trim(); 
+        const earn = pe.value.trim(); 
+        const mo = rmh.value; 
+        if(!wDays || !earn) { 
+            showModal("WARNING", "Working Days and Earnings are empty. Generate PDF anyway?", "warning", true, (proceed) => { if(proceed) buildTAPreview(mo, wDays, earn); }); 
+        } else { 
+            buildTAPreview(mo, wDays, earn); 
+        } 
+    }
 
     function buildTAPreview(mo, wDays, earn) {
         const p = window.appState.profile; if(!p) return; const monthStr = new Date(mo+'-01').toLocaleString('default', {month:'long', year:'numeric'}).toUpperCase();
@@ -2476,8 +2574,13 @@
         let printPayScale = p.payscale ? p.payscale.replace(' (MACP)', '') : '';
         let bHtml = ""; if(counts[30] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">30% x ${counts[30]}</td><td style="border: 1px solid black; padding: 2px;">${Math.floor(p.tarate*0.3)} x ${counts[30]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[30] * Math.floor(p.tarate*0.3)}</td></tr>`; if(counts[70] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">70% x ${counts[70]}</td><td style="border: 1px solid black; padding: 2px;">${Math.floor(p.tarate*0.7)} x ${counts[70]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[70] * Math.floor(p.tarate*0.7)}</td></tr>`; if(counts[100] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">100% x ${counts[100]}</td><td style="border: 1px solid black; padding: 2px;">${p.tarate} x ${counts[100]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[100] * p.tarate}</td></tr>`;
 
-        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 15px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="display: flex; justify-content: space-between; align-items: flex-start; font-weight: bold; margin-bottom: 8px;"><div style="width: 20%; font-size: 11px; text-align: left;">NR</div><div style="width: 60%; text-align: center; font-size: 14px;">TRAVELLING ALLOWANCE JOURNAL</div><div style="width: 20%; text-align: right; font-size: 11px;">G.A. 31/S.R.C./G-1677<br>G-6</div></div><div style="font-size: 11px; line-height: 1.5; margin-bottom: 12px;"><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 0px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Branch: <b>Commercial</b></td><td style="width: 21%;">Division: <b>LKO/NR</b></td><td style="width: 20%;">HQ: <b>${p.hq}/NR</b></td><td style="width: 17%; text-align: center;">P.F. No.: <b>${p.pf}</b></td><td style="width: 15%; text-align: right;">BU No: <b>${p.bu}</b></td></tr><tr style="height: 22px;"><td style="width: 27%; white-space: nowrap;">Journal of duties performed by Shri</td><td colspan="4" style="padding: 0;"><div style="display: flex; justify-content: space-between; align-items: center; width: 100%;"><div style="font-weight: bold; width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.name}</div><div style="text-align: left; padding-left: 10px; flex: 1; white-space: nowrap;">for which allowance for &nbsp;&nbsp;&nbsp;<b>${monthStr}</b></div><div style="text-align: right; white-space: nowrap;">is claimed.</div></div></td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 12px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Designation: <b>${p.desig}</b></td><td style="width: 21%;">Pay Scale: <b>${printPayScale}</b></td><td style="width: 26%;">Grade Pay: <b>${p.gradepay}</b></td><td style="width: 26%; text-align: right;">Date of appt: <b>${formatDate(p.appt)}</b></td></tr><tr style="height: 22px;"><td>Rule by which governed: <b>HOER</b></td><td>TA Rate: <b>@${p.tarate}</b></td><td>Checking Authority No.: <b>${p.auth}</b></td><td style="text-align: right;">Validity: <b>${formatDate(p.authval)}</b></td></tr><tr style="height: 22px;"><td>Card Pass No.: <b>${p.pass}</b></td><td>Validity: <b>${formatDate(p.passval)}</b></td><td colspan="2"></td></tr></table></div><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 5px; font-size: 10px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Month &<br>Date</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Left</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Arrived</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Station</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 6%;">TA %</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Objective of<br>Journey</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Rate = ${p.tarate}</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">From</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">To</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">Rs.</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">P.</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="8" style="text-align: right; border: 1px solid black; padding: 4px 6px; font-size: 11px;">TOTAL</td><td style="border: 1px solid black; padding: 4px 4px; font-size: 11px;">${totalAmount}</td><td style="border: 1px solid black; padding: 4px 4px; font-size: 11px;">00</td></tr></tfoot></table><div class="page-break"><div style="display: flex; align-items: flex-end; gap: 20px; margin-bottom: 15px;"><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px;"><tr><td colspan="2" style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">TA RATE</td><td style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">₹${p.tarate}</td></tr>${bHtml}<tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;"><td colspan="2" style="border: 1px solid black; padding: 2px;">TOTAL AMOUNT</td><td style="border: 1px solid black; padding: 2px;">₹${totalAmount}</td></tr></table><div style="font-weight: bold; font-size: 12px; padding-bottom: 5px;">Rupees ${numberToWords(totalAmount)} Only</div></div><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px; margin-bottom: 15px;"><tr><td style="border: 1px solid black; padding: 2px; font-weight: bold; width: 66%; background: #e5e5e5; -webkit-print-color-adjust: exact;">Working Days</td><td style="border: 1px solid black; padding: 2px; font-weight: bold;">${wDays||""}</td></tr><tr><td style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">Total Earnings</td><td style="border: 1px solid black; padding: 2px; font-weight: bold;">₹ ${earn||""}</td></tr></table><div style="font-size: 11px; line-height: 1.4;">It is certified that:<br>1. The TA claimed by me has not been claimed before and will not be claimed hereafter.<br>2. Conveyance charges claimed have actually been spent by me and according to local Municipal rates.<br>3. Cheapest mode of conveyance was utilized.<br>4. The journey performed by road for which conveyance have been claimed was over 1.6 KM<br><br><div style="text-align: right; margin-top: 10px;">...........................................................................<br>Signature of the Officer Claiming T.A.</div></div><div style="margin-top: 15px; font-size: 11px; line-height: 1.4;">I hereby certify that Shri <b>${p.name}</b> was absent on duty from his headquarters station during the period charged for in the bill on Railway business and that the officer performed the journey by Rail/Sea/ Air/ Road was allowed/ not allowed free pass of locomotion at the expense of Government local fund of Indian State.</div><div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px;"><div style="text-align: left;">Countersigned<br><br><br><br>Controlling Officer</div><div style="text-align: right;">...........................................................................<br>Signature of the Head of the office</div></div></div></div>`;
-        document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
+        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 15px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="display: flex; justify-content: space-between; align-items: flex-start; font-weight: bold; margin-bottom: 8px;"><div style="width: 20%; font-size: 11px; text-align: left;">NR</div><div style="width: 60%; text-align: center; font-size: 14px;">TRAVELLING ALLOWANCE JOURNAL</div><div style="width: 20%; text-align: right; font-size: 11px;">G.A. 31/S.R.C./G-1677<br>G-6</div></div><div style="font-size: 11px; line-height: 1.5; margin-bottom: 12px;"><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 0px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Branch: <b>Commercial</b></td><td style="width: 21%;">Division: <b>LKO/NR</b></td><td style="width: 20%;">HQ: <b>${p.hq}/NR</b></td><td style="width: 17%; text-align: center;">P.F. No.: <b>${p.pf}</b></td><td style="width: 15%; text-align: right;">BU No: <b>${p.bu}</b></td></tr><tr style="height: 22px;"><td style="width: 27%; white-space: nowrap;">Journal of duties performed by Shri</td><td colspan="4" style="padding: 0;"><div style="display: flex; justify-content: space-between; align-items: center; width: 100%;"><div style="font-weight: bold; width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.name}</div><div style="text-align: left; padding-left: 10px; flex: 1; white-space: nowrap;">for which allowance for &nbsp;&nbsp;&nbsp;<b>${monthStr}</b></div><div style="text-align: right; white-space: nowrap;">is claimed.</div></div></td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 12px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Designation: <b>${p.desig}</b></td><td style="width: 21%;">Pay Scale: <b>${printPayScale}</b></td><td style="width: 26%;">Grade Pay: <b>${p.gradepay}</b></td><td style="width: 26%; text-align: right;">Date of appt: <b>${formatDate(p.appt)}</b></td></tr><tr style="height: 22px;"><td>Rule by which governed: <b>HOER</b></td><td>TA Rate: <b>@${p.tarate}</b></td><td>Checking Authority No.: <b>${p.auth}</b></td><td style="text-align: right;">Validity: <b>${formatDate(p.authval)}</b></td></tr><tr style="height: 22px;"><td>Card Pass No.: <b>${p.pass}</b></td><td>Validity: <b>${formatDate(p.passval)}</b></td><td colspan="2"></td></tr></table></div><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 5px; font-size: 10px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Month &<br>Date</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Left</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Arrived</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Station</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 6%;">TA %</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Objective of<br>Journey</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Rate = ${p.tarate}</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">From</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">To</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">Rs.</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">P.</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan=\"8\" style=\"text-align: right; border: 1px solid black; padding: 4px 6px; font-size: 11px;\">TOTAL</td><td style=\"border: 1px solid black; padding: 4px 4px; font-size: 11px;\">${totalAmount}</td><td style=\"border: 1px solid black; padding: 4px 4px; font-size: 11px;\">00</td></tr></tfoot></table><div class=\"page-break\"><div style=\"display: flex; align-items: flex-end; gap: 20px; margin-bottom: 15px;\"><table style=\"border-collapse: collapse; text-align: center; font-size: 11px; width: 250px;\"><tr><td colspan=\"2\" style=\"border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;\">TA RATE</td><td style=\"border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;\">₹${p.tarate}</td></tr>${bHtml}<tr style=\"font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;\"><td colspan=\"2\" style=\"border: 1px solid black; padding: 2px;\">TOTAL AMOUNT</td><td style=\"border: 1px solid black; padding: 2px;\">₹${totalAmount}</td></tr></table><div style=\"font-weight: bold; font-size: 12px; padding-bottom: 5px;\">Rupees ${numberToWords(totalAmount)} Only</div></div><table style=\"border-collapse: collapse; text-align: center; font-size: 11px; width: 250px; margin-bottom: 15px;\"><tr><td style=\"border: 1px solid black; padding: 2px; font-weight: bold; width: 66%; background: #e5e5e5; -webkit-print-color-adjust: exact;\">Working Days</td><td style=\"border: 1px solid black; padding: 2px; font-weight: bold;\">${wDays||\"\"}</td></tr><tr><td style=\"border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;\">Total Earnings</td><td style=\"border: 1px solid black; padding: 2px; font-weight: bold;\">₹ ${earn||\"\"}</td></tr></table><div style=\"font-size: 11px; line-height: 1.4;\">It is certified that:<br>1. The TA claimed by me has not been claimed before and will not be claimed hereafter.<br>2. Conveyance charges claimed have actually been spent by me and according to local Municipal rates.<br>3. Cheapest mode of conveyance was utilized.<br>4. The journey performed by road for which conveyance have been claimed was over 1.6 KM<br><br><div style=\"text-align: right; margin-top: 10px;\">...........................................................................<br>Signature of the Officer Claiming T.A.</div></div><div style=\"margin-top: 15px; font-size: 11px; line-height: 1.4;\">I hereby certify that Shri <b>${p.name}</b> was absent on duty from his headquarters station during the period charged for in the bill on Railway business and that the officer performed the journey by Rail/Sea/ Air/ Road was allowed/ not allowed free pass of locomotion at the expense of Government local fund of Indian State.</div><div style=\"display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px;\"><div style=\"text-align: left;\">Countersigned<br><br><br><br>Controlling Officer</div><div style=\"text-align: right;\">...........................................................................<br>Signature of the Head of the office</div></div></div></div>`;
+        const wrap = document.getElementById('ui-wrapper');
+        const pw = document.getElementById('preview-wrapper');
+        const pc = document.getElementById('preview-content');
+        if(wrap) wrap.classList.add('hidden'); 
+        if(pc) pc.innerHTML = fullHtml; 
+        if(pw) pw.classList.remove('hidden');
     }
 
     function buildNDAPreview(mo) {
@@ -2529,8 +2632,13 @@
             tbodyHtml = `<tr><td colspan="11" style="border: 1px solid black; padding: 15px; font-weight: bold; color: red;">Gazetted Employees are not eligible for Night Duty Allowance.</td></tr>`;
         }
 
-        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">NIGHT DUTY BILL</div><table style="margin: 0 auto 20px auto; font-size: 12px; text-align: left; border: none; width: auto; line-height: 1.8;"><tr><td style="padding-right: 30px;">Name: <b>${p.name}</b></td><td>Designation: <b>${p.desig}</b></td></tr><tr><td>H.Q.: <b>${p.hq}/NR</b></td><td>ROP: <span style="float: right; font-weight: bold;">p.m.</span></td></tr><tr><td>P.F. No.: <b>${p.pf}</b></td><td>BU No.: <b>${p.bu}</b></td></tr><tr><td>Period From: <b>${strFrom}</b></td><td>To: <b>${strTo}</b></td></tr></table><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 15px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">From</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">To</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign On</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Dep.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Arrival</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign Off</th><th colspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px;">Night Duty</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Night<br>Hours</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">From</th><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">To</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="10" style="text-align: right; border: 1px solid black; padding: 12px 10px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-weight: bold; font-size: 12px;">${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}</td></tr></tfoot></table><div style="margin-top: 20px;"><div style="font-weight: bold; font-size: 12px; margin-bottom: 40px;">Total Night Duty Hours = ${totalH} Hours ${totalM} Minutes</div><table style="border: none; width: 300px; text-align: left; font-size: 12px; line-height: 1.8; float: right; margin-right: 20px;"><tr><td style="text-align: right; padding-right: 10px;">Signature:</td><td style="text-align: left;">...................................................</td></tr><tr><td style="text-align: right; padding-right: 10px;">Name:</td><td style="text-align: left;"><b>${p.name}</b></td></tr><tr><td style="text-align: right; padding-right: 10px;">Designation:</td><td style="text-align: left;"><b>${p.desig}</b></td></tr></table><div style="clear: both;"></div></div></div>`;
-        document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
+        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">NIGHT DUTY BILL</div><table style="margin: 0 auto 20px auto; font-size: 12px; text-align: left; border: none; width: auto; line-height: 1.8;"><tr><td style="padding-right: 30px;">Name: <b>${p.name}</b></td><td>Designation: <b>${p.desig}</b></td></tr><tr><td>H.Q.: <b>${p.hq}/NR</b></td><td>ROP: <span style="float: right; font-weight: bold;">p.m.</span></td></tr><tr><td>P.F. No.: <b>${p.pf}</b></td><td>BU No.: <b>${p.bu}</b></td></tr><tr><td>Period From: <b>${strFrom}</b></td><td>To: <b>${strTo}</b></td></tr></table><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 15px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">From</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">To</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign On</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Dep.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Arrival</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign Off</th><th colspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px;">Night Duty</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Night<br>Hours</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">From</th><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">To</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan=\"10\" style=\"text-align: right; border: 1px solid black; padding: 12px 10px; font-size: 12px;\">TOTAL</td><td style=\"border: 1px solid black; padding: 12px 4px; font-weight: bold; font-size: 12px;\">${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}</td></tr></tfoot></table><div style=\"margin-top: 20px;\"><div style=\"font-weight: bold; font-size: 12px; margin-bottom: 40px;\">Total Night Duty Hours = ${totalH} Hours ${totalM} Minutes</div><table style=\"border: none; width: 300px; text-align: left; font-size: 12px; line-height: 1.8; float: right; margin-right: 20px;\"><tr><td style=\"text-align: right; padding-right: 10px;\">Signature:</td><td style=\"text-align: left;\">...................................................</td></tr><tr><td style=\"text-align: right; padding-right: 10px;\">Name:</td><td style=\"text-align: left;\"><b>${p.name}</b></td></tr><tr><td style=\"text-align: right; padding-right: 10px;\">Designation:</td><td style=\"text-align: left;\"><b>${p.desig}</b></td></tr></table><div style=\"clear: both;\"></div></div></div>`;
+        const wrap = document.getElementById('ui-wrapper');
+        const pw = document.getElementById('preview-wrapper');
+        const pc = document.getElementById('preview-content');
+        if(wrap) wrap.classList.add('hidden'); 
+        if(pc) pc.innerHTML = fullHtml; 
+        if(pw) pw.classList.remove('hidden');
     }
 </script>
 </body>
