@@ -135,7 +135,7 @@
         .admin-gear-btn {
             position: fixed !important;
             top: 14px !important;
-            left: 12px !important;
+            right: 12px !important;
             font-size: 20px;
             cursor: pointer;
             z-index: 2001;
@@ -180,8 +180,8 @@
         .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; }
         .tab-btn.active { color: #ffffff !important; }
         
-        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 5px 15px; font-weight: bold; color: var(--blue); transition: color 0.3s; border: 1px solid var(--border); border-radius: 30px; background: var(--input-bg); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px;}
-        .slider-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 30px; height: 30px; margin: 0; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 18px; font-weight: bold; color: var(--blue); transition: color 0.3s, background 0.3s; border: 1.5px solid rgba(99, 102, 241, 0.35); border-radius: 30px; background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(168,85,247,0.10)); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;}
+        .slider-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 32px; height: 32px; margin: 0; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; color: var(--text); }
         
@@ -368,16 +368,16 @@
     <div class="bottom-bar hidden" id="main-bottom-bar">
         <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
         <div class="bottom-icon" onclick="document.getElementById('help-modal').classList.remove('hidden')">💬</div>
-        <div class="bottom-icon" onclick="window.showModal('Upcoming', 'More exciting features coming soon in updates!', 'success', false)">🚀</div>
+        <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
         
         <div class="nav-fab-wrapper">
             <div class="nav-fab-ring"></div>
             <div class="nav-fab" id="main-fab-btn" onclick="window.switchAddTab('duty'); window.navTo('screen-add');">+</div>
         </div>
         
-        <div class="bottom-icon" onclick="window.shareApp()">🔗</div>
         <div class="bottom-icon" onclick="window.showModal('Support Us', 'TTE LOGS is Completely FREE!', 'success', false)">☕</div>
         <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
+        <div class="bottom-icon" onclick="window.navTo('screen-dashboard')">🏠</div>
     </div>
 
     <div id="trend-modal" class="hidden">
@@ -558,7 +558,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.0</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.2</div>
         </div>
     </div>
 
@@ -774,7 +774,7 @@
             <button id="btn-save-duty" onclick="window.saveLeg()">Save This Journey</button>
             <button id="btn-save-nonduty" class="hidden" style="background: var(--green);" onclick="window.saveNonDuty()">Save Record</button>
             
-            <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px; color: var(--text);" id="recent-duty-title">Recent Duty Entries</h3>
+            <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px; color: var(--blue); font-weight: 800;" id="recent-duty-title">Recent Duty Entries</h3>
             <div id="recent-logs-add" style="border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border);"></div>
         </div>
     </div>
@@ -788,7 +788,7 @@
             <p style="font-size: 13px; text-align: center; margin-top: 0; margin-bottom: 10px;"><span style="color: var(--red); font-weight: 700;">👆 Tap any row below to Edit or Delete</span></p>
             
             <div style="display: flex; gap: 8px; margin: 0 auto 15px auto; width: 100%; align-items: center; background: rgba(59, 130, 246, 0.05); padding: 10px 12px; border-radius: 30px; border: 1.5px solid rgba(59, 130, 246, 0.2); box-shadow: var(--shadow);">
-                <label style="font-size: 13px; font-weight: 900; color: var(--text); white-space: nowrap;">Filter:</label>
+                <label style="font-size: 13px; font-weight: 900; color: var(--blue); white-space: nowrap;">Filter:</label>
                 <select id="all-logs-month" onchange="window.renderAllLogs()" style="margin: 0; padding: 6px 8px; width: auto; flex: 1.2; border-radius: 30px; font-size: 13px;">
                     <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
                     <option value="05">May</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Aug</option>
@@ -836,16 +836,30 @@
 
             <div class="slider-bar">
                 <button class="slider-btn" onclick="window.changeMonth(-1)">❮</button>
-                <span id="report-slider-text" style="font-weight: bold; font-size: 16px; color: var(--blue);">Jun 2026</span>
+                <span id="report-slider-text" style="font-weight: 900; font-size: 17px; color: var(--purple); letter-spacing: 0.3px;">Jun 2026</span>
                 <button class="slider-btn" onclick="window.changeMonth(1)">❯</button>
             </div>
             <input type="hidden" id="report-month-hidden"> 
             
             <div class="card" id="report-summary-card">
                 <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center; cursor: pointer;" onclick="window.showTrendChart()"><span class="summary-pill" style="background: rgba(59, 130, 246, 0.1); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block;">📊 Summary</span></h3>
-                <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
-                <div class="summary-row" id="rep-ta-row" style="color: var(--text);"><span id="rep-val-label">Total TA</span><span id="rep-val" style="font-weight: bold; color: var(--green);">₹0</span></div>
-                <div class="summary-row hidden" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span>Total NDA</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
+                
+                <!-- TA SUMMARY ROWS -->
+                <div id="ta-summary-rows">
+                    <div class="summary-row" style="color: var(--text);"><span>Total No. of Days</span><span id="rep-ta-days" style="font-weight: bold;">0</span></div>
+                    <div class="summary-row" style="color: var(--text);"><span>Total No. of Trips</span><span id="rep-ta-trips" style="font-weight: bold;">0</span></div>
+                    <div class="summary-row" style="color: var(--text);"><span>Upward Trains</span><span id="rep-ta-up" style="font-weight: bold;">0</span></div>
+                    <div class="summary-row" style="color: var(--text);"><span>Downward Trains</span><span id="rep-ta-down" style="font-weight: bold;">0</span></div>
+                    <div class="summary-row" id="rep-ta-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span id="rep-val-label" style="font-weight:800;">Total TA</span><span id="rep-val" style="font-weight: bold; color: var(--green);">₹0</span></div>
+                </div>
+
+                <!-- NDA SUMMARY ROWS -->
+                <div id="nda-summary-rows" class="hidden">
+                    <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
+                    <div class="summary-row" style="color: var(--text);"><span>Total No. of Night Trains</span><span id="rep-nda-trains" style="font-weight: bold;">0</span></div>
+                    <div class="summary-row" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span style="font-weight:800;">Total NDA</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
+                </div>
+
                 <p style="font-size: 13px; color: var(--blue); text-align: center; margin: 10px 0 0 0; font-weight: 500; cursor:pointer;" onclick="window.showTrendChart()">👆 Tap Summary to view 6-month trend →</p>
                 
                 <div id="ta-extras" style="display: flex; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 15px; justify-content: center;">
@@ -2199,9 +2213,9 @@
                 txt.innerText = 'At HQ'; 
             } else { 
                 const lastLeg = dutyOnly[dutyOnly.length - 1]; 
-                badge.style.background = 'rgba(234, 179, 8, 0.7)'; 
-                badge.style.border = '1px solid rgba(234, 179, 8, 1)';
-                badge.style.color = document.body.classList.contains('dark-mode') ? '#000000' : '#854d0e'; 
+                badge.style.background = 'rgba(234, 179, 8, 0.35)'; 
+                badge.style.border = '1px solid rgba(234, 179, 8, 0.7)';
+                badge.style.color = document.body.classList.contains('dark-mode') ? '#fde047' : '#854d0e'; 
                 dot.style.background = 'rgba(234, 179, 8, 1)'; 
                 txt.innerText = `${lastLeg.arrStn}`; 
             } 
@@ -2283,24 +2297,60 @@
         
         const generateBtn = document.getElementById('generate-btn'); 
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
+        const taRows = document.getElementById('ta-summary-rows');
+        const ndaRows = document.getElementById('nda-summary-rows');
 
         if(currentTab === 'ta') { 
+            if(taRows) taRows.classList.remove('hidden'); if(ndaRows) ndaRows.classList.add('hidden');
             document.getElementById('report-slider-text').innerText = `${moName} ${yrName}`; document.getElementById('ta-extras').classList.remove('hidden'); generateBtn.innerText = "Generate TA Journal PDF"; 
-            let totalTA = 0; let eCount = 0; const cycles = buildCycles(dutyOnly); cycles.forEach(cycle => { const taResults = calculateCycleTA(cycle); cycle.forEach(leg => { if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { eCount++; } }); taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); }); 
-            document.getElementById('rep-count').innerText = eCount; document.getElementById('rep-val').innerText = '₹' + totalTA;
+            
+            let totalTA = 0; 
+            let tripCount = 0;
+            let upCount = 0;
+            let downCount = 0;
+            const cycles = buildCycles(dutyOnly); 
+            const taResultsAll = [];
+            
+            cycles.forEach(cycle => { 
+                const taResults = calculateCycleTA(cycle); 
+                taResultsAll.push(...taResults);
+                cycle.forEach(leg => { 
+                    if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { 
+                        tripCount++; 
+                        const trainNo = parseInt(leg.train) || 0;
+                        if (trainNo % 2 === 0) { downCount++; } else { upCount++; }
+                    } 
+                }); 
+                taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); 
+            }); 
+
+            const monthResults = taResultsAll.filter(r => r.date.startsWith(mo) && r.rate > 0);
+            const uniqueDays = new Set(monthResults.map(r => r.date)).size;
+
+            if(document.getElementById('rep-ta-days')) document.getElementById('rep-ta-days').innerText = uniqueDays;
+            if(document.getElementById('rep-ta-trips')) document.getElementById('rep-ta-trips').innerText = tripCount;
+            if(document.getElementById('rep-ta-up')) document.getElementById('rep-ta-up').innerText = upCount;
+            if(document.getElementById('rep-ta-down')) document.getElementById('rep-ta-down').innerText = downCount;
+            document.getElementById('rep-val').innerText = '₹' + totalTA;
             document.getElementById('rep-val').style.color = "var(--green)";
         } else { 
+            if(taRows) taRows.classList.add('hidden'); if(ndaRows) ndaRows.classList.remove('hidden');
             document.getElementById('report-slider-text').innerText = `${strFrom} to ${strTo}`; document.getElementById('ta-extras').classList.add('hidden'); generateBtn.innerText = "Generate NDA Bill PDF"; 
             
             let totalEligibleHours = 0;
             let remainingMinutes = 0;
             let ndaAmt = 0;
+            let nightTrainCount = 0;
             const isGazetted = window.appState.profile && window.appState.profile.empType === 'Gazetted';
             if (!isGazetted) {
                 const nda = extractNDALegs(mo);
                 totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
                 remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
                 document.getElementById('rep-count').innerText = nda.ndaData.length;
+                
+                nda.ndaData.forEach(entry => {
+                    entry.trips.forEach(trip => { if (trip.train) nightTrainCount++; });
+                });
                 
                 if (totalEligibleHours > 0) {
                     const basicPayRaw = window.appState.profile && window.appState.profile.basicpay ? parseFloat(window.appState.profile.basicpay) : 0;
@@ -2314,9 +2364,8 @@
             } else {
                 document.getElementById('rep-count').innerText = "0";
             }
-            document.getElementById('rep-val').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`; 
+            if(document.getElementById('rep-nda-trains')) document.getElementById('rep-nda-trains').innerText = nightTrainCount;
             document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
-            document.getElementById('rep-val').style.color = "var(--purple)";
         } 
     }
     
