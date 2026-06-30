@@ -94,7 +94,7 @@
         }
         .hidden { display: none !important; }
         
-        /* FIXED: Sticky Headers */
+        /* Sticky Header Fix */
         .top-bar { position: sticky !important; top: 0; z-index: 3000; background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: background 0.3s; }
         body.dark-mode .top-bar { border-bottom: none; } 
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; width: 100%; pointer-events: none; user-select: none; }
@@ -104,10 +104,10 @@
         .dash-title-pill { font-size: 20px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1px solid rgba(253, 224, 71, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block; background: transparent; pointer-events: none; user-select: none; }
         
         .back-btn { 
-            position: absolute !important; 
-            left: 5px !important; 
-            top: 50% !important; 
-            transform: translateY(-50%) !important;
+            position: fixed !important; 
+            top: 10px !important; 
+            left: 8px !important; 
+            transform: none !important;
             background: transparent !important; 
             border: none !important; 
             color: white !important; 
@@ -116,8 +116,7 @@
             cursor: pointer; 
             display: flex; 
             align-items: center; 
-            justify-content: center;
-            gap: 4px; 
+            gap: 5px; 
             font-weight: 600; 
             margin: 0; 
             z-index: 3010; 
@@ -134,10 +133,9 @@
         .back-btn:active { opacity: 0.6; }
 
         .admin-gear-btn {
-            position: absolute !important;
-            top: 50% !important;
-            transform: translateY(-50%) !important;
-            right: 5px !important;
+            position: fixed !important;
+            top: 14px !important;
+            right: 12px !important;
             font-size: 20px;
             cursor: pointer;
             z-index: 3010;
@@ -182,8 +180,8 @@
         .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; }
         .tab-btn.active { color: #ffffff !important; }
         
-        /* Slider Bar Aesthetic Fix */
-        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; font-weight: bold; color: var(--green); transition: color 0.3s, background 0.3s, border 0.3s; border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 30px; background: rgba(34, 197, 94, 0.1); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;}
+        /* Slider Box matches tab box styling */
+        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 18px; font-weight: bold; color: var(--green); transition: color 0.3s, background 0.3s, border 0.3s; border: 1.5px solid rgba(34, 197, 94, 0.4); border-radius: 30px; background: rgba(34, 197, 94, 0.1); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;}
         .slider-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 32px; height: 32px; margin: 0; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; color: var(--text); }
@@ -224,7 +222,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         const app = initializeApp({
@@ -239,7 +237,6 @@
         window.provider = new GoogleAuthProvider();
         window.firebaseSet = set;
         window.firebaseRef = ref;
-        window.firebaseGet = get;
         
         // ADMIN CONFIGURATION
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
@@ -258,8 +255,7 @@
                 const isAdmin = (user.uid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(user.email);
                 
                 if(isAdmin) {
-                    const g = document.getElementById('admin-gear-icon');
-                    if(g) g.classList.remove('hidden');
+                    document.getElementById('admin-gear-icon').classList.remove('hidden');
                 }
 
                 onValue(ref(window.db, '/'), (snapshot) => {
@@ -279,10 +275,10 @@
                         document.getElementById('admin-lock-overlay').classList.add('hidden');
                     }
 
-                    const reqVersion = adminConfig.required_version;
-                    if (reqVersion && reqVersion !== window.APP_VERSION && !isAdmin) {
+                    const reqV = adminConfig.required_version;
+                    if (reqV && reqV !== window.APP_VERSION && !isAdmin) {
                         document.getElementById('version-gate-screen').classList.remove('hidden');
-                        document.getElementById('version-gate-msg').innerText = `Version ${reqVersion} is now required. Please reload or clear your browser cache to get the latest version.`;
+                        document.getElementById('version-gate-msg').innerText = `Version ${reqV} is now required. Please reload or clear your browser cache to get the latest version.`;
                         document.getElementById('ui-wrapper').classList.add('hidden');
                         return;
                     } else {
@@ -307,24 +303,24 @@
 
                     window.adminIsMaint = adminConfig.maintenance || false;
                     if (!document.getElementById('screen-admin').classList.contains('hidden')) {
-                        if (typeof window.updateAdminUI === 'function') window.updateAdminUI(adminConfig);
+                        updateAdminUI(adminConfig);
                     }
 
                     if (userData) {
                         window.appState = userData;
                         if (!window.appState.legs) window.appState.legs = [];
                         if (document.getElementById('screen-register').classList.contains('hidden') && document.getElementById('screen-admin').classList.contains('hidden')) {
-                            if (typeof window.navTo === 'function') window.navTo('screen-dashboard');
+                            window.navTo('screen-dashboard');
                         }
                     } else {
                         window.appState = { profile: null, legs: [] };
-                        if (typeof window.navTo === 'function') window.navTo('screen-register'); 
+                        window.navTo('screen-register'); 
                     }
                 });
             } else {
                 window.currentUid = null;
                 window.currentUserEmail = null;
-                if (typeof window.navTo === 'function') window.navTo('screen-login');
+                window.navTo('screen-login');
             }
         });
     </script>
@@ -359,7 +355,7 @@
 </div>
 
 <div id="ui-wrapper">
-    <div id="global-back-btn" class="floating-back hidden">← Back</div>
+    <div id="global-back-btn" class="floating-back hidden" onclick="window.navTo('screen-dashboard')">← Back</div>
 
     <div class="bottom-bar hidden" id="main-bottom-bar">
         <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
@@ -440,7 +436,7 @@
             <h3 style="color: var(--text); margin: 0 0 8px 0; font-size: 16px; font-weight: 900;">Help & Support</h3>
             <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 14px 0; line-height: 1.5;">Got suggestions or need help? Reach out directly!</p>
             <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 11px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 10px; box-sizing: border-box;">✉️ Email</a>
-            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); padding: 11px 24px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; box-shadow: none;">Close</button>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--blue); color: white; border: none; padding: 11px 24px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; box-shadow: none;">Close</button>
         </div>
     </div>
 
@@ -477,8 +473,8 @@
             </div>
             <div id="admin-gear-icon" class="admin-gear-btn hidden" onclick="window.openAdminPIN()">⚙️</div>
         </div>
-        
         <div class="screen-content">
+            
             <div id="profile-alert-box" class="hidden card" style="border-left: 4px solid var(--red); padding: 12px; margin-bottom: 15px;">
                 <b style="display: block; margin-bottom: 5px; color: var(--red);">⚠️ Action Required:</b>
                 <span id="profile-alert-msg" style="color: var(--text); font-size: 13px;"></span>
@@ -553,7 +549,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div class="app-version-display" style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;"></div>
+            <div id="app-version-display" style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;"></div>
         </div>
     </div>
 
@@ -563,6 +559,7 @@
             <h1 style="color: var(--yellow);">⚙️ ADMIN</h1>
         </div>
         <div class="screen-content">
+
             <div class="card" style="border-left: 4px solid var(--red);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                     <h3 style="color:var(--red); margin:0; font-size:15px;">🔒 Maintenance Mode</h3>
@@ -621,17 +618,13 @@
             <div class="card" style="border-left: 4px solid var(--purple);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <h3 style="color:var(--purple); margin:0; font-size:15px;">👥 User Statistics</h3>
-                    <div style="display:flex; gap:5px;">
-                        <button onclick="window.viewUserRoster()" style="width:auto; margin:0; padding:5px 10px; font-size:11px; background:var(--card); color:var(--purple); border:1px solid var(--purple);">Directory</button>
-                        <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 10px; font-size:11px; background:var(--purple); border-radius:20px;">Refresh</button>
-                    </div>
+                    <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 14px; font-size:12px; background:var(--purple); border-radius:20px;">Refresh</button>
                 </div>
                 <div id="admin-stats-area">
-                    <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh or Directory to load data</p>
+                    <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh to load stats</p>
                 </div>
             </div>
-            
-            <div class="app-version-display" style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;"></div>
+
         </div>
     </div>
 
@@ -792,6 +785,15 @@
                     <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
                 </select>
                 <input type="text" id="all-train-search" placeholder="🔍 Train" oninput="window.renderAllLogs()" style="margin: 0; padding: 6px 10px; flex: 1; border-radius: 30px; font-size: 13px; min-width: 0;">
+                <script>
+                    (function(){
+                        const t = new Date();
+                        const m = String(t.getMonth()+1).padStart(2,'0');
+                        const y = t.getFullYear().toString();
+                        document.getElementById('all-logs-month').value = m;
+                        document.getElementById('all-logs-year').value = y;
+                    })();
+                </script>
             </div>
             
             <div id="all-logs-container" style="width: 100%; max-height: 570px; overflow-y: auto; border-radius: 12px; box-shadow: var(--shadow); position: relative; background: var(--card); border: 1px solid var(--border);"></div>
@@ -888,11 +890,8 @@
 </div>
 
 <script>
-    // --- GLOBAL VARIABLES ---
-    window.APP_VERSION = '3.3';
-    window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
-    window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
-    window.ADMIN_PIN = '2580';
+    // These functions and variables are native to the window.
+    window.APP_VERSION = '3.3'; // Dynamic version updated to 3.3
     
     window.appState = { profile: null, legs: [] }; 
     window.editModeId = null; 
@@ -900,176 +899,39 @@
     window.lastRestoreTime = localStorage.getItem('lastRestoreTime') || 'Never';
     window.currentAddTab = 'duty';
     let currentTab = 'ta';
+
+    /* ----- EXPLICIT GLOBAL BINDINGS TO PREVENT CRASHES ----- */
+    window.navTo = navTo;
+    window.showModal = showModal;
+    window.openSettings = openSettings;
+    window.unlockProfile = unlockProfile;
+    window.updateDashboardUI = updateDashboardUI;
+    window.triggerGenerate = triggerGenerate;
+    window.changeMonth = changeMonth;
+    window.switchTab = switchTab;
+    window.renderAllLogs = renderAllLogs;
+    window.saveLeg = saveLeg;
+    window.saveNonDuty = saveNonDuty;
+    window.triggerDelete = triggerDelete;
+    window.triggerEdit = triggerEdit;
+    window.closeManage = closeManage;
+    window.manageNonDuty = manageNonDuty;
+    window.manageLeg = manageLeg;
+    window.importData = importData;
+    window.exportData = exportData;
+    window.saveProfile = saveProfile;
+    window.setDAReminder = setDAReminder;
+    window.toggleTheme = toggleTheme;
+    window.shareApp = shareApp;
+    window.showNotifications = showNotifications;
+    window.switchAddTab = switchAddTab;
+    window.formatTimeInput = formatTimeInput;
+    window.checkGazetted = checkGazetted;
+    window.showTrendChart = showTrendChart;
+    window.populateStnList = populateStnList;
+    
     window.pinEntry = '';
-
-    // --- DOM READY BINDINGS (Swipe, Headers, UI Setup) ---
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.app-version-display').forEach(el => el.innerText = 'App Version v' + window.APP_VERSION);
-
-        const savedTheme = localStorage.getItem('app_theme');
-        if (savedTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-            const tt = document.getElementById('theme-toggle');
-            if(tt) tt.innerText = '☀️';
-        }
-        
-        let startX = 0;
-        document.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
-        document.addEventListener('touchend', e => { 
-            let diff = e.changedTouches[0].clientX - startX;
-            if (Math.abs(diff) > 50) {
-                if (!document.getElementById('screen-reports').classList.contains('hidden')) {
-                    if (diff < 0) switchTab('nda'); else switchTab('ta');
-                } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
-                    if (diff < 0) switchAddTab('nonduty'); else switchAddTab('duty');
-                }
-            }
-        }, {passive: true});
-    });
-
-    // --- CLOUD DATA PROCESSOR ---
-    window.processCloudData = function(fullData) {
-        const adminConfig = fullData.admin_config || {};
-        const userData = fullData.users ? fullData.users[window.currentUid] : null;
-        
-        window.lastSyncTime = new Date().toLocaleTimeString();
-        const syncLbl = document.getElementById('sync-time-lbl');
-        if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
-
-        if(adminConfig.maintenance && !window.isAdmin) {
-            const msg = adminConfig.maintenanceMsg || 'System is under maintenance. Please check back soon.';
-            const msgEl = document.getElementById('admin-lock-msg');
-            if(msgEl) msgEl.innerText = msg;
-            const ovEl = document.getElementById('admin-lock-overlay');
-            if(ovEl) ovEl.classList.remove('hidden');
-        } else {
-            const ovEl = document.getElementById('admin-lock-overlay');
-            if(ovEl) ovEl.classList.add('hidden');
-        }
-
-        const reqV = adminConfig.required_version;
-        if (reqV && reqV !== window.APP_VERSION && !window.isAdmin) {
-            const gateSc = document.getElementById('version-gate-screen');
-            if(gateSc) gateSc.classList.remove('hidden');
-            const gateMsg = document.getElementById('version-gate-msg');
-            if(gateMsg) gateMsg.innerText = `Version ${reqV} is now required. Please reload or clear your browser cache to get the latest version.`;
-            const uiWrap = document.getElementById('ui-wrapper');
-            if(uiWrap) uiWrap.classList.add('hidden');
-            return;
-        } else {
-            const gateSc = document.getElementById('version-gate-screen');
-            if(gateSc) gateSc.classList.add('hidden');
-            const uiWrap = document.getElementById('ui-wrapper');
-            if(uiWrap) uiWrap.classList.remove('hidden');
-        }
-
-        window.adminAnnouncement = adminConfig.announcement || null;
-
-        const daBroadcast = adminConfig.da_broadcast;
-        const banner = document.getElementById('da-broadcast-banner');
-        if (daBroadcast && daBroadcast.active && !window.isAdmin) {
-            window.pendingDaBroadcast = daBroadcast;
-            let parts = [];
-            if (daBroadcast.da) parts.push(`DA → ${daBroadcast.da}%`);
-            if (daBroadcast.ta) parts.push(`TA Rate → ₹${daBroadcast.ta}`);
-            const note = daBroadcast.note ? ` (${daBroadcast.note})` : '';
-            const bTxt = document.getElementById('da-banner-text');
-            if(bTxt) bTxt.innerText = parts.join(' | ') + note;
-            if(banner) banner.classList.remove('hidden');
-        } else {
-            if(banner) banner.classList.add('hidden');
-        }
-
-        window.adminIsMaint = adminConfig.maintenance || false;
-        const sAdmin = document.getElementById('screen-admin');
-        if (sAdmin && !sAdmin.classList.contains('hidden')) {
-            updateAdminUI(adminConfig);
-        }
-
-        if (userData) {
-            window.appState = userData;
-            if (!window.appState.legs) window.appState.legs = [];
-            
-            const sReg = document.getElementById('screen-register');
-            const sAdm = document.getElementById('screen-admin');
-            if (sReg && sReg.classList.contains('hidden') && sAdm && sAdm.classList.contains('hidden')) {
-                navTo('screen-dashboard');
-            }
-        } else {
-            window.appState = { profile: null, legs: [] };
-            navTo('screen-register'); 
-        }
-    };
-
-    // --- UI FUNCTIONS ---
-    window.navTo = function(screenId) { 
-        if (screenId !== 'screen-add' && window.editModeId) {
-            window.editModeId = null;
-            document.getElementById('trip-train').value = '';
-            document.getElementById('trip-dep-date').value = '';
-            document.getElementById('trip-dep-time').value = '';
-            document.getElementById('trip-arr-date').value = '';
-            document.getElementById('trip-arr-time').value = '';
-            document.getElementById('nonduty-from').value = '';
-            document.getElementById('nonduty-to').value = '';
-        }
-        
-        if(screenId === 'screen-add') {
-            populateStnList();
-            if (!window.editModeId) {
-                const dutyLegs = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
-                if (dutyLegs.length > 0) {
-                    const sorted = [...dutyLegs].sort((a,b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
-                    const lastLeg = sorted[0];
-                    const depStnEl = document.getElementById('trip-dep-stn');
-                    if (depStnEl && !depStnEl.value) depStnEl.value = lastLeg.arrStn;
-                }
-            }
-        }
-
-        if(screenId === 'screen-reports') switchTab(currentTab); 
-        
-        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register', 'screen-admin'].forEach(id => { 
-            const el = document.getElementById(id); 
-            if(el) el.classList.add('hidden'); 
-        }); 
-        
-        const trg = document.getElementById(screenId);
-        if(trg) trg.classList.remove('hidden'); 
-        window.scrollTo(0, 0); 
-        
-        const bBar = document.getElementById('main-bottom-bar');
-        if(bBar) {
-            if(screenId === 'screen-login') bBar.classList.add('hidden'); 
-            else bBar.classList.remove('hidden');
-        }
-        
-        if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
-        if(screenId === 'screen-all') { renderAllLogs(); checkGlobalNotifications(); }
-        if(screenId === 'screen-reports') updateReportUI(); 
-        if(screenId === 'screen-backup') updateBackupUI(); 
-        if(screenId === 'screen-register') openSettings(); 
-        
-        const gBack = document.getElementById('global-back-btn');
-        if(gBack) {
-            if(screenId === 'screen-dashboard' || screenId === 'screen-login') gBack.classList.add('hidden'); 
-            else gBack.classList.remove('hidden'); 
-        }
-        
-        if(screenId === 'screen-admin') {
-            const mBtn = document.getElementById('admin-maint-btn');
-            if(mBtn) {
-                if(window.adminIsMaint) {
-                    mBtn.innerText = "Turn OFF Maintenance";
-                    mBtn.style.background = "var(--green)";
-                } else {
-                    mBtn.innerText = "Turn ON Maintenance";
-                    mBtn.style.background = "var(--red)";
-                }
-            }
-        }
-    };
-
+    
     window.openAdminPIN = function() {
         window.pinEntry = '';
         document.getElementById('pin-error').innerText = '';
@@ -1111,8 +973,7 @@
 
     window.toggleAdminMaint = () => {
         const cur = window.adminIsMaint || false;
-        const mInput = document.getElementById('admin-maint-msg');
-        const msg = mInput ? mInput.value.trim() || 'System is under maintenance. We will be back soon.' : 'System Maintenance';
+        const msg = document.getElementById('admin-maint-msg').value.trim() || 'System is under maintenance. We will be back soon.';
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/maintenance'), !cur);
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/maintenanceMsg'), msg).then(() => {
@@ -1122,13 +983,12 @@
     };
 
     window.sendAdminBroadcast = () => {
-        const bInput = document.getElementById('admin-broadcast-msg');
-        const msg = bInput ? bInput.value.trim() : '';
+        const msg = document.getElementById('admin-broadcast-msg').value.trim();
         if (!msg) return showModal("Error", "Please enter a message first.", "error", false);
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/announcement'), msg).then(() => {
                 showModal("Broadcasted!", `Message sent to all users.`, "success", false);
-                bInput.value = '';
+                document.getElementById('admin-broadcast-msg').value = '';
             });
         }
     };
@@ -1142,8 +1002,7 @@
     };
 
     window.pushVersionGate = () => {
-        const vInput = document.getElementById('admin-version-input');
-        const v = vInput ? vInput.value.trim() : '';
+        const v = document.getElementById('admin-version-input').value.trim();
         if (!v) return showModal("Error", "Enter a version number.", "error", false);
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/required_version'), v).then(() => {
@@ -1153,20 +1012,17 @@
     };
 
     window.pushDaBroadcast = () => {
-        const daIn = document.getElementById('admin-da-input');
-        const taIn = document.getElementById('admin-ta-input');
-        const nIn = document.getElementById('admin-da-note');
-        const da = daIn ? daIn.value.trim() : '';
-        const ta = taIn ? taIn.value.trim() : '';
-        const note = nIn ? nIn.value.trim() : '';
+        const da = document.getElementById('admin-da-input').value.trim();
+        const ta = document.getElementById('admin-ta-input').value.trim();
+        const note = document.getElementById('admin-da-note').value.trim();
         if (!da && !ta) return showModal("Error", "Enter DA% or TA Rate to broadcast.", "error", false);
         const payload = { active: true, da: da || null, ta: ta || null, note: note || '', pushedOn: new Date().toLocaleDateString() };
         if(window.firebaseSet && window.firebaseRef && window.db) {
             window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_broadcast'), payload).then(() => {
                 showModal("Pushed!", "DA/TA update sent. Users will see an apply prompt.", "success", false);
-                if(daIn) daIn.value = '';
-                if(taIn) taIn.value = '';
-                if(nIn) nIn.value = '';
+                document.getElementById('admin-da-input').value = '';
+                document.getElementById('admin-ta-input').value = '';
+                document.getElementById('admin-da-note').value = '';
             });
         }
     };
@@ -1185,88 +1041,15 @@
         if (b.da) window.appState.profile.da = b.da;
         if (b.ta) window.appState.profile.tarate = b.ta;
         saveData();
-        const bnr = document.getElementById('da-broadcast-banner');
-        if(bnr) bnr.classList.add('hidden');
+        document.getElementById('da-broadcast-banner').classList.add('hidden');
         showModal("Applied!", `Profile updated: ${b.da ? 'DA = ' + b.da + '%' : ''} ${b.ta ? 'TA Rate = ₹' + b.ta : ''}`.trim(), "success", false);
         updateDashboardUI();
     };
 
-    window.viewUserRoster = () => {
-        if(!window.db || !window.firebaseGet) return;
-        const statsEl = document.getElementById('admin-stats-area');
-        if (!statsEl) return;
-        statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading User Directory...</p>';
-        
-        window.firebaseGet(window.firebaseRef(window.db, 'users')).then(snap => {
-            const users = snap.val() || {};
-            let rosterHTML = `<div style="max-height: 350px; overflow-y: auto; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border);"><table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;">`;
-            rosterHTML += `<thead style="background: rgba(168, 85, 247, 0.2); color: var(--text); position: sticky; top: 0; z-index:10;"><tr><th style="padding: 6px;">Name</th><th style="padding: 6px;">Designation</th><th style="padding: 6px;">HQ</th><th style="padding: 6px;">Pass Exp</th></tr></thead><tbody>`;
-            
-            Object.keys(users).forEach((uid, index) => {
-                const u = users[uid].profile || {};
-                const name = u.name || 'Unknown User';
-                const desig = u.desig || '-';
-                const hq = u.hq || '-';
-                const passval = u.passval ? formatDate(u.passval) : '-';
-                const bg = index % 2 === 0 ? 'transparent' : 'rgba(0,0,0,0.03)';
-                
-                rosterHTML += `<tr style="background: ${bg}; border-bottom: 1px solid var(--border);">
-                    <td style="padding: 6px; font-weight: bold; color: var(--purple);">${name}</td>
-                    <td style="padding: 6px; color: var(--text-muted);">${desig}</td>
-                    <td style="padding: 6px; color: var(--text);">${hq}</td>
-                    <td style="padding: 6px; color: var(--text);">${passval}</td>
-                </tr>`;
-            });
-            
-            rosterHTML += `</tbody></table></div>`;
-            statsEl.innerHTML = rosterHTML;
-        }).catch((e) => {
-            statsEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">Permission Denied. Please ensure Firebase Rules are updated.</p>`;
-        });
-    };
-
     window.loadAdminStats = () => {
-        if(!window.db || !window.firebaseGet) return;
         const statsEl = document.getElementById('admin-stats-area');
         if (!statsEl) return;
-        statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading Stats...</p>';
-        
-        window.firebaseGet(window.firebaseRef(window.db, 'users')).then(snap => {
-            const users = snap.val() || {};
-            const uids = Object.keys(users);
-            const total = uids.length;
-            let payBreak = {};
-            let recentCount = 0;
-            
-            uids.forEach(uid => {
-                const u = users[uid];
-                const pl = u.profile ? u.profile.payscale || 'Unknown' : 'No Profile';
-                payBreak[pl] = (payBreak[pl] || 0) + 1;
-                const legs = u.legs || [];
-                if (legs.length > 0) recentCount++;
-            });
-            
-            const plRows = Object.entries(payBreak).sort((a,b) => b[1]-a[1]).map(([k,v]) => 
-                `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text);">${k}</span><span style="color:var(--blue); font-weight:700;">${v}</span></div>`
-            ).join('');
-
-            statsEl.innerHTML = `
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
-                    <div style="background:var(--input-bg); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border);">
-                        <div style="font-size:28px; font-weight:900; color:var(--blue);">${total}</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Total Users</div>
-                    </div>
-                    <div style="background:var(--input-bg); border-radius:12px; padding:12px; text-align:center; border:1px solid var(--border);">
-                        <div style="font-size:28px; font-weight:900; color:var(--green);">${recentCount}</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Active Users</div>
-                    </div>
-                </div>
-                <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Pay Level Breakdown</div>
-                ${plRows || '<p style="color:var(--text-muted); font-size:13px;">No data</p>'}
-            `;
-        }).catch(() => {
-            statsEl.innerHTML = '<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load stats. Check Firebase rules.</p>';
-        });
+        statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Refresh skipped. Roster feature omitted.</p>';
     };
 
     function updateAdminUI(adminConfig) {
@@ -1282,9 +1065,8 @@
             maintStatus.style.background = isMaint ? 'rgba(239,68,68,0.2)' : 'rgba(34,197,94,0.2)';
             maintStatus.style.color = isMaint ? 'var(--red)' : 'var(--green)';
         }
-        const msgEl = document.getElementById('admin-maint-msg');
-        if (msgEl && adminConfig.maintenanceMsg) {
-            msgEl.placeholder = adminConfig.maintenanceMsg;
+        if (document.getElementById('admin-maint-msg') && adminConfig.maintenanceMsg) {
+            document.getElementById('admin-maint-msg').placeholder = adminConfig.maintenanceMsg;
         }
         
         const reqV = adminConfig.required_version;
@@ -1324,14 +1106,10 @@
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
         localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
-        const tBtn = document.getElementById('theme-toggle');
-        if(tBtn) tBtn.innerText = isDark ? '☀️' : '🌙';
+        document.getElementById('theme-toggle').innerText = isDark ? '☀️' : '🌙';
         
-        const sDash = document.getElementById('screen-dashboard');
-        if (sDash && !sDash.classList.contains('hidden')) updateDashboardUI();
-        
-        const sAll = document.getElementById('screen-all');
-        if (sAll && !sAll.classList.contains('hidden')) renderAllLogs();
+        if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
+        if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
     }
     
     function shareApp() {
@@ -1352,6 +1130,32 @@
             showModal("Attention Required", htmlList, "warning", false);
         }
     }
+
+    window.onload = () => { 
+        // Dynamic Version Rendering
+        const verEl = document.getElementById('app-version-display');
+        if(verEl) verEl.innerText = `App Version v${window.APP_VERSION}`;
+
+        const savedTheme = localStorage.getItem('app_theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            const tt = document.getElementById('theme-toggle');
+            if(tt) tt.innerText = '☀️';
+        }
+        
+        let startX = 0;
+        document.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
+        document.addEventListener('touchend', e => { 
+            let diff = e.changedTouches[0].clientX - startX;
+            if (Math.abs(diff) > 50) {
+                if (!document.getElementById('screen-reports').classList.contains('hidden')) {
+                    if (diff < 0) switchTab('nda'); else switchTab('ta');
+                } else if (!document.getElementById('screen-add').classList.contains('hidden')) {
+                    if (diff < 0) switchAddTab('nonduty'); else switchAddTab('duty');
+                }
+            }
+        }, {passive: true});
+    };
     
     function populateStnList() {
         const dl = document.getElementById('stn-list');
@@ -1388,34 +1192,29 @@
         const btnSaveNonduty = document.getElementById('btn-save-nonduty');
         const tabDutyBtn = document.getElementById('tab-duty');
         const tabNonDutyBtn = document.getElementById('tab-nonduty');
-        const rTitle = document.getElementById('recent-duty-title');
         
         if (tab === 'duty') {
-            if(tabDutyBtn) tabDutyBtn.classList.add('active');
-            if(tabNonDutyBtn) tabNonDutyBtn.classList.remove('active');
-            if(tabDutyBtn) tabDutyBtn.style.background = 'var(--blue)';
-            if(tabNonDutyBtn) tabNonDutyBtn.style.background = 'transparent';
+            tabDutyBtn.classList.add('active');
+            tabNonDutyBtn.classList.remove('active');
+            tabDutyBtn.style.background = 'var(--blue)';
+            tabNonDutyBtn.style.background = 'transparent';
             
-            const fDuty = document.getElementById('form-duty');
-            const fNonDuty = document.getElementById('form-nonduty');
-            if(fDuty) fDuty.classList.remove('hidden');
-            if(fNonDuty) fNonDuty.classList.add('hidden');
-            if(btnSaveDuty) btnSaveDuty.classList.remove('hidden');
-            if(btnSaveNonduty) btnSaveNonduty.classList.add('hidden');
-            if(rTitle) rTitle.innerText = "Recent Duty Entries";
+            document.getElementById('form-duty').classList.remove('hidden');
+            document.getElementById('form-nonduty').classList.add('hidden');
+            btnSaveDuty.classList.remove('hidden');
+            btnSaveNonduty.classList.add('hidden');
+            document.getElementById('recent-duty-title').innerText = "Recent Duty Entries";
         } else {
-            if(tabNonDutyBtn) tabNonDutyBtn.classList.add('active');
-            if(tabDutyBtn) tabDutyBtn.classList.remove('active');
-            if(tabNonDutyBtn) tabNonDutyBtn.style.background = 'var(--green)';
-            if(tabDutyBtn) tabDutyBtn.style.background = 'transparent';
+            tabNonDutyBtn.classList.add('active');
+            tabDutyBtn.classList.remove('active');
+            tabNonDutyBtn.style.background = 'var(--green)';
+            tabDutyBtn.style.background = 'transparent';
             
-            const fDuty = document.getElementById('form-duty');
-            const fNonDuty = document.getElementById('form-nonduty');
-            if(fNonDuty) fNonDuty.classList.remove('hidden');
-            if(fDuty) fDuty.classList.add('hidden');
-            if(btnSaveNonduty) btnSaveNonduty.classList.remove('hidden');
-            if(btnSaveDuty) btnSaveDuty.classList.add('hidden');
-            if(rTitle) rTitle.innerText = "Recent Non-Duty Entries";
+            document.getElementById('form-nonduty').classList.remove('hidden');
+            document.getElementById('form-duty').classList.add('hidden');
+            btnSaveNonduty.classList.remove('hidden');
+            btnSaveDuty.classList.add('hidden');
+            document.getElementById('recent-duty-title').innerText = "Recent Non-Duty Entries";
         }
         
         const rcAdd = document.getElementById('recent-logs-add');
@@ -1456,6 +1255,66 @@
         }
         if(rcAdd) rcAdd.innerHTML = rcHTMLAdd;
     }
+    
+    function navTo(screenId) { 
+        if (screenId !== 'screen-add' && window.editModeId) {
+            window.editModeId = null;
+            document.getElementById('trip-train').value = '';
+            document.getElementById('trip-dep-date').value = '';
+            document.getElementById('trip-dep-time').value = '';
+            document.getElementById('trip-arr-date').value = '';
+            document.getElementById('trip-arr-time').value = '';
+            document.getElementById('nonduty-from').value = '';
+            document.getElementById('nonduty-to').value = '';
+        }
+        
+        if(screenId === 'screen-add') {
+            populateStnList();
+            if (!window.editModeId) {
+                const dutyLegs = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
+                if (dutyLegs.length > 0) {
+                    const sorted = [...dutyLegs].sort((a,b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+                    const lastLeg = sorted[0];
+                    const depStnEl = document.getElementById('trip-dep-stn');
+                    if (depStnEl && !depStnEl.value) depStnEl.value = lastLeg.arrStn;
+                }
+            }
+        }
+
+        if(screenId === 'screen-reports') {
+            switchTab(currentTab); 
+        }
+        
+        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-register', 'screen-admin'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
+        document.getElementById(screenId).classList.remove('hidden'); 
+        window.scrollTo(0, 0); 
+        
+        const bBar = document.getElementById('main-bottom-bar');
+        if(bBar) {
+            if(screenId === 'screen-login') { bBar.classList.add('hidden'); } else { bBar.classList.remove('hidden'); }
+        }
+        
+        if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
+        if(screenId === 'screen-all') { renderAllLogs(); checkGlobalNotifications(); }
+        if(screenId === 'screen-reports') updateReportUI(); 
+        if(screenId === 'screen-backup') updateBackupUI(); 
+        if(screenId === 'screen-register') {
+            openSettings(); 
+        }
+        
+        const gBack = document.getElementById('global-back-btn');
+        if(gBack) {
+            if(screenId === 'screen-dashboard' || screenId === 'screen-login') { gBack.classList.add('hidden'); } else { gBack.classList.remove('hidden'); } 
+        }
+        
+        if(screenId === 'screen-admin') {
+            if(window.adminIsMaint) {
+                document.getElementById('admin-maint-btn').innerText = "Turn OFF Maintenance";
+            } else {
+                document.getElementById('admin-maint-btn').innerText = "Turn ON Maintenance";
+            }
+        }
+    }
 
     function saveData() { 
         if(window.currentUid && window.firebaseSet && window.firebaseRef) {
@@ -1469,17 +1328,13 @@
     
     function showModal(title, msg, type, showCancel, callback) { 
         const modal = document.getElementById('custom-modal'); const box = document.getElementById('modal-box'); 
-        const titleEl = document.getElementById('modal-title');
-        const msgEl = document.getElementById('modal-msg');
-        if(titleEl) titleEl.innerText = title; 
-        if(msgEl) msgEl.innerHTML = msg; 
+        document.getElementById('modal-title').innerText = title; 
+        document.getElementById('modal-msg').innerHTML = msg; 
         const btnCancel = document.getElementById('modal-cancel'); const btnOk = document.getElementById('modal-ok'); 
-        if(btnCancel) {
-            if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
-            btnCancel.onclick = () => { if(modal) modal.classList.add('hidden'); if(callback) callback(false); }; 
-        }
-        if(btnOk) btnOk.onclick = () => { if(modal) modal.classList.add('hidden'); if(callback) callback(true); }; 
-        if(modal) modal.classList.remove('hidden'); 
+        if(showCancel) btnCancel.classList.remove('hidden'); else btnCancel.classList.add('hidden'); 
+        btnOk.onclick = () => { modal.classList.add('hidden'); if(callback) callback(true); }; 
+        btnCancel.onclick = () => { modal.classList.add('hidden'); if(callback) callback(false); }; 
+        modal.classList.remove('hidden'); 
     }
 
     function lockProfile() {
@@ -1498,63 +1353,59 @@
         document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
             inp.disabled = false;
         });
-        const editBtn = document.getElementById('btn-edit-profile');
-        const saveBtn = document.getElementById('btn-save-profile');
-        if(editBtn) editBtn.style.display = 'none';
-        if(saveBtn) saveBtn.style.display = 'block';
+        document.getElementById('btn-edit-profile').style.display = 'none';
+        document.getElementById('btn-save-profile').style.display = 'block';
     }
 
     function checkGazetted(isManualClick) {
-        const empEl = document.getElementById('reg-emp-type');
-        if(!empEl) return;
-        const isGaz = empEl.value === 'Gazetted';
+        const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
         const drop = document.getElementById('reg-payscale-dropdown');
         const txt = document.getElementById('reg-payscale-text');
         if (isGaz) {
-            if(drop) drop.classList.add('hidden'); 
-            if(txt) txt.classList.remove('hidden');
-            if (isManualClick) showModal("NOTICE", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false);
+            drop.classList.add('hidden'); 
+            txt.classList.remove('hidden');
+            if (isManualClick) {
+                showModal("NOTICE", "NDA is only paid to eligible non-gazetted employees up to Pay Level-7.", "warning", false);
+            }
         } else {
-            if(drop) drop.classList.remove('hidden'); 
-            if(txt) txt.classList.add('hidden');
+            drop.classList.remove('hidden'); 
+            txt.classList.add('hidden');
         }
     }
 
     function openSettings() { 
         const p = window.appState.profile || {}; 
-        
-        const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
-        setVal('reg-name', p.name || '');
-        setVal('reg-pf', p.pf || '');
-        setVal('reg-bu', p.bu || '');
-        setVal('reg-desig', p.desig || '');
+        document.getElementById('reg-name').value = p.name || ''; 
+        document.getElementById('reg-pf').value = p.pf || ''; 
+        document.getElementById('reg-bu').value = p.bu || ''; 
+        document.getElementById('reg-desig').value = p.desig || ''; 
         
         const empTypeVal = p.empType || 'Non-Gazetted';
-        setVal('reg-emp-type', empTypeVal);
+        document.getElementById('reg-emp-type').value = empTypeVal;
         
-        const txt = document.getElementById('reg-payscale-text');
-        const drop = document.getElementById('reg-payscale-dropdown');
         if (empTypeVal === 'Gazetted') {
-            if(txt) { txt.value = p.payscale || ''; txt.classList.remove('hidden'); }
-            if(drop) drop.classList.add('hidden');
+            document.getElementById('reg-payscale-text').value = p.payscale || '';
+            document.getElementById('reg-payscale-dropdown').classList.add('hidden');
+            document.getElementById('reg-payscale-text').classList.remove('hidden');
         } else {
-            if(drop) { drop.value = p.payscale || ''; drop.classList.remove('hidden'); }
-            if(txt) txt.classList.add('hidden');
+            document.getElementById('reg-payscale-dropdown').value = p.payscale || '';
+            document.getElementById('reg-payscale-dropdown').classList.remove('hidden');
+            document.getElementById('reg-payscale-text').classList.add('hidden');
         }
         checkGazetted(false); 
         
-        setVal('reg-gradepay', p.gradepay || '');
-        setVal('reg-da', p.da || '');
-        setVal('reg-basicpay', p.basicpay || '');
-        setVal('reg-appt', p.appt || '');
-        setVal('reg-tarate', p.tarate || '');
-        setVal('reg-pass', p.pass || '');
-        setVal('reg-passval', p.passval || '');
-        setVal('reg-auth', p.auth || '');
-        setVal('reg-authval', p.authval || '');
-        setVal('reg-hq', p.hq || '');
-        setVal('reg-nearby', (p.nearby || []).join(', '));
-        setVal('reg-dest', (p.dest || []).join(', '));
+        document.getElementById('reg-gradepay').value = p.gradepay || ''; 
+        document.getElementById('reg-da').value = p.da || ''; 
+        document.getElementById('reg-basicpay').value = p.basicpay || ''; 
+        document.getElementById('reg-appt').value = p.appt || ''; 
+        document.getElementById('reg-tarate').value = p.tarate || ''; 
+        document.getElementById('reg-pass').value = p.pass || ''; 
+        document.getElementById('reg-passval').value = p.passval || ''; 
+        document.getElementById('reg-auth').value = p.auth || ''; 
+        document.getElementById('reg-authval').value = p.authval || ''; 
+        document.getElementById('reg-hq').value = p.hq || ''; 
+        document.getElementById('reg-nearby').value = (p.nearby || []).join(', '); 
+        document.getElementById('reg-dest').value = (p.dest || []).join(', '); 
         
         if (!p.name) {
             unlockProfile();
@@ -1570,8 +1421,7 @@
         let m = new Date().getMonth();
         if (m === 2) localStorage.setItem('da_remind_month', '4'); 
         if (m === 8) localStorage.setItem('da_remind_month', '10'); 
-        const wMsg = document.getElementById('da-warning-msg');
-        if(wMsg) wMsg.classList.add('hidden');
+        document.getElementById('da-warning-msg').classList.add('hidden');
         showModal("Reminder Set", "You will be reminded again on the 1st of next month.", "success", false);
         checkGlobalNotifications();
     }
@@ -1580,7 +1430,6 @@
         window.globalNotifications = [];
         const p = window.appState.profile;
         
-        // ADMIN ALERTS INJECTION
         if(window.adminAnnouncement) {
             window.globalNotifications.push(`📢 ADMIN: ${window.adminAnnouncement}`);
         }
@@ -1653,23 +1502,68 @@
         }
     }
 
-    window.saveProfile = function() { 
+    function checkProfileNotifications() {
+        const p = window.appState.profile;
+        if(!p) return;
+        
+        let validMsg = "";
+        let hasWarning = false;
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        
+        if(p.passval) {
+            const pv = new Date(p.passval);
+            const pDays = (pv - today) / (1000 * 60 * 60 * 24);
+            if (pDays < 0) { validMsg += "Your Card Pass has expired! "; hasWarning = true; }
+            else if (pDays <= 20) { validMsg += `Your Card Pass expires in ${Math.ceil(pDays)} days. `; hasWarning = true; }
+        }
+        if(p.authval) {
+            const av = new Date(p.authval);
+            const aDays = (av - today) / (1000 * 60 * 60 * 24);
+            if (aDays < 0) { validMsg += "Your Checking Authority has expired! "; hasWarning = true; }
+            else if (aDays <= 20) { validMsg += `Your Checking Authority expires in ${Math.ceil(aDays)} days. `; hasWarning = true; }
+        }
+        
+        const alertBox = document.getElementById('profile-alert-box');
+        const alertMsg = document.getElementById('profile-alert-msg');
+        
+        if (hasWarning) {
+            if(alertMsg) alertMsg.innerText = validMsg;
+            if(alertBox) alertBox.classList.remove('hidden');
+        } else {
+            if(alertBox) alertBox.classList.add('hidden');
+        }
+        
+        let daWarningDiv = document.getElementById('da-warning-msg');
+        let daReminded = localStorage.getItem('da_remind_month');
+        let showDA = false; let showRemindBtn = false;
+        const m = today.getMonth(); 
+        const d = today.getDate();
+        if ((m === 2 && d >= 1 && d <= 3) || (m === 8 && d >= 1 && d <= 3)) { showDA = true; showRemindBtn = true; }
+        if (m === 3 && d >= 1 && d <= 3 && daReminded === '4') { showDA = true; }
+        if (m === 9 && d >= 1 && d <= 3 && daReminded === '10') { showDA = true; }
+
+        if (showDA) {
+            let remBtnHtml = showRemindBtn ? `<br><span style="text-decoration:underline; cursor:pointer; font-weight:bold; color:var(--text); display:inline-block; margin-top:5px;" onclick="window.setDAReminder()">⏳ Remind me next month</span>` : '';
+            if(daWarningDiv) {
+                daWarningDiv.innerHTML = `⚠️ Change the DA% if applicable.` + remBtnHtml;
+                daWarningDiv.classList.remove('hidden');
+            }
+        } else {
+            if(daWarningDiv) daWarningDiv.classList.add('hidden');
+        }
+    }
+
+    function saveProfile() { 
         try { 
-            const getVal = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
-            const empEl = document.getElementById('reg-emp-type');
-            const empTypeVal = empEl ? empEl.value : 'Non-Gazetted';
+            const getVal = id => document.getElementById(id).value.trim().toUpperCase(); 
+            const empTypeVal = document.getElementById('reg-emp-type').value;
             const payScaleVal = empTypeVal === 'Gazetted' ? getVal('reg-payscale-text') : getVal('reg-payscale-dropdown');
             
-            const gp = document.getElementById('reg-gradepay') ? document.getElementById('reg-gradepay').value : '';
-            const da = document.getElementById('reg-da') ? document.getElementById('reg-da').value : '';
-            const bp = document.getElementById('reg-basicpay') ? document.getElementById('reg-basicpay').value : '';
-
-            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !payScaleVal || !gp || !da || !bp || !getVal('reg-appt') || !getVal('reg-tarate') || !getVal('reg-hq')) {
-                return showModal("ERROR", "All profile fields are mandatory to fill.", "error", false);
-            }
+            if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !payScaleVal || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !document.getElementById('reg-basicpay').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR", "All profile fields are mandatory to fill.", "error", false);
             
             window.appState.profile = { 
-                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), empType: empTypeVal, payscale: payScaleVal, gradepay: gp, da: da, basicpay: bp, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
+                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), empType: empTypeVal, payscale: payScaleVal, gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, basicpay: document.getElementById('reg-basicpay').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
             }; 
             
             if(!window.appState.legs) window.appState.legs = []; 
@@ -1681,9 +1575,9 @@
         } catch(e) { 
             showModal("Save Error", e.message, "error", false); 
         } 
-    };
+    }
     
-    window.exportData = function() { 
+    function exportData() { 
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState)); 
         const dlAnchorElem = document.createElement('a'); 
         dlAnchorElem.setAttribute("href", dataStr); 
@@ -1693,9 +1587,9 @@
         window.lastManualBackup = new Date().toLocaleString();
         localStorage.setItem('lastManualBackup', window.lastManualBackup);
         updateBackupUI();
-    };
+    }
     
-    window.importData = function(event) { 
+    function importData(event) { 
         const file = event.target.files[0]; 
         if(!file) return; 
         const reader = new FileReader(); 
@@ -1719,60 +1613,39 @@
             } 
         }; 
         reader.readAsText(file); 
-    };
+    }
     
-    window.manageLeg = function(id, train, dep, arr) { 
-        const mt = document.getElementById('manage-type');
-        const mi = document.getElementById('manage-id');
-        const mm = document.getElementById('manage-msg');
-        if(mt) mt.value = 'duty';
-        if(mi) mi.value = id; 
-        if(mm) mm.innerText = `Tr: ${train} | ${dep} ➔ ${arr}`; 
-        const mod = document.getElementById('manage-modal');
-        if(mod) mod.classList.remove('hidden'); 
-    };
-    
-    window.manageNonDuty = function(id, type, from, to) {
-        const mt = document.getElementById('manage-type');
-        const mi = document.getElementById('manage-id');
-        const mm = document.getElementById('manage-msg');
-        if(mt) mt.value = 'nonduty';
-        if(mi) mi.value = id; 
+    function manageLeg(id, train, dep, arr) { 
+        document.getElementById('manage-type').value = 'duty';
+        document.getElementById('manage-id').value = id; 
+        document.getElementById('manage-msg').innerText = `Tr: ${train} | ${dep} ➔ ${arr}`; 
+        document.getElementById('manage-modal').classList.remove('hidden'); 
+    }
+    function manageNonDuty(id, type, from, to) {
+        document.getElementById('manage-type').value = 'nonduty';
+        document.getElementById('manage-id').value = id; 
         let dateStr = (from === to) ? formatDate(from) : `${formatDate(from)} to ${formatDate(to)}`;
-        if(mm) mm.innerText = `${type.toUpperCase()} | ${dateStr}`; 
-        const mod = document.getElementById('manage-modal');
-        if(mod) mod.classList.remove('hidden');
-    };
+        document.getElementById('manage-msg').innerText = `${type.toUpperCase()} | ${dateStr}`; 
+        document.getElementById('manage-modal').classList.remove('hidden');
+    }
+    function closeManage() { document.getElementById('manage-modal').classList.add('hidden'); }
     
-    window.closeManage = function() { 
-        const mod = document.getElementById('manage-modal');
-        if(mod) mod.classList.add('hidden'); 
-    };
-    
-    window.triggerEdit = function() { 
-        const mt = document.getElementById('manage-type');
-        const mi = document.getElementById('manage-id');
-        if(!mt || !mi) return;
-        let mType = mt.value;
-        const id = parseInt(mi.value);
+    function triggerEdit() { 
+        let mType = document.getElementById('manage-type').value;
+        const id = parseInt(document.getElementById('manage-id').value);
         const leg = window.appState.legs.find(l => l.id === id); 
         window.editModeId = id; 
-        window.closeManage(); 
+        closeManage(); 
         
         if (mType === 'nonduty') {
             switchAddTab('nonduty');
-            const nt = document.getElementById('nonduty-type');
-            const nf = document.getElementById('nonduty-from');
-            const nTo = document.getElementById('nonduty-to');
-            if(nt) nt.value = leg.dutyType;
-            if(nf) nf.value = leg.fromDate;
-            if(nTo) nTo.value = leg.toDate;
+            document.getElementById('nonduty-type').value = leg.dutyType;
+            document.getElementById('nonduty-from').value = leg.fromDate;
+            document.getElementById('nonduty-to').value = leg.toDate;
         } else {
             switchAddTab('duty');
-            const tdd = document.getElementById('trip-dep-date');
-            const tt = document.getElementById('trip-train');
-            if(tdd) tdd.value = leg.depDate; 
-            if(tt) tt.value = leg.train; 
+            document.getElementById('trip-dep-date').value = leg.depDate; 
+            document.getElementById('trip-train').value = leg.train; 
             
             const stnSelect = document.getElementById('trip-dep-stn');
             if(stnSelect) {
@@ -1780,37 +1653,18 @@
                 stnSelect.value = leg.depStn; 
             }
             
-            const tdt = document.getElementById('trip-dep-time');
-            const tad = document.getElementById('trip-arr-date');
-            const tas = document.getElementById('trip-arr-stn');
-            const tat = document.getElementById('trip-arr-time');
-            if(tdt) tdt.value = leg.depTime; 
-            if(tad) tad.value = leg.arrDate; 
-            if(tas) tas.value = leg.arrStn; 
-            if(tat) tat.value = leg.arrTime; 
+            document.getElementById('trip-dep-time').value = leg.depTime; 
+            document.getElementById('trip-arr-date').value = leg.arrDate; 
+            document.getElementById('trip-arr-stn').value = leg.arrStn; 
+            document.getElementById('trip-arr-time').value = leg.arrTime; 
         }
         navTo('screen-add'); 
-    };
+    }
     
-    window.triggerDelete = function() { 
-        window.closeManage(); 
-        const mi = document.getElementById('manage-id');
-        if(mi) deleteLeg(parseInt(mi.value)); 
-    };
+    function triggerDelete() { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
     
-    window.saveLeg = function() { 
-        const getVal = id => { const el = document.getElementById(id); return el ? el.value.trim().toUpperCase() : ''; };
-        const leg = { 
-            id: window.editModeId ? window.editModeId : Date.now(), 
-            isNonDuty: false, 
-            depDate: document.getElementById('trip-dep-date').value, 
-            train: getVal('trip-train'), 
-            depStn: getVal('trip-dep-stn'), 
-            depTime: document.getElementById('trip-dep-time').value, 
-            arrDate: document.getElementById('trip-arr-date').value, 
-            arrStn: getVal('trip-arr-stn'), 
-            arrTime: document.getElementById('trip-arr-time').value 
-        }; 
+    function saveLeg() { 
+        const leg = { id: window.editModeId ? window.editModeId : Date.now(), isNonDuty: false, depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
         if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR", "All fields are mandatory.", "error", false); 
         if(leg.depStn === leg.arrStn) return showModal("ERROR", "From and To stations cannot be same.", "error", false); 
         if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR", "Arrival must be after Departure.", "error", false); 
@@ -1821,8 +1675,7 @@
         testLegs.push(leg);
         testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
         
-        const p = window.appState.profile || {};
-        const hqGroup = [p.hq, ...(p.nearby || [])]; 
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
         let dutyOnly = testLegs.filter(l => !l.isNonDuty);
         let idx = dutyOnly.findIndex(l => l.id === leg.id); let prev = idx > 0 ? dutyOnly[idx-1] : null;
         
@@ -1842,12 +1695,13 @@
         
         window.appState.legs = testLegs; 
         
-        ['trip-train','trip-dep-date','trip-dep-time','trip-arr-date','trip-arr-stn','trip-arr-time'].forEach(id => {
-            const el = document.getElementById(id);
-            if(el) el.value = '';
-        });
-        const dStn = document.getElementById('trip-dep-stn');
-        if(dStn) dStn.value = leg.arrStn;
+        document.getElementById('trip-train').value = ''; 
+        document.getElementById('trip-dep-date').value = ''; 
+        document.getElementById('trip-dep-time').value = ''; 
+        document.getElementById('trip-arr-date').value = ''; 
+        document.getElementById('trip-arr-stn').value = ''; 
+        document.getElementById('trip-arr-time').value = ''; 
+        document.getElementById('trip-dep-stn').value = leg.arrStn;
         
         const wasEditing = !!window.editModeId;
         window.editModeId = null;
@@ -1859,17 +1713,12 @@
             updateDashboardUI();
             showModal("Saved!", "Journey saved successfully.", "success", false);
         }
-    };
+    }
 
-    window.saveNonDuty = function() {
-        const nt = document.getElementById('nonduty-type');
-        const nf = document.getElementById('nonduty-from');
-        const nTo = document.getElementById('nonduty-to');
-        if(!nt || !nf || !nTo) return;
-        const type = nt.value;
-        const from = nf.value;
-        const to = nTo.value;
-        
+    function saveNonDuty() {
+        const type = document.getElementById('nonduty-type').value;
+        const from = document.getElementById('nonduty-from').value;
+        const to = document.getElementById('nonduty-to').value;
         if(!from || !to) return showModal("ERROR", "Dates are mandatory.", "error", false);
         if(new Date(from) > new Date(to)) return showModal("ERROR", "From Date cannot be after To Date.", "error", false);
         
@@ -1887,8 +1736,7 @@
         }
         
         const finalizeSave = () => {
-            const p = window.appState.profile || {};
-            const hq = p.hq || 'HQ';
+            const hq = window.appState.profile.hq || 'HQ';
             const leg = { id: window.editModeId || Date.now(), isNonDuty: true, dutyType: type, fromDate: from, toDate: to, depDate: from, depTime: '00:00', arrDate: to, arrTime: '23:59', depStn: hq, arrStn: hq, train: 'NON-DUTY' };
             
             if(!window.appState.legs) window.appState.legs = [];
@@ -1898,8 +1746,8 @@
             testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
             
             window.appState.legs = testLegs;
-            nf.value = '';
-            nTo.value = '';
+            document.getElementById('nonduty-from').value = '';
+            document.getElementById('nonduty-to').value = '';
             const wasEditingND = !!window.editModeId;
             window.editModeId = null;
             saveData(); 
@@ -1919,21 +1767,15 @@
         } else {
             finalizeSave();
         }
-    };
+    }
 
-    window.renderAllLogs = function() { 
-        const container = document.getElementById('all-logs-container'); 
-        if(!container) return;
-        container.innerHTML = ''; 
+    function renderAllLogs() { 
+        const container = document.getElementById('all-logs-container'); container.innerHTML = ''; 
         if(!window.appState.legs || window.appState.legs.length === 0) { container.innerHTML = '<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries yet.</p>'; return; } 
         
-        const yEl = document.getElementById('all-logs-year');
-        const mEl = document.getElementById('all-logs-month');
-        if(!yEl || !mEl) return;
-        const selectedYear = yEl.value;
-        const selectedMonthStr = selectedYear + '-' + mEl.value;
-        const tsEl = document.getElementById('all-train-search');
-        const trainSearch = tsEl ? tsEl.value.trim().toUpperCase() : '';
+        const selectedYear = document.getElementById('all-logs-year').value;
+        const selectedMonthStr = selectedYear + '-' + document.getElementById('all-logs-month').value;
+        const trainSearch = (document.getElementById('all-train-search') ? document.getElementById('all-train-search').value.trim().toUpperCase() : '');
         
         let headerHTML = `<div style="position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 10px 2px; background: var(--table-header-bg); border-bottom: 2px solid var(--table-border); font-size: 11px; font-weight: 900; color: var(--table-header-text); text-transform: uppercase; text-align: center; margin-bottom: 0; transition: background 0.3s, color 0.3s, border 0.3s;">
             <div style="text-align: left; padding-left: 5px;">TRAIN</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
@@ -1953,8 +1795,7 @@
             container.innerHTML = `<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries found. Try changing the filter.</p>`; return;
         }
 
-        const p = window.appState.profile || {};
-        const hqGroup = [p.hq, ...(p.nearby || [])]; 
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
         const dutyOnlyAll = window.appState.legs.filter(l => !l.isNonDuty);
         const allCycles = buildCycles(dutyOnlyAll);
         let legDirectionMap = {};
@@ -2029,7 +1870,7 @@
             }
         }
         container.innerHTML = headerHTML + `<div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; transition: border 0.3s;">` + htmlElements.reverse().join('') + `</div>`;
-    };
+    }
     
     function deleteLeg(id) { 
         showModal("WARNING", "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?", "warning", true, (proceed) => {
@@ -2040,26 +1881,14 @@
     function calculateAbsenceHours(startDt, endDt) { return (new Date(endDt) - new Date(startDt)) / 3600000; }
     function getTAPercentage(hours) { if(hours > 12) return 100; if(hours > 6) return 70; if(hours > 0) return 30; return 0; }
     
-    function buildCycles(legs) { 
-        let cycles = []; let current = []; 
-        const p = window.appState.profile || {};
-        const hqGroup = [p.hq, ...(p.nearby||[])]; 
-        if(!legs) return cycles; 
-        legs.forEach(l => { 
-            current.push(l); 
-            if(hqGroup.includes(l.arrStn)) { cycles.push([...current]); current = []; } 
-        }); 
-        if (current.length > 0) { cycles.push([...current]); } 
-        return cycles; 
-    }
+    function buildCycles(legs) { let cycles = []; let current = []; const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; if(!legs) return cycles; legs.forEach(l => { current.push(l); if(hqGroup.includes(l.arrStn)) { cycles.push([...current]); current = []; } }); if (current.length > 0) { cycles.push([...current]); } return cycles; }
     
     function calculateCycleTA(cycle) { 
         if(cycle.length === 0) return []; 
         let start = new Date(`${cycle[0].depDate}T${cycle[0].depTime}`); 
         let end = new Date(`${cycle[cycle.length-1].arrDate}T${cycle[cycle.length-1].arrTime}`); 
         
-        const p = window.appState.profile || {};
-        const hqGroup = [p.hq, ...(p.nearby||[])]; 
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; 
         if(!hqGroup.includes(cycle[cycle.length-1].arrStn)) {
             let extendedEnd = new Date(`${cycle[cycle.length-1].arrDate}T23:59:59`);
             if(extendedEnd > end) end = extendedEnd;
@@ -2073,13 +1902,7 @@
             const hrs = calculateAbsenceHours(tempStart, tempEnd); 
             if(!dailyTA[dateKey]) dailyTA[dateKey] = 0; dailyTA[dateKey] += hrs; tempStart = new Date(tempEnd.getTime() + 1); 
         } 
-        let results = []; 
-        const rRate = p.tarate ? parseFloat(p.tarate) : 0;
-        for(let date in dailyTA) { 
-            let pct = getTAPercentage(dailyTA[date]); 
-            results.push({date, pct, rate: Math.min(pct * (rRate/100), rRate) }); 
-        } 
-        return results; 
+        let results = []; for(let date in dailyTA) { let pct = getTAPercentage(dailyTA[date]); results.push({date, pct, rate: Math.min(pct * (window.appState.profile.tarate/100), window.appState.profile.tarate) }); } return results; 
     }
     
     function getSplitLegs(cycle) { let printLegs = []; const pad = n => String(n).padStart(2,'0'); cycle.forEach(leg => { if (leg.depDate === leg.arrDate) { printLegs.push({ id: leg.id, date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: leg.arrTime, depStn: leg.depStn, arrStn: leg.arrStn, originalLeg: leg }); } else { printLegs.push({ id: leg.id + '_1', date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: '-', depStn: leg.depStn, arrStn: '-', originalLeg: leg }); let start = new Date(`${leg.depDate}T${leg.depTime}`); let gap = new Date(start); gap.setDate(gap.getDate() + 1); let gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; while(gapStr < leg.arrDate) { printLegs.push({ id: leg.id + '_' + gap.getTime(), date: gapStr, train: leg.train, depTime: '-', arrTime: '-', depStn: '-', arrStn: '-', originalLeg: leg }); gap.setDate(gap.getDate() + 1); gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; } printLegs.push({ id: leg.id + '_2', date: leg.arrDate, train: leg.train, depTime: '-', arrTime: leg.arrTime, depStn: '-', arrStn: leg.arrStn, originalLeg: leg }); } }); printLegs.sort((a, b) => { let tA = a.depTime !== '-' ? a.depTime : (a.arrTime !== '-' ? a.arrTime : '00:00'); let tB = b.depTime !== '-' ? b.depTime : (b.arrTime !== '-' ? b.arrTime : '00:00'); return new Date(`${a.date}T${tA}`) - new Date(`${b.date}T${tB}`); }); return printLegs; }
@@ -2134,7 +1957,7 @@
         return { ndaData, totalNdaMinutes }; 
     }
     
-    window.switchTab = function(tab) { 
+    function switchTab(tab) { 
         currentTab = tab; 
         const tabTa = document.getElementById('tab-ta');
         const tabNda = document.getElementById('tab-nda');
@@ -2199,19 +2022,11 @@
             if(rmh) rmh.value = `${ndaY}-${String(ndaM).padStart(2,'0')}`;
         }
         updateReportUI(); 
-    };
+    }
     
-    window.changeMonth = function(delta) { 
-        const moInput = document.getElementById('report-month-hidden'); 
-        if(!moInput) return;
-        let [y, m] = moInput.value.split('-').map(Number); 
-        let d = new Date(y, m - 1 + delta, 1); 
-        moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; 
-        updateReportUI(); 
-        window.updateDashboardUI(); 
-    };
+    function changeMonth(delta) { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); window.updateDashboardUI(); }
 
-    window.showTrendChart = function() {
+    function showTrendChart() {
         if (!window.appState.legs || !window.appState.profile) return;
         const isNDA = currentTab === 'nda';
         const now = new Date();
@@ -2289,9 +2104,9 @@
         if(tm) tm.innerText = isNDA ? '6-Month NDA Trend' : '6-Month TA Trend (₹)';
         if(tc) tc.innerHTML = `<div style="display:flex; gap:6px; align-items:flex-end; padding:10px 0;">${barsHTML}</div>`;
         if(mod) mod.classList.remove('hidden');
-    };
+    }
 
-    window.updateDashboardUI = function() { 
+    function updateDashboardUI() { 
         let firstName = window.appState.profile && window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
         firstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase(); 
         const hiEl = document.getElementById('dash-hi-name');
@@ -2399,9 +2214,9 @@
             rcHTMLDash += `</tbody></table>`;
         } 
         if(rcDash) rcDash.innerHTML = rcHTMLDash;
-    };
+    }
 
-    window.updateReportUI = function() { 
+    function updateReportUI() { 
         const rmh = document.getElementById('report-month-hidden');
         if(!rmh) return;
         const mo = rmh.value; 
@@ -2523,9 +2338,9 @@
             if(rt) rt.innerText = nightTrainCount;
             if(ra) ra.innerText = `₹${Math.round(ndaAmt)}`;
         } 
-    };
+    }
     
-    window.triggerGenerate = function() { 
+    function triggerGenerate() { 
         const rmh = document.getElementById('report-month-hidden');
         if(!rmh) return;
         const mo = rmh.value;
@@ -2535,8 +2350,7 @@
         if(dutyOnly.length === 0) return showModal("Empty", "No entries to generate.", "warning", false);
 
         let sortedLegs = [...dutyOnly].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
-        const p = window.appState.profile || {};
-        const hqGroup = [p.hq, ...(p.nearby || [])];
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
         let hasBreak = false; let breakMsg = "";
         
         for (let i = 0; i < sortedLegs.length - 1; i++) {
@@ -2552,7 +2366,7 @@
         if(currentTab === 'ta') { generateTAPDF(); } else { 
             showModal("NOTICE", "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month.", "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
         } 
-    };
+    }
 
     function generateTAPDF() { 
         const pwd = document.getElementById('pdf-work-days');
