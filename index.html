@@ -36,9 +36,9 @@
             --row-blue-text: #1e40af;
             --row-muted-text: #475569;
             
-            --table-header-bg: #e0e7ff;
-            --table-header-text: #3730a3;
-            --table-border: #a5b4fc;
+            --table-header-bg: rgba(59, 130, 246, 0.5);
+            --table-header-text: #000000;
+            --table-border: rgba(59, 130, 246, 0.8);
             
             --danger-bg: #fef2f2;
             --danger-border: #fca5a5;
@@ -69,9 +69,9 @@
             --row-blue-text: #79c0ff;
             --row-muted-text: #8b949e;
             
-            --table-header-bg: #21262d;
-            --table-header-text: #58a6ff;
-            --table-border: #30363d;
+            --table-header-bg: rgba(59, 130, 246, 0.5);
+            --table-header-text: #ffffff;
+            --table-border: rgba(59, 130, 246, 0.8);
             
             --danger-bg: #1f1012;
             --danger-border: #6e2030;
@@ -94,7 +94,7 @@
         }
         .hidden { display: none !important; }
         
-        .top-bar { position: relative; background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: background 0.3s; }
+        .top-bar { position: sticky !important; top: 0; z-index: 3000; background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 60px; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.5); transition: background 0.3s; }
         body.dark-mode .top-bar { border-bottom: none; } 
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; width: 100%; pointer-events: none; user-select: none; }
         .top-bar-content { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; pointer-events: none; }
@@ -102,7 +102,6 @@
         .dash-header { min-height: 80px; }
         .dash-title-pill { font-size: 20px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1px solid rgba(253, 224, 71, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block; background: transparent; pointer-events: none; user-select: none; }
         
-        /* Back button: fixed overlay, completely independent of top-bar DOM */
         .back-btn { 
             position: fixed !important; 
             top: 10px !important; 
@@ -119,7 +118,7 @@
             gap: 5px; 
             font-weight: 600; 
             margin: 0; 
-            z-index: 2000; 
+            z-index: 3010; 
             outline: none; 
             box-shadow: none !important; 
             letter-spacing: 0.3px; 
@@ -131,14 +130,14 @@
             min-width: 44px;
         }
         .back-btn:active { opacity: 0.6; }
-        /* Admin gear: also fixed overlay */
+
         .admin-gear-btn {
             position: fixed !important;
             top: 14px !important;
             right: 12px !important;
             font-size: 20px;
             cursor: pointer;
-            z-index: 2001;
+            z-index: 3010;
             pointer-events: auto !important;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
@@ -180,7 +179,7 @@
         .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; }
         .tab-btn.active { color: #ffffff !important; }
         
-        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 18px; font-weight: bold; color: var(--blue); transition: color 0.3s, background 0.3s; border: 1.5px solid rgba(99, 102, 241, 0.35); border-radius: 30px; background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(168,85,247,0.10)); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;}
+        .slider-bar { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; font-weight: bold; color: var(--green); transition: color 0.3s, background 0.3s, border 0.3s; border: 1.5px solid rgba(34, 197, 94, 0.4); border-radius: 30px; background: rgba(34, 197, 94, 0.1); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 15px;}
         .slider-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 32px; height: 32px; margin: 0; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; color: var(--text); }
@@ -202,7 +201,6 @@
         
         .notification-dot { position: absolute; top: 5px; right: 5px; width: 14px; height: 14px; background: var(--red); border-radius: 50%; box-shadow: 0 0 0 2px var(--card); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: bold; }
 
-        /* Global Admin Overlay */
         #admin-lock-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
 
         @media screen {
@@ -241,8 +239,8 @@
         // ADMIN CONFIGURATION
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
-        window.ADMIN_PIN = '1981'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.2';
+        window.ADMIN_PIN = '2580'; 
+        window.APP_VERSION = '3.3';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -254,12 +252,10 @@
                 
                 const isAdmin = (user.uid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(user.email);
                 
-                // Show Admin Gear if authorized
                 if(isAdmin) {
                     document.getElementById('admin-gear-icon').classList.remove('hidden');
                 }
 
-                // Global Cloud Listener
                 onValue(ref(window.db, '/'), (snapshot) => {
                     const fullData = snapshot.val() || {};
                     const adminConfig = fullData.admin_config || {};
@@ -269,7 +265,6 @@
                     const syncLbl = document.getElementById('sync-time-lbl');
                     if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
 
-                    // Maintenance Protocol (bypass for admin)
                     if(adminConfig.maintenance && !isAdmin) {
                         const msg = adminConfig.maintenanceMsg || 'System is under maintenance. Please check back soon.';
                         document.getElementById('admin-lock-msg').innerText = msg;
@@ -278,7 +273,6 @@
                         document.getElementById('admin-lock-overlay').classList.add('hidden');
                     }
 
-                    // Version Gate (bypass for admin)
                     const reqVersion = adminConfig.required_version;
                     if (reqVersion && reqVersion !== window.APP_VERSION && !isAdmin) {
                         document.getElementById('version-gate-screen').classList.remove('hidden');
@@ -290,10 +284,8 @@
                         document.getElementById('ui-wrapper').classList.remove('hidden');
                     }
 
-                    // Announcements
                     window.adminAnnouncement = adminConfig.announcement || null;
 
-                    // DA/TA Broadcast — show banner if pending and user hasn't dismissed
                     const daBroadcast = adminConfig.da_broadcast;
                     if (daBroadcast && daBroadcast.active && !isAdmin) {
                         window.pendingDaBroadcast = daBroadcast;
@@ -307,13 +299,11 @@
                         document.getElementById('da-broadcast-banner').classList.add('hidden');
                     }
 
-                    // Update admin UI if on admin screen
                     window.adminIsMaint = adminConfig.maintenance || false;
                     if (!document.getElementById('screen-admin').classList.contains('hidden')) {
                         updateAdminUI(adminConfig);
                     }
 
-                    // Route User Logic
                     if (userData) {
                         window.appState = userData;
                         if (!window.appState.legs) window.appState.legs = [];
@@ -420,7 +410,7 @@
         </div>
     </div>
 
-    <!-- DA BROADCAST APPLY BANNER (shown on dashboard) -->
+    <!-- DA BROADCAST APPLY BANNER -->
     <div id="da-broadcast-banner" class="hidden" style="position:fixed; top:65px; left:50%; transform:translateX(-50%); width:95%; max-width:580px; background:linear-gradient(135deg, var(--green), #16a34a); color:white; border-radius:12px; padding:12px 15px; z-index:5500; box-shadow:0 4px 15px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:space-between; gap:10px;">
         <div style="flex:1; min-width:0;">
             <div style="font-size:12px; font-weight:900; margin-bottom:3px;">📊 Admin Update Available</div>
@@ -474,14 +464,16 @@
         </div>
     </div>
 
+    <!-- PROFILE SETUP -->
     <div id="screen-register" class="hidden">
         <div class="top-bar">
             <button class="back-btn hidden" id="profile-back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
             <div class="top-bar-content">
                 <h1 style="color: #fde047;">PROFILE SETUP</h1>
             </div>
+            <div id="admin-gear-icon" class="admin-gear-btn hidden" onclick="window.openAdminPIN()">⚙️</div>
         </div>
-        <div id="admin-gear-icon" class="admin-gear-btn hidden" onclick="window.openAdminPIN()">⚙️</div>
+        
         <div class="screen-content">
             
             <div id="profile-alert-box" class="hidden card" style="border-left: 4px solid var(--red); padding: 12px; margin-bottom: 15px;">
@@ -558,10 +550,11 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.2</div>
+            <div id="app-version-display" style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;"></div>
         </div>
     </div>
 
+    <!-- ADMIN DASHBOARD -->
     <div id="screen-admin" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')" style="pointer-events:auto;">← Back</button>
@@ -569,7 +562,6 @@
         </div>
         <div class="screen-content">
 
-            <!-- MAINTENANCE MODE -->
             <div class="card" style="border-left: 4px solid var(--red);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                     <h3 style="color:var(--red); margin:0; font-size:15px;">🔒 Maintenance Mode</h3>
@@ -580,21 +572,19 @@
                 <button id="admin-maint-btn" onclick="window.toggleAdminMaint()" style="background:var(--red);">Turn ON Maintenance</button>
             </div>
 
-            <!-- VERSION GATE -->
             <div class="card" style="border-left: 4px solid var(--orange);">
                 <h3 style="color:var(--orange); margin:0 0 6px 0; font-size:15px;">📱 Version Gate</h3>
                 <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Force users on old versions to update before they can proceed.</p>
                 <div style="display:flex; gap:10px; align-items:flex-end;">
                     <div style="flex:1;">
                         <label class="profile-lbl">Required Version</label>
-                        <input type="text" id="admin-version-input" placeholder="e.g. 3.0">
+                        <input type="text" id="admin-version-input" placeholder="e.g. 3.3">
                     </div>
                     <button onclick="window.pushVersionGate()" style="flex:1; margin:0; background:var(--orange);">Push Version</button>
                 </div>
                 <div id="admin-version-active" style="font-size:11px; color:var(--text-muted); margin-top:8px; text-align:center;"></div>
             </div>
 
-            <!-- GLOBAL ANNOUNCEMENT -->
             <div class="card" style="border-left: 4px solid var(--blue);">
                 <h3 style="color:var(--blue); margin:0 0 6px 0; font-size:15px;">📢 Global Announcement</h3>
                 <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Push a bell notification to all users instantly.</p>
@@ -606,7 +596,6 @@
                 <div id="admin-announce-active" style="font-size:11px; color:var(--blue); margin-top:8px; text-align:center; font-weight:bold;"></div>
             </div>
 
-            <!-- DA / TA BROADCAST -->
             <div class="card" style="border-left: 4px solid var(--green);">
                 <h3 style="color:var(--green); margin:0 0 6px 0; font-size:15px;">📊 DA / TA Rate Broadcast</h3>
                 <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Push revised DA% or TA rate. Users get a one-tap apply prompt on their dashboard.</p>
@@ -628,11 +617,13 @@
                 <div id="admin-da-active" style="font-size:11px; color:var(--green); margin-top:8px; text-align:center; font-weight:bold;"></div>
             </div>
 
-            <!-- USER STATS -->
             <div class="card" style="border-left: 4px solid var(--purple);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h3 style="color:var(--purple); margin:0; font-size:15px;">👥 User Statistics</h3>
-                    <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 14px; font-size:12px; background:var(--purple); border-radius:20px;">Refresh</button>
+                    <h3 style="color:var(--purple); margin:0; font-size:15px;">👥 User Statistics & Roster</h3>
+                    <div style="display:flex; gap:5px;">
+                        <button onclick="window.viewUserRoster()" style="width:auto; margin:0; padding:5px 10px; font-size:11px; background:var(--card); color:var(--purple); border:1px solid var(--purple);">Directory</button>
+                        <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 10px; font-size:11px; background:var(--purple); border-radius:20px;">Refresh</button>
+                    </div>
                 </div>
                 <div id="admin-stats-area">
                     <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh to load stats</p>
@@ -642,6 +633,7 @@
         </div>
     </div>
 
+    <!-- DASHBOARD -->
     <div id="screen-dashboard" class="hidden">
         <div class="top-bar dash-header">
             <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
@@ -696,6 +688,7 @@
         </div>
     </div>
 
+    <!-- ADD ENTRY -->
     <div id="screen-add" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
@@ -779,6 +772,7 @@
         </div>
     </div>
 
+    <!-- ALL JOURNEY -->
     <div id="screen-all" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
@@ -787,7 +781,7 @@
         <div class="screen-content">
             <p style="font-size: 13px; text-align: center; margin-top: 0; margin-bottom: 10px;"><span style="color: var(--red); font-weight: 700;">👆 Tap any row below to Edit or Delete</span></p>
             
-            <div style="display: flex; gap: 8px; margin: 0 auto 15px auto; width: 100%; align-items: center; background: rgba(59, 130, 246, 0.05); padding: 10px 12px; border-radius: 30px; border: 1.5px solid rgba(59, 130, 246, 0.2); box-shadow: var(--shadow);">
+            <div style="display: flex; gap: 8px; margin: 0 auto 15px auto; width: 100%; align-items: center; background: rgba(59, 130, 246, 0.1); padding: 10px 12px; border-radius: 30px; border: 2px solid var(--blue); box-shadow: var(--shadow);">
                 <label style="font-size: 13px; font-weight: 900; color: var(--blue); white-space: nowrap;">Filter:</label>
                 <select id="all-logs-month" onchange="window.renderAllLogs()" style="margin: 0; padding: 6px 8px; width: auto; flex: 1.2; border-radius: 30px; font-size: 13px;">
                     <option value="01">Jan</option><option value="02">Feb</option><option value="03">Mar</option><option value="04">Apr</option>
@@ -819,6 +813,7 @@
         </div>
     </div>
 
+    <!-- REPORTS -->
     <div id="screen-reports" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
@@ -834,15 +829,15 @@
             
             <p style="font-size: 13px; color: var(--blue); font-weight: bold; margin: 0 0 10px 0; text-align: center;">💡 Use ❮ ❯ arrows below to check previous history.</p>
 
-            <div class="slider-bar">
+            <div class="slider-bar" id="report-slider-bar">
                 <button class="slider-btn" onclick="window.changeMonth(-1)">❮</button>
-                <span id="report-slider-text" style="font-weight: 900; font-size: 17px; color: var(--purple); letter-spacing: 0.3px;">Jun 2026</span>
+                <span id="report-slider-text" style="font-weight: 900; font-size: 17px; color: var(--green); letter-spacing: 0.3px;">Jun 2026</span>
                 <button class="slider-btn" onclick="window.changeMonth(1)">❯</button>
             </div>
             <input type="hidden" id="report-month-hidden"> 
             
             <div class="card" id="report-summary-card">
-                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center; cursor: pointer;" onclick="window.showTrendChart()"><span class="summary-pill" style="background: rgba(59, 130, 246, 0.1); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block;">📊 Summary</span></h3>
+                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center;"><span class="summary-pill" id="summary-pill-box" style="background: rgba(34, 197, 94, 0.1); color: var(--green); border: 1px solid rgba(34, 197, 94, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block;">📊 Summary</span></h3>
                 
                 <!-- TA SUMMARY ROWS -->
                 <div id="ta-summary-rows">
@@ -877,6 +872,7 @@
         </div>
     </div>
 
+    <!-- BACKUP -->
     <div id="screen-backup" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')">← Back</button>
@@ -943,7 +939,7 @@
     window.checkGazetted = checkGazetted;
     window.showTrendChart = showTrendChart;
     window.populateStnList = populateStnList;
-    // Admin bindings declared after admin functions are defined below
+    
     window.pinEntry = '';
     
     window.openAdminPIN = function() {
@@ -1050,7 +1046,6 @@
         }
     };
 
-    // User applies DA/TA broadcast from banner
     window.applyDaBroadcast = () => {
         const b = window.pendingDaBroadcast;
         if (!b || !window.appState.profile) return;
@@ -1062,15 +1057,49 @@
         updateDashboardUI();
     };
 
-    window.loadAdminStats = () => {
+    // User Roster Loader
+    window.viewUserRoster = () => {
         if(!window.db) return;
-        const { onValue: ov, ref: rf } = { onValue: window._fbOnValue, ref: window._fbRef };
-        // Read from already-available full snapshot (we already have it from root listener)
         const statsEl = document.getElementById('admin-stats-area');
         if (!statsEl) return;
-        statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading...</p>';
+        statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading User Directory...</p>';
         
-        // Use firebase imported functions
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                let rosterHTML = `<div style="max-height: 250px; overflow-y: auto; margin-top: 10px; border-radius: 8px; border: 1px solid var(--border);"><table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: left;">`;
+                rosterHTML += `<thead style="background: rgba(168, 85, 247, 0.2); color: var(--text); position: sticky; top: 0;"><tr><th style="padding: 6px;">Name</th><th style="padding: 6px;">Designation</th><th style="padding: 6px;">HQ</th><th style="padding: 6px;">Pass Exp</th></tr></thead><tbody>`;
+                
+                Object.keys(users).forEach((uid, index) => {
+                    const u = users[uid].profile || {};
+                    const name = u.name || 'Unknown User';
+                    const desig = u.desig || '-';
+                    const hq = u.hq || '-';
+                    const passval = u.passval ? formatDate(u.passval) : '-';
+                    const bg = index % 2 === 0 ? 'transparent' : 'rgba(0,0,0,0.03)';
+                    
+                    rosterHTML += `<tr style="background: ${bg}; border-bottom: 1px solid var(--border);">
+                        <td style="padding: 6px; font-weight: bold; color: var(--purple);">${name}</td>
+                        <td style="padding: 6px; color: var(--text-muted);">${desig}</td>
+                        <td style="padding: 6px; color: var(--text);">${hq}</td>
+                        <td style="padding: 6px; color: var(--text);">${passval}</td>
+                    </tr>`;
+                });
+                
+                rosterHTML += `</tbody></table></div>`;
+                statsEl.innerHTML = rosterHTML;
+            }).catch((e) => {
+                statsEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">Permission Denied. Did you update the Firebase Security Rules?</p>`;
+            });
+        });
+    };
+
+    window.loadAdminStats = () => {
+        if(!window.db) return;
+        const statsEl = document.getElementById('admin-stats-area');
+        if (!statsEl) return;
+        statsEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading Stats...</p>';
+        
         import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
             get(r(window.db, 'users')).then(snap => {
                 const users = snap.val() || {};
@@ -1078,7 +1107,6 @@
                 const total = uids.length;
                 let payBreak = {};
                 let recentCount = 0;
-                const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
                 
                 uids.forEach(uid => {
                     const u = users[uid];
@@ -1196,6 +1224,10 @@
     }
 
     window.onload = () => { 
+        // Dynamic Version Injection
+        const verEl = document.getElementById('app-version-display');
+        if (verEl) verEl.innerText = `App Version v${window.APP_VERSION}`;
+
         const savedTheme = localStorage.getItem('app_theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
@@ -1240,14 +1272,12 @@
                 isDragging = false;
             }, { passive: false });
             
-            // Also handle click for desktop
             floatBack.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (!isDragging) window.navTo('screen-dashboard');
             });
         }
         
-        // FIXED SWIPE ENGINE
         let startX = 0;
         document.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
         document.addEventListener('touchend', e => { 
@@ -1412,12 +1442,13 @@
             if(screenId === 'screen-dashboard' || screenId === 'screen-login') { gBack.classList.add('hidden'); } else { gBack.classList.remove('hidden'); } 
         }
         
-        // Setup Admin Screen data
         if(screenId === 'screen-admin') {
             if(window.adminIsMaint) {
                 document.getElementById('admin-maint-btn').innerText = "Turn OFF Maintenance";
+                document.getElementById('admin-maint-btn').style.background = "var(--green)";
             } else {
                 document.getElementById('admin-maint-btn').innerText = "Turn ON Maintenance";
+                document.getElementById('admin-maint-btn').style.background = "var(--red)";
             }
         }
     }
@@ -1536,7 +1567,6 @@
         window.globalNotifications = [];
         const p = window.appState.profile;
         
-        // ADMIN ALERTS INJECTION
         if(window.adminAnnouncement) {
             window.globalNotifications.push(`📢 ADMIN: ${window.adminAnnouncement}`);
         }
@@ -2069,6 +2099,9 @@
         const tabTa = document.getElementById('tab-ta');
         const tabNda = document.getElementById('tab-nda');
         const genBtn = document.getElementById('generate-btn');
+        const sliderBar = document.getElementById('report-slider-bar');
+        const sliderText = document.getElementById('report-slider-text');
+        const summaryPill = document.getElementById('summary-pill-box');
         
         if(tab === 'ta') {
             tabTa.classList.add('active'); 
@@ -2077,11 +2110,17 @@
             tabNda.style.background = 'transparent';
             genBtn.style.background = 'var(--green)';
             
+            sliderBar.style.background = 'rgba(34, 197, 94, 0.1)';
+            sliderBar.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+            sliderText.style.color = 'var(--green)';
+            summaryPill.style.background = 'rgba(34, 197, 94, 0.1)';
+            summaryPill.style.borderColor = 'rgba(34, 197, 94, 0.4)';
+            summaryPill.style.color = 'var(--green)';
+            
             const today = new Date();
             document.getElementById('report-month-hidden').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,'0')}`;
             document.getElementById('rep-ta-row').style.borderBottom = 'none';
             document.getElementById('rep-ta-row').style.marginBottom = '0';
-            document.getElementById('rep-nda-row').classList.add('hidden');
             document.getElementById('rep-val-label').innerText = "Total TA";
         } else {
             tabNda.classList.add('active'); 
@@ -2089,6 +2128,13 @@
             tabNda.style.background = 'var(--purple)';
             tabTa.style.background = 'transparent';
             genBtn.style.background = 'var(--purple)';
+            
+            sliderBar.style.background = 'rgba(168, 85, 247, 0.1)';
+            sliderBar.style.borderColor = 'rgba(168, 85, 247, 0.4)';
+            sliderText.style.color = 'var(--purple)';
+            summaryPill.style.background = 'rgba(168, 85, 247, 0.1)';
+            summaryPill.style.borderColor = 'rgba(168, 85, 247, 0.4)';
+            summaryPill.style.color = 'var(--purple)';
             
             const today = new Date();
             let ndaY = today.getFullYear();
@@ -2100,7 +2146,6 @@
             document.getElementById('report-month-hidden').value = `${ndaY}-${String(ndaM).padStart(2,'0')}`;
             document.getElementById('rep-ta-row').style.borderBottom = '1px dashed rgba(0,0,0,0.1)';
             document.getElementById('rep-ta-row').style.marginBottom = '15px';
-            document.getElementById('rep-nda-row').classList.remove('hidden');
             document.getElementById('rep-val-label').innerText = "Total NDA";
         }
         updateReportUI(); 
@@ -2164,8 +2209,6 @@
                 topText = ndaMoney > 0 ? `₹${ndaMoney}` : `${v}h`;
             }
 
-            // For NDA: money on top label, hours label centered in bar container
-            // For TA: money on top, bar fills normally
             const barContainer = isNDA
                 ? `<div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:visible; position:relative;">
                     <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px;"></div>
@@ -2213,9 +2256,9 @@
                 txt.innerText = 'At HQ'; 
             } else { 
                 const lastLeg = dutyOnly[dutyOnly.length - 1]; 
-                badge.style.background = 'rgba(234, 179, 8, 0.35)'; 
-                badge.style.border = '1px solid rgba(234, 179, 8, 0.7)';
-                badge.style.color = document.body.classList.contains('dark-mode') ? '#fde047' : '#854d0e'; 
+                badge.style.background = 'rgba(234, 179, 8, 0.7)'; 
+                badge.style.border = '1px solid rgba(234, 179, 8, 1)';
+                badge.style.color = document.body.classList.contains('dark-mode') ? '#000000' : '#854d0e'; 
                 dot.style.background = 'rgba(234, 179, 8, 1)'; 
                 txt.innerText = `${lastLeg.arrStn}`; 
             } 
@@ -2314,13 +2357,27 @@
             cycles.forEach(cycle => { 
                 const taResults = calculateCycleTA(cycle); 
                 taResultsAll.push(...taResults);
-                cycle.forEach(leg => { 
+                
+                let maxGap = -1; let splitIdx = 0;
+                for(let i=0; i < cycle.length - 1; i++) {
+                    let arrT = new Date(`${cycle[i].arrDate}T${cycle[i].arrTime}`);
+                    let depT = new Date(`${cycle[i+1].depDate}T${cycle[i+1].depTime}`);
+                    let gap = depT - arrT;
+                    if(gap > maxGap) { maxGap = gap; splitIdx = i; }
+                }
+                
+                let upHasMonth = false;
+                let downHasMonth = false;
+                cycle.forEach((leg, idx) => { 
                     if(leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo)) { 
-                        tripCount++; 
-                        const trainNo = parseInt(leg.train) || 0;
-                        if (trainNo % 2 === 0) { downCount++; } else { upCount++; }
+                        if (idx <= splitIdx) upHasMonth = true;
+                        else downHasMonth = true;
                     } 
                 }); 
+                if (upHasMonth || downHasMonth) tripCount++;
+                if (upHasMonth) upCount++;
+                if (downHasMonth) downCount++;
+                
                 taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); 
             }); 
 
