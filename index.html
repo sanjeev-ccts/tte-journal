@@ -36,7 +36,7 @@
             --row-blue-text: #1e40af;
             --row-muted-text: #475569;
             
-            --table-header-bg: rgba(59, 130, 246, 0.5);
+            --table-header-bg: #2563eb;
             --table-header-text: #ffffff;
             --table-border: #93c5fd;
             
@@ -69,7 +69,7 @@
             --row-blue-text: #79c0ff;
             --row-muted-text: #8b949e;
             
-            --table-header-bg: rgba(88, 166, 255, 0.5);
+            --table-header-bg: #1f6feb;
             --table-header-text: #ffffff;
             --table-border: #58a6ff;
             
@@ -242,7 +242,7 @@
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
         window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.0';
+        window.APP_VERSION = '3.4';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -558,7 +558,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.3</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.4</div>
         </div>
     </div>
 
@@ -637,6 +637,8 @@
                 <div id="admin-stats-area">
                     <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh to load stats</p>
                 </div>
+                <button onclick="window.loadUserRoster()" style="margin-top:12px; background:var(--blue);">📋 View Roster</button>
+                <div id="admin-roster-area" style="margin-top:12px;"></div>
             </div>
 
         </div>
@@ -784,9 +786,24 @@
                         <input list="stn-list" id="nonduty-mela-stn" placeholder="e.g. PRG" style="text-transform: uppercase;" oninput="this.value=this.value.toUpperCase()" onfocus="window.populateStnList()">
                     </div>
 
+                    <!-- STATION DUTY: shift (time period) of duty, used to calculate NDA -->
+                    <div id="nonduty-shift-box" class="hidden" style="margin-bottom: 12px;">
+                        <label style="font-size: 13px; font-weight: bold; color: var(--purple); display: block; margin-bottom: 5px;">Shift of Duty <span style="color: var(--text-muted); font-weight: 500;">(used to calculate NDA)</span></label>
+                        <div style="display: flex; gap: 10px;">
+                            <div style="flex: 1;">
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">From</label>
+                                <input type="text" inputmode="numeric" id="nonduty-shift-from" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4">
+                            </div>
+                            <div style="flex: 1;">
+                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">To</label>
+                                <input type="text" inputmode="numeric" id="nonduty-shift-to" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4">
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- MELA/STATION DUTY: objective of journey (user-filled, printed in TA for these dates) -->
                     <div id="nonduty-objective-box" class="hidden" style="margin-bottom: 0;">
-                        <label style="font-size: 13px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 5px;">Objective of Journey <span style="color: var(--text-muted); font-weight: 500;">(printed on TA Journal)</span></label>
+                        <label style="font-size: 13px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 5px;">Objective of Journey <span id="nonduty-objective-optional-tag" style="color: var(--text-muted); font-weight: 500;">(printed on TA Journal)</span></label>
                         <input type="text" id="nonduty-objective-text" placeholder="e.g. Kumbh Mela Duty">
                     </div>
                 </div>
@@ -1133,6 +1150,59 @@
         });
     };
 
+    window.loadUserRoster = () => {
+        if(!window.db) return;
+        const rosterEl = document.getElementById('admin-roster-area');
+        if (!rosterEl) return;
+        rosterEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading roster...</p>';
+
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                const uids = Object.keys(users);
+
+                if (uids.length === 0) {
+                    rosterEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">No users found.</p>';
+                    return;
+                }
+
+                let hqCounts = {};
+                let rows = uids.map(uid => {
+                    const u = users[uid];
+                    const p = u.profile || {};
+                    const name = p.name || '(No Name)';
+                    const desig = p.desig || '-';
+                    const hq = p.hq || 'Unassigned';
+                    hqCounts[hq] = (hqCounts[hq] || 0) + 1;
+                    return { name, desig, hq };
+                });
+                rows.sort((a, b) => a.hq.localeCompare(b.hq) || a.name.localeCompare(b.name));
+
+                const tableRows = rows.map(rw =>
+                    `<tr><td style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--text);">${rw.name}</td><td style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--text);">${rw.desig}</td><td style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--text); font-weight:700;">${rw.hq}</td></tr>`
+                ).join('');
+
+                const hqRows = Object.entries(hqCounts).sort((a,b) => b[1]-a[1]).map(([hq, count]) =>
+                    `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text);">${hq}</span><span style="color:var(--purple); font-weight:700;">${count}</span></div>`
+                ).join('');
+
+                rosterEl.innerHTML = `
+                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Users by HQ</div>
+                    ${hqRows || '<p style="color:var(--text-muted); font-size:13px;">No data</p>'}
+                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin:14px 0 6px 0; text-transform:uppercase;">Central User Roster (${rows.length})</div>
+                    <div style="max-height:400px; overflow-y:auto; border:1px solid var(--border); border-radius:8px;">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <thead><tr style="background:var(--table-header-bg);"><th style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--table-header-text); text-align:left;">Name</th><th style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--table-header-text); text-align:left;">Designation</th><th style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--table-header-text); text-align:left;">HQ</th></tr></thead>
+                            <tbody>${tableRows}</tbody>
+                        </table>
+                    </div>
+                `;
+            }).catch(() => {
+                rosterEl.innerHTML = '<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load roster. Check Firebase rules.</p>';
+            });
+        });
+    };
+
     function updateAdminUI(adminConfig) {
         const isMaint = adminConfig.maintenance || false;
         const maintBtn = document.getElementById('admin-maint-btn');
@@ -1317,18 +1387,24 @@
         const othersBox = document.getElementById('nonduty-others-box');
         const melaBox = document.getElementById('nonduty-mela-box');
         const objBox = document.getElementById('nonduty-objective-box');
+        const shiftBox = document.getElementById('nonduty-shift-box');
+        const objOptionalTag = document.getElementById('nonduty-objective-optional-tag');
         
         othersBox.classList.add('hidden');
         melaBox.classList.add('hidden');
         objBox.classList.add('hidden');
+        shiftBox.classList.add('hidden');
         
         if (type === 'Others') {
             othersBox.classList.remove('hidden');
         } else if (type === 'Mela Duty') {
             melaBox.classList.remove('hidden');
             objBox.classList.remove('hidden');
+            objOptionalTag.innerText = '(printed on TA Journal)';
         } else if (type === 'Station Duty') {
             objBox.classList.remove('hidden');
+            shiftBox.classList.remove('hidden');
+            objOptionalTag.innerText = '(optional, for record only — no TA at HQ)';
         }
     }
     window.handleNonDutyTypeChange = handleNonDutyTypeChange;
@@ -1797,6 +1873,8 @@
                 document.getElementById('nonduty-objective-text').value = leg.objective || '';
             } else if (leg.dutyType === 'Station Duty') {
                 document.getElementById('nonduty-objective-text').value = leg.objective || '';
+                document.getElementById('nonduty-shift-from').value = leg.shiftFrom || '';
+                document.getElementById('nonduty-shift-to').value = leg.shiftTo || '';
             } else if (leg.dutyType === 'Others') {
                 document.getElementById('nonduty-others-text').value = leg.othersLabel || '';
             }
@@ -1880,15 +1958,17 @@
         if(!from || !to) return showModal("ERROR", "Dates are mandatory.", "error", false);
         if(new Date(from) > new Date(to)) return showModal("ERROR", "From Date cannot be after To Date.", "error", false);
 
-        let melaStn = '', objective = '', othersLabel = '';
+        let melaStn = '', objective = '', othersLabel = '', shiftFrom = '', shiftTo = '';
         if (type === 'Mela Duty') {
             melaStn = document.getElementById('nonduty-mela-stn').value.toUpperCase().trim();
             objective = document.getElementById('nonduty-objective-text').value.trim();
             if (!melaStn) return showModal("ERROR", "Mela Duty Station is mandatory.", "error", false);
             if (!objective) return showModal("ERROR", "Objective of Journey is mandatory for Mela Duty.", "error", false);
         } else if (type === 'Station Duty') {
-            objective = document.getElementById('nonduty-objective-text').value.trim();
-            if (!objective) return showModal("ERROR", "Objective of Journey is mandatory for Station Duty.", "error", false);
+            objective = document.getElementById('nonduty-objective-text').value.trim(); // optional, for record only
+            shiftFrom = document.getElementById('nonduty-shift-from').value.trim();
+            shiftTo = document.getElementById('nonduty-shift-to').value.trim();
+            if (!shiftFrom || !shiftTo) return showModal("ERROR", "Shift of Duty (From & To time) is mandatory for Station Duty.", "error", false);
         } else if (type === 'Others') {
             othersLabel = document.getElementById('nonduty-others-text').value.trim();
             if (!othersLabel) return showModal("ERROR", "Custom Label is mandatory for Others.", "error", false);
@@ -1912,7 +1992,7 @@
             const leg = { id: window.editModeId || Date.now(), isNonDuty: true, dutyType: type, fromDate: from, toDate: to, depDate: from, depTime: '00:00', arrDate: to, arrTime: '23:59', depStn: hq, arrStn: hq, train: 'NON-DUTY' };
             
             if (type === 'Mela Duty') { leg.melaStn = melaStn; leg.objective = objective; }
-            if (type === 'Station Duty') { leg.objective = objective; }
+            if (type === 'Station Duty') { leg.objective = objective; leg.shiftFrom = shiftFrom; leg.shiftTo = shiftTo; }
             if (type === 'Others') { leg.othersLabel = othersLabel; }
             
             if(!window.appState.legs) window.appState.legs = [];
@@ -1928,6 +2008,8 @@
             if(document.getElementById('nonduty-others-text')) document.getElementById('nonduty-others-text').value = '';
             if(document.getElementById('nonduty-mela-stn')) document.getElementById('nonduty-mela-stn').value = '';
             if(document.getElementById('nonduty-objective-text')) document.getElementById('nonduty-objective-text').value = '';
+            if(document.getElementById('nonduty-shift-from')) document.getElementById('nonduty-shift-from').value = '';
+            if(document.getElementById('nonduty-shift-to')) document.getElementById('nonduty-shift-to').value = '';
             handleNonDutyTypeChange();
             const wasEditingND = !!window.editModeId;
             window.editModeId = null;
@@ -2091,6 +2173,23 @@
     
     function getSplitLegs(cycle) { let printLegs = []; const pad = n => String(n).padStart(2,'0'); cycle.forEach(leg => { if (leg.depDate === leg.arrDate) { printLegs.push({ id: leg.id, date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: leg.arrTime, depStn: leg.depStn, arrStn: leg.arrStn, originalLeg: leg }); } else { printLegs.push({ id: leg.id + '_1', date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: '-', depStn: leg.depStn, arrStn: '-', originalLeg: leg }); let start = new Date(`${leg.depDate}T${leg.depTime}`); let gap = new Date(start); gap.setDate(gap.getDate() + 1); let gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; while(gapStr < leg.arrDate) { printLegs.push({ id: leg.id + '_' + gap.getTime(), date: gapStr, train: leg.train, depTime: '-', arrTime: '-', depStn: '-', arrStn: '-', originalLeg: leg }); gap.setDate(gap.getDate() + 1); gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; } printLegs.push({ id: leg.id + '_2', date: leg.arrDate, train: leg.train, depTime: '-', arrTime: leg.arrTime, depStn: '-', arrStn: leg.arrStn, originalLeg: leg }); } }); printLegs.sort((a, b) => { let tA = a.depTime !== '-' ? a.depTime : (a.arrTime !== '-' ? a.arrTime : '00:00'); let tB = b.depTime !== '-' ? b.depTime : (b.arrTime !== '-' ? b.arrTime : '00:00'); return new Date(`${a.date}T${tA}`) - new Date(`${b.date}T${tB}`); }); return printLegs; }
     
+    function computeNightWindow(signOn, signOff) {
+        let current = new Date(signOn); let mins = 0; let nFromStr = ""; let nToStr = "";
+        while (current < signOff) {
+            let h = current.getHours();
+            if (h >= 22 || h < 6) {
+                if (nFromStr === "") nFromStr = `${String(current.getHours()).padStart(2,'0')}:${String(current.getMinutes()).padStart(2,'0')}`;
+                let nextBound = new Date(current);
+                if (h >= 22) { nextBound.setDate(nextBound.getDate()+1); nextBound.setHours(6,0,0,0); } else { nextBound.setHours(6,0,0,0); }
+                if (nextBound > signOff) nextBound = new Date(signOff);
+                mins += (nextBound - current) / 60000;
+                nToStr = `${String(nextBound.getHours()).padStart(2,'0')}:${String(nextBound.getMinutes()).padStart(2,'0')}`;
+                current = nextBound;
+            } else { current.setHours(22,0,0,0); }
+        }
+        return { nFromStr, nToStr, mins };
+    }
+
     function extractNDALegs(mo) { 
         const [year, month] = mo.split('-').map(Number); 
         const ndaStart = new Date(year, month - 2, 16, 0, 0, 0); 
@@ -2098,7 +2197,7 @@
         let ndaData = []; let totalNdaMinutes = 0; 
         if(!window.appState.legs) return { ndaData, totalNdaMinutes }; 
         
-        let dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
+        let dutyOnly = window.appState.legs.filter(l => !l.isNonDuty); 
         const cycles = buildCycles(dutyOnly); 
         let dutyLegs = []; 
         cycles.forEach(cycle => { 
@@ -2119,25 +2218,40 @@
             let signOff = new Date(`${lastTrip.arrDate}T${lastTrip.arrTime}:00`); signOff.setMinutes(signOff.getMinutes() + 30); 
             
             if(signOn >= ndaStart && signOn <= ndaEnd) { 
-                let current = new Date(signOn); let legNdaMins = 0; let nFromStr = ""; let nToStr = ""; 
-                while(current < signOff) { 
-                    let h = current.getHours(); 
-                    if(h >= 22 || h < 6) { 
-                        if(nFromStr === "") nFromStr = `${String(current.getHours()).padStart(2,'0')}:${String(current.getMinutes()).padStart(2,'0')}`; 
-                        let nextBound = new Date(current); 
-                        if(h >= 22) { nextBound.setDate(nextBound.getDate()+1); nextBound.setHours(6,0,0,0); } else { nextBound.setHours(6,0,0,0); } 
-                        if(nextBound > signOff) nextBound = new Date(signOff); 
-                        legNdaMins += (nextBound - current) / 60000; 
-                        nToStr = `${String(nextBound.getHours()).padStart(2,'0')}:${String(nextBound.getMinutes()).padStart(2,'0')}`; 
-                        current = nextBound; 
-                    } else { current.setHours(22,0,0,0); } 
-                } 
+                const { nFromStr, nToStr, mins: legNdaMins } = computeNightWindow(signOn, signOff);
                 if(legNdaMins > 0) { 
                     totalNdaMinutes += legNdaMins; 
                     ndaData.push({ trips: duty, fromStn: firstTrip.depStn, toStn: lastTrip.arrStn, signOn, signOff, nFromStr, nToStr, mins: legNdaMins }); 
                 } 
             } 
         }); 
+
+        // ===== Station Duty: per-date shift-based NDA (no train involved) =====
+        const stationDuties = window.appState.legs.filter(l => l.isNonDuty && l.dutyType === 'Station Duty' && l.shiftFrom && l.shiftTo);
+        stationDuties.forEach(sd => {
+            let cur = new Date(`${sd.fromDate}T00:00:00`);
+            const last = new Date(`${sd.toDate}T00:00:00`);
+            const pad = n => String(n).padStart(2,'0');
+            while (cur <= last) {
+                const dateStr = `${cur.getFullYear()}-${pad(cur.getMonth()+1)}-${pad(cur.getDate())}`;
+                let signOn = new Date(`${dateStr}T${sd.shiftFrom}:00`);
+                let signOff = new Date(`${dateStr}T${sd.shiftTo}:00`);
+                if (signOff <= signOn) signOff.setDate(signOff.getDate() + 1); // overnight shift
+                if (signOn >= ndaStart && signOn <= ndaEnd) {
+                    const { nFromStr, nToStr, mins } = computeNightWindow(signOn, signOff);
+                    if (mins > 0) {
+                        totalNdaMinutes += mins;
+                        ndaData.push({
+                            trips: [{ date: dateStr, train: 'STATION DUTY', depTime: sd.shiftFrom, arrTime: sd.shiftTo, depStn: '-', arrStn: '-' }],
+                            fromStn: '-', toStn: '-', signOn, signOff, nFromStr, nToStr, mins, isStationDuty: true
+                        });
+                    }
+                }
+                cur.setDate(cur.getDate() + 1);
+            }
+        });
+
+        ndaData.sort((a, b) => a.signOn - b.signOn);
         return { ndaData, totalNdaMinutes }; 
     }
     
@@ -2524,6 +2638,8 @@
             if (existingDates.has(dateStr)) continue;
             const special = findSpecialDutyForDate(dateStr);
             if (!special) continue; // only inject rows for dates covered by a Mela Duty record
+            const hqGroupChk = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
+            if (hqGroupChk.includes(special.melaStn)) continue; // Mela Duty AT HQ/nearby-HQ = TA is zero, never printed on TA PDF
             const matchingTA = taResultsAll.find(r => r.date === dateStr);
             validLegs.push({
                 item: { date: dateStr, train: '-', depTime: '-', arrTime: '-', depStn: '-', arrStn: '-' },
@@ -2537,9 +2653,14 @@
         let pCell = isSquished ? "1px" : "2px";
         let fCell = isSquished ? "9px" : "10px";
 
+        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
+        validLegs = validLegs.filter(row => {
+            const special = findSpecialDutyForDate(row.item.date);
+            return !(special && hqGroup.includes(special.melaStn));
+        });
+
         // ===== Build Objective segments (normal "Worked as TTE" vs Mela/Station Duty blocks) =====
         // Each row in validLegs maps to one date. Tag each row with its objective-segment key.
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
         const rowMeta = validLegs.map(row => {
             const special = findSpecialDutyForDate(row.item.date);
             let segKey = 'normal'; let segLabel = 'Worked as TTE'; let isMelaAwayDay = false;
