@@ -241,8 +241,8 @@
         // ADMIN CONFIGURATION
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
-        window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.0';
+        window.ADMIN_PIN = '1981'; // Change this to your preferred PIN
+        window.APP_VERSION = '3.2';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
