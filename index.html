@@ -826,7 +826,7 @@
                             <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; width: 100%;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Time <span style="color:var(--orange); font-weight:400; font-size:10px;">(optional for today only)</span></label>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Time</label>
                             <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; width: 100%;">
                         </div>
                     </div>
@@ -1003,18 +1003,43 @@
 
     <!-- CALENDAR POPUP MODAL -->
     <div id="calendar-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:6500;">
-        <div style="background:var(--modal-bg); padding:18px; border-radius:16px; width:92%; max-width:340px; border:1px solid var(--border); box-shadow:var(--shadow); transition:background 0.3s;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h4 style="margin:0; font-size:14px; font-weight:900; color:var(--blue);">📅 Monthly Duty Calendar</h4>
+        <div style="background:var(--modal-bg); padding:18px; border-radius:16px; width:95%; max-width:370px; border:1px solid var(--border); box-shadow:var(--shadow); transition:background 0.3s;">
+            
+            <!-- Header row -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h4 style="margin:0; font-size:14px; font-weight:900; color:var(--blue);">📅 Duty Calendar</h4>
                 <button onclick="document.getElementById('calendar-modal').classList.add('hidden')" style="width:auto; margin:0; padding:4px 12px; font-size:12px; background:#64748b; border-radius:20px;">✕</button>
             </div>
+
+            <!-- Month / Year Navigation -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; background:var(--input-bg); border-radius:30px; padding:6px 12px; border:1px solid var(--border);">
+                <button onclick="window.calNavMonth(-1)" style="width:auto; margin:0; padding:4px 12px; font-size:16px; background:transparent; color:var(--blue); border:none; box-shadow:none; font-weight:900;">‹</button>
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <select id="cal-month-sel" onchange="window.renderDutyCalendar()" style="margin:0; padding:4px 8px; border-radius:20px; font-size:13px; font-weight:700; color:var(--blue); background:var(--card); border:1px solid var(--border); width:auto;">
+                        <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                        <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                        <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+                        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                    </select>
+                    <select id="cal-year-sel" onchange="window.renderDutyCalendar()" style="margin:0; padding:4px 8px; border-radius:20px; font-size:13px; font-weight:700; color:var(--blue); background:var(--card); border:1px solid var(--border); width:auto;">
+                        <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+                        <option value="2027">2027</option><option value="2028">2028</option>
+                    </select>
+                </div>
+                <button onclick="window.calNavMonth(1)" style="width:auto; margin:0; padding:4px 12px; font-size:16px; background:transparent; color:var(--blue); border:none; box-shadow:none; font-weight:900;">›</button>
+            </div>
+
+            <!-- Legend -->
             <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px;">
                 <span style="font-size:10px; font-weight:700; background:rgba(34,197,94,0.2); color:var(--green); padding:2px 7px; border-radius:10px;">● Duty</span>
                 <span style="font-size:10px; font-weight:700; background:rgba(59,130,246,0.18); color:var(--blue); padding:2px 7px; border-radius:10px;">● Rest/Leave</span>
                 <span style="font-size:10px; font-weight:700; background:rgba(168,85,247,0.2); color:var(--purple); padding:2px 7px; border-radius:10px;">● Mela</span>
                 <span style="font-size:10px; font-weight:700; background:rgba(234,179,8,0.22); color:var(--yellow); padding:2px 7px; border-radius:10px;">● Station</span>
             </div>
+
+            <!-- Calendar Grid -->
             <div id="duty-calendar-grid" class="duty-cal"></div>
+            <p style="font-size:11px; color:var(--blue); text-align:center; margin:10px 0 0 0; font-weight:600;">👆 Tap any coloured date to view duty details</p>
         </div>
     </div>
 
@@ -1436,11 +1461,11 @@
 
                 const tableRows = rosterRows.map(row => `
                     <tr onclick="window.viewUserAudit('${row.uid}', '${row.name.replace(/'/g,"\\'")}', ${JSON.stringify(row.userData).replace(/</g,'&lt;')})" style="cursor:pointer;" title="Tap to view month summary">
-                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text); font-weight:600;">${row.name}</td>
-                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-muted);">${row.desig}</td>
-                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--blue); font-weight:700;">${row.hq}</td>
-                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-muted);">${row.lastSync}</td>
-                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--green); font-weight:700; text-align:center;">${row.legCount}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text); font-weight:600; white-space:nowrap;">${row.name}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-muted); white-space:nowrap;">${row.desig}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--blue); font-weight:700; white-space:nowrap;">${row.hq}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-muted); white-space:nowrap;">${row.lastSync}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--green); font-weight:700; text-align:center; white-space:nowrap;">${row.legCount}</td>
                     </tr>`).join('');
 
                 const hqRows = Object.entries(hqBreakdown).sort((a,b) => b[1]-a[1]).map(([hq, count]) =>
@@ -1451,18 +1476,19 @@
 
                 rosterEl.innerHTML = `
                     <p style="font-size:11px; color:var(--text-muted); text-align:center; margin:0 0 10px 0;">👆 Tap any row to view their current month</p>
-                    <div style="overflow-x:auto; margin-bottom:18px; border-radius:10px; border:1px solid var(--border);">
-                        <table style="width:100%; border-collapse:collapse;">
+                    <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:18px; border-radius:10px; border:1px solid var(--border);">
+                        <table style="min-width:480px; width:100%; border-collapse:collapse;">
                             <thead><tr style="background:var(--all-header-bg);">
-                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">NAME</th>
-                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">DESIG</th>
-                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">HQ</th>
-                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">LAST SYNC</th>
-                                <th style="padding:8px 6px; text-align:center; font-size:11px; color:var(--all-header-text);">LOGS</th>
+                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); white-space:nowrap;">NAME</th>
+                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); white-space:nowrap;">DESIG</th>
+                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); white-space:nowrap;">HQ</th>
+                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); white-space:nowrap;">LAST SYNC</th>
+                                <th style="padding:8px 6px; text-align:center; font-size:11px; color:var(--all-header-text); white-space:nowrap;">LOGS</th>
                             </tr></thead>
                             <tbody>${tableRows}</tbody>
                         </table>
                     </div>
+                    <p style="font-size:10px; color:var(--text-muted); text-align:center; margin:-12px 0 12px 0;">← Scroll table sideways to see all columns →</p>
                     <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Users per HQ</div>
                     ${hqRows}`;
             }).catch(err => { rosterEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">${err.message}</p>`; });
@@ -2848,15 +2874,39 @@
     };
 
     window.toggleCalendarView = function() {
+        // Initialize calendar to current month/year
+        const now = new Date();
+        const mSel = document.getElementById('cal-month-sel');
+        const ySel = document.getElementById('cal-year-sel');
+        if (mSel) mSel.value = now.getMonth() + 1;
+        if (ySel) ySel.value = now.getFullYear();
         renderDutyCalendar();
         document.getElementById('calendar-modal').classList.remove('hidden');
+    };
+
+    // Navigate calendar by delta months
+    window.calNavMonth = function(delta) {
+        const mSel = document.getElementById('cal-month-sel');
+        const ySel = document.getElementById('cal-year-sel');
+        if (!mSel || !ySel) return;
+        let m = parseInt(mSel.value) + delta;
+        let y = parseInt(ySel.value);
+        if (m < 1) { m = 12; y--; }
+        if (m > 12) { m = 1; y++; }
+        mSel.value = m;
+        ySel.value = y;
+        renderDutyCalendar();
     };
 
     function renderDutyCalendar() {
         const calEl = document.getElementById('duty-calendar-grid');
         if (!calEl || !window.appState.legs) return;
-        const selYear = parseInt(document.getElementById('all-logs-year').value);
-        const selMonth = parseInt(document.getElementById('all-logs-month').value);
+        // Use calendar's own selectors (independent of All Journey filter)
+        const mSel = document.getElementById('cal-month-sel');
+        const ySel = document.getElementById('cal-year-sel');
+        const now = new Date();
+        const selYear = mSel ? parseInt(ySel.value) : now.getFullYear();
+        const selMonth = mSel ? parseInt(mSel.value) : (now.getMonth() + 1);
         const daysInMonth = new Date(selYear, selMonth, 0).getDate();
         const firstDow = new Date(selYear, selMonth - 1, 1).getDay();
         const today = new Date();
@@ -2903,16 +2953,6 @@
             html += `<div class="duty-cal-day${isToday ? ' today' : ''}" style="background:${tag ? colors[tag].bg : 'transparent'}; color:${tag ? colors[tag].col : 'var(--text-muted)'}; ${hasDuty ? 'cursor:pointer;' : ''}" ${hasDuty ? `onclick="window.showCalDayDetail('${key}')"` : ''}>${d}</div>`;
         }
         calEl.innerHTML = html;
-        // Add instruction message below calendar
-        const wrapper = document.getElementById('calendar-modal');
-        let msgEl = document.getElementById('cal-tap-msg');
-        if (!msgEl && wrapper) {
-            msgEl = document.createElement('p');
-            msgEl.id = 'cal-tap-msg';
-            msgEl.style.cssText = 'font-size:11px; color:var(--blue); text-align:center; margin:10px 0 0 0; font-weight:600;';
-            msgEl.innerText = '👆 Tap any coloured date to view duty details';
-            calEl.after(msgEl);
-        }
     }
     window.renderDutyCalendar = renderDutyCalendar;
 
