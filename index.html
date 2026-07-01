@@ -255,7 +255,7 @@
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
         window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.8';
+        window.APP_VERSION = '3.9';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -354,9 +354,10 @@
 
 <div id="version-gate-screen" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:99998; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
     <div style="font-size:60px; margin-bottom:15px;">📱</div>
-    <h2 style="color:var(--text); margin:0 0 10px 0;">Update Required</h2>
-    <p id="version-gate-msg" style="color:var(--text-muted); font-size:14px; line-height:1.6; margin:0 0 25px 0; max-width:300px;"></p>
-    <button onclick="window.location.reload()" style="width:auto; padding:12px 30px; border-radius:30px; background:var(--blue);">🔄 Reload App</button>
+    <h2 style="color:var(--text); margin:0 0 10px 0; font-weight:900;">Update Required</h2>
+    <p id="version-gate-msg" style="color:var(--text-muted); font-size:14px; line-height:1.6; margin:0 0 20px 0; max-width:300px;"></p>
+    <button onclick="window.location.reload()" style="width:auto; padding:12px 30px; border-radius:30px; background:var(--blue); margin-bottom:12px;">🔄 Reload App</button>
+    <p style="font-size:12px; color:var(--text-muted); margin:0;">If the issue persists after reloading,<br>clear your browser cache or contact admin.</p>
 </div>
 
 <div id="preview-wrapper" class="hidden">
@@ -598,7 +599,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.8</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.9</div>
         </div>
     </div>
 
@@ -623,15 +624,26 @@
             <!-- VERSION GATE -->
             <div class="card" style="border-left: 4px solid var(--orange);">
                 <h3 style="color:var(--orange); margin:0 0 6px 0; font-size:15px;">📱 Version Gate</h3>
-                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Force users on old versions to update before they can proceed.</p>
-                <div style="display:flex; gap:10px; align-items:flex-end;">
-                    <div style="flex:1;">
-                        <label class="profile-lbl">Required Version</label>
-                        <input type="text" id="admin-version-input" placeholder="e.g. 3.0">
+                
+                <!-- SAFETY WARNING -->
+                <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); border-radius:10px; padding:10px; margin-bottom:12px;">
+                    <div style="font-size:12px; font-weight:900; color:var(--red); margin-bottom:4px;">⚠️ Danger Zone — Read Before Using</div>
+                    <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">
+                        Only set this to a version that is <strong style="color:var(--text);">already deployed and working</strong>. 
+                        Setting a version number higher than what's live will lock ALL users out.<br>
+                        <span style="color:var(--orange); font-weight:700;" id="admin-current-ver-label">Current live app: v3.9</span>
                     </div>
-                    <button onclick="window.pushVersionGate()" style="flex:1; margin:0; background:var(--orange);">Push Version</button>
                 </div>
-                <div id="admin-version-active" style="font-size:11px; color:var(--text-muted); margin-top:8px; text-align:center;"></div>
+
+                <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:10px;">
+                    <div style="flex:2; min-width:0;">
+                        <label class="profile-lbl">Required Minimum Version</label>
+                        <input type="text" id="admin-version-input" placeholder="e.g. 3.8" style="margin:0;">
+                    </div>
+                    <button onclick="window.pushVersionGate()" style="flex:1; margin:0; background:var(--orange);">🔒 Set Gate</button>
+                </div>
+                <button onclick="window.clearVersionGate()" style="background:var(--card); color:var(--green); border:1px solid var(--green); box-shadow:none;">🔓 Clear Gate (Let Everyone In)</button>
+                <div id="admin-version-active" style="font-size:11px; color:var(--text-muted); margin-top:8px; text-align:center; font-weight:bold;"></div>
             </div>
 
             <!-- GLOBAL ANNOUNCEMENT -->
@@ -1174,12 +1186,44 @@
     window.pushVersionGate = () => {
         const v = document.getElementById('admin-version-input').value.trim();
         if (!v) return showModal("Error", "Enter a version number.", "error", false);
-        if(window.firebaseSet && window.firebaseRef && window.db) {
-            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/required_version'), v).then(() => {
-                showModal("Done", `Version gate set to v${v}. Users on older versions will be blocked.`, "success", false);
-            });
+        
+        // Safety check: warn if setting gate HIGHER than current app version
+        const currentV = parseFloat(window.APP_VERSION);
+        const targetV = parseFloat(v);
+        if (targetV > currentV) {
+            return showModal("⚠️ DANGEROUS", 
+                `You're trying to set gate to v${v} but the live app is only v${window.APP_VERSION}.\n\nThis will lock out ALL users including yourself. Only set a gate to a version that is already deployed.\n\nAction blocked for safety.`, 
+                "error", false);
         }
+        
+        showModal("Confirm Version Gate", 
+            `Set minimum required version to v${v}?\n\nUsers on versions older than v${v} will see an update screen and cannot proceed.\nUsers on v${v} or newer (including v${window.APP_VERSION}) will pass through normally.`, 
+            "warning", true, (proceed) => {
+                if (!proceed) return;
+                window.firebaseSet(window.firebaseRef(window.db, 'admin_config/required_version'), v).then(() => {
+                    showModal("Gate Set", `Version gate is now v${v}. Users on older versions will be prompted to update.`, "success", false);
+                    document.getElementById('admin-version-input').value = '';
+                    document.getElementById('admin-version-active').innerText = `Active gate: v${v}`;
+                    document.getElementById('admin-version-active').style.color = 'var(--orange)';
+                }).catch(err => showModal("Error", err.message, "error", false));
+            }
+        );
     };
+
+    window.clearVersionGate = () => {
+        showModal("Clear Version Gate", 
+            "Remove the version gate? All users on any version will be allowed in.", 
+            "warning", true, (proceed) => {
+                if (!proceed) return;
+                window.firebaseSet(window.firebaseRef(window.db, 'admin_config/required_version'), null).then(() => {
+                    showModal("Gate Cleared", "Version gate removed. All users can now access the app.", "success", false);
+                    document.getElementById('admin-version-active').innerText = 'No version gate active';
+                    document.getElementById('admin-version-active').style.color = 'var(--green)';
+                }).catch(err => showModal("Error", err.message, "error", false));
+            }
+        );
+    };
+    window.clearVersionGate = window.clearVersionGate;
 
     // ========== DA PUSH TO ALL USERS (Batch 3) ==========
     window.pushDaToAllUsers = () => {
@@ -1609,9 +1653,20 @@
             document.getElementById('admin-maint-msg').placeholder = adminConfig.maintenanceMsg;
         }
         
+        const curVerLbl = document.getElementById('admin-current-ver-label');
+        if (curVerLbl) curVerLbl.innerText = `Current live app: v${window.APP_VERSION}`;
+
         const reqV = adminConfig.required_version;
         const versionEl = document.getElementById('admin-version-active');
-        if (versionEl) versionEl.innerText = reqV ? `Active gate: v${reqV}` : 'No version gate active';
+        if (versionEl) {
+            if (reqV) {
+                versionEl.innerText = `🔒 Active gate: v${reqV} — users below this are blocked`;
+                versionEl.style.color = 'var(--orange)';
+            } else {
+                versionEl.innerText = '🔓 No gate active — all versions allowed';
+                versionEl.style.color = 'var(--green)';
+            }
+        }
         
         const ann = adminConfig.announcement;
         const annEl = document.getElementById('admin-announce-active');
