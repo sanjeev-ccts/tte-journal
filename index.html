@@ -192,8 +192,15 @@
         .slider-btn { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 30px; height: 30px; margin: 0; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; color: var(--text); }
+        /* Duty Calendar */
+        .duty-cal { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; margin-top: 12px; }
+        .duty-cal-header { font-size: 10px; font-weight: 900; text-align: center; color: var(--text-muted); padding: 2px 0; }
+        .duty-cal-day { font-size: 11px; font-weight: 700; text-align: center; padding: 4px 1px; border-radius: 6px; cursor: default; min-height: 26px; display: flex; align-items: center; justify-content: center; }
+        .duty-cal-day.today { outline: 2px solid var(--blue); outline-offset: 1px; }
+        /* Undo/Redo */
+        .undo-redo-bar { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
         
-        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal, #feedback-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
         .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
@@ -250,7 +257,7 @@
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
         window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.4';
+        window.APP_VERSION = '3.5';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -301,19 +308,7 @@
                     // Announcements
                     window.adminAnnouncement = adminConfig.announcement || null;
 
-                    // DA/TA Broadcast — show banner if pending and user hasn't dismissed
-                    const daBroadcast = adminConfig.da_broadcast;
-                    if (daBroadcast && daBroadcast.active && !isAdmin) {
-                        window.pendingDaBroadcast = daBroadcast;
-                        let parts = [];
-                        if (daBroadcast.da) parts.push(`DA → ${daBroadcast.da}%`);
-                        if (daBroadcast.ta) parts.push(`TA Rate → ₹${daBroadcast.ta}`);
-                        const note = daBroadcast.note ? ` (${daBroadcast.note})` : '';
-                        document.getElementById('da-banner-text').innerText = parts.join(' | ') + note;
-                        document.getElementById('da-broadcast-banner').classList.remove('hidden');
-                    } else {
-                        document.getElementById('da-broadcast-banner').classList.add('hidden');
-                    }
+                    // DA is now pushed directly to user profiles by admin — no banner needed
 
                     // Update admin UI if on admin screen
                     window.adminIsMaint = adminConfig.maintenance || false;
@@ -321,10 +316,15 @@
                         updateAdminUI(adminConfig);
                     }
 
-                    // Route User Logic
                     if (userData) {
                         window.appState = userData;
                         if (!window.appState.legs) window.appState.legs = [];
+                        // Auto-apply admin-set DA if user doesn't have it set yet
+                        const daConf = adminConfig.current_da;
+                        if (daConf && daConf.value && window.appState.profile && !window.appState.profile.da) {
+                            window.appState.profile.da = daConf.value;
+                            saveData();
+                        }
                         if (document.getElementById('screen-register').classList.contains('hidden') && document.getElementById('screen-admin').classList.contains('hidden')) {
                             window.navTo('screen-dashboard');
                         }
@@ -461,11 +461,29 @@
     </div>
     
     <div id="help-modal" class="hidden">
-        <div style="background: var(--modal-bg); padding: 18px 20px; border-radius: 16px; width: 80%; max-width: 280px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
+        <div style="background: var(--modal-bg); padding: 18px 20px; border-radius: 16px; width: 85%; max-width: 300px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
             <h3 style="color: var(--text); margin: 0 0 8px 0; font-size: 16px; font-weight: 900;">Help & Support</h3>
             <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 14px 0; line-height: 1.5;">Got suggestions or need help? Reach out directly!</p>
-            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 11px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 10px; box-sizing: border-box;">✉️ Email</a>
+            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 11px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 8px; box-sizing: border-box;">✉️ Email</a>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden'); document.getElementById('feedback-modal').classList.remove('hidden');" style="background: var(--orange); color: white; border: none; padding: 11px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; margin-bottom: 8px; box-shadow: none;">🐛 Report Bug / Feedback</button>
             <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); padding: 11px 24px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; box-shadow: none;">Close</button>
+        </div>
+    </div>
+
+    <div id="feedback-modal" class="hidden">
+        <div style="background: var(--modal-bg); padding: 20px; border-radius: 16px; width: 90%; max-width: 360px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
+            <h3 style="color: var(--orange); margin: 0 0 10px 0; font-size: 15px; font-weight: 900;">🐛 Report Bug / Feedback</h3>
+            <select id="feedback-type" style="margin-bottom: 10px;">
+                <option value="Bug">🐛 Bug Report</option>
+                <option value="Feature">💡 Feature Request</option>
+                <option value="Feedback">💬 General Feedback</option>
+                <option value="Calculation">🔢 Calculation Issue</option>
+            </select>
+            <textarea id="feedback-text" placeholder="Describe the issue or suggestion in detail..." style="width:100%; height:90px; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--input-bg); color:var(--text); font-size:13px; font-family:inherit; resize:none; margin-bottom:10px; box-sizing:border-box;"></textarea>
+            <div style="display:flex; gap:8px;">
+                <button onclick="window.submitFeedback()" style="flex:1; margin:0; background:var(--orange);">📤 Submit</button>
+                <button onclick="document.getElementById('feedback-modal').classList.add('hidden')" style="flex:1; margin:0; background:var(--card); color:var(--text); border:1px solid var(--border); box-shadow:none;">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -555,8 +573,8 @@
                 <div style="display: flex; gap: 10px;">
                     <div style="flex: 1; min-width: 0;"><label class="profile-lbl">TA Rate (₹)</label><input type="number" id="reg-tarate" placeholder="e.g. 800"></div>
                     <div style="flex: 1; min-width: 0; position: relative;">
-                        <label class="profile-lbl">DA (%)</label>
-                        <input type="number" id="reg-da" placeholder="e.g. 50">
+                        <label class="profile-lbl">DA (%) <span style="color:var(--orange); font-size:10px; font-weight:700;">🔒 Admin Only</span></label>
+                        <input type="number" id="reg-da" placeholder="Set by Admin" disabled style="background:var(--input-disabled); color:var(--text-muted); cursor:not-allowed;">
                         <div id="da-warning-msg" class="hidden" style="color: var(--red); font-size: 11px; font-weight: bold; margin-top: 5px;"></div>
                     </div>
                 </div>
@@ -578,7 +596,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.4</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.5</div>
         </div>
     </div>
 
@@ -626,25 +644,21 @@
                 <div id="admin-announce-active" style="font-size:11px; color:var(--blue); margin-top:8px; text-align:center; font-weight:bold;"></div>
             </div>
 
-            <!-- DA / TA BROADCAST -->
+            <!-- DA PUSH (Admin Only — updates all user profiles directly) -->
             <div class="card" style="border-left: 4px solid var(--green);">
-                <h3 style="color:var(--green); margin:0 0 6px 0; font-size:15px;">📊 DA / TA Rate Broadcast</h3>
-                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Push revised DA% or TA rate. Users get a one-tap apply prompt on their dashboard.</p>
+                <h3 style="color:var(--green); margin:0 0 6px 0; font-size:15px;">📊 Push DA Revision</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Set the official DA%. This will be pushed silently to ALL user profiles automatically. Users cannot change DA themselves.</p>
                 <div style="display:flex; gap:10px; margin-bottom:10px;">
                     <div style="flex:1; min-width:0;">
                         <label class="profile-lbl">New DA (%)</label>
                         <input type="number" id="admin-da-input" placeholder="e.g. 63">
                     </div>
                     <div style="flex:1; min-width:0;">
-                        <label class="profile-lbl">New TA Rate (₹)</label>
-                        <input type="number" id="admin-ta-input" placeholder="e.g. 1050">
+                        <label class="profile-lbl">Effective From</label>
+                        <input type="text" id="admin-da-note" placeholder="e.g. Jan 2025">
                     </div>
                 </div>
-                <input type="text" id="admin-da-note" placeholder="Note (e.g. 7th CPC revision w.e.f. Jan 2025)" style="margin-bottom:10px;">
-                <div style="display:flex; gap:10px;">
-                    <button onclick="window.pushDaBroadcast()" style="flex:1; margin:0; background:var(--green);">📤 Push Update</button>
-                    <button onclick="window.clearDaBroadcast()" style="flex:1; margin:0; background:var(--card); color:var(--red); border:1px dashed var(--red); box-shadow:none;">✕ Clear</button>
-                </div>
+                <button onclick="window.pushDaToAllUsers()" style="background:var(--green);">📤 Push DA to All Users</button>
                 <div id="admin-da-active" style="font-size:11px; color:var(--green); margin-top:8px; text-align:center; font-weight:bold;"></div>
             </div>
 
@@ -662,10 +676,53 @@
                 </div>
             </div>
 
+            <!-- LIVE ACTIVE SESSION MONITOR -->
+            <div class="card" style="border-left: 4px solid var(--blue);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <h3 style="color:var(--blue); margin:0; font-size:15px;">🟢 Live Session Monitor</h3>
+                    <button onclick="window.loadActiveSessions()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--blue); border-radius:20px;">Refresh</button>
+                </div>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 8px 0;">Users who synced data in the last 10 minutes.</p>
+                <div id="admin-sessions-area"><p style="font-size:13px; color:var(--text-muted); text-align:center; margin:5px 0;">Tap Refresh to check</p></div>
+            </div>
+
+            <!-- DATABASE ARCHIVE / CLEANUP -->
+            <div class="card" style="border-left: 4px solid var(--orange);">
+                <h3 style="color:var(--orange); margin:0 0 6px 0; font-size:15px;">🗃️ Database Cleanup & Archive</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Archive all user logs older than the current financial year to a separate node. Keeps the active app fast.</p>
+                <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:10px;">
+                    <div style="flex:1;">
+                        <label class="profile-lbl">Archive entries before year</label>
+                        <input type="number" id="admin-archive-year" placeholder="e.g. 2025" style="margin:0;">
+                    </div>
+                    <button onclick="window.archiveOldData()" style="flex:1; margin:0; background:var(--orange);">📦 Archive</button>
+                </div>
+                <div id="admin-archive-status" style="font-size:11px; color:var(--orange); text-align:center; font-weight:bold;"></div>
+            </div>
+
+            <!-- USER TROUBLESHOOTING / GHOST MODE -->
+            <div class="card" style="border-left: 4px solid var(--purple);">
+                <h3 style="color:var(--purple); margin:0 0 6px 0; font-size:15px;">🔍 User Troubleshooting</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Look up any user by PF Number to inspect their profile and recent logs in read-only mode.</p>
+                <div style="display:flex; gap:10px; align-items:flex-end;">
+                    <input type="text" id="admin-lookup-pf" placeholder="Enter PF Number" style="flex:2; margin:0; text-transform:uppercase;">
+                    <button onclick="window.lookupUserByPF()" style="flex:1; margin:0; background:var(--purple);">🔎 Lookup</button>
+                </div>
+                <div id="admin-lookup-result" style="margin-top:10px;"></div>
+            </div>
+
+            <!-- FEEDBACK / BUG INBOX -->
+            <div class="card" style="border-left: 4px solid var(--red);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <h3 style="color:var(--red); margin:0; font-size:15px;">📬 Feedback Inbox</h3>
+                    <button onclick="window.loadFeedbackInbox()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--red); border-radius:20px;">Load</button>
+                </div>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 8px 0;">Bug reports and feedback submitted by users inside the app.</p>
+                <div id="admin-feedback-area"><p style="font-size:13px; color:var(--text-muted); text-align:center; margin:5px 0;">Tap Load to view submissions</p></div>
+            </div>
+
         </div>
     </div>
-
-    <div id="screen-dashboard" class="hidden">
         <div class="top-bar dash-header">
             <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
         </div>
@@ -801,6 +858,19 @@
                         <input type="text" id="nonduty-others-text" placeholder="e.g. Training, Medical, Court Duty">
                     </div>
 
+                    <!-- LEAVE TYPE: dropdown when Leave is selected -->
+                    <div id="nonduty-leave-box" class="hidden" style="margin-bottom: 12px;">
+                        <label style="font-size: 13px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 5px;">Type of Leave</label>
+                        <select id="nonduty-leave-type" style="margin: 0;">
+                            <option value="CL">CL — Casual Leave</option>
+                            <option value="LAP">LAP — Leave on Average Pay</option>
+                            <option value="LHAP">LHAP — Leave on Half Average Pay</option>
+                            <option value="Maternity Leave">Maternity Leave</option>
+                            <option value="Paternity Leave">Paternity Leave</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+
                     <!-- MELA DUTY: station name -->
                     <div id="nonduty-mela-box" class="hidden" style="margin-bottom: 12px;">
                         <label style="font-size: 13px; font-weight: bold; color: var(--purple); display: block; margin-bottom: 5px;">Mela Duty Station</label>
@@ -876,6 +946,29 @@
                 <span style="color: var(--row-text); background: var(--row-up-bg); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);">Up Train</span>
                 <span style="color: var(--row-text); background: var(--row-down-bg); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);">Down Train</span>
             </div>
+
+            <!-- DUTY CALENDAR -->
+            <div class="card" style="margin-top: 15px; padding: 12px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <h4 style="margin:0; font-size:13px; font-weight:900; color:var(--blue);">📅 Monthly Duty Calendar</h4>
+                    <div style="display:flex; gap:6px; font-size:10px; font-weight:700;">
+                        <span style="background:rgba(34,197,94,0.25); color:var(--green); padding:2px 7px; border-radius:10px;">Duty</span>
+                        <span style="background:rgba(59,130,246,0.2); color:var(--blue); padding:2px 7px; border-radius:10px;">Rest/Leave</span>
+                        <span style="background:rgba(168,85,247,0.2); color:var(--purple); padding:2px 7px; border-radius:10px;">Mela</span>
+                        <span style="background:rgba(234,179,8,0.25); color:var(--yellow); padding:2px 7px; border-radius:10px;">Station</span>
+                    </div>
+                </div>
+                <div id="duty-calendar-grid" class="duty-cal">
+                    <div class="duty-cal-header">Sun</div><div class="duty-cal-header">Mon</div><div class="duty-cal-header">Tue</div>
+                    <div class="duty-cal-header">Wed</div><div class="duty-cal-header">Thu</div><div class="duty-cal-header">Fri</div><div class="duty-cal-header">Sat</div>
+                </div>
+            </div>
+
+            <!-- UNDO / REDO -->
+            <div class="undo-redo-bar">
+                <button onclick="window.undoLeg()" style="width:auto; margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow);">↩ Undo</button>
+                <button onclick="window.redoLeg()" style="width:auto; margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow);">↪ Redo</button>
+            </div>
         </div>
     </div>
 
@@ -917,6 +1010,7 @@
                 <div id="nda-summary-rows" class="hidden">
                     <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
                     <div class="summary-row" style="color: var(--text);"><span>Total No. of Night Trains</span><span id="rep-nda-trains" style="font-weight: bold;">0</span></div>
+                    <div class="summary-row" style="color: var(--text);"><span>Total NDA Hours</span><span id="rep-nda-hours" style="font-weight: bold; color: var(--blue);">0:00 Hrs</span></div>
                     <div class="summary-row" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span style="font-weight:800;">Total NDA</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
                 </div>
 
@@ -1046,7 +1140,136 @@
     };
 
     // ========== ADMIN FIREBASE ACTIONS ==========
-    window.toggleAdminMaint = () => {
+    // ---- FEEDBACK SUBMIT (user-facing) ----
+    window.submitFeedback = () => {
+        const type = document.getElementById('feedback-type').value;
+        const text = document.getElementById('feedback-text').value.trim();
+        if (!text) return showModal("Error", "Please describe your feedback before submitting.", "error", false);
+        if (!window.firebaseSet || !window.firebaseRef || !window.db) return showModal("Error", "Not connected.", "error", false);
+        const name = window.appState.profile ? window.appState.profile.name || 'Unknown' : 'Unknown';
+        const pf = window.appState.profile ? window.appState.profile.pf || '' : '';
+        const entry = { type, text, name, pf, ts: Date.now(), date: new Date().toLocaleDateString() };
+        window.firebaseSet(window.firebaseRef(window.db, `feedback/${Date.now()}`), entry).then(() => {
+            document.getElementById('feedback-modal').classList.add('hidden');
+            document.getElementById('feedback-text').value = '';
+            showModal("Thank You!", "Your feedback has been submitted to the admin.", "success", false);
+        });
+    };
+
+    // ---- ADMIN: LIVE SESSION MONITOR ----
+    window.loadActiveSessions = () => {
+        const el = document.getElementById('admin-sessions-area');
+        if (!el) return;
+        el.innerHTML = '<p style="font-size:12px; color:var(--text-muted); text-align:center;">Checking...</p>';
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                const cutoff = Date.now() - 10 * 60 * 1000; // 10 minutes
+                let active = [];
+                Object.values(users).forEach(u => {
+                    const legs = u.legs || [];
+                    const prof = u.profile || {};
+                    if (legs.length > 0) {
+                        const latest = Math.max(...legs.map(l => parseInt(l.id)||0));
+                        if (latest > cutoff) active.push({ name: prof.name||'Unknown', hq: prof.hq||'—', lastMs: latest });
+                    }
+                });
+                active.sort((a,b) => b.lastMs - a.lastMs);
+                el.innerHTML = active.length === 0
+                    ? '<p style="font-size:12px; color:var(--text-muted); text-align:center; margin:5px 0;">No active sessions in the last 10 minutes.</p>'
+                    : `<div style="font-size:12px; font-weight:900; color:var(--green); margin-bottom:6px;">🟢 ${active.length} Active Session${active.length>1?'s':''}</div>` 
+                    + active.map(a => `<div style="display:flex; justify-content:space-between; padding:4px 0; border-bottom:1px dashed var(--border); font-size:12px;"><span style="color:var(--text);">${a.name} · ${a.hq}</span><span style="color:var(--text-muted);">${new Date(a.lastMs).toLocaleTimeString()}</span></div>`).join('');
+            });
+        });
+    };
+
+    // ---- ADMIN: DATABASE ARCHIVE ----
+    window.archiveOldData = () => {
+        const yearBefore = parseInt(document.getElementById('admin-archive-year').value);
+        if (!yearBefore || yearBefore < 2020 || yearBefore > 2030) return showModal("Error", "Enter a valid year (e.g. 2025).", "error", false);
+        const statusEl = document.getElementById('admin-archive-status');
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get, set, remove }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                let archivedCount = 0;
+                const promises = [];
+                Object.entries(users).forEach(([uid, userData]) => {
+                    const legs = userData.legs || [];
+                    const toArchive = legs.filter(l => (l.depDate||l.fromDate||'').startsWith(`${yearBefore-1}`) || parseInt((l.depDate||l.fromDate||'').substring(0,4)) < yearBefore);
+                    const toKeep = legs.filter(l => parseInt((l.depDate||l.fromDate||'').substring(0,4)) >= yearBefore);
+                    if (toArchive.length > 0) {
+                        archivedCount += toArchive.length;
+                        promises.push(set(r(window.db, `archive/${uid}/legs`), toArchive));
+                        promises.push(set(r(window.db, `archive/${uid}/profile`), userData.profile));
+                        promises.push(set(r(window.db, `users/${uid}/legs`), toKeep));
+                    }
+                });
+                Promise.all(promises).then(() => {
+                    statusEl.innerText = `✅ Archived ${archivedCount} entries from before ${yearBefore} across all users.`;
+                    showModal("Archive Done", `${archivedCount} old entries moved to /archive/ node in Firebase.`, "success", false);
+                });
+            });
+        });
+    };
+
+    // ---- ADMIN: USER LOOKUP BY PF ----
+    window.lookupUserByPF = () => {
+        const pf = document.getElementById('admin-lookup-pf').value.trim().toUpperCase();
+        if (!pf) return;
+        const el = document.getElementById('admin-lookup-result');
+        el.innerHTML = '<p style="font-size:12px; color:var(--text-muted);">Searching...</p>';
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                const found = Object.entries(users).find(([uid, u]) => u.profile && u.profile.pf && u.profile.pf.toString().toUpperCase() === pf);
+                if (!found) { el.innerHTML = '<p style="font-size:12px; color:var(--red); font-weight:bold;">No user found with that PF Number.</p>'; return; }
+                const [uid, userData] = found;
+                const p = userData.profile;
+                const legs = userData.legs || [];
+                const now = new Date();
+                const mo = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+                const thisMonthLegs = legs.filter(l => (l.depDate||'').startsWith(mo));
+                el.innerHTML = `
+                    <div style="background:var(--input-bg); border-radius:10px; padding:10px; border:1px solid var(--border);">
+                        <div style="font-size:13px; font-weight:900; color:var(--text); margin-bottom:4px;">${p.name||'—'} · ${p.desig||'—'}</div>
+                        <div style="font-size:12px; color:var(--text-muted);">HQ: ${p.hq||'—'} · BU: ${p.bu||'—'} · DA: ${p.da||'—'}%</div>
+                        <div style="font-size:12px; color:var(--blue); margin-top:4px;">Total Logs: ${legs.length} · This Month: ${thisMonthLegs.length} entries</div>
+                        <button onclick="window.viewUserAudit('${uid}', '${(p.name||'').replace(/'/g,"\\'")}', ${JSON.stringify(userData).replace(/</g,'&lt;')})" style="margin-top:8px; padding:6px 14px; width:auto; font-size:12px; background:var(--purple); border-radius:20px;">👁 View This Month</button>
+                    </div>`;
+            });
+        });
+    };
+
+    // ---- ADMIN: FEEDBACK INBOX ----
+    window.loadFeedbackInbox = () => {
+        const el = document.getElementById('admin-feedback-area');
+        if (!el) return;
+        el.innerHTML = '<p style="font-size:12px; color:var(--text-muted); text-align:center;">Loading...</p>';
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get, remove }) => {
+            get(r(window.db, 'feedback')).then(snap => {
+                const items = snap.val() || {};
+                const keys = Object.keys(items).sort().reverse();
+                if (keys.length === 0) { el.innerHTML = '<p style="font-size:12px; color:var(--text-muted); text-align:center;">No feedback yet.</p>'; return; }
+                el.innerHTML = keys.map(k => {
+                    const f = items[k];
+                    return `<div style="background:var(--input-bg); border-radius:10px; padding:10px; margin-bottom:8px; border:1px solid var(--border);">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                            <span style="font-size:11px; font-weight:900; color:var(--orange);">${f.type||'Feedback'}</span>
+                            <span style="font-size:10px; color:var(--text-muted);">${f.date||''} · ${f.name||'?'}${f.pf?' ('+f.pf+')':''}</span>
+                        </div>
+                        <div style="font-size:12px; color:var(--text); line-height:1.5;">${f.text||''}</div>
+                        <button onclick="window.dismissFeedback('${k}')" style="margin-top:6px; padding:4px 12px; width:auto; font-size:11px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:20px; box-shadow:none;">✕ Dismiss</button>
+                    </div>`;
+                }).join('') + `<p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:5px;">${keys.length} item${keys.length>1?'s':''} total</p>`;
+            });
+        });
+    };
+
+    window.dismissFeedback = (key) => {
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, remove }) => {
+            remove(r(window.db, `feedback/${key}`)).then(() => window.loadFeedbackInbox());
+        });
+    };
         const cur = window.adminIsMaint || false;
         const msg = document.getElementById('admin-maint-msg').value.trim() || 'System is under maintenance. We will be back soon.';
         if(window.firebaseSet && window.firebaseRef && window.db) {
@@ -1086,40 +1309,34 @@
         }
     };
 
-    window.pushDaBroadcast = () => {
+    window.pushDaToAllUsers = () => {
         const da = document.getElementById('admin-da-input').value.trim();
-        const ta = document.getElementById('admin-ta-input').value.trim();
         const note = document.getElementById('admin-da-note').value.trim();
-        if (!da && !ta) return showModal("Error", "Enter DA% or TA Rate to broadcast.", "error", false);
-        const payload = { active: true, da: da || null, ta: ta || null, note: note || '', pushedOn: new Date().toLocaleDateString() };
-        if(window.firebaseSet && window.firebaseRef && window.db) {
-            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_broadcast'), payload).then(() => {
-                showModal("Pushed!", "DA/TA update sent. Users will see an apply prompt.", "success", false);
-                document.getElementById('admin-da-input').value = '';
-                document.getElementById('admin-ta-input').value = '';
-                document.getElementById('admin-da-note').value = '';
-            });
-        }
-    };
-
-    window.clearDaBroadcast = () => {
-        if(window.firebaseSet && window.firebaseRef && window.db) {
-            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_broadcast'), { active: false }).then(() => {
-                showModal("Cleared", "DA/TA broadcast removed.", "success", false);
-            });
-        }
-    };
-
-    // User applies DA/TA broadcast from banner
-    window.applyDaBroadcast = () => {
-        const b = window.pendingDaBroadcast;
-        if (!b || !window.appState.profile) return;
-        if (b.da) window.appState.profile.da = b.da;
-        if (b.ta) window.appState.profile.tarate = b.ta;
-        saveData();
-        document.getElementById('da-broadcast-banner').classList.add('hidden');
-        showModal("Applied!", `Profile updated: ${b.da ? 'DA = ' + b.da + '%' : ''} ${b.ta ? 'TA Rate = ₹' + b.ta : ''}`.trim(), "success", false);
-        updateDashboardUI();
+        if (!da) return showModal("Error", "Enter a DA% value to push.", "error", false);
+        if (!confirm(`Push DA = ${da}% to ALL user profiles? This will overwrite their current DA immediately.`)) return;
+        
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get, set }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                const uids = Object.keys(users);
+                let updated = 0;
+                const promises = uids.map(uid => {
+                    if (users[uid].profile) {
+                        return set(r(window.db, `users/${uid}/profile/da`), da).then(() => updated++);
+                    }
+                }).filter(Boolean);
+                
+                // Also store current DA in admin_config for auto-apply to new users
+                promises.push(window.firebaseSet(window.firebaseRef(window.db, 'admin_config/current_da'), { value: da, note, pushedOn: new Date().toLocaleDateString() }));
+                
+                Promise.all(promises).then(() => {
+                    document.getElementById('admin-da-active').innerText = `✅ DA ${da}% pushed to ${updated} users ${note ? '('+note+')' : ''}`;
+                    showModal("Done!", `DA ${da}% has been pushed to all ${updated} user profiles.`, "success", false);
+                    document.getElementById('admin-da-input').value = '';
+                    document.getElementById('admin-da-note').value = '';
+                });
+            }).catch(err => showModal("Error", `Failed: ${err.message}`, "error", false));
+        });
     };
 
     window.loadAdminStats = () => {
@@ -1172,6 +1389,55 @@
         });
     };
 
+    window.viewUserAudit = (uid, name, userData) => {
+        const rosterEl = document.getElementById('roster-content');
+        if (!rosterEl) return;
+        const legs = userData.legs || [];
+        const profile = userData.profile || {};
+        const now = new Date();
+        const mo = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+        const moLabel = now.toLocaleString('default', {month:'long', year:'numeric'});
+        
+        const dutyLegs = legs.filter(l => !l.isNonDuty && (l.depDate||'').startsWith(mo));
+        const nonDutyLegs = legs.filter(l => l.isNonDuty && ((l.fromDate||'').startsWith(mo) || (l.toDate||'').startsWith(mo)));
+        
+        let dutyRows = dutyLegs.length === 0 
+            ? '<tr><td colspan="5" style="padding:10px; text-align:center; color:var(--text-muted);">No duty entries this month</td></tr>'
+            : dutyLegs.sort((a,b)=>a.depDate.localeCompare(b.depDate)).map(l => 
+                `<tr><td style="padding:6px 4px; border-bottom:1px solid var(--border); font-size:11px;">${l.depDate.slice(5)}</td>
+                 <td style="padding:6px 4px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700;">${l.train||'—'}</td>
+                 <td style="padding:6px 4px; border-bottom:1px solid var(--border); font-size:11px;">${l.depStn||'—'}</td>
+                 <td style="padding:6px 4px; border-bottom:1px solid var(--border); font-size:11px;">→</td>
+                 <td style="padding:6px 4px; border-bottom:1px solid var(--border); font-size:11px;">${l.arrStn||'—'}</td></tr>`
+            ).join('');
+
+        let ndRows = nonDutyLegs.length === 0 ? '' 
+            : nonDutyLegs.map(l => `<div style="font-size:12px; padding:4px 0; border-bottom:1px dashed var(--border); color:var(--text-muted);">${l.dutyType} : ${l.fromDate||''} to ${l.toDate||''}</div>`).join('');
+
+        rosterEl.innerHTML = `
+            <button onclick="window.loadUserRoster()" style="width:auto; margin:0 0 12px 0; padding:6px 14px; font-size:12px; background:var(--card); color:var(--blue); border:1px solid var(--blue); border-radius:20px; box-shadow:none;">← Back to Roster</button>
+            <div style="background:var(--input-bg); border-radius:12px; padding:12px; margin-bottom:12px; border:1px solid var(--border);">
+                <div style="font-size:14px; font-weight:900; color:var(--text);">${name}</div>
+                <div style="font-size:12px; color:var(--text-muted);">${profile.desig||'—'} · HQ: ${profile.hq||'—'} · PF: ${profile.pf||'—'}</div>
+                <div style="font-size:11px; color:var(--blue); margin-top:4px;">DA: ${profile.da||'—'}% · Basic Pay: ₹${profile.basicpay||'—'} · TA Rate: ₹${profile.tarate||'—'}</div>
+            </div>
+            <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px;">DUTY JOURNEYS — ${moLabel} (${dutyLegs.length} entries)</div>
+            <div style="border-radius:10px; border:1px solid var(--border); overflow:hidden; margin-bottom:12px;">
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead><tr style="background:var(--all-header-bg);">
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">Date</th>
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">Train</th>
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">From</th>
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);"></th>
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">To</th>
+                    </tr></thead>
+                    <tbody>${dutyRows}</tbody>
+                </table>
+            </div>
+            ${ndRows ? `<div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px;">REST / LEAVE / OTHERS</div>${ndRows}` : ''}
+        `;
+    };
+
     window.loadUserRoster = () => {
         if(!window.db) return;
         const rosterEl = document.getElementById('roster-content');
@@ -1183,32 +1449,40 @@
             get(r(window.db, 'users')).then(snap => {
                 const users = snap.val() || {};
                 const uids = Object.keys(users);
-
                 if (uids.length === 0) {
                     rosterEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px; text-align:center;">No registered users found.</p>';
                     return;
                 }
 
-                // Build roster rows: Name, Designation, HQ
                 let hqBreakdown = {};
                 let rosterRows = uids.map(uid => {
                     const u = users[uid];
                     const prof = u.profile || {};
-                    const name = prof.name || '—';
-                    const desig = prof.desig || '—';
+                    const legs = u.legs || [];
                     const hq = prof.hq || 'Unknown';
                     hqBreakdown[hq] = (hqBreakdown[hq] || 0) + 1;
-                    return { name, desig, hq, pf: prof.pf || '—' };
+                    // Last sync = latest leg timestamp or unknown
+                    let lastSync = '—';
+                    if (legs.length > 0) {
+                        const sorted = [...legs].sort((a,b) => (b.id||0) - (a.id||0));
+                        const ts = sorted[0].id;
+                        if (ts && ts > 1000000000000) {
+                            const d = new Date(ts);
+                            lastSync = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                        }
+                    }
+                    return { uid, name: prof.name || '—', desig: prof.desig || '—', hq, pf: prof.pf || '—', lastSync, legCount: legs.length };
                 });
 
-                // Sort alphabetically by name for readability
-                rosterRows.sort((a, b) => a.name.localeCompare(b.name));
+                // Sort by HQ then name (Fix 11)
+                rosterRows.sort((a, b) => a.hq.localeCompare(b.hq) || a.name.localeCompare(b.name));
 
-                const tableRows = rosterRows.map(r => `
-                    <tr>
-                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text); font-weight:600;">${r.name}</td>
-                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text-muted);">${r.desig}</td>
-                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--blue); font-weight:700;">${r.hq}</td>
+                const tableRows = rosterRows.map((row, i) => `
+                    <tr onclick="window.viewUserAudit('${row.uid}', '${row.name.replace(/'/g,"\\'")}', ${JSON.stringify(users[row.uid]).replace(/</g,'&lt;')})" style="cursor:pointer;" title="Tap to view this month summary">
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text); font-weight:600;">${row.name}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text-muted);">${row.hq}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--blue); font-weight:600;">${row.lastSync}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--green); font-weight:700; text-align:center;">${row.legCount}</td>
                     </tr>
                 `).join('');
 
@@ -1220,24 +1494,25 @@
                 `).join('');
 
                 rosterEl.innerHTML = `
-                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;">All Users (${rosterRows.length})</div>
+                    <p style="font-size:11px; color:var(--text-muted); text-align:center; margin:0 0 10px 0;">👆 Tap any user row to view their current month summary</p>
                     <div style="overflow-x:auto; margin-bottom:18px; border-radius:10px; border:1px solid var(--border);">
                         <table style="width:100%; border-collapse:collapse;">
                             <thead>
                                 <tr style="background:var(--all-header-bg);">
-                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); text-transform:uppercase;">Name</th>
-                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); text-transform:uppercase;">Designation</th>
-                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); text-transform:uppercase;">HQ</th>
+                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">NAME</th>
+                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">HQ</th>
+                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">LAST SYNC</th>
+                                    <th style="padding:8px 6px; text-align:center; font-size:11px; color:var(--all-header-text);">LOGS</th>
                                 </tr>
                             </thead>
                             <tbody>${tableRows}</tbody>
                         </table>
                     </div>
                     <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Users per HQ</div>
-                    ${hqRows || '<p style="color:var(--text-muted); font-size:13px;">No data</p>'}
+                    ${hqRows}
                 `;
             }).catch((err) => {
-                rosterEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load roster.<br><span style="font-size:11px; color:var(--text-muted);">${err.message || 'Check Firebase rules — admin UID must have read access to /users.'}</span></p>`;
+                rosterEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load roster.<br><span style="font-size:11px; color:var(--text-muted);">${err.message || 'Check Firebase rules.'}</span></p>`;
             });
         });
     };
@@ -1267,17 +1542,10 @@
         const annEl = document.getElementById('admin-announce-active');
         if (annEl) annEl.innerText = ann ? `Active: "${ann}"` : 'No active announcement';
         
-        const dab = adminConfig.da_broadcast;
         const daEl = document.getElementById('admin-da-active');
         if (daEl) {
-            if (dab && dab.active) {
-                let parts = [];
-                if (dab.da) parts.push(`DA: ${dab.da}%`);
-                if (dab.ta) parts.push(`TA: ₹${dab.ta}`);
-                daEl.innerText = `Active: ${parts.join(', ')}${dab.note ? ' — ' + dab.note : ''}`;
-            } else {
-                daEl.innerText = 'No active broadcast';
-            }
+            const curDa = adminConfig.current_da;
+            daEl.innerText = curDa ? `Current DA: ${curDa.value}% (${curDa.note||''}  ${curDa.pushedOn||''})` : 'No DA pushed yet';
         }
     }
     window.updateAdminUI = updateAdminUI;
@@ -1430,25 +1698,42 @@
         const objLabel = document.getElementById('nonduty-objective-label');
         const objHint = document.getElementById('nonduty-objective-hint');
         
+        const leaveBox = document.getElementById('nonduty-leave-box');
+        
         othersBox.classList.add('hidden');
         melaBox.classList.add('hidden');
         objBox.classList.add('hidden');
         shiftBox.classList.add('hidden');
+        leaveBox.classList.add('hidden');
         
-        if (type === 'Others') {
-            othersBox.classList.remove('hidden');
+        if (type === 'Leave') {
+            leaveBox.classList.remove('hidden');
         } else if (type === 'Mela Duty') {
             melaBox.classList.remove('hidden');
+            shiftBox.classList.remove('hidden'); // Point 7: Mela also gets shift timing for NDA
             objBox.classList.remove('hidden');
             objLabel.innerText = 'Objective of Journey';
-            objHint.innerText = '(printed on TA Journal)';
+            objHint.innerText = '(mandatory if outside HQ — printed on TA)';
             document.getElementById('nonduty-objective-text').placeholder = 'e.g. Kumbh Mela Duty';
+            // Update objective hint based on station input
+            const melaStnInput = document.getElementById('nonduty-mela-stn');
+            if (melaStnInput) {
+                melaStnInput.oninput = function() {
+                    this.value = this.value.toUpperCase();
+                    const hqGroup = window.appState.profile ? [window.appState.profile.hq, ...(window.appState.profile.nearby||[])] : [];
+                    const isOwn = hqGroup.includes(this.value.trim());
+                    objHint.innerText = isOwn ? '(optional — not printed on TA for own HQ Mela)' : '(mandatory — printed on TA Journal)';
+                };
+                melaStnInput.oninput.call(melaStnInput); // trigger once
+            }
         } else if (type === 'Station Duty') {
             objBox.classList.remove('hidden');
             shiftBox.classList.remove('hidden');
             objLabel.innerText = 'Objective of Duty';
             objHint.innerText = '(optional, for your record only)';
             document.getElementById('nonduty-objective-text').placeholder = 'e.g. Booking Office Duty (optional)';
+        } else if (type === 'Others') {
+            othersBox.classList.remove('hidden');
         }
     }
     window.handleNonDutyTypeChange = handleNonDutyTypeChange;
@@ -1562,7 +1847,17 @@
         }
         
         if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); }
-        if(screenId === 'screen-all') { renderAllLogs(); checkGlobalNotifications(); }
+        if(screenId === 'screen-all') { 
+            // Always reset to current month on revisit
+            const _now = new Date();
+            const _m = document.getElementById('all-logs-month');
+            const _y = document.getElementById('all-logs-year');
+            const _s = document.getElementById('all-train-search');
+            if(_m) _m.value = String(_now.getMonth()+1).padStart(2,'0');
+            if(_y) _y.value = _now.getFullYear().toString();
+            if(_s) _s.value = '';
+            renderAllLogs(); checkGlobalNotifications(); 
+        }
         if(screenId === 'screen-reports') updateReportUI(); 
         if(screenId === 'screen-backup') updateBackupUI(); 
         if(screenId === 'screen-register') {
@@ -1619,6 +1914,7 @@
 
     function unlockProfile() {
         document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
+            if (inp.id === 'reg-da') return; // DA is always locked — admin-only
             inp.disabled = false;
         });
         document.getElementById('btn-edit-profile').style.display = 'none';
@@ -1912,7 +2208,9 @@
             document.getElementById('nonduty-from').value = leg.fromDate;
             document.getElementById('nonduty-to').value = leg.toDate;
             handleNonDutyTypeChange();
-            if (leg.dutyType === 'Mela Duty') {
+            if (leg.dutyType === 'Leave' && leg.leaveType) {
+                document.getElementById('nonduty-leave-type').value = leg.leaveType;
+            } else if (leg.dutyType === 'Mela Duty') {
                 document.getElementById('nonduty-mela-stn').value = leg.melaStn || '';
                 document.getElementById('nonduty-objective-text').value = leg.objective || '';
             } else if (leg.dutyType === 'Station Duty') {
@@ -1984,6 +2282,7 @@
         document.getElementById('trip-dep-stn').value = leg.arrStn;
         
         const wasEditing = !!window.editModeId;
+        pushUndoState();
         window.editModeId = null;
         saveData(); 
         if (wasEditing) {
@@ -2007,7 +2306,13 @@
             melaStn = document.getElementById('nonduty-mela-stn').value.toUpperCase().trim();
             objective = document.getElementById('nonduty-objective-text').value.trim();
             if (!melaStn) return showModal("ERROR", "Mela Duty Station is mandatory.", "error", false);
-            if (!objective) return showModal("ERROR", "Objective of Journey is mandatory for Mela Duty.", "error", false);
+            const hqGrp = window.appState.profile ? [window.appState.profile.hq, ...(window.appState.profile.nearby||[])] : [];
+            const isOwnHq = hqGrp.includes(melaStn);
+            if (!isOwnHq && !objective) return showModal("ERROR", "Objective of Journey is mandatory for Mela Duty outside HQ.", "error", false);
+            // Capture shift for NDA (Point 7)
+            shiftFrom = document.getElementById('nonduty-shift-from').value.trim();
+            shiftTo = document.getElementById('nonduty-shift-to').value.trim();
+            if ((shiftFrom && !shiftTo) || (!shiftFrom && shiftTo)) return showModal("ERROR", "Please fill both Shift Start and Shift End, or leave both blank.", "error", false);
         } else if (type === 'Station Duty') {
             objective = document.getElementById('nonduty-objective-text').value.trim(); // optional
             shiftFrom = document.getElementById('nonduty-shift-from').value.trim();
@@ -2035,7 +2340,8 @@
             const hq = window.appState.profile.hq || 'HQ';
             const leg = { id: window.editModeId || Date.now(), isNonDuty: true, dutyType: type, fromDate: from, toDate: to, depDate: from, depTime: '00:00', arrDate: to, arrTime: '23:59', depStn: hq, arrStn: hq, train: 'NON-DUTY' };
             
-            if (type === 'Mela Duty') { leg.melaStn = melaStn; leg.objective = objective; }
+            if (type === 'Mela Duty') { leg.melaStn = melaStn; leg.objective = objective; if(shiftFrom) { leg.shiftFrom = shiftFrom; leg.shiftTo = shiftTo; } }
+            if (type === 'Leave') { leg.leaveType = document.getElementById('nonduty-leave-type').value; }
             if (type === 'Station Duty') { leg.objective = objective; leg.shiftFrom = shiftFrom; leg.shiftTo = shiftTo; }
             if (type === 'Others') { leg.othersLabel = othersLabel; }
             
@@ -2056,6 +2362,7 @@
             if(document.getElementById('nonduty-shift-to')) document.getElementById('nonduty-shift-to').value = '';
             handleNonDutyTypeChange();
             const wasEditingND = !!window.editModeId;
+            pushUndoState();
             window.editModeId = null;
             saveData(); 
             if (wasEditingND) {
@@ -2127,6 +2434,7 @@
             
             if (leg.isNonDuty) {
                 let bgCol = "rgba(34, 197, 94, 0.4)"; let icon = "🌴"; let label = leg.dutyType.toUpperCase();
+                if(leg.dutyType === 'Leave') { bgCol = "rgba(59, 130, 246, 0.4)"; icon = "📋"; label = `LEAVE${leg.leaveType ? ' — ' + leg.leaveType : ''}`; }
                 if(leg.dutyType === 'Leave') bgCol = "rgba(59, 130, 246, 0.4)";
                 if(leg.dutyType === 'COCL') bgCol = "rgba(234, 179, 8, 0.4)";
                 if(leg.dutyType === 'Station Duty') { bgCol = "rgba(168, 85, 247, 0.35)"; icon = "🏢"; label = `STATION DUTY${leg.objective ? ' — ' + leg.objective : ''}${leg.shiftFrom ? ' (' + leg.shiftFrom + '-' + leg.shiftTo + ')' : ''}`; }
@@ -2180,11 +2488,106 @@
             }
         }
         container.innerHTML = headerHTML + `<div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; transition: border 0.3s;">` + htmlElements.reverse().join('') + `</div>`;
+        renderDutyCalendar();
     }
+
+    // ---- DUTY CALENDAR ----
+    function renderDutyCalendar() {
+        const calEl = document.getElementById('duty-calendar-grid');
+        if (!calEl || !window.appState.legs) return;
+        const selYear = parseInt(document.getElementById('all-logs-year').value);
+        const selMonth = parseInt(document.getElementById('all-logs-month').value);
+        const daysInMonth = new Date(selYear, selMonth, 0).getDate();
+        const firstDow = new Date(selYear, selMonth - 1, 1).getDay(); // 0=Sun
+        const today = new Date();
+        const isCurrentMonth = (today.getFullYear() === selYear && today.getMonth() + 1 === selMonth);
+
+        // Build a day-tag map
+        const dayMap = {};
+        window.appState.legs.forEach(leg => {
+            if (leg.isNonDuty) {
+                let d = new Date(`${leg.fromDate}T00:00:00`);
+                const end = new Date(`${leg.toDate}T00:00:00`);
+                while (d <= end) {
+                    const key = d.toISOString().slice(0,10);
+                    if (key.startsWith(`${selYear}-${String(selMonth).padStart(2,'0')}`)) {
+                        dayMap[key] = leg.dutyType === 'Mela Duty' ? 'mela'
+                            : leg.dutyType === 'Station Duty' ? 'station'
+                            : 'rest';
+                    }
+                    d.setDate(d.getDate() + 1);
+                }
+            } else {
+                // Duty journey: mark all days between dep and arr
+                let d = new Date(`${leg.depDate}T00:00:00`);
+                const end = new Date(`${leg.arrDate}T00:00:00`);
+                while (d <= end) {
+                    const key = d.toISOString().slice(0,10);
+                    if (key.startsWith(`${selYear}-${String(selMonth).padStart(2,'0')}`)) {
+                        if (dayMap[key] !== 'mela' && dayMap[key] !== 'station') dayMap[key] = 'duty';
+                    }
+                    d.setDate(d.getDate() + 1);
+                }
+            }
+        });
+
+        const colors = {
+            duty:    { bg: 'rgba(34,197,94,0.25)',   text: 'var(--green)' },
+            rest:    { bg: 'rgba(59,130,246,0.18)',   text: 'var(--blue)' },
+            mela:    { bg: 'rgba(168,85,247,0.22)',   text: 'var(--purple)' },
+            station: { bg: 'rgba(234,179,8,0.25)',    text: 'var(--yellow)' },
+        };
+
+        let html = '<div class="duty-cal-header">Sun</div><div class="duty-cal-header">Mon</div><div class="duty-cal-header">Tue</div><div class="duty-cal-header">Wed</div><div class="duty-cal-header">Thu</div><div class="duty-cal-header">Fri</div><div class="duty-cal-header">Sat</div>';
+        
+        for (let i = 0; i < firstDow; i++) html += '<div class="duty-cal-day"></div>';
+        
+        for (let d = 1; d <= daysInMonth; d++) {
+            const key = `${selYear}-${String(selMonth).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+            const tag = dayMap[key];
+            const isToday = isCurrentMonth && d === today.getDate();
+            const bg = tag ? colors[tag].bg : 'transparent';
+            const col = tag ? colors[tag].text : 'var(--text-muted)';
+            html += `<div class="duty-cal-day${isToday ? ' today' : ''}" style="background:${bg}; color:${col};">${d}</div>`;
+        }
+        calEl.innerHTML = html;
+    }
+    window.renderDutyCalendar = renderDutyCalendar;
+
+    // ---- UNDO / REDO ----
+    window._undoStack = [];
+    window._redoStack = [];
+
+    function pushUndoState() {
+        window._undoStack.push(JSON.stringify(window.appState.legs || []));
+        if (window._undoStack.length > 30) window._undoStack.shift();
+        window._redoStack = []; // clear redo on new action
+    }
+    window.pushUndoState = pushUndoState;
+
+    window.undoLeg = function() {
+        if (window._undoStack.length === 0) return showModal("Undo", "Nothing to undo.", "success", false);
+        window._redoStack.push(JSON.stringify(window.appState.legs || []));
+        window.appState.legs = JSON.parse(window._undoStack.pop());
+        saveData();
+        renderAllLogs();
+        updateDashboardUI();
+        showModal("Undo", "Last change undone.", "success", false);
+    };
+
+    window.redoLeg = function() {
+        if (window._redoStack.length === 0) return showModal("Redo", "Nothing to redo.", "success", false);
+        window._undoStack.push(JSON.stringify(window.appState.legs || []));
+        window.appState.legs = JSON.parse(window._redoStack.pop());
+        saveData();
+        renderAllLogs();
+        updateDashboardUI();
+        showModal("Redo", "Change reapplied.", "success", false);
+    };
     
     function deleteLeg(id) { 
         showModal("WARNING", "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?", "warning", true, (proceed) => {
-            if(proceed) { window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); window.renderAllLogs(); window.updateDashboardUI(); }
+            if(proceed) { pushUndoState(); window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); window.renderAllLogs(); window.updateDashboardUI(); }
         }); 
     }
     
@@ -2257,7 +2660,8 @@
         if (!window.appState.legs) return { entries, totalMins };
         
         window.appState.legs.forEach(l => {
-            if (!l.isNonDuty || l.dutyType !== 'Station Duty' || !l.shiftFrom || !l.shiftTo) return;
+            if (!l.isNonDuty || !l.shiftFrom || !l.shiftTo) return;
+            if (l.dutyType !== 'Station Duty' && l.dutyType !== 'Mela Duty') return;
             let d = new Date(`${l.fromDate}T00:00:00`);
             const endD = new Date(`${l.toDate}T00:00:00`);
             while (d <= endD) {
@@ -2266,7 +2670,13 @@
                 const shiftCalc = calcShiftNightMinutes(l.shiftFrom, l.shiftTo, dateStr);
                 if (shiftCalc.signOn >= ndaStart && shiftCalc.signOn <= ndaEnd && shiftCalc.mins > 0) {
                     totalMins += shiftCalc.mins;
-                    entries.push({ date: dateStr, objective: l.objective || 'Station Duty', shiftFrom: l.shiftFrom, shiftTo: l.shiftTo, ...shiftCalc });
+                    entries.push({ 
+                        date: dateStr, 
+                        dutyType: l.dutyType, // 'Station Duty' or 'Mela Duty'
+                        objective: l.objective || l.dutyType, 
+                        shiftFrom: l.shiftFrom, shiftTo: l.shiftTo, 
+                        ...shiftCalc 
+                    });
                 }
                 d.setDate(d.getDate() + 1);
             }
@@ -2651,6 +3061,7 @@
                 document.getElementById('rep-count').innerText = "0";
             }
             if(document.getElementById('rep-nda-trains')) document.getElementById('rep-nda-trains').innerText = nightTrainCount;
+            if(document.getElementById('rep-nda-hours')) document.getElementById('rep-nda-hours').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`;
             document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
         } 
     }
@@ -2798,7 +3209,7 @@
         let printPayScale = p.payscale ? p.payscale.replace(' (MACP)', '') : '';
         let bHtml = ""; if(counts[30] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">30% x ${counts[30]}</td><td style="border: 1px solid black; padding: 2px;">${Math.floor(p.tarate*0.3)} x ${counts[30]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[30] * Math.floor(p.tarate*0.3)}</td></tr>`; if(counts[70] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">70% x ${counts[70]}</td><td style="border: 1px solid black; padding: 2px;">${Math.floor(p.tarate*0.7)} x ${counts[70]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[70] * Math.floor(p.tarate*0.7)}</td></tr>`; if(counts[100] > 0) bHtml += `<tr><td style="border: 1px solid black; padding: 2px;">100% x ${counts[100]}</td><td style="border: 1px solid black; padding: 2px;">${p.tarate} x ${counts[100]}</td><td style="border: 1px solid black; padding: 2px;">₹${counts[100] * p.tarate}</td></tr>`;
 
-        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 15px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="display: flex; justify-content: space-between; align-items: flex-start; font-weight: bold; margin-bottom: 8px;"><div style="width: 20%; font-size: 11px; text-align: left;">NR</div><div style="width: 60%; text-align: center; font-size: 14px;">TRAVELLING ALLOWANCE JOURNAL</div><div style="width: 20%; text-align: right; font-size: 11px;">G.A. 31/S.R.C./G-1677<br>G-6</div></div><div style="font-size: 11px; line-height: 1.5; margin-bottom: 12px;"><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 0px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Branch: <b>Commercial</b></td><td style="width: 21%;">Division: <b>LKO/NR</b></td><td style="width: 20%;">HQ: <b>${p.hq}/NR</b></td><td style="width: 17%; text-align: center;">P.F. No.: <b>${p.pf}</b></td><td style="width: 15%; text-align: right;">BU No: <b>${p.bu}</b></td></tr><tr style="height: 22px;"><td style="width: 27%; white-space: nowrap;">Journal of duties performed by Shri</td><td colspan="4" style="padding: 0;"><div style="display: flex; justify-content: space-between; align-items: center; width: 100%;"><div style="font-weight: bold; width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.name}</div><div style="text-align: left; padding-left: 10px; flex: 1; white-space: nowrap;">for which allowance for &nbsp;&nbsp;&nbsp;<b>${monthStr}</b></div><div style="text-align: right; white-space: nowrap;">is claimed.</div></div></td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 12px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Designation: <b>${p.desig}</b></td><td style="width: 21%;">Pay Scale: <b>${printPayScale}</b></td><td style="width: 26%;">Grade Pay: <b>${p.gradepay}</b></td><td style="width: 26%; text-align: right;">Date of appt: <b>${formatDate(p.appt)}</b></td></tr><tr style="height: 22px;"><td>Rule by which governed: <b>HOER</b></td><td>TA Rate: <b>@${p.tarate}</b></td><td>Checking Authority No.: <b>${p.auth}</b></td><td style="text-align: right;">Validity: <b>${formatDate(p.authval)}</b></td></tr><tr style="height: 22px;"><td>Card Pass No.: <b>${p.pass}</b></td><td>Validity: <b>${formatDate(p.passval)}</b></td><td colspan="2"></td></tr></table></div><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 5px; font-size: 10px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Month &<br>Date</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Left</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Arrived</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Station</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 6%;">TA %</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Objective of<br>Journey</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Rate = ${p.tarate}</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">From</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">To</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">Rs.</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">P.</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="8" style="text-align: right; border: 1px solid black; padding: 4px 6px; font-size: 11px;">TOTAL</td><td style="border: 1px solid black; padding: 4px 4px; font-size: 11px;">${totalAmount}</td><td style="border: 1px solid black; padding: 4px 4px; font-size: 11px;">00</td></tr></tfoot></table><div class="page-break"><div style="display: flex; align-items: flex-end; gap: 20px; margin-bottom: 15px;"><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px;"><tr><td colspan="2" style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">TA RATE</td><td style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">₹${p.tarate}</td></tr>${bHtml}<tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;"><td colspan="2" style="border: 1px solid black; padding: 2px;">TOTAL AMOUNT</td><td style="border: 1px solid black; padding: 2px;">₹${totalAmount}</td></tr></table><div style="font-weight: bold; font-size: 12px; padding-bottom: 5px;">Rupees ${numberToWords(totalAmount)} Only</div></div><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px; margin-bottom: 15px;"><tr><td style="border: 1px solid black; padding: 2px; font-weight: bold; width: 66%; background: #e5e5e5; -webkit-print-color-adjust: exact;">Working Days</td><td style="border: 1px solid black; padding: 2px; font-weight: bold;">${wDays||""}</td></tr><tr><td style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">Total Earnings</td><td style="border: 1px solid black; padding: 2px; font-weight: bold;">₹ ${earn||""}</td></tr></table><div style="font-size: 11px; line-height: 1.4;">It is certified that:<br>1. The TA claimed by me has not been claimed before and will not be claimed hereafter.<br>2. Conveyance charges claimed have actually been spent by me and according to local Municipal rates.<br>3. Cheapest mode of conveyance was utilized.<br>4. The journey performed by road for which conveyance have been claimed was over 1.6 KM<br><br><div style="text-align: right; margin-top: 10px;">...........................................................................<br>Signature of the Officer Claiming T.A.</div></div><div style="margin-top: 15px; font-size: 11px; line-height: 1.4;">I hereby certify that Shri <b>${p.name}</b> was absent on duty from his headquarters station during the period charged for in the bill on Railway business and that the officer performed the journey by Rail/Sea/ Air/ Road was allowed/ not allowed free pass of locomotion at the expense of Government local fund of Indian State.</div><div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px;"><div style="text-align: left;">Countersigned<br><br><br><br>Controlling Officer</div><div style="text-align: right;">...........................................................................<br>Signature of the Head of the office</div></div></div></div>`;
+        const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 15px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="display: flex; justify-content: space-between; align-items: flex-start; font-weight: bold; margin-bottom: 8px;"><div style="width: 20%; font-size: 11px; text-align: left;">NR</div><div style="width: 60%; text-align: center; font-size: 14px;">TRAVELLING ALLOWANCE JOURNAL</div><div style="width: 20%; text-align: right; font-size: 11px;">G.A. 31/S.R.C./G-1677<br>G-6</div></div><div style="font-size: 11px; line-height: 1.5; margin-bottom: 12px;"><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 0px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Branch: <b>Commercial</b></td><td style="width: 21%;">Division: <b>LKO/NR</b></td><td style="width: 20%;">HQ: <b>${p.hq}/NR</b></td><td style="width: 17%; text-align: center;">P.F. No.: <b>${p.pf}</b></td><td style="width: 15%; text-align: right;">BU No: <b>${p.bu}</b></td></tr><tr style="height: 22px;"><td style="width: 27%; white-space: nowrap;">Journal of duties performed by Shri</td><td colspan="4" style="padding: 0;"><div style="display: flex; justify-content: space-between; align-items: center; width: 100%;"><div style="font-weight: bold; width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${p.name}</div><div style="text-align: left; padding-left: 10px; flex: 1; white-space: nowrap;">for which allowance for &nbsp;&nbsp;&nbsp;<b>${monthStr}</b></div><div style="text-align: right; white-space: nowrap;">is claimed.</div></div></td></tr></table><table style="width: 100%; font-size: 11px; text-align: left; border: none; margin-bottom: 12px; border-collapse: collapse; table-layout: fixed;"><tr style="height: 22px;"><td style="width: 27%;">Designation: <b>${p.desig}</b></td><td style="width: 21%;">Pay Scale: <b>${printPayScale}</b></td><td style="width: 26%;">Grade Pay: <b>${p.gradepay}</b></td><td style="width: 26%; text-align: right;">Date of appt: <b>${formatDate(p.appt)}</b></td></tr><tr style="height: 22px;"><td>Rule by which governed: <b>HOER</b></td><td>TA Rate: <b>@${p.tarate}</b></td><td>Checking Authority No.: <b>${p.auth}</b></td><td style="text-align: right;">Validity: <b>${formatDate(p.authval)}</b></td></tr><tr style="height: 22px;"><td>Card Pass No.: <b>${p.pass}</b></td><td>Validity: <b>${formatDate(p.passval)}</b></td><td colspan="2"></td></tr></table></div><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; margin-bottom: 5px; font-size: 10px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Left</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9%;">Time<br>Arrived</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Station</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 6%;">TA %</th><th rowspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 10%;">Objective of<br>Journey</th><th colspan="2" style="border: 1px solid black; padding: 3px 2px; font-size: 10px;">Rate = ${p.tarate}</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">From</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 9.5%;">To</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">Rs.</th><th style="border: 1px solid black; padding: 3px 2px; font-size: 10px; width: 8%;">P.</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="8" style="text-align: right; border: 1px solid black; padding: 4px 6px; font-size: 11px;">TOTAL</td><td style="border: 1px solid black; padding: 4px 4px; font-size: 11px;">${totalAmount}</td><td style="border: 1px solid black; padding: 4px 4px; font-size: 11px;">00</td></tr></tfoot></table><div class="page-break"><div style="display: flex; align-items: flex-end; gap: 20px; margin-bottom: 15px;"><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px;"><tr><td colspan="2" style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">TA RATE</td><td style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">₹${p.tarate}</td></tr>${bHtml}<tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;"><td colspan="2" style="border: 1px solid black; padding: 2px;">TOTAL AMOUNT</td><td style="border: 1px solid black; padding: 2px;">₹${totalAmount}</td></tr></table><div style="font-weight: bold; font-size: 12px; padding-bottom: 5px;">Rupees ${numberToWords(totalAmount)} Only</div></div><table style="border-collapse: collapse; text-align: center; font-size: 11px; width: 250px; margin-bottom: 15px;"><tr><td style="border: 1px solid black; padding: 2px; font-weight: bold; width: 66%; background: #e5e5e5; -webkit-print-color-adjust: exact;">Working Days</td><td style="border: 1px solid black; padding: 2px; font-weight: bold;">${wDays||""}</td></tr><tr><td style="border: 1px solid black; padding: 2px; font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact;">Total Earnings</td><td style="border: 1px solid black; padding: 2px; font-weight: bold;">₹ ${earn||""}</td></tr></table><div style="font-size: 11px; line-height: 1.4;">It is certified that:<br>1. The TA claimed by me has not been claimed before and will not be claimed hereafter.<br>2. Conveyance charges claimed have actually been spent by me and according to local Municipal rates.<br>3. Cheapest mode of conveyance was utilized.<br>4. The journey performed by road for which conveyance have been claimed was over 1.6 KM<br><br><div style="text-align: right; margin-top: 10px;">...........................................................................<br>Signature of the Officer Claiming T.A.</div></div><div style="margin-top: 15px; font-size: 11px; line-height: 1.4;">I hereby certify that Shri <b>${p.name}</b> was absent on duty from his headquarters station during the period charged for in the bill on Railway business and that the officer performed the journey by Rail/Sea/ Air/ Road was allowed/ not allowed free pass of locomotion at the expense of Government local fund of Indian State.</div><div style="display: flex; justify-content: space-between; margin-top: 20px; font-size: 11px;"><div style="text-align: left;">Countersigned<br><br><br><br>Controlling Officer</div><div style="text-align: right;">...........................................................................<br>Signature of the Head of the office</div></div></div></div>`;
         document.getElementById('ui-wrapper').classList.add('hidden'); document.getElementById('preview-content').innerHTML = fullHtml; document.getElementById('preview-wrapper').classList.remove('hidden');
     }
 
@@ -2851,20 +3262,13 @@
                         tbodyHtml += `</tr>`; 
                     });
                 } else {
-                    // Station Duty row
+                    // Station Duty / Mela Duty row — full-width merged label per point 8
                     const e = group.entry;
-                    const signOnStr = `${String(e.signOn.getHours()).padStart(2,'0')}:${String(e.signOn.getMinutes()).padStart(2,'0')}`;
-                    const signOffStr = `${String(e.signOff.getHours()).padStart(2,'0')}:${String(e.signOff.getMinutes()).padStart(2,'0')}`;
                     const hStr = String(Math.floor(e.mins / 60)).padStart(2,'0') + ":" + String(Math.round(e.mins % 60)).padStart(2,'0');
-                    const shiftFromFmt = e.shiftFrom;
-                    const shiftToFmt = e.shiftTo;
+                    const dutyLabel = e.dutyType === 'Mela Duty' ? 'MELA DUTY' : 'STATION DUTY';
                     tbodyHtml += `<tr>`;
                     tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${formatDate(e.date)}</td>`;
-                    tbodyHtml += `<td colspan="3" style="border: 1px solid black; padding: 4px; font-weight: bold;">STATION DUTY${e.objective && e.objective !== 'Station Duty' ? ' — ' + e.objective : ''}</td>`;
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${signOnStr}</td>`;
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${shiftFromFmt}</td>`;
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${shiftToFmt}</td>`;
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${signOffStr}</td>`;
+                    tbodyHtml += `<td colspan="7" style="border: 1px solid black; padding: 4px; font-weight: bold; text-align: center;">${dutyLabel}${e.objective && e.objective !== e.dutyType ? ' — ' + e.objective : ''}</td>`;
                     tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${e.nFromStr}</td>`;
                     tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${e.nToStr}</td>`;
                     tbodyHtml += `<td style="border: 1px solid black; padding: 4px; font-weight: bold;">${hStr}</td>`;
