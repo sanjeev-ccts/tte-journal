@@ -36,9 +36,13 @@
             --row-blue-text: #1e40af;
             --row-muted-text: #475569;
             
-            --table-header-bg: #2563eb;
-            --table-header-text: #ffffff;
-            --table-border: #93c5fd;
+            --table-header-bg: #e0e7ff;
+            --table-header-text: #3730a3;
+            --table-border: #a5b4fc;
+            
+            --all-header-bg: #dbeafe;
+            --all-header-text: #1e3a8a;
+            --all-header-border: #93c5fd;
             
             --danger-bg: #fef2f2;
             --danger-border: #fca5a5;
@@ -69,9 +73,13 @@
             --row-blue-text: #79c0ff;
             --row-muted-text: #8b949e;
             
-            --table-header-bg: #1f6feb;
-            --table-header-text: #ffffff;
-            --table-border: #58a6ff;
+            --table-header-bg: #21262d;
+            --table-header-text: #58a6ff;
+            --table-border: #30363d;
+            
+            --all-header-bg: #1c2c45;
+            --all-header-text: #79c0ff;
+            --all-header-border: #2d4a73;
             
             --danger-bg: #1f1012;
             --danger-border: #6e2030;
@@ -185,7 +193,7 @@
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; color: var(--text); }
         
-        #custom-modal, #manage-modal, #help-modal, #trend-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
         .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
@@ -387,6 +395,18 @@
                 <button onclick="document.getElementById('trend-modal').classList.add('hidden')" style="width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
             </div>
             <div id="trend-chart-area" style="width: 100%; overflow-x: auto;"></div>
+        </div>
+    </div>
+
+    <div id="roster-modal" class="hidden">
+        <div style="background: var(--modal-bg); padding: 18px; border-radius: 16px; width: 95%; max-width: 480px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0;">
+                <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--blue);">📋 Central User Roster</h3>
+                <button onclick="document.getElementById('roster-modal').classList.add('hidden')" style="width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
+            </div>
+            <div id="roster-content" style="overflow-y: auto; flex: 1;">
+                <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:20px 0;">Loading...</p>
+            </div>
         </div>
     </div>
 
@@ -632,13 +652,14 @@
             <div class="card" style="border-left: 4px solid var(--purple);">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                     <h3 style="color:var(--purple); margin:0; font-size:15px;">👥 User Statistics</h3>
-                    <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 14px; font-size:12px; background:var(--purple); border-radius:20px;">Refresh</button>
+                    <div style="display:flex; gap:6px;">
+                        <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--purple); border-radius:20px;">Refresh</button>
+                        <button onclick="window.loadUserRoster()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--blue); border-radius:20px;">📋 Roster</button>
+                    </div>
                 </div>
                 <div id="admin-stats-area">
                     <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh to load stats</p>
                 </div>
-                <button onclick="window.loadUserRoster()" style="margin-top:12px; background:var(--blue);">📋 View Roster</button>
-                <div id="admin-roster-area" style="margin-top:12px;"></div>
             </div>
 
         </div>
@@ -786,24 +807,25 @@
                         <input list="stn-list" id="nonduty-mela-stn" placeholder="e.g. PRG" style="text-transform: uppercase;" oninput="this.value=this.value.toUpperCase()" onfocus="window.populateStnList()">
                     </div>
 
-                    <!-- STATION DUTY: shift (time period) of duty, used to calculate NDA -->
+                    <!-- STATION DUTY: shift time (optional, for NDA calculation) -->
                     <div id="nonduty-shift-box" class="hidden" style="margin-bottom: 12px;">
-                        <label style="font-size: 13px; font-weight: bold; color: var(--purple); display: block; margin-bottom: 5px;">Shift of Duty <span style="color: var(--text-muted); font-weight: 500;">(used to calculate NDA)</span></label>
+                        <label style="font-size: 13px; font-weight: bold; color: var(--orange); display: block; margin-bottom: 5px;">Shift Timing <span style="color: var(--text-muted); font-weight: 500;">(optional — fill only if shift overlaps night hours, for NDA)</span></label>
                         <div style="display: flex; gap: 10px;">
                             <div style="flex: 1;">
-                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">From</label>
-                                <input type="text" inputmode="numeric" id="nonduty-shift-from" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4">
+                                <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 3px;">Shift Start</label>
+                                <input type="text" inputmode="numeric" id="nonduty-shift-from" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0;">
                             </div>
                             <div style="flex: 1;">
-                                <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">To</label>
-                                <input type="text" inputmode="numeric" id="nonduty-shift-to" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4">
+                                <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 3px;">Shift End</label>
+                                <input type="text" inputmode="numeric" id="nonduty-shift-to" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0;">
                             </div>
                         </div>
+                        <p style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0;">Same shift timing applies daily across the selected date range.</p>
                     </div>
 
-                    <!-- MELA/STATION DUTY: objective of journey (user-filled, printed in TA for these dates) -->
+                    <!-- MELA/STATION DUTY: objective of journey (user-filled, printed in TA/NDA for these dates) -->
                     <div id="nonduty-objective-box" class="hidden" style="margin-bottom: 0;">
-                        <label style="font-size: 13px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 5px;">Objective of Journey <span id="nonduty-objective-optional-tag" style="color: var(--text-muted); font-weight: 500;">(printed on TA Journal)</span></label>
+                        <label style="font-size: 13px; font-weight: bold; color: var(--blue); display: block; margin-bottom: 5px;"><span id="nonduty-objective-label">Objective of Journey</span> <span id="nonduty-objective-hint" style="color: var(--text-muted); font-weight: 500;">(printed on TA Journal)</span></label>
                         <input type="text" id="nonduty-objective-text" placeholder="e.g. Kumbh Mela Duty">
                     </div>
                 </div>
@@ -1152,9 +1174,10 @@
 
     window.loadUserRoster = () => {
         if(!window.db) return;
-        const rosterEl = document.getElementById('admin-roster-area');
+        const rosterEl = document.getElementById('roster-content');
         if (!rosterEl) return;
-        rosterEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading roster...</p>';
+        document.getElementById('roster-modal').classList.remove('hidden');
+        rosterEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center; margin:20px 0;">Loading roster from Firebase...</p>';
 
         import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
             get(r(window.db, 'users')).then(snap => {
@@ -1162,43 +1185,59 @@
                 const uids = Object.keys(users);
 
                 if (uids.length === 0) {
-                    rosterEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">No users found.</p>';
+                    rosterEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px; text-align:center;">No registered users found.</p>';
                     return;
                 }
 
-                let hqCounts = {};
-                let rows = uids.map(uid => {
+                // Build roster rows: Name, Designation, HQ
+                let hqBreakdown = {};
+                let rosterRows = uids.map(uid => {
                     const u = users[uid];
-                    const p = u.profile || {};
-                    const name = p.name || '(No Name)';
-                    const desig = p.desig || '-';
-                    const hq = p.hq || 'Unassigned';
-                    hqCounts[hq] = (hqCounts[hq] || 0) + 1;
-                    return { name, desig, hq };
+                    const prof = u.profile || {};
+                    const name = prof.name || '—';
+                    const desig = prof.desig || '—';
+                    const hq = prof.hq || 'Unknown';
+                    hqBreakdown[hq] = (hqBreakdown[hq] || 0) + 1;
+                    return { name, desig, hq, pf: prof.pf || '—' };
                 });
-                rows.sort((a, b) => a.hq.localeCompare(b.hq) || a.name.localeCompare(b.name));
 
-                const tableRows = rows.map(rw =>
-                    `<tr><td style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--text);">${rw.name}</td><td style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--text);">${rw.desig}</td><td style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--text); font-weight:700;">${rw.hq}</td></tr>`
-                ).join('');
+                // Sort alphabetically by name for readability
+                rosterRows.sort((a, b) => a.name.localeCompare(b.name));
 
-                const hqRows = Object.entries(hqCounts).sort((a,b) => b[1]-a[1]).map(([hq, count]) =>
-                    `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed var(--border); font-size:13px;"><span style="color:var(--text);">${hq}</span><span style="color:var(--purple); font-weight:700;">${count}</span></div>`
-                ).join('');
+                const tableRows = rosterRows.map(r => `
+                    <tr>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text); font-weight:600;">${r.name}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text-muted);">${r.desig}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--blue); font-weight:700;">${r.hq}</td>
+                    </tr>
+                `).join('');
+
+                const hqRows = Object.entries(hqBreakdown).sort((a,b) => b[1]-a[1]).map(([hq, count]) => `
+                    <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--border); font-size:13px;">
+                        <span style="color:var(--text); font-weight:600;">${hq}</span>
+                        <span style="color:var(--purple); font-weight:800;">${count} user${count > 1 ? 's' : ''}</span>
+                    </div>
+                `).join('');
 
                 rosterEl.innerHTML = `
-                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Users by HQ</div>
-                    ${hqRows || '<p style="color:var(--text-muted); font-size:13px;">No data</p>'}
-                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin:14px 0 6px 0; text-transform:uppercase;">Central User Roster (${rows.length})</div>
-                    <div style="max-height:400px; overflow-y:auto; border:1px solid var(--border); border-radius:8px;">
+                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:8px; text-transform:uppercase;">All Users (${rosterRows.length})</div>
+                    <div style="overflow-x:auto; margin-bottom:18px; border-radius:10px; border:1px solid var(--border);">
                         <table style="width:100%; border-collapse:collapse;">
-                            <thead><tr style="background:var(--table-header-bg);"><th style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--table-header-text); text-align:left;">Name</th><th style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--table-header-text); text-align:left;">Designation</th><th style="border:1px solid var(--border); padding:6px 8px; font-size:12px; color:var(--table-header-text); text-align:left;">HQ</th></tr></thead>
+                            <thead>
+                                <tr style="background:var(--all-header-bg);">
+                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); text-transform:uppercase;">Name</th>
+                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); text-transform:uppercase;">Designation</th>
+                                    <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text); text-transform:uppercase;">HQ</th>
+                                </tr>
+                            </thead>
                             <tbody>${tableRows}</tbody>
                         </table>
                     </div>
+                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Users per HQ</div>
+                    ${hqRows || '<p style="color:var(--text-muted); font-size:13px;">No data</p>'}
                 `;
-            }).catch(() => {
-                rosterEl.innerHTML = '<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load roster. Check Firebase rules.</p>';
+            }).catch((err) => {
+                rosterEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">Failed to load roster.<br><span style="font-size:11px; color:var(--text-muted);">${err.message || 'Check Firebase rules — admin UID must have read access to /users.'}</span></p>`;
             });
         });
     };
@@ -1388,7 +1427,8 @@
         const melaBox = document.getElementById('nonduty-mela-box');
         const objBox = document.getElementById('nonduty-objective-box');
         const shiftBox = document.getElementById('nonduty-shift-box');
-        const objOptionalTag = document.getElementById('nonduty-objective-optional-tag');
+        const objLabel = document.getElementById('nonduty-objective-label');
+        const objHint = document.getElementById('nonduty-objective-hint');
         
         othersBox.classList.add('hidden');
         melaBox.classList.add('hidden');
@@ -1400,11 +1440,15 @@
         } else if (type === 'Mela Duty') {
             melaBox.classList.remove('hidden');
             objBox.classList.remove('hidden');
-            objOptionalTag.innerText = '(printed on TA Journal)';
+            objLabel.innerText = 'Objective of Journey';
+            objHint.innerText = '(printed on TA Journal)';
+            document.getElementById('nonduty-objective-text').placeholder = 'e.g. Kumbh Mela Duty';
         } else if (type === 'Station Duty') {
             objBox.classList.remove('hidden');
             shiftBox.classList.remove('hidden');
-            objOptionalTag.innerText = '(optional, for record only — no TA at HQ)';
+            objLabel.innerText = 'Objective of Duty';
+            objHint.innerText = '(optional, for your record only)';
+            document.getElementById('nonduty-objective-text').placeholder = 'e.g. Booking Office Duty (optional)';
         }
     }
     window.handleNonDutyTypeChange = handleNonDutyTypeChange;
@@ -1965,10 +2009,10 @@
             if (!melaStn) return showModal("ERROR", "Mela Duty Station is mandatory.", "error", false);
             if (!objective) return showModal("ERROR", "Objective of Journey is mandatory for Mela Duty.", "error", false);
         } else if (type === 'Station Duty') {
-            objective = document.getElementById('nonduty-objective-text').value.trim(); // optional, for record only
+            objective = document.getElementById('nonduty-objective-text').value.trim(); // optional
             shiftFrom = document.getElementById('nonduty-shift-from').value.trim();
             shiftTo = document.getElementById('nonduty-shift-to').value.trim();
-            if (!shiftFrom || !shiftTo) return showModal("ERROR", "Shift of Duty (From & To time) is mandatory for Station Duty.", "error", false);
+            if ((shiftFrom && !shiftTo) || (!shiftFrom && shiftTo)) return showModal("ERROR", "Please fill both Shift Start and Shift End, or leave both blank.", "error", false);
         } else if (type === 'Others') {
             othersLabel = document.getElementById('nonduty-others-text').value.trim();
             if (!othersLabel) return showModal("ERROR", "Custom Label is mandatory for Others.", "error", false);
@@ -2040,7 +2084,7 @@
         const selectedMonthStr = selectedYear + '-' + document.getElementById('all-logs-month').value;
         const trainSearch = (document.getElementById('all-train-search') ? document.getElementById('all-train-search').value.trim().toUpperCase() : '');
         
-        let headerHTML = `<div style="position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 10px 2px; background: var(--table-header-bg); border-bottom: 2px solid var(--table-border); font-size: 11px; font-weight: 900; color: var(--table-header-text); text-transform: uppercase; text-align: center; margin-bottom: 0; transition: background 0.3s, color 0.3s, border 0.3s;">
+        let headerHTML = `<div style="position: sticky; top: 0; z-index: 10; display: grid; grid-template-columns: 1fr 1.3fr 1fr 1fr 1.3fr 1fr 1fr; gap: 2px; padding: 10px 2px; background: var(--all-header-bg); border-bottom: 2px solid var(--all-header-border); font-size: 11px; font-weight: 900; color: var(--all-header-text); text-transform: uppercase; text-align: center; margin-bottom: 0; transition: background 0.3s, color 0.3s, border 0.3s;">
             <div style="text-align: left; padding-left: 5px;">TRAIN</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
         </div>`;
         
@@ -2085,7 +2129,7 @@
                 let bgCol = "rgba(34, 197, 94, 0.4)"; let icon = "🌴"; let label = leg.dutyType.toUpperCase();
                 if(leg.dutyType === 'Leave') bgCol = "rgba(59, 130, 246, 0.4)";
                 if(leg.dutyType === 'COCL') bgCol = "rgba(234, 179, 8, 0.4)";
-                if(leg.dutyType === 'Station Duty') { bgCol = "rgba(168, 85, 247, 0.35)"; icon = "🏢"; label = `STATION DUTY${leg.objective ? ' — ' + leg.objective : ''}`; }
+                if(leg.dutyType === 'Station Duty') { bgCol = "rgba(168, 85, 247, 0.35)"; icon = "🏢"; label = `STATION DUTY${leg.objective ? ' — ' + leg.objective : ''}${leg.shiftFrom ? ' (' + leg.shiftFrom + '-' + leg.shiftTo + ')' : ''}`; }
                 if(leg.dutyType === 'Mela Duty') { bgCol = "rgba(249, 115, 22, 0.35)"; icon = "🎪"; label = `MELA DUTY AT ${leg.melaStn || ''}`; }
                 if(leg.dutyType === 'Others') { bgCol = "rgba(148, 163, 184, 0.4)"; icon = "📌"; label = leg.othersLabel ? leg.othersLabel.toUpperCase() : 'OTHERS'; }
                 
@@ -2173,22 +2217,63 @@
     
     function getSplitLegs(cycle) { let printLegs = []; const pad = n => String(n).padStart(2,'0'); cycle.forEach(leg => { if (leg.depDate === leg.arrDate) { printLegs.push({ id: leg.id, date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: leg.arrTime, depStn: leg.depStn, arrStn: leg.arrStn, originalLeg: leg }); } else { printLegs.push({ id: leg.id + '_1', date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: '-', depStn: leg.depStn, arrStn: '-', originalLeg: leg }); let start = new Date(`${leg.depDate}T${leg.depTime}`); let gap = new Date(start); gap.setDate(gap.getDate() + 1); let gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; while(gapStr < leg.arrDate) { printLegs.push({ id: leg.id + '_' + gap.getTime(), date: gapStr, train: leg.train, depTime: '-', arrTime: '-', depStn: '-', arrStn: '-', originalLeg: leg }); gap.setDate(gap.getDate() + 1); gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; } printLegs.push({ id: leg.id + '_2', date: leg.arrDate, train: leg.train, depTime: '-', arrTime: leg.arrTime, depStn: '-', arrStn: leg.arrStn, originalLeg: leg }); } }); printLegs.sort((a, b) => { let tA = a.depTime !== '-' ? a.depTime : (a.arrTime !== '-' ? a.arrTime : '00:00'); let tB = b.depTime !== '-' ? b.depTime : (b.arrTime !== '-' ? b.arrTime : '00:00'); return new Date(`${a.date}T${tA}`) - new Date(`${b.date}T${tB}`); }); return printLegs; }
     
-    function computeNightWindow(signOn, signOff) {
-        let current = new Date(signOn); let mins = 0; let nFromStr = ""; let nToStr = "";
-        while (current < signOff) {
+    // Calculate night-duty minutes for a single shift window (handles overnight shifts crossing midnight)
+    function calcShiftNightMinutes(shiftFromStr, shiftToStr, dateStr) {
+        const parseHM = (str) => {
+            const clean = str.replace(':', '');
+            return { h: parseInt(clean.substring(0,2)), m: parseInt(clean.substring(2,4)) };
+        };
+        const sf = parseHM(shiftFromStr);
+        const st = parseHM(shiftToStr);
+        let start = new Date(`${dateStr}T00:00:00`);
+        start.setHours(sf.h, sf.m, 0, 0);
+        let end = new Date(`${dateStr}T00:00:00`);
+        end.setHours(st.h, st.m, 0, 0);
+        if (end <= start) end.setDate(end.getDate() + 1); // overnight shift
+        
+        let current = new Date(start); let mins = 0; let nFromStr = ""; let nToStr = "";
+        while(current < end) {
             let h = current.getHours();
-            if (h >= 22 || h < 6) {
-                if (nFromStr === "") nFromStr = `${String(current.getHours()).padStart(2,'0')}:${String(current.getMinutes()).padStart(2,'0')}`;
+            if(h >= 22 || h < 6) {
+                if(nFromStr === "") nFromStr = `${String(current.getHours()).padStart(2,'0')}:${String(current.getMinutes()).padStart(2,'0')}`;
                 let nextBound = new Date(current);
-                if (h >= 22) { nextBound.setDate(nextBound.getDate()+1); nextBound.setHours(6,0,0,0); } else { nextBound.setHours(6,0,0,0); }
-                if (nextBound > signOff) nextBound = new Date(signOff);
+                if(h >= 22) { nextBound.setDate(nextBound.getDate()+1); nextBound.setHours(6,0,0,0); } else { nextBound.setHours(6,0,0,0); }
+                if(nextBound > end) nextBound = new Date(end);
                 mins += (nextBound - current) / 60000;
                 nToStr = `${String(nextBound.getHours()).padStart(2,'0')}:${String(nextBound.getMinutes()).padStart(2,'0')}`;
                 current = nextBound;
             } else { current.setHours(22,0,0,0); }
         }
-        return { nFromStr, nToStr, mins };
+        return { mins, nFromStr, nToStr, signOn: start, signOff: end };
     }
+    window.calcShiftNightMinutes = calcShiftNightMinutes;
+
+    // Extract Station Duty entries with shift timing that fall in the NDA billing period
+    function extractStationDutyNDA(mo) {
+        const [year, month] = mo.split('-').map(Number);
+        const ndaStart = new Date(year, month - 2, 16, 0, 0, 0);
+        const ndaEnd = new Date(year, month - 1, 15, 23, 59, 59);
+        let entries = []; let totalMins = 0;
+        if (!window.appState.legs) return { entries, totalMins };
+        
+        window.appState.legs.forEach(l => {
+            if (!l.isNonDuty || l.dutyType !== 'Station Duty' || !l.shiftFrom || !l.shiftTo) return;
+            let d = new Date(`${l.fromDate}T00:00:00`);
+            const endD = new Date(`${l.toDate}T00:00:00`);
+            while (d <= endD) {
+                const pad = n => String(n).padStart(2,'0');
+                const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+                const shiftCalc = calcShiftNightMinutes(l.shiftFrom, l.shiftTo, dateStr);
+                if (shiftCalc.signOn >= ndaStart && shiftCalc.signOn <= ndaEnd && shiftCalc.mins > 0) {
+                    totalMins += shiftCalc.mins;
+                    entries.push({ date: dateStr, objective: l.objective || 'Station Duty', shiftFrom: l.shiftFrom, shiftTo: l.shiftTo, ...shiftCalc });
+                }
+                d.setDate(d.getDate() + 1);
+            }
+        });
+        return { entries, totalMins };
+    }
+    window.extractStationDutyNDA = extractStationDutyNDA;
 
     function extractNDALegs(mo) { 
         const [year, month] = mo.split('-').map(Number); 
@@ -2197,7 +2282,7 @@
         let ndaData = []; let totalNdaMinutes = 0; 
         if(!window.appState.legs) return { ndaData, totalNdaMinutes }; 
         
-        let dutyOnly = window.appState.legs.filter(l => !l.isNonDuty); 
+        let dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
         const cycles = buildCycles(dutyOnly); 
         let dutyLegs = []; 
         cycles.forEach(cycle => { 
@@ -2218,40 +2303,25 @@
             let signOff = new Date(`${lastTrip.arrDate}T${lastTrip.arrTime}:00`); signOff.setMinutes(signOff.getMinutes() + 30); 
             
             if(signOn >= ndaStart && signOn <= ndaEnd) { 
-                const { nFromStr, nToStr, mins: legNdaMins } = computeNightWindow(signOn, signOff);
+                let current = new Date(signOn); let legNdaMins = 0; let nFromStr = ""; let nToStr = ""; 
+                while(current < signOff) { 
+                    let h = current.getHours(); 
+                    if(h >= 22 || h < 6) { 
+                        if(nFromStr === "") nFromStr = `${String(current.getHours()).padStart(2,'0')}:${String(current.getMinutes()).padStart(2,'0')}`; 
+                        let nextBound = new Date(current); 
+                        if(h >= 22) { nextBound.setDate(nextBound.getDate()+1); nextBound.setHours(6,0,0,0); } else { nextBound.setHours(6,0,0,0); } 
+                        if(nextBound > signOff) nextBound = new Date(signOff); 
+                        legNdaMins += (nextBound - current) / 60000; 
+                        nToStr = `${String(nextBound.getHours()).padStart(2,'0')}:${String(nextBound.getMinutes()).padStart(2,'0')}`; 
+                        current = nextBound; 
+                    } else { current.setHours(22,0,0,0); } 
+                } 
                 if(legNdaMins > 0) { 
                     totalNdaMinutes += legNdaMins; 
                     ndaData.push({ trips: duty, fromStn: firstTrip.depStn, toStn: lastTrip.arrStn, signOn, signOff, nFromStr, nToStr, mins: legNdaMins }); 
                 } 
             } 
         }); 
-
-        // ===== Station Duty: per-date shift-based NDA (no train involved) =====
-        const stationDuties = window.appState.legs.filter(l => l.isNonDuty && l.dutyType === 'Station Duty' && l.shiftFrom && l.shiftTo);
-        stationDuties.forEach(sd => {
-            let cur = new Date(`${sd.fromDate}T00:00:00`);
-            const last = new Date(`${sd.toDate}T00:00:00`);
-            const pad = n => String(n).padStart(2,'0');
-            while (cur <= last) {
-                const dateStr = `${cur.getFullYear()}-${pad(cur.getMonth()+1)}-${pad(cur.getDate())}`;
-                let signOn = new Date(`${dateStr}T${sd.shiftFrom}:00`);
-                let signOff = new Date(`${dateStr}T${sd.shiftTo}:00`);
-                if (signOff <= signOn) signOff.setDate(signOff.getDate() + 1); // overnight shift
-                if (signOn >= ndaStart && signOn <= ndaEnd) {
-                    const { nFromStr, nToStr, mins } = computeNightWindow(signOn, signOff);
-                    if (mins > 0) {
-                        totalNdaMinutes += mins;
-                        ndaData.push({
-                            trips: [{ date: dateStr, train: 'STATION DUTY', depTime: sd.shiftFrom, arrTime: sd.shiftTo, depStn: '-', arrStn: '-' }],
-                            fromStn: '-', toStn: '-', signOn, signOff, nFromStr, nToStr, mins, isStationDuty: true
-                        });
-                    }
-                }
-                cur.setDate(cur.getDate() + 1);
-            }
-        });
-
-        ndaData.sort((a, b) => a.signOn - b.signOn);
         return { ndaData, totalNdaMinutes }; 
     }
     
@@ -2315,7 +2385,8 @@
         let values = months.map(mo => {
             if (isNDA) {
                 const { totalNdaMinutes } = extractNDALegs(mo);
-                return parseFloat((totalNdaMinutes / 60).toFixed(1));
+                const stationMins = extractStationDutyNDA(mo).totalMins;
+                return parseFloat(((totalNdaMinutes + stationMins) / 60).toFixed(1));
             } else {
                 let taResultsAll = [];
                 cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
@@ -2557,9 +2628,11 @@
             const isGazetted = window.appState.profile && window.appState.profile.empType === 'Gazetted';
             if (!isGazetted) {
                 const nda = extractNDALegs(mo);
-                totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
-                remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
-                document.getElementById('rep-count').innerText = nda.ndaData.length;
+                const stationDuty = extractStationDutyNDA(mo);
+                const combinedMins = nda.totalNdaMinutes + stationDuty.totalMins;
+                totalEligibleHours = Math.floor(combinedMins / 60);
+                remainingMinutes = Math.round(combinedMins % 60);
+                document.getElementById('rep-count').innerText = nda.ndaData.length + stationDuty.entries.length;
                 
                 nda.ndaData.forEach(entry => {
                     entry.trips.forEach(trip => { if (trip.train) nightTrainCount++; });
@@ -2608,12 +2681,14 @@
 
     // Find special duty (Mela/Station-at-HQ) records that overlap a given date
     function findSpecialDutyForDate(dateStr) {
-        if (!window.appState.legs) return null;
+        if (!window.appState.legs || !window.appState.profile) return null;
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
         return window.appState.legs.find(l => {
             if (!l.isNonDuty) return false;
             if (l.dutyType !== 'Mela Duty') return false;
             if (dateStr < l.fromDate || dateStr > l.toDate) return false;
+            // Own-HQ / nearby-HQ Mela Duty has TA=0 and is never printed on the TA PDF — skip it entirely.
+            if (hqGroup.includes(l.melaStn)) return false;
             return true;
         }) || null;
     }
@@ -2638,8 +2713,6 @@
             if (existingDates.has(dateStr)) continue;
             const special = findSpecialDutyForDate(dateStr);
             if (!special) continue; // only inject rows for dates covered by a Mela Duty record
-            const hqGroupChk = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
-            if (hqGroupChk.includes(special.melaStn)) continue; // Mela Duty AT HQ/nearby-HQ = TA is zero, never printed on TA PDF
             const matchingTA = taResultsAll.find(r => r.date === dateStr);
             validLegs.push({
                 item: { date: dateStr, train: '-', depTime: '-', arrTime: '-', depStn: '-', arrStn: '-' },
@@ -2653,24 +2726,16 @@
         let pCell = isSquished ? "1px" : "2px";
         let fCell = isSquished ? "9px" : "10px";
 
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
-        validLegs = validLegs.filter(row => {
-            const special = findSpecialDutyForDate(row.item.date);
-            return !(special && hqGroup.includes(special.melaStn));
-        });
-
         // ===== Build Objective segments (normal "Worked as TTE" vs Mela/Station Duty blocks) =====
         // Each row in validLegs maps to one date. Tag each row with its objective-segment key.
         const rowMeta = validLegs.map(row => {
             const special = findSpecialDutyForDate(row.item.date);
             let segKey = 'normal'; let segLabel = 'Worked as TTE'; let isMelaAwayDay = false;
             if (special) {
-                const isOwnHq = hqGroup.includes(special.melaStn);
                 segKey = 'mela_' + special.id;
-                segLabel = special.objective || (isOwnHq ? 'Station Duty' : `Mela Duty at ${special.melaStn}`);
-                // Only merge into a centered block when genuinely away from HQ with no actual train leg.
-                // Own-HQ "Mela Duty" days print as individual normal rows (TA=0), never merged.
-                isMelaAwayDay = (!isOwnHq && row.item.train === '-' && row.item.depStn === '-' && row.item.arrStn === '-');
+                segLabel = special.objective || `Mela Duty at ${special.melaStn}`;
+                // Days with no actual train leg (pure away days between going/returning legs) get merged
+                isMelaAwayDay = (row.item.train === '-' && row.item.depStn === '-' && row.item.arrStn === '-');
             }
             return { ...row, segKey, segLabel, special, isMelaAwayDay };
         });
@@ -2749,38 +2814,62 @@
         
         if (!isGazetted) {
             nda = extractNDALegs(mo);
-            totalH = Math.floor(nda.totalNdaMinutes / 60);
-            totalM = Math.round(nda.totalNdaMinutes % 60);
+            const stationDuty = extractStationDutyNDA(mo);
+            const combinedMinutes = nda.totalNdaMinutes + stationDuty.totalMins;
+            totalH = Math.floor(combinedMinutes / 60);
+            totalM = Math.round(combinedMinutes % 60);
             
-            nda.ndaData.forEach(duty => { 
-                const rs = duty.trips.length; 
-                const signOnStr = `${String(duty.signOn.getHours()).padStart(2,'0')}:${String(duty.signOn.getMinutes()).padStart(2,'0')}`; 
-                const signOffStr = `${String(duty.signOff.getHours()).padStart(2,'0')}:${String(duty.signOff.getMinutes()).padStart(2,'0')}`; 
-                const hStr = String(Math.floor(duty.mins / 60)).padStart(2,'0') + ":" + String(Math.round(duty.mins % 60)).padStart(2,'0'); 
-                
-                duty.trips.forEach((trip, idx) => { 
-                    tbodyHtml += `<tr>`; 
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${formatDate(trip.depDate)}</td>`; 
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.train}</td>`; 
-                    
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.depStn}</td>`; 
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.arrStn}</td>`; 
+            // Build a unified, chronologically sorted list of row-groups (train duties + station duty days)
+            let rowGroups = [];
+            nda.ndaData.forEach(duty => { rowGroups.push({ type: 'train', sortKey: duty.signOn, duty }); });
+            stationDuty.entries.forEach(entry => { rowGroups.push({ type: 'station', sortKey: entry.signOn, entry }); });
+            rowGroups.sort((a, b) => a.sortKey - b.sortKey);
 
-                    if(idx === 0) { 
-                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${signOnStr}</td>`; 
-                    } 
+            rowGroups.forEach(group => {
+                if (group.type === 'train') {
+                    const duty = group.duty;
+                    const rs = duty.trips.length; 
+                    const signOnStr = `${String(duty.signOn.getHours()).padStart(2,'0')}:${String(duty.signOn.getMinutes()).padStart(2,'0')}`; 
+                    const signOffStr = `${String(duty.signOff.getHours()).padStart(2,'0')}:${String(duty.signOff.getMinutes()).padStart(2,'0')}`; 
+                    const hStr = String(Math.floor(duty.mins / 60)).padStart(2,'0') + ":" + String(Math.round(duty.mins % 60)).padStart(2,'0'); 
                     
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.depTime}</td>`; 
-                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.arrTime}</td>`; 
-                    
-                    if(idx === 0) { 
-                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${signOffStr}</td>`; 
-                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${duty.nFromStr}</td>`; 
-                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${duty.nToStr}</td>`; 
-                        tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle; font-weight: bold;">${hStr}</td>`; 
-                    } 
-                    tbodyHtml += `</tr>`; 
-                }); 
+                    duty.trips.forEach((trip, idx) => { 
+                        tbodyHtml += `<tr>`; 
+                        tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${formatDate(trip.depDate)}</td>`; 
+                        tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.train}</td>`; 
+                        tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.depStn}</td>`; 
+                        tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.arrStn}</td>`; 
+                        if(idx === 0) { tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${signOnStr}</td>`; } 
+                        tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.depTime}</td>`; 
+                        tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${trip.arrTime}</td>`; 
+                        if(idx === 0) { 
+                            tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${signOffStr}</td>`; 
+                            tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${duty.nFromStr}</td>`; 
+                            tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle;">${duty.nToStr}</td>`; 
+                            tbodyHtml += `<td rowspan="${rs}" style="border: 1px solid black; padding: 4px; vertical-align: middle; font-weight: bold;">${hStr}</td>`; 
+                        } 
+                        tbodyHtml += `</tr>`; 
+                    });
+                } else {
+                    // Station Duty row
+                    const e = group.entry;
+                    const signOnStr = `${String(e.signOn.getHours()).padStart(2,'0')}:${String(e.signOn.getMinutes()).padStart(2,'0')}`;
+                    const signOffStr = `${String(e.signOff.getHours()).padStart(2,'0')}:${String(e.signOff.getMinutes()).padStart(2,'0')}`;
+                    const hStr = String(Math.floor(e.mins / 60)).padStart(2,'0') + ":" + String(Math.round(e.mins % 60)).padStart(2,'0');
+                    const shiftFromFmt = e.shiftFrom;
+                    const shiftToFmt = e.shiftTo;
+                    tbodyHtml += `<tr>`;
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${formatDate(e.date)}</td>`;
+                    tbodyHtml += `<td colspan="3" style="border: 1px solid black; padding: 4px; font-weight: bold;">STATION DUTY${e.objective && e.objective !== 'Station Duty' ? ' — ' + e.objective : ''}</td>`;
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${signOnStr}</td>`;
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${shiftFromFmt}</td>`;
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${shiftToFmt}</td>`;
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${signOffStr}</td>`;
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${e.nFromStr}</td>`;
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${e.nToStr}</td>`;
+                    tbodyHtml += `<td style="border: 1px solid black; padding: 4px; font-weight: bold;">${hStr}</td>`;
+                    tbodyHtml += `</tr>`;
+                }
             });
         } else {
             tbodyHtml = `<tr><td colspan="11" style="border: 1px solid black; padding: 15px; font-weight: bold; color: red;">Gazetted Employees are not eligible for Night Duty Allowance.</td></tr>`;
