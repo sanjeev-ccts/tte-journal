@@ -198,7 +198,7 @@
         .duty-cal-day { font-size: 11px; font-weight: 700; text-align: center; padding: 5px 2px; border-radius: 6px; min-height: 26px; display: flex; align-items: center; justify-content: center; }
         .duty-cal-day.today { outline: 2px solid var(--blue); outline-offset: 1px; }
         
-        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal, #calendar-modal, #feedback-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal, #calendar-modal, #feedback-modal, #complete-arrival-modal, #cal-day-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
         .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
@@ -255,7 +255,7 @@
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
         window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.9';
+        window.APP_VERSION = '4.0';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -599,7 +599,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.9</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v4.0</div>
         </div>
     </div>
 
@@ -816,7 +816,7 @@
                             <input type="date" id="trip-dep-date" style="margin: 0; width: 100%; font-size: 12px; padding: 7px 8px;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Date</label>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Date <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(blank = today)</span></label>
                             <input type="date" id="trip-arr-date" style="margin: 0; width: 100%; font-size: 12px; padding: 7px 8px;">
                         </div>
                     </div>
@@ -826,7 +826,7 @@
                             <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; width: 100%;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Time</label>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Time <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(optional)</span></label>
                             <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; width: 100%;">
                         </div>
                     </div>
@@ -965,6 +965,39 @@
                 <button onclick="window.undoLeg()" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto;">↩ Undo</button>
                 <button onclick="window.redoLeg()" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto;">↪ Redo</button>
             </div>
+        </div>
+    </div>
+
+    <!-- COMPLETE ARRIVAL MODAL -->
+    <div id="complete-arrival-modal" class="hidden">
+        <div style="background:var(--modal-bg); padding:20px; border-radius:16px; width:88%; max-width:320px; border:1px solid var(--border); box-shadow:var(--shadow); transition:background 0.3s;">
+            <h3 style="color:var(--blue); margin:0 0 5px 0; font-size:15px; font-weight:900;">✅ Complete Arrival</h3>
+            <p id="complete-arrival-desc" style="font-size:12px; color:var(--text-muted); margin:0 0 14px 0;"></p>
+            <div style="display:flex; gap:10px; margin-bottom:12px;">
+                <div style="flex:1; min-width:0;">
+                    <label style="font-size:12px; font-weight:700; color:var(--blue); display:block; margin-bottom:4px;">Arrival Date</label>
+                    <input type="date" id="complete-arr-date" style="margin:0; width:100%; font-size:12px;">
+                </div>
+                <div style="flex:1; min-width:0;">
+                    <label style="font-size:12px; font-weight:700; color:var(--blue); display:block; margin-bottom:4px;">Arrival Time</label>
+                    <input type="text" inputmode="numeric" id="complete-arr-time" placeholder="HHMM" maxlength="4" onblur="window.formatTimeInput(this)" style="margin:0; width:100%;">
+                </div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button onclick="window.saveCompleteArrival()" style="flex:1; margin:0; background:var(--green);">Save Arrival</button>
+                <button onclick="document.getElementById('complete-arrival-modal').classList.add('hidden')" style="flex:1; margin:0; background:var(--card); color:var(--text); border:1px solid var(--border); box-shadow:none;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CALENDAR DAY DETAIL MODAL -->
+    <div id="cal-day-modal" class="hidden">
+        <div style="background:var(--modal-bg); padding:18px; border-radius:16px; width:88%; max-width:340px; border:1px solid var(--border); box-shadow:var(--shadow); transition:background 0.3s;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h3 id="cal-day-title" style="color:var(--blue); margin:0; font-size:15px; font-weight:900;"></h3>
+                <button onclick="document.getElementById('cal-day-modal').classList.add('hidden')" style="width:auto; margin:0; padding:4px 12px; font-size:12px; background:#64748b; border-radius:20px;">✕</button>
+            </div>
+            <div id="cal-day-content"></div>
         </div>
     </div>
 
@@ -2385,8 +2418,23 @@
     function triggerDelete() { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
     
     function saveLeg() { 
-        const leg = { id: window.editModeId ? window.editModeId : Date.now(), isNonDuty: false, depDate: document.getElementById('trip-dep-date').value, train: document.getElementById('trip-train').value.toUpperCase().trim(), depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), depTime: document.getElementById('trip-dep-time').value, arrDate: document.getElementById('trip-arr-date').value, arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), arrTime: document.getElementById('trip-arr-time').value }; 
-        if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrDate || !leg.arrStn || !leg.arrTime) return showModal("ERROR", "All fields are mandatory.", "error", false); 
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        const rawArrDate = document.getElementById('trip-arr-date').value;
+        const rawArrTime = document.getElementById('trip-arr-time').value;
+        const leg = { 
+            id: window.editModeId ? window.editModeId : Date.now(), 
+            isNonDuty: false, 
+            depDate: document.getElementById('trip-dep-date').value, 
+            train: document.getElementById('trip-train').value.toUpperCase().trim(), 
+            depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), 
+            depTime: document.getElementById('trip-dep-time').value, 
+            arrDate: rawArrDate || todayStr,
+            arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), 
+            arrTime: rawArrTime || '',
+            inProgress: !rawArrDate || !rawArrTime // flag for "arrival not yet filled"
+        }; 
+        if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrStn) return showModal("ERROR", "Train No., Dep Date, Dep Time, Station From and Station To are mandatory.\n\nArrival Date defaults to today. Arrival Time can be filled later.", "error", false);
         if(leg.depStn === leg.arrStn) return showModal("ERROR", "From and To stations cannot be same.", "error", false); 
         if(new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR", "Arrival must be after Departure.", "error", false); 
         
@@ -2688,6 +2736,98 @@
         renderAllLogs();
     };
 
+    window.showCalDayDetail = function(dateStr) {
+        if (!window.appState.legs) return;
+        const legs = window.appState.legs;
+        // Find all duty legs that TOUCH this date (dep or arr on this date, or spans across it)
+        const dutyOnDate = legs.filter(l => {
+            if (l.isNonDuty) return false;
+            return l.depDate === dateStr || l.arrDate === dateStr ||
+                   (l.depDate < dateStr && l.arrDate > dateStr);
+        });
+        // Also find non-duty entries covering this date
+        const nonDutyOnDate = legs.filter(l => {
+            if (!l.isNonDuty) return false;
+            return l.fromDate <= dateStr && l.toDate >= dateStr;
+        });
+
+        const fmtD = formatDate(dateStr);
+        document.getElementById('cal-day-title').innerText = `📅 ${fmtD}`;
+        let content = '';
+
+        if (dutyOnDate.length === 0 && nonDutyOnDate.length === 0) {
+            content = '<p style="color:var(--text-muted); font-size:13px; text-align:center; margin:10px 0;">No entries for this date.</p>';
+        }
+
+        if (dutyOnDate.length > 0) {
+            content += `<div style="font-size:11px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">🚂 Duty Journey${dutyOnDate.length > 1 ? 's' : ''}</div>`;
+            dutyOnDate.forEach(leg => {
+                const isArr = leg.arrDate === dateStr;
+                const isDep = leg.depDate === dateStr;
+                const statusLabel = isDep && isArr ? 'Dep & Arr' : isDep ? 'Departure' : isArr ? 'Arrival' : 'In Transit';
+                const statusColor = isDep ? 'var(--green)' : isArr ? 'var(--blue)' : 'var(--text-muted)';
+                content += `<div style="background:var(--input-bg); border-radius:10px; padding:10px; margin-bottom:8px; border:1px solid var(--border);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                        <span style="font-size:14px; font-weight:900; color:var(--text);">Train ${leg.train}</span>
+                        <span style="font-size:10px; font-weight:700; color:${statusColor}; background:${statusColor}20; padding:2px 8px; border-radius:10px;">${statusLabel}</span>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:12px;">
+                        <div><span style="color:var(--text-muted);">From: </span><strong>${leg.depStn}</strong> ${leg.depTime}</div>
+                        <div><span style="color:var(--text-muted);">To: </span><strong>${leg.arrStn}</strong> ${leg.arrTime || '(pending)'}</div>
+                        <div><span style="color:var(--text-muted);">Dep Date: </span>${formatDate(leg.depDate)}</div>
+                        <div><span style="color:var(--text-muted);">Arr Date: </span>${formatDate(leg.arrDate)}</div>
+                    </div>
+                    ${leg.inProgress ? '<div style="font-size:11px; color:var(--orange); font-weight:700; margin-top:5px;">⏳ Arrival time not yet filled</div>' : ''}
+                </div>`;
+            });
+        }
+
+        if (nonDutyOnDate.length > 0) {
+            content += `<div style="font-size:11px; font-weight:800; color:var(--text-muted); margin:8px 0 6px 0; text-transform:uppercase;">📋 Rest / Leave / Others</div>`;
+            nonDutyOnDate.forEach(leg => {
+                const icon = leg.dutyType === 'Leave' ? '📋' : leg.dutyType === 'Mela Duty' ? '🎪' : leg.dutyType === 'Station Duty' ? '🏢' : '🌴';
+                const lbl = leg.dutyType === 'Leave' && leg.leaveType ? leg.leaveType : leg.dutyType;
+                content += `<div style="background:rgba(249,115,22,0.08); border-radius:10px; padding:10px; margin-bottom:6px; border:1px solid rgba(249,115,22,0.25); font-size:13px; font-weight:700; color:var(--orange);">${icon} ${lbl}${leg.melaStn ? ' at '+leg.melaStn : ''}<br><span style="font-size:11px; color:var(--text-muted); font-weight:500;">${formatDate(leg.fromDate)} – ${formatDate(leg.toDate)}</span></div>`;
+            });
+        }
+
+        document.getElementById('cal-day-content').innerHTML = content;
+        document.getElementById('calendar-modal').classList.add('hidden'); // close calendar
+        document.getElementById('cal-day-modal').classList.remove('hidden');
+    };
+
+    // Complete Arrival — open modal for in-progress entries
+    window.openCompleteArrival = function(legId) {
+        const leg = (window.appState.legs || []).find(l => String(l.id) === String(legId));
+        if (!leg) return;
+        window._completingArrivalId = legId;
+        const today = new Date();
+        const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+        document.getElementById('complete-arrival-desc').innerText = `Train ${leg.train} · ${leg.depStn} → ${leg.arrStn}`;
+        document.getElementById('complete-arr-date').value = leg.arrDate || todayStr;
+        document.getElementById('complete-arr-time').value = leg.arrTime || '';
+        document.getElementById('complete-arrival-modal').classList.remove('hidden');
+    };
+
+    window.saveCompleteArrival = function() {
+        const legId = window._completingArrivalId;
+        const arrDate = document.getElementById('complete-arr-date').value;
+        const arrTime = document.getElementById('complete-arr-time').value;
+        if (!arrDate || !arrTime) return showModal("ERROR", "Please fill both Arrival Date and Arrival Time.", "error", false);
+        
+        const legIdx = (window.appState.legs || []).findIndex(l => String(l.id) === String(legId));
+        if (legIdx === -1) return;
+        
+        window.appState.legs[legIdx].arrDate = arrDate;
+        window.appState.legs[legIdx].arrTime = arrTime;
+        window.appState.legs[legIdx].inProgress = false;
+        
+        saveData();
+        document.getElementById('complete-arrival-modal').classList.add('hidden');
+        updateDashboardUI();
+        showModal("Saved!", `Arrival updated: ${arrDate} at ${arrTime}`, "success", false);
+    };
+
     window.toggleCalendarView = function() {
         renderDutyCalendar();
         document.getElementById('calendar-modal').classList.remove('hidden');
@@ -2740,9 +2880,20 @@
             const key = `${moStr}-${String(d).padStart(2,'0')}`;
             const tag = dayMap[key];
             const isToday = isCurrentMonth && d === today.getDate();
-            html += `<div class="duty-cal-day${isToday ? ' today' : ''}" style="background:${tag ? colors[tag].bg : 'transparent'}; color:${tag ? colors[tag].col : 'var(--text-muted)'};">${d}</div>`;
+            const hasDuty = !!tag;
+            html += `<div class="duty-cal-day${isToday ? ' today' : ''}" style="background:${tag ? colors[tag].bg : 'transparent'}; color:${tag ? colors[tag].col : 'var(--text-muted)'}; ${hasDuty ? 'cursor:pointer;' : ''}" ${hasDuty ? `onclick="window.showCalDayDetail('${key}')"` : ''}>${d}</div>`;
         }
         calEl.innerHTML = html;
+        // Add instruction message below calendar
+        const wrapper = document.getElementById('calendar-modal');
+        let msgEl = document.getElementById('cal-tap-msg');
+        if (!msgEl && wrapper) {
+            msgEl = document.createElement('p');
+            msgEl.id = 'cal-tap-msg';
+            msgEl.style.cssText = 'font-size:11px; color:var(--blue); text-align:center; margin:10px 0 0 0; font-weight:600;';
+            msgEl.innerText = '👆 Tap any coloured date to view duty details';
+            calEl.after(msgEl);
+        }
     }
     window.renderDutyCalendar = renderDutyCalendar;
 
@@ -3182,37 +3333,59 @@
         const rcDash = document.getElementById('recent-logs-dash');
         let rcHTMLDash = '';
         const allLegsForDash = window.appState.legs || [];
+        // Change 4: Dashboard shows duty journeys ONLY
+        const dutyOnlyDash = allLegsForDash.filter(l => !l.isNonDuty);
         
-        if(allLegsForDash.length === 0) { 
-            rcHTMLDash = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No entries yet.</p>'; 
+        if(dutyOnlyDash.length === 0) { 
+            rcHTMLDash = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No duty entries yet.</p>'; 
         } else { 
-            // Sort all legs (duty + non-duty) by date descending
-            let sortedAll = [...allLegsForDash].sort((a, b) => {
-                const da = a.isNonDuty ? a.fromDate : a.depDate;
-                const db = b.isNonDuty ? b.fromDate : b.depDate;
-                return db.localeCompare(da);
-            });
-            let recentDashArr = sortedAll.slice(0, 4); 
-            
-            let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Tr/Type</th><th style="padding: 8px 2px;">From Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">To Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
-            
+            let sortedDuty = [...dutyOnlyDash].sort((a, b) => b.depDate.localeCompare(a.depDate));
+            let recentDashArr = sortedDuty.slice(0, 4); 
+            // Change 2: Header WITHOUT "Tr/Type" — just train number in data, cleaner header
+            let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Train</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th><th style="padding: 4px;"></th></tr></thead>`;
             rcHTMLDash = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0;">${theadCommon}<tbody>`;
-
             recentDashArr.forEach((leg, i) => { 
                 let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
-                if (leg.isNonDuty) {
-                    const icon = leg.dutyType === 'Leave' ? '📋' : leg.dutyType === 'Mela Duty' ? '🎪' : leg.dutyType === 'Station Duty' ? '🏢' : '🌴';
-                    const label = leg.dutyType === 'Leave' && leg.leaveType ? leg.leaveType : leg.dutyType;
-                    const dateStr = leg.fromDate === leg.toDate ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)}`;
-                    rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td colspan="7" style="padding: 8px 4px; font-weight: bold; color: var(--orange); font-size: 11px;">${icon} ${label}${leg.melaStn ? ' at '+leg.melaStn : ''} : ${dateStr}${leg.toDate !== leg.fromDate ? ' – '+formatDate(leg.toDate) : ''}</td></tr>`;
-                } else {
-                    let shortDep = formatDate(leg.depDate); let shortArr = formatDate(leg.arrDate); 
-                    rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.train}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.depStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.arrStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${leg.arrTime}</td></tr>`; 
-                }
+                let shortDep = formatDate(leg.depDate); 
+                let shortArr = formatDate(leg.arrDate);
+                // Change 1: Show + button in last column for in-progress entries (missing arrival time)
+                const addBtn = leg.inProgress 
+                    ? `<td style="padding:4px 2px;"><button onclick="window.openCompleteArrival('${leg.id}')" style="background:var(--green);color:white;border:none;border-radius:10px;padding:3px 7px;font-size:10px;font-weight:bold;cursor:pointer;margin:0;box-shadow:none;width:auto;">+Arr</button></td>`
+                    : `<td style="padding:4px 2px;"></td>`;
+                const arrTimeDisplay = leg.inProgress ? `<span style="color:var(--orange); font-style:italic; font-size:10px;">pending</span>` : leg.arrTime;
+                rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.train}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.depStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.arrStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${arrTimeDisplay}</td>${addBtn}</tr>`; 
             });
             rcHTMLDash += `</tbody></table>`;
         } 
         if(rcDash) rcDash.innerHTML = rcHTMLDash;
+
+        // Change 4: Add Journey recent entries shows ALL types (duty + non-duty)
+        const rcAdd = document.getElementById('recent-logs-add');
+        if (rcAdd) {
+            const allSorted = [...allLegsForDash].sort((a, b) => {
+                const da = a.isNonDuty ? a.fromDate : a.depDate;
+                const db = b.isNonDuty ? b.fromDate : b.depDate;
+                return db.localeCompare(da);
+            }).slice(0, 5);
+            if (allSorted.length === 0) {
+                rcAdd.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 12px;">No entries yet.</p>';
+            } else {
+                const addThead = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); border-bottom: 2px solid var(--table-border);"><tr><th style="padding:7px 2px;">Train/Type</th><th style="padding:7px 2px;">Dep/From</th><th style="padding:7px 2px;">From</th><th style="padding:7px 2px;">Dep</th><th style="padding:7px 2px;">Arr/To</th><th style="padding:7px 2px;">To</th><th style="padding:7px 2px;">Arr</th></tr></thead>`;
+                let addBody = '';
+                allSorted.forEach((leg, i) => {
+                    const rc = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
+                    if (leg.isNonDuty) {
+                        const icon = leg.dutyType === 'Leave' ? '📋' : leg.dutyType === 'Mela Duty' ? '🎪' : leg.dutyType === 'Station Duty' ? '🏢' : '🌴';
+                        const lbl = leg.dutyType === 'Leave' && leg.leaveType ? leg.leaveType : leg.dutyType;
+                        addBody += `<tr style="background:${rc}; border-bottom:1px solid var(--border);"><td colspan="7" style="padding:7px 4px; font-weight:bold; color:var(--orange); font-size:11px; text-align:center;">${icon} ${lbl}${leg.melaStn ? ' at '+leg.melaStn : ''}: ${formatDate(leg.fromDate)}${leg.toDate !== leg.fromDate ? ' – '+formatDate(leg.toDate) : ''}</td></tr>`;
+                    } else {
+                        const arrT = leg.inProgress ? `<span style="color:var(--orange);font-size:10px;">pending</span>` : leg.arrTime;
+                        addBody += `<tr style="background:${rc}; border-bottom:1px solid var(--border);"><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.train}</td><td style="padding:7px 2px;color:var(--row-blue-text);font-weight:bold;font-size:11px;">${formatDate(leg.depDate)}</td><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.depStn}</td><td style="padding:7px 2px;color:var(--row-muted-text);font-weight:bold;font-size:11px;">${leg.depTime}</td><td style="padding:7px 2px;color:var(--row-blue-text);font-weight:bold;font-size:11px;">${formatDate(leg.arrDate)}</td><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.arrStn}</td><td style="padding:7px 2px;color:var(--row-muted-text);font-weight:bold;font-size:11px;">${arrT}</td></tr>`;
+                    }
+                });
+                rcAdd.innerHTML = `<table style="width:100%; border-collapse:collapse; font-size:11px; text-align:center;">${addThead}<tbody>${addBody}</tbody></table>`;
+            }
+        }
     }
 
     function updateReportUI() { const mo = document.getElementById('report-month-hidden').value; const [y, m] = mo.split('-').map(Number); const curDt = new Date(y, m-1); const moName = curDt.toLocaleString('default',{month:'short'}); const yrName = curDt.getFullYear(); const prevD = new Date(y, m - 2, 16); const currD = new Date(y, m - 1, 15); const strFrom = `${String(prevD.getDate()).padStart(2,'0')}-${prevD.toLocaleString('default',{month:'short'})}-${String(prevD.getFullYear()).slice(-2)}`; const strTo = `${String(currD.getDate()).padStart(2,'0')}-${currD.toLocaleString('default',{month:'short'})}-${String(currD.getFullYear()).slice(-2)}`; 
