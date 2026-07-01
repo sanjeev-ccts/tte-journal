@@ -255,7 +255,7 @@
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
         window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.5';
+        window.APP_VERSION = '3.6';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -583,7 +583,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.5</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.6</div>
         </div>
     </div>
 
@@ -806,7 +806,8 @@
                         <select id="nonduty-leave-type" style="margin: 0;">
                             <option value="CL">CL — Casual Leave</option>
                             <option value="LAP">LAP — Leave on Average Pay</option>
-                            <option value="LHAP">LHAP — Leave on Half Average Pay</option>
+                            <option value="LHAP (Personal)">LHAP (Personal)</option>
+                            <option value="LHAP (Sick)">LHAP (Sick)</option>
                             <option value="Maternity Leave">Maternity Leave</option>
                             <option value="Paternity Leave">Paternity Leave</option>
                             <option value="Others">Others (Leave)</option>
@@ -890,29 +891,35 @@
             
             <div id="all-logs-container" style="width: 100%; max-height: 570px; overflow-y: auto; border-radius: 12px; box-shadow: var(--shadow); position: relative; background: var(--card); border: 1px solid var(--border);"></div>
             
-            <div style="font-size: 12px; font-weight: bold; text-align: center; margin-top: 15px; display: flex; justify-content: center; gap: 15px;">
-                <span style="color: var(--row-text); background: var(--row-up-bg); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);">Up Train</span>
-                <span style="color: var(--row-text); background: var(--row-down-bg); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow);">Down Train</span>
+            <!-- UP/DOWN LEGEND as clickable toggles (Change 13) -->
+            <div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
+                <button id="legend-up-btn" onclick="window.toggleLegendFilter('up')" style="margin:0; padding:8px 18px; font-size:13px; font-weight:700; background:var(--row-up-bg); color:var(--row-text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:70px;">⬆ Up</button>
+                <button id="legend-down-btn" onclick="window.toggleLegendFilter('down')" style="margin:0; padding:8px 18px; font-size:13px; font-weight:700; background:var(--row-down-bg); color:var(--row-text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:70px;">⬇ Down</button>
             </div>
 
-            <!-- DUTY CALENDAR -->
-            <div class="card" style="margin-top: 15px; padding: 12px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-                    <h4 style="margin:0; font-size:13px; font-weight:900; color:var(--blue);">📅 Monthly Duty Calendar</h4>
-                    <div style="display:flex; gap:5px; flex-wrap:wrap;">
-                        <span style="font-size:10px; font-weight:700; background:rgba(34,197,94,0.2); color:var(--green); padding:2px 7px; border-radius:10px;">● Duty</span>
-                        <span style="font-size:10px; font-weight:700; background:rgba(59,130,246,0.18); color:var(--blue); padding:2px 7px; border-radius:10px;">● Rest/Leave</span>
-                        <span style="font-size:10px; font-weight:700; background:rgba(168,85,247,0.2); color:var(--purple); padding:2px 7px; border-radius:10px;">● Mela</span>
-                        <span style="font-size:10px; font-weight:700; background:rgba(234,179,8,0.22); color:var(--yellow); padding:2px 7px; border-radius:10px;">● Station</span>
-                    </div>
+            <!-- BOTTOM ACTION BAR: calendar icon left, undo/redo right (Change 14) -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:8px;">
+                <button onclick="window.toggleCalendarView()" id="cal-toggle-btn" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--blue); border:1px solid var(--blue); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:50px;" title="Monthly Calendar">📅</button>
+                <div style="display:flex; gap:8px;">
+                    <button onclick="window.undoLeg()" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:70px;">↩ Undo</button>
+                    <button onclick="window.redoLeg()" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:70px;">↪ Redo</button>
                 </div>
-                <div id="duty-calendar-grid" class="duty-cal"></div>
             </div>
 
-            <!-- UNDO / REDO -->
-            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
-                <button onclick="window.undoLeg()" style="width:auto; margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow);">↩ Undo</button>
-                <button onclick="window.redoLeg()" style="width:auto; margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow);">↪ Redo</button>
+            <!-- DUTY CALENDAR (hidden by default, toggled) (Change 14) -->
+            <div id="duty-calendar-wrapper" class="hidden" style="margin-top:12px;">
+                <div class="card" style="padding: 12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+                        <h4 style="margin:0; font-size:13px; font-weight:900; color:var(--blue);">📅 Monthly Duty Calendar</h4>
+                        <div style="display:flex; gap:5px; flex-wrap:wrap;">
+                            <span style="font-size:10px; font-weight:700; background:rgba(34,197,94,0.2); color:var(--green); padding:2px 7px; border-radius:10px;">● Duty</span>
+                            <span style="font-size:10px; font-weight:700; background:rgba(59,130,246,0.18); color:var(--blue); padding:2px 7px; border-radius:10px;">● Rest/Leave</span>
+                            <span style="font-size:10px; font-weight:700; background:rgba(168,85,247,0.2); color:var(--purple); padding:2px 7px; border-radius:10px;">● Mela</span>
+                            <span style="font-size:10px; font-weight:700; background:rgba(234,179,8,0.22); color:var(--yellow); padding:2px 7px; border-radius:10px;">● Station</span>
+                        </div>
+                    </div>
+                    <div id="duty-calendar-grid" class="duty-cal"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1325,7 +1332,7 @@
     window.sendAdminBroadcast = window.sendAdminBroadcast;
     window.clearAdminBroadcast = window.clearAdminBroadcast;
 
-    function formatDate(dStr) { const d = new Date(dStr); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}-${String(d.getFullYear()).slice(-2)}`; }
+    function formatDate(dStr) { if(!dStr) return ''; const d = new Date(dStr + 'T00:00:00'); return `${String(d.getDate()).padStart(2,'0')}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getFullYear()).slice(-2)}`; }
     function numberToWords(num) { if (num === 0) return 'Zero'; const a = ['','One ','Two ','Three ','Four ', 'Five ','Six ','Seven ','Eight ','Nine ','Ten ','Eleven ','Twelve ','Thirteen ','Fourteen ','Fifteen ','Sixteen ','Seventeen ','Eighteen ','Nineteen ']; const b = ['', '', 'Twenty','Thirty','Forty','Fifty', 'Sixty','Seventy','Eighty','Ninety']; if ((num = num.toString()).length > 9) return 'overflow'; let n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/); if (!n) return; let str = ''; str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'Crore ' : ''; str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'Lakh ' : ''; str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'Thousand ' : ''; str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'Hundred ' : ''; str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : ''; return str.trim(); }
     
     function updateBackupUI() {
@@ -1626,6 +1633,11 @@
             if(_me) _me.value = String(_n.getMonth()+1).padStart(2,'0');
             if(_ye) _ye.value = _n.getFullYear().toString();
             if(_se) _se.value = '';
+            window._legendFilter = null; // reset filter
+            const upBtn = document.getElementById('legend-up-btn');
+            const dnBtn = document.getElementById('legend-down-btn');
+            if(upBtn) upBtn.style.opacity = '1';
+            if(dnBtn) dnBtn.style.opacity = '1';
             renderAllLogs(); checkGlobalNotifications(); 
         }
         if(screenId === 'screen-reports') updateReportUI(); 
@@ -1683,8 +1695,9 @@
     }
 
     function unlockProfile() {
+        const isAdm = (window.currentUid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(window.currentUserEmail||'');
         document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
-            if (inp.id === 'reg-da') return; // DA always locked — admin only
+            if (inp.id === 'reg-da' && !isAdm) return; // DA locked for non-admin only
             inp.disabled = false;
         });
         document.getElementById('btn-edit-profile').style.display = 'none';
@@ -1747,6 +1760,12 @@
             if(pbb) pbb.classList.add('hidden');
         } else {
             lockProfile();
+        }
+        // Change 11: Admin can always edit DA directly in their own profile
+        const isAdmin = window.currentUid === window.ADMIN_UID || window.ADMIN_EMAILS.includes(window.currentUserEmail);
+        if (isAdmin) {
+            const daEl = document.getElementById('reg-da');
+            if (daEl) { daEl.disabled = false; daEl.style.background = ''; daEl.style.cursor = ''; daEl.placeholder = 'Admin: edit DA directly'; }
         }
         checkProfileNotifications(); 
     }   
@@ -2097,7 +2116,44 @@
             if (!othersLabel) return showModal("ERROR", "Custom Label is mandatory for Others.", "error", false);
         }
         
-        let overlap = false;
+        // --- VALIDATION BLOCK ---
+        if (!window.appState.profile) return showModal("ERROR", "Profile not loaded.", "error", false);
+        const hqGrpV = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])];
+
+        // Change 3: Leave must be at HQ (except Sick Leave / LHAP Sick)
+        if (type === 'Leave') {
+            const isSick = leaveType === 'LHAP (Sick)';
+            if (!isSick) {
+                // Find the last duty leg before this leave starts
+                const dutyLegsBeforeLeave = (window.appState.legs || [])
+                    .filter(l => !l.isNonDuty && l.arrDate <= from)
+                    .sort((a,b) => a.arrDate.localeCompare(b.arrDate));
+                if (dutyLegsBeforeLeave.length > 0) {
+                    const lastDutyLeg = dutyLegsBeforeLeave[dutyLegsBeforeLeave.length - 1];
+                    if (!hqGrpV.includes(lastDutyLeg.arrStn)) {
+                        return showModal("INVALID LEAVE", `Cannot apply ${leaveType||'Leave'} from an outward station (${lastDutyLeg.arrStn}). You must show a return journey to HQ before taking leave. Only Sick Leave (LHAP Sick) can be applied away from HQ.`, "error", false);
+                    }
+                }
+            }
+        }
+
+        // Change 1: Mela Duty outside HQ must have connecting trains before and after
+        if (type === 'Mela Duty') {
+            const hqGrpMela = window.appState.profile ? [window.appState.profile.hq, ...(window.appState.profile.nearby||[])] : [];
+            if (!hqGrpMela.includes(melaStn)) {
+                const allLegsExcCurrent = (window.appState.legs || []).filter(l => !l.isNonDuty && l.id !== window.editModeId);
+                // Check: must have a duty leg arriving at melaStn ON or BEFORE fromDate
+                const goingTrain = allLegsExcCurrent.find(l => l.arrStn === melaStn && l.arrDate <= from);
+                if (!goingTrain) {
+                    return showModal("MISSING JOURNEY", `Mela Duty at ${melaStn} requires a connecting train FROM HQ arriving at ${melaStn} before or on ${from}.\n\nPlease add the outward journey first (Duty Journey tab).`, "error", false);
+                }
+                // Check: must have a duty leg departing from melaStn ON or AFTER toDate
+                const returnTrain = allLegsExcCurrent.find(l => l.depStn === melaStn && l.depDate >= to);
+                if (!returnTrain) {
+                    return showModal("MISSING JOURNEY", `Mela Duty at ${melaStn} requires a return train FROM ${melaStn} to HQ after or on ${to}.\n\nPlease add the return journey first (Duty Journey tab).`, "error", false);
+                }
+            }
+        }
         let fromD = new Date(`${from}T00:00:00`);
         let toD = new Date(`${to}T23:59:59`);
         
@@ -2221,6 +2277,10 @@
             } else {
                 let dir = legDirectionMap[leg.id];
                 let rowColor = dir === 'up' ? 'var(--row-up-bg)' : 'var(--row-down-bg)';
+                // Change 13: If legend filter active, grey out non-matching rows
+                if (window._legendFilter && dir !== window._legendFilter) {
+                    rowColor = 'var(--bg)';
+                }
                 let shortDep = formatDate(leg.depDate).substring(0, 6); 
                 let shortArr = formatDate(leg.arrDate).substring(0, 6);
                 
@@ -2263,8 +2323,37 @@
             }
         }
         container.innerHTML = headerHTML + `<div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; transition: border 0.3s;">` + htmlElements.reverse().join('') + `</div>`;
-        renderDutyCalendar();
+        // Only render calendar if it's currently visible
+        if (!document.getElementById('duty-calendar-wrapper')?.classList.contains('hidden')) {
+            renderDutyCalendar();
+        }
     }
+
+    window._legendFilter = null; // null = show all, 'up' = only up, 'down' = only down
+
+    window.toggleLegendFilter = function(dir) {
+        if (window._legendFilter === dir) {
+            window._legendFilter = null; // second tap = clear filter
+        } else {
+            window._legendFilter = dir;
+        }
+        // Update button visual state
+        const upBtn = document.getElementById('legend-up-btn');
+        const dnBtn = document.getElementById('legend-down-btn');
+        if (upBtn) upBtn.style.opacity = (!window._legendFilter || window._legendFilter === 'up') ? '1' : '0.35';
+        if (dnBtn) dnBtn.style.opacity = (!window._legendFilter || window._legendFilter === 'down') ? '1' : '0.35';
+        renderAllLogs();
+    };
+
+    window.toggleCalendarView = function() {
+        const wrapper = document.getElementById('duty-calendar-wrapper');
+        const btn = document.getElementById('cal-toggle-btn');
+        if (!wrapper) return;
+        const hidden = wrapper.classList.contains('hidden');
+        wrapper.classList.toggle('hidden');
+        if (btn) btn.style.background = hidden ? 'rgba(59,130,246,0.12)' : 'var(--card)';
+        if (hidden) renderDutyCalendar();
+    };
 
     function renderDutyCalendar() {
         const calEl = document.getElementById('duty-calendar-grid');
@@ -2352,6 +2441,37 @@
     function calculateAbsenceHours(startDt, endDt) { return (new Date(endDt) - new Date(startDt)) / 3600000; }
     function getTAPercentage(hours) { if(hours > 12) return 100; if(hours > 6) return 70; if(hours > 0) return 30; return 0; }
     
+    // Calculate 100% TA for Mela Duty away-days (outside HQ, no train leg, counted as 12h+ absence)
+    function getMelaDutyTA(mo) {
+        if (!window.appState.legs || !window.appState.profile) return [];
+        const hqGrp = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])];
+        const taRate = parseFloat(window.appState.profile.tarate) || 0;
+        const results = [];
+        const dutyLegs = window.appState.legs.filter(l => !l.isNonDuty);
+
+        window.appState.legs.forEach(l => {
+            if (!l.isNonDuty || l.dutyType !== 'Mela Duty') return;
+            if (hqGrp.includes(l.melaStn)) return; // own-HQ mela = TA zero
+            // Iterate each day of the mela period
+            let d = new Date(`${l.fromDate}T00:00:00`);
+            const endD = new Date(`${l.toDate}T00:00:00`);
+            while (d <= endD) {
+                const pad = n => String(n).padStart(2,'0');
+                const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+                if (dateStr.startsWith(mo)) {
+                    // Only count days that have NO actual train leg (pure mela away-days)
+                    const hasRealLeg = dutyLegs.some(dl => dl.depDate === dateStr || dl.arrDate === dateStr);
+                    if (!hasRealLeg) {
+                        results.push({ date: dateStr, pct: 100, rate: taRate });
+                    }
+                }
+                d.setDate(d.getDate() + 1);
+            }
+        });
+        return results;
+    }
+    window.getMelaDutyTA = getMelaDutyTA;
+
     function buildCycles(legs) { let cycles = []; let current = []; const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])]; if(!legs) return cycles; legs.forEach(l => { current.push(l); if(hqGroup.includes(l.arrStn)) { cycles.push([...current]); current = []; } }); if (current.length > 0) { cycles.push([...current]); } return cycles; }
     
     function calculateCycleTA(cycle) { 
@@ -2418,27 +2538,41 @@
         if (!window.appState.legs) return { entries, totalMins };
         
         window.appState.legs.forEach(l => {
-            // Include both Station Duty and Mela Duty (when they have shift times)
             if (!l.isNonDuty) return;
             if (l.dutyType !== 'Station Duty' && l.dutyType !== 'Mela Duty') return;
             if (!l.shiftFrom || !l.shiftTo) return;
+
+            // Change 12: Iterate per SHIFT (one shift per calendar day start), not per calendar day
+            // An overnight shift starting on day D is ONE shift — don't re-count on day D+1
             let d = new Date(`${l.fromDate}T00:00:00`);
             const endD = new Date(`${l.toDate}T00:00:00`);
+            
             while (d <= endD) {
                 const pad = n => String(n).padStart(2,'0');
                 const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
                 const shiftCalc = calcShiftNightMinutes(l.shiftFrom, l.shiftTo, dateStr);
+                
+                // Only count if the SHIFT START falls within NDA billing period
                 if (shiftCalc.signOn >= ndaStart && shiftCalc.signOn <= ndaEnd && shiftCalc.mins > 0) {
                     totalMins += shiftCalc.mins;
                     entries.push({ 
                         date: dateStr, 
                         dutyType: l.dutyType,
                         objective: l.objective || l.dutyType, 
+                        melaStn: l.melaStn || '',
                         shiftFrom: l.shiftFrom, shiftTo: l.shiftTo, 
                         ...shiftCalc 
                     });
                 }
-                d.setDate(d.getDate() + 1);
+                // Change 12: If shift is overnight (end > midnight), skip next day to avoid double-count
+                const parseHM = (str) => { const c = str.replace(':',''); return {h:parseInt(c.substring(0,2)),m:parseInt(c.substring(2,4))}; };
+                const sf = parseHM(l.shiftFrom); const st = parseHM(l.shiftTo);
+                const isOvernight = (st.h < sf.h) || (st.h === sf.h && st.m < sf.m) || (sf.h >= 22 && st.h < 12);
+                if (isOvernight) {
+                    d.setDate(d.getDate() + 2); // skip the "end day" since it was part of this shift
+                } else {
+                    d.setDate(d.getDate() + 1);
+                }
             }
         });
         return { entries, totalMins };
@@ -2704,21 +2838,34 @@
         
         const rcDash = document.getElementById('recent-logs-dash');
         let rcHTMLDash = '';
+        const allLegsForDash = window.appState.legs || [];
         
-        if(dutyOnly.length === 0) { 
+        if(allLegsForDash.length === 0) { 
             rcHTMLDash = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No entries yet.</p>'; 
         } else { 
-            let sortedAll = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+            // Sort all legs (duty + non-duty) by date descending
+            let sortedAll = [...allLegsForDash].sort((a, b) => {
+                const da = a.isNonDuty ? a.fromDate : a.depDate;
+                const db = b.isNonDuty ? b.fromDate : b.depDate;
+                return db.localeCompare(da);
+            });
             let recentDashArr = sortedAll.slice(0, 4); 
             
-            let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
+            let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Tr/Type</th><th style="padding: 8px 2px;">From Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">To Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
             
             rcHTMLDash = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0;">${theadCommon}<tbody>`;
 
             recentDashArr.forEach((leg, i) => { 
-                let shortDep = formatDate(leg.depDate).substring(0, 6); let shortArr = formatDate(leg.arrDate).substring(0, 6); 
                 let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
-                rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.train}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.depStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold; transition: color 0.3s;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text); transition: color 0.3s;">${leg.arrStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold; transition: color 0.3s;">${leg.arrTime}</td></tr>`; 
+                if (leg.isNonDuty) {
+                    const icon = leg.dutyType === 'Leave' ? '📋' : leg.dutyType === 'Mela Duty' ? '🎪' : leg.dutyType === 'Station Duty' ? '🏢' : '🌴';
+                    const label = leg.dutyType === 'Leave' && leg.leaveType ? leg.leaveType : leg.dutyType;
+                    const dateStr = leg.fromDate === leg.toDate ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)}`;
+                    rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border);"><td colspan="7" style="padding: 8px 4px; font-weight: bold; color: var(--orange); font-size: 11px;">${icon} ${label}${leg.melaStn ? ' at '+leg.melaStn : ''} : ${dateStr}${leg.toDate !== leg.fromDate ? ' – '+formatDate(leg.toDate) : ''}</td></tr>`;
+                } else {
+                    let shortDep = formatDate(leg.depDate); let shortArr = formatDate(leg.arrDate); 
+                    rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.train}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.depStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.arrStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${leg.arrTime}</td></tr>`; 
+                }
             });
             rcHTMLDash += `</tbody></table>`;
         } 
@@ -2749,7 +2896,7 @@
             cycles.forEach(cycle => { 
                 const taResults = calculateCycleTA(cycle); 
                 taResultsAll.push(...taResults);
-                taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; }); 
+                taResults.forEach(res => { if(res.date.startsWith(mo)) totalTA += res.rate; });
 
                 // Determine if any leg in this cycle falls within the selected month
                 const cycleTouchesMonth = cycle.some(leg => leg.depDate.startsWith(mo) || leg.arrDate.startsWith(mo));
@@ -2774,6 +2921,10 @@
                 if (downTouchesMonth) downCount++;
                 if (upTouchesMonth || downTouchesMonth) tripCount++;
             }); 
+
+            // Add 100% TA for Mela Duty pure away-days (Change 6)
+            const melaTAResults = getMelaDutyTA(mo);
+            melaTAResults.forEach(r => { taResultsAll.push(r); totalTA += r.rate; });
 
             const monthResults = taResultsAll.filter(r => r.date.startsWith(mo) && r.rate > 0);
             const uniqueDays = new Set(monthResults.map(r => r.date)).size;
@@ -2854,14 +3005,24 @@
     function findSpecialDutyForDate(dateStr) {
         if (!window.appState.legs || !window.appState.profile) return null;
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
+        // Change 10: Also match 1 day before and after mela range to capture connecting train days
         return window.appState.legs.find(l => {
             if (!l.isNonDuty) return false;
             if (l.dutyType !== 'Mela Duty') return false;
-            if (dateStr < l.fromDate || dateStr > l.toDate) return false;
-            // Own-HQ / nearby-HQ Mela Duty has TA=0 and is never printed on the TA PDF — skip it entirely.
             if (hqGroup.includes(l.melaStn)) return false;
-            return true;
+            // Expand range by 1 day on each side to capture going/returning train leg days
+            const rangeStart = new Date(`${l.fromDate}T00:00:00`);
+            rangeStart.setDate(rangeStart.getDate() - 1);
+            const rangeEnd = new Date(`${l.toDate}T00:00:00`);
+            rangeEnd.setDate(rangeEnd.getDate() + 1);
+            const check = new Date(`${dateStr}T00:00:00`);
+            return check >= rangeStart && check <= rangeEnd;
         }) || null;
+    }
+
+    // Change 4: Get segment key for mela duty by station (so same-station consecutive entries merge in PDF)
+    function getMelaSegKey(special) {
+        return special ? `mela_stn_${special.melaStn}` : 'normal';
     }
 
     function buildTAPreview(mo, wDays, earn) {
@@ -2870,6 +3031,8 @@
         let dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
         const cycles = buildCycles(dutyOnly); let taResultsAll = [];
         cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
+        // Add 100% TA for Mela Duty pure away-days (Change 6)
+        getMelaDutyTA(mo).forEach(r => { if (!taResultsAll.find(x => x.date === r.date)) taResultsAll.push(r); });
         cycles.forEach(cycle => { let splitCycle = getSplitLegs(cycle); let legsByDate = {}; splitCycle.forEach(pl => { if(!legsByDate[pl.date]) legsByDate[pl.date] = []; legsByDate[pl.date].push(pl); }); splitCycle.forEach((item, idx) => { if(!item.date.startsWith(mo)) return; let isLastOfDay = false; if(legsByDate[item.date]) { const lastLegForDate = legsByDate[item.date][legsByDate[item.date].length - 1]; isLastOfDay = (lastLegForDate.id === item.id); } const matchingTA = taResultsAll.find(r => r.date === item.date); validLegs.push({item, isLastOfDay, matchingTA}); }); });
 
         // ===== Inject synthetic placeholder rows for Mela Duty away-days with no actual train leg =====
@@ -2897,23 +3060,56 @@
         let pCell = isSquished ? "1px" : "2px";
         let fCell = isSquished ? "9px" : "10px";
 
-        // ===== Build Objective segments (normal "Worked as TTE" vs Mela/Station Duty blocks) =====
-        // Each row in validLegs maps to one date. Tag each row with its objective-segment key.
+        // ===== Build Objective segments =====
+        // Tag each row with segKey based on mela station.
         const rowMeta = validLegs.map(row => {
             const special = findSpecialDutyForDate(row.item.date);
-            let segKey = 'normal'; let segLabel = 'Worked as TTE'; let isMelaAwayDay = false;
+            let segKey = 'normal'; 
+            let segLabel = 'Worked as TTE'; 
+            let isMelaAwayDay = false;
             if (special) {
-                segKey = 'mela_' + special.id;
+                segKey = `mela_stn_${special.melaStn}`; // unified by station
                 segLabel = special.objective || `Mela Duty at ${special.melaStn}`;
-                // Days with no actual train leg (pure away days between going/returning legs) get merged
                 isMelaAwayDay = (row.item.train === '-' && row.item.depStn === '-' && row.item.arrStn === '-');
             }
             return { ...row, segKey, segLabel, special, isMelaAwayDay };
         });
 
-        // Group consecutive rows with the same segKey into segments for the Objective column rowspan,
-        // and merge consecutive pure-away Mela days into a single centered row.
-        let segments = []; // { key, label, startIdx, count }
+        // Build segments: group rows by segKey but unify non-consecutive runs of same mela station
+        // so connecting trains + gap days + return train all fall in ONE objective block per station.
+        // Strategy: pre-pass to find true boundaries of each mela station across ALL rows.
+        const melaStationBounds = {}; // melaStn -> { firstIdx, lastIdx, label }
+        rowMeta.forEach((rm, idx) => {
+            if (rm.segKey === 'normal') return;
+            const stn = rm.special ? rm.special.melaStn : '';
+            if (!melaStationBounds[stn]) {
+                melaStationBounds[stn] = { firstIdx: idx, lastIdx: idx, label: rm.segLabel };
+            } else {
+                melaStationBounds[stn].lastIdx = idx;
+                // Prefer non-empty objective as label
+                if (rm.segLabel && rm.segLabel !== `Mela Duty at ${stn}`) {
+                    melaStationBounds[stn].label = rm.segLabel;
+                }
+            }
+        });
+
+        // Override segKey for ALL rows between firstIdx and lastIdx of each mela station
+        // This unifies any 'normal' rows that happen to fall between two mela records at same station
+        rowMeta.forEach((rm, idx) => {
+            Object.entries(melaStationBounds).forEach(([stn, bounds]) => {
+                if (idx >= bounds.firstIdx && idx <= bounds.lastIdx) {
+                    rowMeta[idx].segKey = `mela_stn_${stn}`;
+                    rowMeta[idx].segLabel = bounds.label;
+                    // Mark as mela away day if no real train data
+                    if (rm.item.train === '-' && rm.item.depStn === '-' && rm.item.arrStn === '-') {
+                        rowMeta[idx].isMelaAwayDay = true;
+                    }
+                }
+            });
+        });
+
+        // Now build consecutive segment groups (will now be fully unified per mela station)
+        let segments = [];
         rowMeta.forEach((rm, idx) => {
             const last = segments[segments.length - 1];
             if (last && last.key === rm.segKey) { last.count++; }
@@ -2945,7 +3141,7 @@
                     }
                     
                     let mergedLabelCell = (k === runStart) 
-                        ? `<td colspan="5" rowspan="${runLen}" style="border: 1px solid black; padding: ${pCell}; width: 46.5%; font-size: ${fCell}; font-weight: bold; text-align: center; vertical-align: middle;">${seg.label.toUpperCase()}</td>` 
+                        ? `<td colspan="5" rowspan="${runLen}" style="border: 1px solid black; padding: ${pCell}; width: 46.5%; font-size: ${fCell}; font-weight: bold; text-align: center; vertical-align: middle;">${r.special ? ('MELA DUTY AT ' + r.special.melaStn) : (rm.segLabel || seg.label).toUpperCase()}</td>` 
                         : '';
                     
                     tbodyHtml += `<tr><td style="border: 1px solid black; padding: ${pCell}; width: 10%; font-size: ${fCell};">${formatDate(r.item.date)}</td>${mergedLabelCell}<td style="border: 1px solid black; padding: ${pCell}; width: 6%; font-size: ${fCell};">${dTaStr}</td>${objCell}<td style="border: 1px solid black; padding: ${pCell}; width: 8%; font-size: ${fCell};">${dRateStr}</td><td style="border: 1px solid black; padding: ${pCell}; width: 8%; font-size: ${fCell};">${dPStr}</td></tr>`;
