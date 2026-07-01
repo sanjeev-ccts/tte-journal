@@ -198,7 +198,7 @@
         .duty-cal-day { font-size: 11px; font-weight: 700; text-align: center; padding: 5px 2px; border-radius: 6px; min-height: 26px; display: flex; align-items: center; justify-content: center; }
         .duty-cal-day.today { outline: 2px solid var(--blue); outline-offset: 1px; }
         
-        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal, #calendar-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal, #calendar-modal, #feedback-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
         .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
@@ -255,7 +255,7 @@
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
         window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.7';
+        window.APP_VERSION = '3.8';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -306,18 +306,16 @@
                     // Announcements
                     window.adminAnnouncement = adminConfig.announcement || null;
 
-                    // DA/TA Broadcast — show banner if pending and user hasn't dismissed
-                    const daBroadcast = adminConfig.da_broadcast;
-                    if (daBroadcast && daBroadcast.active && !isAdmin) {
-                        window.pendingDaBroadcast = daBroadcast;
-                        let parts = [];
-                        if (daBroadcast.da) parts.push(`DA → ${daBroadcast.da}%`);
-                        if (daBroadcast.ta) parts.push(`TA Rate → ₹${daBroadcast.ta}`);
-                        const note = daBroadcast.note ? ` (${daBroadcast.note})` : '';
-                        document.getElementById('da-banner-text').innerText = parts.join(' | ') + note;
-                        document.getElementById('da-broadcast-banner').classList.remove('hidden');
-                    } else {
-                        document.getElementById('da-broadcast-banner').classList.add('hidden');
+                    // DA Push Notification — show info banner when admin has pushed DA
+                    const daNotify = adminConfig.da_notify;
+                    if (daNotify && daNotify.value && !isAdmin) {
+                        // Show notification if user's current DA doesn't match the pushed value
+                        if (window.appState.profile && window.appState.profile.da !== daNotify.value) {
+                            document.getElementById('da-notify-text').innerText = `DA updated to ${daNotify.value}%${daNotify.note ? ' ('+daNotify.note+')' : ''} — your calculations have been updated`;
+                            document.getElementById('da-notify-banner').classList.remove('hidden');
+                            // Auto-hide after 8 seconds
+                            setTimeout(() => { const b = document.getElementById('da-notify-banner'); if(b) b.classList.add('hidden'); }, 8000);
+                        }
                     }
 
                     // Update admin UI if on admin screen
@@ -446,14 +444,30 @@
     </div>
 
     <!-- DA BROADCAST APPLY BANNER (shown on dashboard) -->
-    <div id="da-broadcast-banner" class="hidden" style="position:fixed; top:65px; left:50%; transform:translateX(-50%); width:95%; max-width:580px; background:linear-gradient(135deg, var(--green), #16a34a); color:white; border-radius:12px; padding:12px 15px; z-index:5500; box-shadow:0 4px 15px rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:space-between; gap:10px;">
+    <!-- DA UPDATE NOTIFICATION BANNER (shown to users after admin pushes DA) -->
+    <div id="da-notify-banner" class="hidden" style="position:fixed; top:65px; left:50%; transform:translateX(-50%); width:95%; max-width:560px; background:linear-gradient(135deg, #16a34a, #15803d); color:white; border-radius:12px; padding:12px 15px; z-index:5500; box-shadow:0 4px 15px rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:space-between; gap:10px;">
         <div style="flex:1; min-width:0;">
-            <div style="font-size:12px; font-weight:900; margin-bottom:3px;">📊 Admin Update Available</div>
-            <div id="da-banner-text" style="font-size:11px; opacity:0.9;"></div>
+            <div style="font-size:12px; font-weight:900; margin-bottom:3px;">📊 DA Updated by Admin</div>
+            <div id="da-notify-text" style="font-size:11px; opacity:0.9; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></div>
         </div>
-        <div style="display:flex; gap:6px; flex-shrink:0;">
-            <button onclick="window.applyDaBroadcast()" style="background:white; color:#16a34a; padding:6px 12px; border-radius:20px; font-size:12px; font-weight:900; margin:0; width:auto; box-shadow:none;">Apply</button>
-            <button onclick="document.getElementById('da-broadcast-banner').classList.add('hidden')" style="background:rgba(255,255,255,0.2); color:white; padding:6px 10px; border-radius:20px; font-size:12px; margin:0; width:auto; box-shadow:none;">✕</button>
+        <button onclick="document.getElementById('da-notify-banner').classList.add('hidden')" style="background:rgba(255,255,255,0.2); color:white; padding:5px 10px; border-radius:20px; font-size:12px; margin:0; width:auto; box-shadow:none; flex-shrink:0;">✕</button>
+    </div>
+
+    <!-- FEEDBACK MODAL -->
+    <div id="feedback-modal" class="hidden">
+        <div style="background: var(--modal-bg); padding: 20px; border-radius: 16px; width: 90%; max-width: 360px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
+            <h3 style="color: var(--orange); margin: 0 0 10px 0; font-size: 15px; font-weight: 900;">🐛 Report Bug / Feedback</h3>
+            <select id="feedback-type" style="margin-bottom: 10px;">
+                <option value="Bug">🐛 Bug Report</option>
+                <option value="Feature">💡 Feature Request</option>
+                <option value="Feedback">💬 General Feedback</option>
+                <option value="Calculation">🔢 Calculation Issue</option>
+            </select>
+            <textarea id="feedback-text" placeholder="Describe the issue or suggestion in detail..." style="width:100%; height:90px; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--input-bg); color:var(--text); font-size:13px; font-family:inherit; resize:none; margin-bottom:10px; box-sizing:border-box;"></textarea>
+            <div style="display:flex; gap:8px;">
+                <button onclick="window.submitFeedback()" style="flex:1; margin:0; background:var(--orange);">📤 Submit</button>
+                <button onclick="document.getElementById('feedback-modal').classList.add('hidden')" style="flex:1; margin:0; background:var(--card); color:var(--text); border:1px solid var(--border); box-shadow:none;">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -466,10 +480,11 @@
     </div>
     
     <div id="help-modal" class="hidden">
-        <div style="background: var(--modal-bg); padding: 18px 20px; border-radius: 16px; width: 80%; max-width: 280px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
+        <div style="background: var(--modal-bg); padding: 18px 20px; border-radius: 16px; width: 85%; max-width: 300px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
             <h3 style="color: var(--text); margin: 0 0 8px 0; font-size: 16px; font-weight: 900;">Help & Support</h3>
-            <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 14px 0; line-height: 1.5;">Got suggestions or need help? Reach out directly!</p>
-            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 11px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 10px; box-sizing: border-box;">✉️ Email</a>
+            <p style="font-size: 12px; color: var(--text-muted); margin: 0 0 14px 0; line-height: 1.5;">Got questions or found a bug? Reach out!</p>
+            <a href="mailto:ksanjeev.nit@gmail.com?subject=TTE%20LOG%20Feedback" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: var(--blue); color: white; padding: 11px; border-radius: 30px; font-weight: bold; text-decoration: none; font-size: 13px; margin-bottom: 8px; box-sizing: border-box;">✉️ Email</a>
+            <button onclick="document.getElementById('help-modal').classList.add('hidden'); document.getElementById('feedback-modal').classList.remove('hidden');" style="background: var(--orange); color: white; border: none; padding: 11px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; margin-bottom: 8px; box-shadow: none;">🐛 Report Bug / Feedback</button>
             <button onclick="document.getElementById('help-modal').classList.add('hidden')" style="background: var(--card); color: var(--text-muted); border: 1px solid var(--border); padding: 11px 24px; border-radius: 30px; font-weight: bold; font-size: 13px; width: 100%; box-shadow: none;">Close</button>
         </div>
     </div>
@@ -583,7 +598,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.7</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.8</div>
         </div>
     </div>
 
@@ -631,25 +646,21 @@
                 <div id="admin-announce-active" style="font-size:11px; color:var(--blue); margin-top:8px; text-align:center; font-weight:bold;"></div>
             </div>
 
-            <!-- DA / TA BROADCAST -->
+            <!-- DA PUSH (Admin Only — updates all user profiles + notifies users) -->
             <div class="card" style="border-left: 4px solid var(--green);">
-                <h3 style="color:var(--green); margin:0 0 6px 0; font-size:15px;">📊 DA / TA Rate Broadcast</h3>
-                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Push revised DA% or TA rate. Users get a one-tap apply prompt on their dashboard.</p>
+                <h3 style="color:var(--green); margin:0 0 6px 0; font-size:15px;">📊 Push DA Revision</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Pushes new DA% directly to ALL user profiles and sends them an in-app notification. TA Rate is user-managed (varies by level).</p>
                 <div style="display:flex; gap:10px; margin-bottom:10px;">
                     <div style="flex:1; min-width:0;">
                         <label class="profile-lbl">New DA (%)</label>
                         <input type="number" id="admin-da-input" placeholder="e.g. 63">
                     </div>
                     <div style="flex:1; min-width:0;">
-                        <label class="profile-lbl">New TA Rate (₹)</label>
-                        <input type="number" id="admin-ta-input" placeholder="e.g. 1050">
+                        <label class="profile-lbl">Effective From (note)</label>
+                        <input type="text" id="admin-da-note" placeholder="e.g. Jan 2025">
                     </div>
                 </div>
-                <input type="text" id="admin-da-note" placeholder="Note (e.g. 7th CPC revision w.e.f. Jan 2025)" style="margin-bottom:10px;">
-                <div style="display:flex; gap:10px;">
-                    <button onclick="window.pushDaBroadcast()" style="flex:1; margin:0; background:var(--green);">📤 Push Update</button>
-                    <button onclick="window.clearDaBroadcast()" style="flex:1; margin:0; background:var(--card); color:var(--red); border:1px dashed var(--red); box-shadow:none;">✕ Clear</button>
-                </div>
+                <button onclick="window.pushDaToAllUsers()" style="background:var(--green);">📤 Push DA to All Users</button>
                 <div id="admin-da-active" style="font-size:11px; color:var(--green); margin-top:8px; text-align:center; font-weight:bold;"></div>
             </div>
 
@@ -665,6 +676,51 @@
                 <div id="admin-stats-area">
                     <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:10px 0;">Tap Refresh to load stats</p>
                 </div>
+            </div>
+
+            <!-- LIVE SESSION MONITOR -->
+            <div class="card" style="border-left: 4px solid var(--blue);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <h3 style="color:var(--blue); margin:0; font-size:15px;">🟢 Live Session Monitor</h3>
+                    <button onclick="window.loadActiveSessions()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--blue); border-radius:20px;">Refresh</button>
+                </div>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 8px 0;">Users who synced in the last 10 minutes — check before pushing maintenance.</p>
+                <div id="admin-sessions-area"><p style="font-size:13px; color:var(--text-muted); text-align:center; margin:5px 0;">Tap Refresh to check</p></div>
+            </div>
+
+            <!-- USER TROUBLESHOOTING BY PF -->
+            <div class="card" style="border-left: 4px solid var(--purple);">
+                <h3 style="color:var(--purple); margin:0 0 6px 0; font-size:15px;">🔍 User Lookup by PF</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Enter PF Number to inspect any user's profile and current month log in read-only mode.</p>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="admin-lookup-pf" placeholder="Enter PF Number" style="flex:2; margin:0; text-transform:uppercase;">
+                    <button onclick="window.lookupUserByPF()" style="flex:1; margin:0; background:var(--purple);">🔎 Lookup</button>
+                </div>
+                <div id="admin-lookup-result" style="margin-top:10px;"></div>
+            </div>
+
+            <!-- DATABASE ARCHIVE -->
+            <div class="card" style="border-left: 4px solid var(--orange);">
+                <h3 style="color:var(--orange); margin:0 0 6px 0; font-size:15px;">🗃️ Archive Old Data</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Move all user logs before a given year to /archive/ in Firebase. Keeps the active DB fast.</p>
+                <div style="display:flex; gap:10px; align-items:flex-end;">
+                    <div style="flex:1; min-width:0;">
+                        <label class="profile-lbl">Archive entries before year</label>
+                        <input type="number" id="admin-archive-year" placeholder="e.g. 2025" style="margin:0;">
+                    </div>
+                    <button onclick="window.archiveOldData()" style="flex:1; margin:0; background:var(--orange);">📦 Archive</button>
+                </div>
+                <div id="admin-archive-status" style="font-size:11px; color:var(--orange); text-align:center; font-weight:bold; margin-top:8px;"></div>
+            </div>
+
+            <!-- FEEDBACK INBOX -->
+            <div class="card" style="border-left: 4px solid var(--red);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <h3 style="color:var(--red); margin:0; font-size:15px;">📬 Feedback Inbox</h3>
+                    <button onclick="window.loadFeedbackInbox()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--red); border-radius:20px;">Load</button>
+                </div>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 8px 0;">Bug reports and feature requests submitted by users.</p>
+                <div id="admin-feedback-area"><p style="font-size:13px; color:var(--text-muted); text-align:center; margin:5px 0;">Tap Load to view submissions</p></div>
             </div>
 
         </div>
@@ -1125,40 +1181,295 @@
         }
     };
 
-    window.pushDaBroadcast = () => {
+    // ========== DA PUSH TO ALL USERS (Batch 3) ==========
+    window.pushDaToAllUsers = () => {
         const da = document.getElementById('admin-da-input').value.trim();
-        const ta = document.getElementById('admin-ta-input').value.trim();
         const note = document.getElementById('admin-da-note').value.trim();
-        if (!da && !ta) return showModal("Error", "Enter DA% or TA Rate to broadcast.", "error", false);
-        const payload = { active: true, da: da || null, ta: ta || null, note: note || '', pushedOn: new Date().toLocaleDateString() };
-        if(window.firebaseSet && window.firebaseRef && window.db) {
-            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_broadcast'), payload).then(() => {
-                showModal("Pushed!", "DA/TA update sent. Users will see an apply prompt.", "success", false);
-                document.getElementById('admin-da-input').value = '';
-                document.getElementById('admin-ta-input').value = '';
-                document.getElementById('admin-da-note').value = '';
+        if (!da || isNaN(parseFloat(da))) return showModal("Error", "Enter a valid DA% value.", "error", false);
+        
+        showModal("Confirm", `Push DA = ${da}% to ALL user profiles? This will also notify all users.`, "warning", true, (proceed) => {
+            if (!proceed) return;
+            import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get, set }) => {
+                get(r(window.db, 'users')).then(snap => {
+                    const users = snap.val() || {};
+                    const uids = Object.keys(users);
+                    let updated = 0;
+                    const promises = uids.map(uid => {
+                        if (users[uid].profile) {
+                            return set(r(window.db, `users/${uid}/profile/da`), da).then(() => { updated++; });
+                        }
+                    }).filter(Boolean);
+                    
+                    // Store notify record in admin_config for real-time notification to active users
+                    promises.push(window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_notify'), {
+                        value: da, note: note || '', pushedOn: new Date().toLocaleDateString(), pushedAt: Date.now()
+                    }));
+
+                    Promise.all(promises).then(() => {
+                        document.getElementById('admin-da-active').innerText = `✅ DA ${da}% pushed to ${updated} users${note ? ' ('+note+')' : ''}`;
+                        showModal("Done!", `DA ${da}% pushed to ${updated} user profiles. Active users have been notified.`, "success", false);
+                        document.getElementById('admin-da-input').value = '';
+                        document.getElementById('admin-da-note').value = '';
+                    });
+                }).catch(err => showModal("Error", `Failed: ${err.message}`, "error", false));
             });
-        }
+        });
     };
 
-    window.clearDaBroadcast = () => {
-        if(window.firebaseSet && window.firebaseRef && window.db) {
-            window.firebaseSet(window.firebaseRef(window.db, 'admin_config/da_broadcast'), { active: false }).then(() => {
-                showModal("Cleared", "DA/TA broadcast removed.", "success", false);
-            });
-        }
+    // ========== LIVE SESSION MONITOR (Batch 3) ==========
+    window.loadActiveSessions = () => {
+        const el = document.getElementById('admin-sessions-area');
+        if (!el) return;
+        el.innerHTML = '<p style="font-size:12px; color:var(--text-muted); text-align:center;">Checking...</p>';
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                const cutoff = Date.now() - 10 * 60 * 1000; // 10 minutes
+                let active = [];
+                Object.values(users).forEach(u => {
+                    const legs = u.legs || [];
+                    const prof = u.profile || {};
+                    if (legs.length > 0) {
+                        const latest = Math.max(...legs.map(l => parseInt(l.id) || 0).filter(x => x > 1000000000000));
+                        if (latest > cutoff) {
+                            active.push({ name: prof.name || 'Unknown', hq: prof.hq || '—', lastMs: latest });
+                        }
+                    }
+                });
+                active.sort((a, b) => b.lastMs - a.lastMs);
+                el.innerHTML = active.length === 0
+                    ? '<p style="font-size:12px; color:var(--text-muted); text-align:center; margin:5px 0;">No active sessions in the last 10 minutes.</p>'
+                    : `<div style="font-size:12px; font-weight:900; color:var(--green); margin-bottom:6px;">🟢 ${active.length} Active Session${active.length > 1 ? 's' : ''}</div>`
+                    + active.map(a => `<div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px dashed var(--border); font-size:12px;"><span style="color:var(--text); font-weight:600;">${a.name} · ${a.hq}</span><span style="color:var(--text-muted);">${new Date(a.lastMs).toLocaleTimeString()}</span></div>`).join('');
+            }).catch(err => { el.innerHTML = `<p style="color:var(--red); font-size:12px; text-align:center;">${err.message}</p>`; });
+        });
     };
 
-    // User applies DA/TA broadcast from banner
-    window.applyDaBroadcast = () => {
-        const b = window.pendingDaBroadcast;
-        if (!b || !window.appState.profile) return;
-        if (b.da) window.appState.profile.da = b.da;
-        if (b.ta) window.appState.profile.tarate = b.ta;
-        saveData();
-        document.getElementById('da-broadcast-banner').classList.add('hidden');
-        showModal("Applied!", `Profile updated: ${b.da ? 'DA = ' + b.da + '%' : ''} ${b.ta ? 'TA Rate = ₹' + b.ta : ''}`.trim(), "success", false);
-        updateDashboardUI();
+    // ========== USER LOOKUP BY PF (Batch 3) ==========
+    window.lookupUserByPF = () => {
+        const pf = document.getElementById('admin-lookup-pf').value.trim().toUpperCase();
+        if (!pf) return;
+        const el = document.getElementById('admin-lookup-result');
+        el.innerHTML = '<p style="font-size:12px; color:var(--text-muted);">Searching...</p>';
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                const found = Object.entries(users).find(([uid, u]) => u.profile && String(u.profile.pf || '').toUpperCase() === pf);
+                if (!found) { el.innerHTML = '<p style="font-size:12px; color:var(--red); font-weight:bold;">No user found with that PF Number.</p>'; return; }
+                const [uid, userData] = found;
+                const p = userData.profile || {};
+                const legs = userData.legs || [];
+                const now = new Date();
+                const mo = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+                const thisMonthLegs = legs.filter(l => (l.depDate || '').startsWith(mo));
+                el.innerHTML = `
+                    <div style="background:var(--input-bg); border-radius:10px; padding:10px; border:1px solid var(--border);">
+                        <div style="font-size:13px; font-weight:900; color:var(--text); margin-bottom:4px;">${p.name || '—'} · ${p.desig || '—'}</div>
+                        <div style="font-size:12px; color:var(--text-muted);">HQ: ${p.hq || '—'} · DA: ${p.da || '—'}% · TA Rate: ₹${p.tarate || '—'}</div>
+                        <div style="font-size:12px; color:var(--blue); margin-top:4px;">Total Logs: ${legs.length} · This Month: ${thisMonthLegs.length} entries</div>
+                        <button onclick="window.viewUserAudit('${uid}', '${(p.name||'').replace(/'/g,"\\'")}', ${JSON.stringify(userData).replace(/</g,'&lt;')})" style="margin-top:8px; padding:6px 14px; width:auto; font-size:12px; background:var(--purple); border-radius:20px;">👁 View This Month</button>
+                    </div>`;
+            }).catch(err => { el.innerHTML = `<p style="color:var(--red); font-size:12px;">${err.message}</p>`; });
+        });
+    };
+
+    // ========== USER AUDIT (Batch 3) ==========
+    window.viewUserAudit = (uid, name, userData) => {
+        const rosterEl = document.getElementById('roster-content');
+        if (!rosterEl) return;
+        document.getElementById('roster-modal').classList.remove('hidden');
+        const legs = userData.legs || [];
+        const profile = userData.profile || {};
+        const now = new Date();
+        const mo = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+        const moLabel = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+        const dutyLegs = legs.filter(l => !l.isNonDuty && (l.depDate || '').startsWith(mo));
+        const nonDutyLegs = legs.filter(l => l.isNonDuty && ((l.fromDate || '').startsWith(mo) || (l.toDate || '').startsWith(mo)));
+
+        let dutyRows = dutyLegs.length === 0
+            ? '<tr><td colspan="5" style="padding:10px; text-align:center; color:var(--text-muted);">No duty entries this month</td></tr>'
+            : dutyLegs.sort((a, b) => a.depDate.localeCompare(b.depDate)).map(l =>
+                `<tr><td style="padding:5px 4px; border-bottom:1px solid var(--border); font-size:11px;">${formatDate(l.depDate)}</td>
+                 <td style="padding:5px 4px; border-bottom:1px solid var(--border); font-size:11px; font-weight:700;">${l.train || '—'}</td>
+                 <td style="padding:5px 4px; border-bottom:1px solid var(--border); font-size:11px;">${l.depStn || '—'}</td>
+                 <td style="padding:5px 4px; border-bottom:1px solid var(--border); font-size:11px;">→</td>
+                 <td style="padding:5px 4px; border-bottom:1px solid var(--border); font-size:11px;">${l.arrStn || '—'}</td></tr>`
+            ).join('');
+
+        let ndRows = nonDutyLegs.length === 0 ? ''
+            : nonDutyLegs.map(l => `<div style="font-size:12px; padding:4px 0; border-bottom:1px dashed var(--border); color:var(--orange);">${l.dutyType}${l.leaveType ? ' — ' + l.leaveType : ''}: ${formatDate(l.fromDate)} to ${formatDate(l.toDate)}</div>`).join('');
+
+        rosterEl.innerHTML = `
+            <button onclick="window.loadUserRoster()" style="width:auto; margin:0 0 12px 0; padding:6px 14px; font-size:12px; background:var(--card); color:var(--blue); border:1px solid var(--blue); border-radius:20px; box-shadow:none;">← Back to Roster</button>
+            <div style="background:var(--input-bg); border-radius:12px; padding:12px; margin-bottom:12px; border:1px solid var(--border);">
+                <div style="font-size:14px; font-weight:900; color:var(--text);">${name}</div>
+                <div style="font-size:12px; color:var(--text-muted);">${profile.desig || '—'} · HQ: ${profile.hq || '—'} · PF: ${profile.pf || '—'}</div>
+                <div style="font-size:11px; color:var(--blue); margin-top:4px;">DA: ${profile.da || '—'}% · Basic Pay: ₹${profile.basicpay || '—'} · TA Rate: ₹${profile.tarate || '—'}</div>
+            </div>
+            <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px;">DUTY — ${moLabel} (${dutyLegs.length} entries)</div>
+            <div style="border-radius:10px; border:1px solid var(--border); overflow:hidden; margin-bottom:12px;">
+                <table style="width:100%; border-collapse:collapse;">
+                    <thead><tr style="background:var(--all-header-bg);">
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">Date</th>
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">Train</th>
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">From</th>
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);"></th>
+                        <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">To</th>
+                    </tr></thead>
+                    <tbody>${dutyRows}</tbody>
+                </table>
+            </div>
+            ${ndRows ? `<div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px;">REST / LEAVE / OTHERS</div>${ndRows}` : ''}
+        `;
+    };
+
+    // ========== UPDATED ROSTER — sort by HQ, last sync, tappable (Batch 3) ==========
+    window.loadUserRoster = () => {
+        if(!window.db) return;
+        const rosterEl = document.getElementById('roster-content');
+        if (!rosterEl) return;
+        document.getElementById('roster-modal').classList.remove('hidden');
+        rosterEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center; margin:20px 0;">Loading roster...</p>';
+
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'users')).then(snap => {
+                const users = snap.val() || {};
+                const uids = Object.keys(users);
+                if (uids.length === 0) { rosterEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px; text-align:center;">No registered users found.</p>'; return; }
+
+                let hqBreakdown = {};
+                let rosterRows = uids.map(uid => {
+                    const u = users[uid];
+                    const prof = u.profile || {};
+                    const legs = u.legs || [];
+                    const hq = prof.hq || 'Unknown';
+                    hqBreakdown[hq] = (hqBreakdown[hq] || 0) + 1;
+                    let lastSync = '—';
+                    if (legs.length > 0) {
+                        const maxId = Math.max(...legs.map(l => parseInt(l.id) || 0).filter(x => x > 1000000000000));
+                        if (maxId > 0) {
+                            const d = new Date(maxId);
+                            lastSync = `${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                        }
+                    }
+                    return { uid, name: prof.name || '—', desig: prof.desig || '—', hq, pf: prof.pf || '—', lastSync, legCount: legs.length, userData: u };
+                });
+                // Sort by HQ then name
+                rosterRows.sort((a, b) => a.hq.localeCompare(b.hq) || a.name.localeCompare(b.name));
+
+                const tableRows = rosterRows.map(row => `
+                    <tr onclick="window.viewUserAudit('${row.uid}', '${row.name.replace(/'/g,"\\'")}', ${JSON.stringify(row.userData).replace(/</g,'&lt;')})" style="cursor:pointer;" title="Tap to view month summary">
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text); font-weight:600;">${row.name}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--blue); font-weight:700;">${row.hq}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-muted);">${row.lastSync}</td>
+                        <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--green); font-weight:700; text-align:center;">${row.legCount}</td>
+                    </tr>`).join('');
+
+                const hqRows = Object.entries(hqBreakdown).sort((a,b) => b[1]-a[1]).map(([hq, count]) =>
+                    `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--border); font-size:13px;">
+                        <span style="color:var(--text); font-weight:600;">${hq}</span>
+                        <span style="color:var(--purple); font-weight:800;">${count} user${count > 1 ? 's' : ''}</span>
+                    </div>`).join('');
+
+                rosterEl.innerHTML = `
+                    <p style="font-size:11px; color:var(--text-muted); text-align:center; margin:0 0 10px 0;">👆 Tap any row to view their current month</p>
+                    <div style="overflow-x:auto; margin-bottom:18px; border-radius:10px; border:1px solid var(--border);">
+                        <table style="width:100%; border-collapse:collapse;">
+                            <thead><tr style="background:var(--all-header-bg);">
+                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">NAME</th>
+                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">HQ</th>
+                                <th style="padding:8px 6px; text-align:left; font-size:11px; color:var(--all-header-text);">LAST SYNC</th>
+                                <th style="padding:8px 6px; text-align:center; font-size:11px; color:var(--all-header-text);">LOGS</th>
+                            </tr></thead>
+                            <tbody>${tableRows}</tbody>
+                        </table>
+                    </div>
+                    <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Users per HQ</div>
+                    ${hqRows}`;
+            }).catch(err => { rosterEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">${err.message}</p>`; });
+        });
+    };
+
+    // ========== DATABASE ARCHIVE (Batch 4) ==========
+    window.archiveOldData = () => {
+        const yearBefore = parseInt(document.getElementById('admin-archive-year').value);
+        if (!yearBefore || yearBefore < 2020 || yearBefore > 2030) return showModal("Error", "Enter a valid year (e.g. 2025).", "error", false);
+        const statusEl = document.getElementById('admin-archive-status');
+        showModal("Confirm", `Archive all user logs from before ${yearBefore}? They will be moved to /archive/ in Firebase.`, "warning", true, (proceed) => {
+            if (!proceed) return;
+            statusEl.innerText = 'Archiving...';
+            import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get, set }) => {
+                get(r(window.db, 'users')).then(snap => {
+                    const users = snap.val() || {};
+                    let archivedCount = 0;
+                    const promises = [];
+                    Object.entries(users).forEach(([uid, userData]) => {
+                        const legs = userData.legs || [];
+                        const toArchive = legs.filter(l => parseInt((l.depDate || l.fromDate || '').substring(0, 4)) < yearBefore);
+                        const toKeep = legs.filter(l => parseInt((l.depDate || l.fromDate || '').substring(0, 4)) >= yearBefore);
+                        if (toArchive.length > 0) {
+                            archivedCount += toArchive.length;
+                            promises.push(set(r(window.db, `archive/${uid}/legs_before_${yearBefore}`), toArchive));
+                            promises.push(set(r(window.db, `archive/${uid}/profile`), userData.profile));
+                            promises.push(set(r(window.db, `users/${uid}/legs`), toKeep));
+                        }
+                    });
+                    Promise.all(promises).then(() => {
+                        statusEl.innerText = `✅ Archived ${archivedCount} entries from before ${yearBefore}`;
+                        showModal("Archive Done", `${archivedCount} entries moved to /archive/ node in Firebase.`, "success", false);
+                    });
+                }).catch(err => { statusEl.innerText = `❌ ${err.message}`; });
+            });
+        });
+    };
+
+    // ========== FEEDBACK INBOX (Batch 4) ==========
+    window.loadFeedbackInbox = () => {
+        const el = document.getElementById('admin-feedback-area');
+        if (!el) return;
+        el.innerHTML = '<p style="font-size:12px; color:var(--text-muted); text-align:center;">Loading...</p>';
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get, remove }) => {
+            get(r(window.db, 'feedback')).then(snap => {
+                const items = snap.val() || {};
+                const keys = Object.keys(items).sort().reverse();
+                if (keys.length === 0) { el.innerHTML = '<p style="font-size:12px; color:var(--text-muted); text-align:center;">No feedback yet.</p>'; return; }
+                el.innerHTML = keys.map(k => {
+                    const f = items[k];
+                    const typeColors = { Bug: 'var(--red)', Feature: 'var(--blue)', Feedback: 'var(--green)', Calculation: 'var(--orange)' };
+                    const col = typeColors[f.type] || 'var(--text-muted)';
+                    return `<div style="background:var(--input-bg); border-radius:10px; padding:10px; margin-bottom:8px; border:1px solid var(--border);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-size:11px; font-weight:900; color:${col};">${f.type || 'Feedback'}</span>
+                            <span style="font-size:10px; color:var(--text-muted);">${f.date || ''} · ${f.name || '?'}${f.pf ? ' ('+f.pf+')' : ''}</span>
+                        </div>
+                        <div style="font-size:12px; color:var(--text); line-height:1.5;">${f.text || ''}</div>
+                        <button onclick="window.dismissFeedback('${k}')" style="margin-top:6px; padding:4px 12px; width:auto; font-size:11px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:20px; box-shadow:none;">✕ Dismiss</button>
+                    </div>`;
+                }).join('') + `<p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:5px;">${keys.length} item${keys.length > 1 ? 's' : ''}</p>`;
+            }).catch(err => { el.innerHTML = `<p style="color:var(--red); font-size:12px; text-align:center;">${err.message}</p>`; });
+        });
+    };
+
+    window.dismissFeedback = (key) => {
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, remove }) => {
+            remove(r(window.db, `feedback/${key}`)).then(() => window.loadFeedbackInbox());
+        });
+    };
+
+    // ========== FEEDBACK SUBMIT (for users via Help modal) ==========
+    window.submitFeedback = () => {
+        const type = document.getElementById('feedback-type').value;
+        const text = document.getElementById('feedback-text').value.trim();
+        if (!text) return showModal("Error", "Please describe your feedback before submitting.", "error", false);
+        if (!window.firebaseSet || !window.firebaseRef || !window.db) return showModal("Error", "Not connected.", "error", false);
+        const name = window.appState.profile ? window.appState.profile.name || 'Unknown' : 'Unknown';
+        const pf = window.appState.profile ? window.appState.profile.pf || '' : '';
+        const entry = { type, text, name, pf, ts: Date.now(), date: new Date().toLocaleDateString() };
+        window.firebaseSet(window.firebaseRef(window.db, `feedback/${Date.now()}`), entry).then(() => {
+            document.getElementById('feedback-modal').classList.add('hidden');
+            document.getElementById('feedback-text').value = '';
+            showModal("Thank You!", "Your feedback has been sent to the admin.", "success", false);
+        }).catch(() => showModal("Error", "Failed to submit. Please try again.", "error", false));
     };
 
     window.loadAdminStats = () => {
@@ -1306,17 +1617,10 @@
         const annEl = document.getElementById('admin-announce-active');
         if (annEl) annEl.innerText = ann ? `Active: "${ann}"` : 'No active announcement';
         
-        const dab = adminConfig.da_broadcast;
+        const daN = adminConfig.da_notify;
         const daEl = document.getElementById('admin-da-active');
         if (daEl) {
-            if (dab && dab.active) {
-                let parts = [];
-                if (dab.da) parts.push(`DA: ${dab.da}%`);
-                if (dab.ta) parts.push(`TA: ₹${dab.ta}`);
-                daEl.innerText = `Active: ${parts.join(', ')}${dab.note ? ' — ' + dab.note : ''}`;
-            } else {
-                daEl.innerText = 'No active broadcast';
-            }
+            daEl.innerText = daN ? `Last pushed: DA ${daN.value}%${daN.note ? ' ('+daN.note+')' : ''} on ${daN.pushedOn || ''}` : 'No DA pushed yet';
         }
     }
     window.updateAdminUI = updateAdminUI;
