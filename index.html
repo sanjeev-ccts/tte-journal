@@ -295,7 +295,7 @@
 
                     // Version Gate (bypass for admin)
                     const reqVersion = adminConfig.required_version;
-                    if (reqVersion && reqVersion !== window.APP_VERSION && !isAdmin) {
+                    if (reqVersion && parseFloat(window.APP_VERSION) < parseFloat(reqVersion) && !isAdmin) {
                         document.getElementById('version-gate-screen').classList.remove('hidden');
                         document.getElementById('version-gate-msg').innerText = `Version ${reqVersion} is now required. Please reload or clear your browser cache to get the latest version.`;
                         document.getElementById('ui-wrapper').classList.add('hidden');
@@ -323,7 +323,10 @@
                         const daConf = adminConfig.current_da;
                         if (daConf && daConf.value && window.appState.profile && !window.appState.profile.da) {
                             window.appState.profile.da = daConf.value;
-                            saveData();
+                            // Write only the DA field directly to avoid re-triggering the full listener
+                            if (window.firebaseSet && window.firebaseRef && window.db) {
+                                window.firebaseSet(window.firebaseRef(window.db, `users/${window.currentUid}/profile/da`), daConf.value);
+                            }
                         }
                         if (document.getElementById('screen-register').classList.contains('hidden') && document.getElementById('screen-admin').classList.contains('hidden')) {
                             window.navTo('screen-dashboard');
