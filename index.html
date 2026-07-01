@@ -1329,7 +1329,7 @@
                 const cutoff = Date.now() - 10 * 60 * 1000; // 10 minutes
                 let active = [];
                 Object.values(users).forEach(u => {
-                    const legs = u.legs || [];
+                    const legs = Object.values(u.legs || {});
                     const prof = u.profile || {};
                     if (legs.length > 0) {
                         const latest = Math.max(...legs.map(l => parseInt(l.id) || 0).filter(x => x > 1000000000000));
@@ -1360,7 +1360,7 @@
                 if (!found) { el.innerHTML = '<p style="font-size:12px; color:var(--red); font-weight:bold;">No user found with that PF Number.</p>'; return; }
                 const [uid, userData] = found;
                 const p = userData.profile || {};
-                const legs = userData.legs || [];
+                const legs = Object.values(userData.legs || {});
                 const now = new Date();
                 const mo = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
                 const thisMonthLegs = legs.filter(l => (l.depDate || '').startsWith(mo));
@@ -1380,7 +1380,7 @@
         const rosterEl = document.getElementById('roster-content');
         if (!rosterEl) return;
         document.getElementById('roster-modal').classList.remove('hidden');
-        const legs = userData.legs || [];
+        const legs = Object.values(userData.legs || {});
         const profile = userData.profile || {};
         const now = new Date();
         const mo = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
@@ -1443,7 +1443,7 @@
                 let rosterRows = uids.map(uid => {
                     const u = users[uid];
                     const prof = u.profile || {};
-                    const legs = u.legs || [];
+                    const legs = Object.values(u.legs || {});
                     const hq = prof.hq || 'Unknown';
                     hqBreakdown[hq] = (hqBreakdown[hq] || 0) + 1;
                     let lastSync = '—';
@@ -1509,7 +1509,7 @@
                     let archivedCount = 0;
                     const promises = [];
                     Object.entries(users).forEach(([uid, userData]) => {
-                        const legs = userData.legs || [];
+                        const legs = Object.values(userData.legs || {});
                         const toArchive = legs.filter(l => parseInt((l.depDate || l.fromDate || '').substring(0, 4)) < yearBefore);
                         const toKeep = legs.filter(l => parseInt((l.depDate || l.fromDate || '').substring(0, 4)) >= yearBefore);
                         if (toArchive.length > 0) {
@@ -1599,7 +1599,7 @@
                     const u = users[uid];
                     const pl = u.profile ? u.profile.payscale || 'Unknown' : 'No Profile';
                     payBreak[pl] = (payBreak[pl] || 0) + 1;
-                    const legs = u.legs || [];
+                    const legs = Object.values(u.legs || {});
                     if (legs.length > 0) recentCount++;
                 });
                 
