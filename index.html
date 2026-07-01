@@ -198,7 +198,7 @@
         .duty-cal-day { font-size: 11px; font-weight: 700; text-align: center; padding: 5px 2px; border-radius: 6px; min-height: 26px; display: flex; align-items: center; justify-content: center; }
         .duty-cal-day.today { outline: 2px solid var(--blue); outline-offset: 1px; }
         
-        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal, #calendar-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
         .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
@@ -255,7 +255,7 @@
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
         window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '3.6';
+        window.APP_VERSION = '3.7';
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -583,7 +583,7 @@
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.6</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v3.7</div>
         </div>
     </div>
 
@@ -889,38 +889,31 @@
                 </script>
             </div>
             
-            <div id="all-logs-container" style="width: 100%; max-height: 570px; overflow-y: auto; border-radius: 12px; box-shadow: var(--shadow); position: relative; background: var(--card); border: 1px solid var(--border);"></div>
+            <div id="all-logs-container" style="width: 100%; max-height: 535px; overflow-y: auto; border-radius: 12px; box-shadow: var(--shadow); position: relative; background: var(--card); border: 1px solid var(--border);"></div>
             
-            <!-- UP/DOWN LEGEND as clickable toggles (Change 13) -->
-            <div style="display:flex; justify-content:center; gap:10px; margin-top:15px;">
-                <button id="legend-up-btn" onclick="window.toggleLegendFilter('up')" style="margin:0; padding:8px 18px; font-size:13px; font-weight:700; background:var(--row-up-bg); color:var(--row-text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:70px;">⬆ Up</button>
-                <button id="legend-down-btn" onclick="window.toggleLegendFilter('down')" style="margin:0; padding:8px 18px; font-size:13px; font-weight:700; background:var(--row-down-bg); color:var(--row-text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:70px;">⬇ Down</button>
+            <!-- BOTTOM ACTION BAR: calendar + undo/redo in one row (Change 2) -->
+            <div style="display:flex; justify-content:center; align-items:center; margin-top:15px; gap:8px;">
+                <button onclick="window.toggleCalendarView()" id="cal-toggle-btn" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--blue); border:1px solid var(--blue); border-radius:20px; box-shadow:var(--shadow); width:auto;">📅 Calendar</button>
+                <button onclick="window.undoLeg()" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto;">↩ Undo</button>
+                <button onclick="window.redoLeg()" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto;">↪ Redo</button>
             </div>
+        </div>
+    </div>
 
-            <!-- BOTTOM ACTION BAR: calendar icon left, undo/redo right (Change 14) -->
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:8px;">
-                <button onclick="window.toggleCalendarView()" id="cal-toggle-btn" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--blue); border:1px solid var(--blue); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:50px;" title="Monthly Calendar">📅</button>
-                <div style="display:flex; gap:8px;">
-                    <button onclick="window.undoLeg()" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:70px;">↩ Undo</button>
-                    <button onclick="window.redoLeg()" style="margin:0; padding:8px 18px; font-size:13px; background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow); width:auto; min-width:70px;">↪ Redo</button>
-                </div>
+    <!-- CALENDAR POPUP MODAL -->
+    <div id="calendar-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:6500;">
+        <div style="background:var(--modal-bg); padding:18px; border-radius:16px; width:92%; max-width:340px; border:1px solid var(--border); box-shadow:var(--shadow); transition:background 0.3s;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h4 style="margin:0; font-size:14px; font-weight:900; color:var(--blue);">📅 Monthly Duty Calendar</h4>
+                <button onclick="document.getElementById('calendar-modal').classList.add('hidden')" style="width:auto; margin:0; padding:4px 12px; font-size:12px; background:#64748b; border-radius:20px;">✕</button>
             </div>
-
-            <!-- DUTY CALENDAR (hidden by default, toggled) (Change 14) -->
-            <div id="duty-calendar-wrapper" class="hidden" style="margin-top:12px;">
-                <div class="card" style="padding: 12px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-                        <h4 style="margin:0; font-size:13px; font-weight:900; color:var(--blue);">📅 Monthly Duty Calendar</h4>
-                        <div style="display:flex; gap:5px; flex-wrap:wrap;">
-                            <span style="font-size:10px; font-weight:700; background:rgba(34,197,94,0.2); color:var(--green); padding:2px 7px; border-radius:10px;">● Duty</span>
-                            <span style="font-size:10px; font-weight:700; background:rgba(59,130,246,0.18); color:var(--blue); padding:2px 7px; border-radius:10px;">● Rest/Leave</span>
-                            <span style="font-size:10px; font-weight:700; background:rgba(168,85,247,0.2); color:var(--purple); padding:2px 7px; border-radius:10px;">● Mela</span>
-                            <span style="font-size:10px; font-weight:700; background:rgba(234,179,8,0.22); color:var(--yellow); padding:2px 7px; border-radius:10px;">● Station</span>
-                        </div>
-                    </div>
-                    <div id="duty-calendar-grid" class="duty-cal"></div>
-                </div>
+            <div style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px;">
+                <span style="font-size:10px; font-weight:700; background:rgba(34,197,94,0.2); color:var(--green); padding:2px 7px; border-radius:10px;">● Duty</span>
+                <span style="font-size:10px; font-weight:700; background:rgba(59,130,246,0.18); color:var(--blue); padding:2px 7px; border-radius:10px;">● Rest/Leave</span>
+                <span style="font-size:10px; font-weight:700; background:rgba(168,85,247,0.2); color:var(--purple); padding:2px 7px; border-radius:10px;">● Mela</span>
+                <span style="font-size:10px; font-weight:700; background:rgba(234,179,8,0.22); color:var(--yellow); padding:2px 7px; border-radius:10px;">● Station</span>
             </div>
+            <div id="duty-calendar-grid" class="duty-cal"></div>
         </div>
     </div>
 
@@ -2119,6 +2112,9 @@
         // --- VALIDATION BLOCK ---
         if (!window.appState.profile) return showModal("ERROR", "Profile not loaded.", "error", false);
         const hqGrpV = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])];
+        let overlap = false;
+        let fromD = new Date(`${from}T00:00:00`);
+        let toD = new Date(`${to}T23:59:59`);
 
         // Change 3: Leave must be at HQ (except Sick Leave / LHAP Sick)
         if (type === 'Leave') {
@@ -2154,9 +2150,6 @@
                 }
             }
         }
-        let fromD = new Date(`${from}T00:00:00`);
-        let toD = new Date(`${to}T23:59:59`);
-        
         if(window.appState.legs) {
             window.appState.legs.forEach(l => {
                 if(l.id === window.editModeId) return;
@@ -2164,6 +2157,7 @@
                 let lEnd = new Date(`${l.arrDate}T${l.arrTime || '23:59'}`);
                 if (fromD <= lEnd && toD >= lStart) overlap = true;
             });
+        }
         }
         
         const finalizeSave = () => {
@@ -2275,12 +2269,7 @@
                 let dateStr = (leg.fromDate === leg.toDate) ? formatDate(leg.fromDate) : `${formatDate(leg.fromDate)} to ${formatDate(leg.toDate)}`;
                 htmlElements.push(`<div style="grid-column: 1 / -1; background: ${bgCol}; color: var(--text); font-weight: bold; padding: 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 12px; cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;" onclick="window.manageNonDuty(${leg.id}, '${leg.dutyType}', '${leg.fromDate}', '${leg.toDate}')">${icon} ${label} : ${dateStr}</div>`);
             } else {
-                let dir = legDirectionMap[leg.id];
-                let rowColor = dir === 'up' ? 'var(--row-up-bg)' : 'var(--row-down-bg)';
-                // Change 13: If legend filter active, grey out non-matching rows
-                if (window._legendFilter && dir !== window._legendFilter) {
-                    rowColor = 'var(--bg)';
-                }
+                let rowColor = 'var(--card)';
                 let shortDep = formatDate(leg.depDate).substring(0, 6); 
                 let shortArr = formatDate(leg.arrDate).substring(0, 6);
                 
@@ -2323,10 +2312,6 @@
             }
         }
         container.innerHTML = headerHTML + `<div style="border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; transition: border 0.3s;">` + htmlElements.reverse().join('') + `</div>`;
-        // Only render calendar if it's currently visible
-        if (!document.getElementById('duty-calendar-wrapper')?.classList.contains('hidden')) {
-            renderDutyCalendar();
-        }
     }
 
     window._legendFilter = null; // null = show all, 'up' = only up, 'down' = only down
@@ -2346,13 +2331,8 @@
     };
 
     window.toggleCalendarView = function() {
-        const wrapper = document.getElementById('duty-calendar-wrapper');
-        const btn = document.getElementById('cal-toggle-btn');
-        if (!wrapper) return;
-        const hidden = wrapper.classList.contains('hidden');
-        wrapper.classList.toggle('hidden');
-        if (btn) btn.style.background = hidden ? 'rgba(59,130,246,0.12)' : 'var(--card)';
-        if (hidden) renderDutyCalendar();
+        renderDutyCalendar();
+        document.getElementById('calendar-modal').classList.remove('hidden');
     };
 
     function renderDutyCalendar() {
@@ -2542,8 +2522,6 @@
             if (l.dutyType !== 'Station Duty' && l.dutyType !== 'Mela Duty') return;
             if (!l.shiftFrom || !l.shiftTo) return;
 
-            // Change 12: Iterate per SHIFT (one shift per calendar day start), not per calendar day
-            // An overnight shift starting on day D is ONE shift — don't re-count on day D+1
             let d = new Date(`${l.fromDate}T00:00:00`);
             const endD = new Date(`${l.toDate}T00:00:00`);
             
@@ -2552,11 +2530,18 @@
                 const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
                 const shiftCalc = calcShiftNightMinutes(l.shiftFrom, l.shiftTo, dateStr);
                 
-                // Only count if the SHIFT START falls within NDA billing period
                 if (shiftCalc.signOn >= ndaStart && shiftCalc.signOn <= ndaEnd && shiftCalc.mins > 0) {
                     totalMins += shiftCalc.mins;
+                    // Change 4: Use the END date as the NDA row date (day shift finishes, e.g. 06:00 on 15th)
+                    const endDate = new Date(shiftCalc.signOff);
+                    // If shift ends exactly at midnight or before, use start date, else use end date
+                    let rowDate = dateStr;
+                    if (endDate.getDate() !== d.getDate()) {
+                        rowDate = `${endDate.getFullYear()}-${pad(endDate.getMonth()+1)}-${pad(endDate.getDate())}`;
+                    }
                     entries.push({ 
-                        date: dateStr, 
+                        date: rowDate,
+                        startDate: dateStr, // keep start date for sorting
                         dutyType: l.dutyType,
                         objective: l.objective || l.dutyType, 
                         melaStn: l.melaStn || '',
@@ -2564,12 +2549,12 @@
                         ...shiftCalc 
                     });
                 }
-                // Change 12: If shift is overnight (end > midnight), skip next day to avoid double-count
+                // If overnight shift, advance by 2 days to avoid double-counting
                 const parseHM = (str) => { const c = str.replace(':',''); return {h:parseInt(c.substring(0,2)),m:parseInt(c.substring(2,4))}; };
                 const sf = parseHM(l.shiftFrom); const st = parseHM(l.shiftTo);
                 const isOvernight = (st.h < sf.h) || (st.h === sf.h && st.m < sf.m) || (sf.h >= 22 && st.h < 12);
                 if (isOvernight) {
-                    d.setDate(d.getDate() + 2); // skip the "end day" since it was part of this shift
+                    d.setDate(d.getDate() + 2);
                 } else {
                     d.setDate(d.getDate() + 1);
                 }
