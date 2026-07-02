@@ -631,7 +631,7 @@
                     <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">
                         Only set this to a version that is <strong style="color:var(--text);">already deployed and working</strong>. 
                         Setting a version number higher than what's live will lock ALL users out.<br>
-                        <span style="color:var(--orange); font-weight:700;" id="admin-current-ver-label">Current live app: v3.9</span>
+                        <span style="color:var(--orange); font-weight:700;" id="admin-current-ver-label">Current live app: v4.1</span>
                     </div>
                 </div>
 
@@ -1369,10 +1369,17 @@
                         <div style="font-size:13px; font-weight:900; color:var(--text); margin-bottom:4px;">${p.name || '—'} · ${p.desig || '—'}</div>
                         <div style="font-size:12px; color:var(--text-muted);">HQ: ${p.hq || '—'} · DA: ${p.da || '—'}% · TA Rate: ₹${p.tarate || '—'}</div>
                         <div style="font-size:12px; color:var(--blue); margin-top:4px;">Total Logs: ${legs.length} · This Month: ${thisMonthLegs.length} entries</div>
-                        <button onclick="window.viewUserAudit('${uid}', '${(p.name||'').replace(/'/g,"\\'")}', ${JSON.stringify(userData).replace(/</g,'&lt;')})" style="margin-top:8px; padding:6px 14px; width:auto; font-size:12px; background:var(--purple); border-radius:20px;">👁 View This Month</button>
+                        <button onclick="window._pfLookupData='${uid}'; window._rosterDataMap = window._rosterDataMap||{}; window._rosterDataMap['${uid}'] = ${JSON.stringify(userData).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/`/g,'\\`')}; window.viewUserAuditById('${uid}','${(p.name||'').replace(/'/g,"\\'")}')" style="margin-top:8px; padding:6px 14px; width:auto; font-size:12px; background:var(--purple); border-radius:20px;">👁 View This Month</button>
                     </div>`;
             }).catch(err => { el.innerHTML = `<p style="color:var(--red); font-size:12px;">${err.message}</p>`; });
         });
+    };
+
+    // Wrapper that reads userData from the stored map (avoids inline JSON in onclick)
+    window.viewUserAuditById = (uid, name) => {
+        const userData = window._rosterDataMap && window._rosterDataMap[uid];
+        if (!userData) return showModal("Error", "User data not found. Please reload the roster.", "error", false);
+        window.viewUserAudit(uid, name, userData);
     };
 
     // ========== USER AUDIT (Batch 3) ==========
@@ -1440,7 +1447,7 @@
                 if (uids.length === 0) { rosterEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px; text-align:center;">No registered users found.</p>'; return; }
 
                 let hqBreakdown = {};
-                let debugInfo = []; // TEMP DEBUG
+                window._rosterDataMap = {}; // store user data by uid for tap access
                 let rosterRows = uids.map(uid => {
                     const u = users[uid];
                     const prof = u.profile || {};
@@ -1448,8 +1455,7 @@
                     const legs = Object.values(u.legs || {});
                     const hq = prof.hq || 'Unknown';
                     hqBreakdown[hq] = (hqBreakdown[hq] || 0) + 1;
-                    // DEBUG: capture what we actually see
-                    debugInfo.push(`${prof.name||uid}: rawLegs type=${typeof rawLegs}, isArray=${Array.isArray(rawLegs)}, count=${legs.length}, firstId=${legs[0]?legs[0].id:'none'}`);
+                    window._rosterDataMap[uid] = u; // store for tap
                     let lastSync = '—';
                     if (legs.length > 0) {
                         const allIds = legs.map(l => parseInt(l.id) || 0);
@@ -1460,13 +1466,13 @@
                             lastSync = `${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
                         }
                     }
-                    return { uid, name: prof.name || '—', desig: prof.desig || '—', hq, pf: prof.pf || '—', lastSync, legCount: legs.length, userData: u };
+                    return { uid, name: prof.name || '—', desig: prof.desig || '—', hq, pf: prof.pf || '—', lastSync, legCount: legs.length };
                 });
                 // Sort by HQ then name
                 rosterRows.sort((a, b) => a.hq.localeCompare(b.hq) || a.name.localeCompare(b.name));
 
                 const tableRows = rosterRows.map(row => `
-                    <tr onclick="window.viewUserAudit('${row.uid}', '${row.name.replace(/'/g,"\\'")}', ${JSON.stringify(row.userData).replace(/</g,'&lt;')})" style="cursor:pointer;" title="Tap to view month summary">
+                    <tr onclick="window.viewUserAuditById('${row.uid}', '${row.name.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')" style="cursor:pointer;" title="Tap to view month summary">
                         <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--text); font-weight:600; white-space:nowrap;">${row.name}</td>
                         <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:11px; color:var(--text-muted); white-space:nowrap;">${row.desig}</td>
                         <td style="padding:8px 6px; border-bottom:1px solid var(--border); font-size:12px; color:var(--blue); font-weight:700; white-space:nowrap;">${row.hq}</td>
@@ -1496,11 +1502,7 @@
                     </div>
                     <p style="font-size:10px; color:var(--text-muted); text-align:center; margin:-12px 0 12px 0;">← Scroll table sideways to see all columns →</p>
                     <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Users per HQ</div>
-                    ${hqRows}
-                    <div style="margin-top:15px; padding:10px; background:var(--input-bg); border-radius:8px; border:1px solid var(--border);">
-                        <div style="font-size:10px; font-weight:900; color:var(--orange); margin-bottom:5px;">🔍 DEBUG INFO</div>
-                        ${debugInfo.map(d => `<div style="font-size:10px; color:var(--text-muted); word-break:break-all; margin-bottom:3px;">${d}</div>`).join('')}
-                    </div>`;
+                    ${hqRows}`;
             }).catch(err => { rosterEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">${err.message}</p>`; });
         });
     };
