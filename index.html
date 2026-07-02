@@ -389,7 +389,7 @@
         
         <div class="bottom-icon" onclick="window.showModal('Support Us', 'TTE LOGS is Completely FREE!', 'success', false)">☕</div>
         <div class="bottom-icon" onclick="window.showNotifications()">🔔<div class="bell-badge hidden" id="nav-bell-badge">0</div></div>
-        <div class="bottom-icon" onclick="window.navTo('screen-dashboard')">🏠</div>
+        <div class="bottom-icon" onclick="window.navTo('screen-register')" style="position:relative;">👤<div id="profile-alert-badge-bottom" class="notification-dot hidden">!</div></div>
     </div>
 
     <div id="trend-modal" class="hidden">
@@ -777,10 +777,10 @@
                         <div class="nav-main-text" style="color: var(--blue);">PDF</div>
                         <div class="nav-sub-text">TA Journal / NDA Bill</div>
                     </div>
-                    <div class="nav-card" onclick="window.navTo('screen-register')">
-                        <div class="nav-icon" style="position: relative; display: inline-block;">👤<div id="profile-alert-badge" class="notification-dot hidden">!</div></div>
-                        <div class="nav-main-text" style="color: var(--yellow);">Profile</div>
-                        <div class="nav-sub-text">Stations, pay details</div>
+                    <div class="nav-card" onclick="window.openRosterModal()">
+                        <div class="nav-icon">📅</div>
+                        <div class="nav-main-text" style="color: var(--yellow);">Roster (BSB)</div>
+                        <div class="nav-sub-text">Duty Roster</div>
                     </div>
                     <div class="nav-card" onclick="window.navTo('screen-backup')">
                         <div class="nav-icon">💾</div>
@@ -999,6 +999,15 @@
             </div>
             <div id="cal-day-content"></div>
         </div>
+    </div>
+
+    <!-- DUTY ROSTER IFRAME MODAL -->
+    <div id="roster-iframe-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:9500; display:flex; flex-direction:column;">
+        <div class="top-bar" style="position:relative;">
+            <button class="back-btn" style="position:relative; top:0; left:0;" onclick="window.closeRosterModal()">← Back</button>
+            <h1 style="color:#fde047;">📅 DUTY ROSTER</h1>
+        </div>
+        <iframe id="roster-iframe" src="" style="flex:1; width:100%; border:none; background:var(--bg);"></iframe>
     </div>
 
     <!-- CALENDAR POPUP MODAL -->
@@ -2810,6 +2819,37 @@
         updateDashboardUI();
         showModal("Saved!", `Arrival updated: ${arrDate} at ${arrTime}`, "success", false);
     };
+
+    // ========== DUTY ROSTER IFRAME BRIDGE ==========
+    window.openRosterModal = function() {
+        const iframe = document.getElementById('roster-iframe');
+        const modal = document.getElementById('roster-iframe-modal');
+        if (!iframe.src || iframe.src === 'about:blank' || iframe.src === '') {
+            iframe.src = 'roster.html';
+        }
+        modal.classList.remove('hidden');
+    };
+
+    window.closeRosterModal = function() {
+        document.getElementById('roster-iframe-modal').classList.add('hidden');
+    };
+
+    // Send logged-in user info to roster.html once it signals it's ready
+    window.addEventListener('message', function(event) {
+        if (event.data && event.data.type === 'ROSTER_READY') {
+            const iframe = document.getElementById('roster-iframe');
+            if (iframe && iframe.contentWindow && window.currentUid) {
+                iframe.contentWindow.postMessage({
+                    type: 'TTE_LOGS_USER',
+                    uid: window.currentUid,
+                    name: window.appState.profile ? window.appState.profile.name : '',
+                    pf: window.appState.profile ? window.appState.profile.pf : '',
+                    hq: window.appState.profile ? window.appState.profile.hq : '',
+                    isAdmin: (window.currentUid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(window.currentUserEmail || '')
+                }, '*');
+            }
+        }
+    });
 
     window.toggleCalendarView = function() {
         // Initialize calendar to current month/year
