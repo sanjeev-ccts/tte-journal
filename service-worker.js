@@ -1,6 +1,7 @@
-const CACHE_NAME = 'tte-tracker-v4.15';
+const CACHE_NAME = 'tte-tracker-v4.16';
 const ASSETS_TO_CACHE = [
     './index.html',
+    './roster.html',
     './manifest.json'
 ];
 
@@ -32,11 +33,13 @@ self.addEventListener('activate', (event) => {
     );
 });
 
-// 3. FETCH PHASE: Always try the network first to get fresh data, fall back to offline cache
+// 3. FETCH PHASE: Always try the network first to get fresh data, fall back to the correct cached file
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request).catch(() => {
-            return caches.match('./index.html');
+            return caches.match(event.request).then((cached) => {
+                return cached || caches.match('./index.html');
+            });
         })
     );
 });
