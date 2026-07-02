@@ -16,120 +16,146 @@
         --border: #30363d; --input-bg: #21262d; --shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; padding-bottom: 70px; }
-    .top-bar { position: sticky; top: 0; background: var(--top-bar-bg); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-    .top-bar h1 { margin: 0; font-size: 17px; font-weight: 900; color: #fde047; }
-    .back-btn { background: transparent; border: none; color: white; font-size: 14px; cursor: pointer; padding: 4px 8px; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; padding-bottom: 20px; font-size: 15px; }
+
+    .top-bar { position: sticky; top: 0; background: var(--top-bar-bg); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: center; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+    .top-bar span { font-size: 14px; font-weight: 800; color: #fde047; }
+    body.in-iframe .top-bar { display: none; }
+
+    #roster-float-back { display: none; position: fixed; top: 14px; left: 10px; z-index: 500; background: rgba(15,23,42,0.88); color: white; border: none; border-radius: 20px; padding: 9px 18px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+    body.in-iframe #roster-float-back { display: block; }
+    body.in-iframe .tab-bar { margin-top: 55px; }
+
     .screen-content { padding: 15px; max-width: 600px; margin: 0 auto; }
     .card { background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
     .tab-bar { display: flex; background: var(--card); border-radius: 30px; padding: 4px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .tab-btn { flex: 1; padding: 10px; text-align: center; border-radius: 30px; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; }
+    .tab-btn { flex: 1; padding: 11px; text-align: center; border-radius: 30px; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; }
     .tab-btn.active { background: var(--blue); color: white; }
-    input, select { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 14px; margin-bottom: 10px; }
-    button.action { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: 700; font-size: 14px; color: white; background: var(--blue); cursor: pointer; box-shadow: var(--shadow); }
+
+    input, select { width: 100%; padding: 11px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 15px; margin-bottom: 10px; }
+    button.action { width: 100%; padding: 13px; border: none; border-radius: 30px; font-weight: 700; font-size: 15px; color: white; background: var(--blue); cursor: pointer; box-shadow: var(--shadow); }
     .hidden { display: none !important; }
-    .duty-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 10px; background: var(--input-bg); margin-bottom: 8px; border-left: 4px solid var(--blue); }
-    .duty-row.rest { border-left-color: var(--text-muted); opacity: 0.7; }
-    .duty-row.lr { border-left-color: var(--purple); }
-    .badge { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; }
-    h3.section-title { font-size: 13px; font-weight: 900; color: var(--blue); text-transform: uppercase; margin: 18px 0 8px 0; }
-    .loading { text-align: center; padding: 30px; color: var(--text-muted); }
-    .train-pill { display: inline-block; background: rgba(59,130,246,0.12); color: var(--blue); padding: 3px 10px; border-radius: 8px; font-weight: 800; font-size: 13px; margin-right: 6px; }    .duty-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .duty-box { background: var(--input-bg); border-radius: 10px; padding: 10px; border-left: 4px solid var(--blue); }
-    .duty-box.rest { border-left-color: var(--text-muted); opacity: 0.75; }
-    .duty-box.lr { border-left-color: var(--purple); }
-    .duty-box .db-date { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
-    .duty-box .db-content { font-size: 12px; font-weight: 700; }
-    .duty-box .db-badge { font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 8px; display: inline-block; margin-top: 4px; }
+
+    h3.section-title { font-size: 14px; font-weight: 900; color: var(--blue); text-transform: uppercase; margin: 18px 0 10px 0; }
+
+    #my-team-select { font-size: 17px; font-weight: 800; padding: 14px; }
+    .team-info-card .team-title { font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+    .team-info-card .team-members { font-size: 15px; color: var(--text-muted); line-height: 1.6; }
+
+    .duty-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .duty-box { border-radius: 12px; padding: 13px; background: var(--card); border: 1px solid var(--border); }
+    .duty-box .db-date { font-size: 12px; font-weight: 800; color: var(--text-muted); margin-bottom: 6px; }
+    .duty-box .db-up { font-size: 16px; font-weight: 900; color: #15803d; margin-bottom: 3px; }
+    .duty-box .db-down { font-size: 16px; font-weight: 900; color: #1d4ed8; }
+    .duty-box .db-arr-date { font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 4px; }
+    .duty-box.trip-box { background: rgba(59,130,246,0.10); }
+    .duty-box.rest-box { background: rgba(148,163,184,0.15); }
+    .duty-box.lr-box { background: rgba(168,85,247,0.12); }
+    .duty-box .db-badge { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 8px; display: inline-block; margin-top: 6px; background: rgba(59,130,246,0.15); color: var(--blue); }
+
+    .search-row { display: flex; gap: 8px; }
+    .search-row input { flex: 1; margin-bottom: 0; }
+    .clear-btn { width: auto; flex-shrink: 0; padding: 0 16px; background: var(--input-bg); color: var(--text-muted); border: 1px solid var(--border); border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<div class="top-bar">
-    <span id="header-title" style="flex:1;">📋 BSB Duty Roster</span>
-    <span id="user-label" style="font-size:11px; color:#94a3b8;"></span>
-</div>
+<div id="fatal-error-box" class="hidden" style="position:fixed; top:0; left:0; width:100%; padding:15px; background:#fee2e2; color:#991b1b; font-family:monospace; font-size:12px; z-index:99999; white-space:pre-wrap; word-break:break-all; border-bottom:3px solid #dc2626;"></div>
+
+<script>
+window.onerror = function(msg, url, line, col, error) {
+    const box = document.getElementById('fatal-error-box');
+    if (box) {
+        box.classList.remove('hidden');
+        box.innerText = '⚠️ ERROR: ' + msg + '\nLine: ' + line + ', Col: ' + col + (error && error.stack ? '\n' + error.stack : '');
+    }
+    return false;
+};
+if (window.parent !== window) {
+    document.body.classList.add('in-iframe');
+}
+</script>
+
+<button id="roster-float-back" onclick="window.parent.postMessage({type:'ROSTER_CLOSE'}, '*')">← Back</button>
+
+<div class="top-bar"><span>📅 BSB Duty Roster</span></div>
 
 <div class="screen-content">
 
-    <!-- MY DUTY TAB (default) -->
     <div class="tab-bar">
         <div class="tab-btn active" id="tab-mine" onclick="switchTab('mine')">My Duty</div>
         <div class="tab-btn" id="tab-search" onclick="switchTab('search')">Search</div>
         <div class="tab-btn hidden" id="tab-admin" onclick="switchTab('admin')">Admin</div>
     </div>
 
-    <!-- MY DUTY VIEW -->
     <div id="view-mine">
         <div class="card">
-            <label style="font-size:12px; font-weight:700; color:var(--blue);">Your Team Number</label>
+            <label style="font-size:13px; font-weight:700; color:var(--blue);">Your Team Number</label>
             <select id="my-team-select" onchange="onMyTeamChange()">
                 <option value="">-- Select your team --</option>
             </select>
-            <p style="font-size:11px; color:var(--text-muted); margin:5px 0 0 0;">Don't know your team? Use Search tab and find your name.</p>
+            <p style="font-size:12px; color:var(--text-muted); margin:5px 0 0 0;">Don't know your team? Use Search tab and find your name.</p>
         </div>
         <div id="my-duty-week"></div>
     </div>
 
-    <!-- SEARCH VIEW -->
     <div id="view-search" class="hidden">
         <div class="card">
-            <label style="font-size:12px; font-weight:700; color:var(--blue);">Search by Date</label>
-            <div style="display:flex; gap:8px;">
-                <input type="date" id="search-date" onchange="renderDateSearch()" style="flex:1;">
-                <button onclick="window.clearDateSearch()" style="width:auto; padding:0 16px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;">✕</button>
-            </div>
-        </div>
-        <div id="search-date-result"></div>
-
-        <div class="card">
-            <label style="font-size:12px; font-weight:700; color:var(--purple);">Search by Team No</label>
-            <div style="display:flex; gap:8px;">
-                <input type="number" id="search-team" placeholder="e.g. 9" oninput="renderTeamSearch()" style="flex:1;">
-                <button onclick="window.clearTeamSearch()" style="width:auto; padding:0 16px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;">✕</button>
+            <label style="font-size:13px; font-weight:700; color:var(--purple);">Search by Team No</label>
+            <div class="search-row">
+                <input type="number" id="search-team" placeholder="e.g. 9" oninput="renderTeamSearch()">
+                <button class="clear-btn" onclick="window.clearTeamSearch()">Clear</button>
             </div>
         </div>
         <div id="search-team-result"></div>
 
         <div class="card">
-            <label style="font-size:12px; font-weight:700; color:var(--orange);">Search by Train No</label>
-            <div style="display:flex; gap:8px;">
-                <input type="text" id="search-train" placeholder="e.g. 15127" oninput="renderTrainSearch()" style="flex:1;">
-                <button onclick="window.clearTrainSearch()" style="width:auto; padding:0 16px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;">✕</button>
+            <label style="font-size:13px; font-weight:700; color:var(--orange);">Search by Train No</label>
+            <div class="search-row">
+                <input type="text" id="search-train" placeholder="e.g. 15127" oninput="renderTrainSearch()">
+                <button class="clear-btn" onclick="window.clearTrainSearch()">Clear</button>
             </div>
         </div>
         <div id="search-train-result"></div>
+
+        <div class="card">
+            <label style="font-size:13px; font-weight:700; color:var(--blue);">Search by Date</label>
+            <div class="search-row">
+                <input type="date" id="search-date" onchange="renderDateSearch()">
+                <button class="clear-btn" onclick="window.clearDateSearch()">Clear</button>
+            </div>
+        </div>
+        <div id="search-date-result"></div>
     </div>
 
-    <!-- ADMIN VIEW -->
     <div id="view-admin" class="hidden">
         <div class="card">
-            <h3 style="margin:0 0 10px 0; font-size:14px; color:var(--red);">⚙️ Roster Admin</h3>
-            <label style="font-size:12px; font-weight:700;">Rotation Anchor Date</label>
+            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--red);">⚙️ Roster Admin</h3>
+            <label style="font-size:13px; font-weight:700;">Rotation Anchor Date</label>
             <input type="date" id="admin-anchor-date">
             <button class="action" style="background:var(--green); margin-top:5px;" onclick="saveAnchorDate()">Save Anchor Date</button>
         </div>
 
         <div class="card">
-            <h3 style="margin:0 0 10px 0; font-size:14px; color:var(--blue);">👥 Edit Team Master</h3>
+            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--blue);">👥 Edit Team Master</h3>
             <select id="admin-team-select" onchange="loadTeamForEdit()">
                 <option value="">-- Select team to edit --</option>
             </select>
             <div id="admin-team-edit-form" class="hidden">
-                <label style="font-size:12px;">Base Program No</label>
+                <label style="font-size:13px;">Base Program No</label>
                 <input type="number" id="admin-edit-baseprog">
-                <label style="font-size:12px;">COR Name</label>
+                <label style="font-size:13px;">COR Name</label>
                 <input type="text" id="admin-edit-cor">
-                <label style="font-size:12px;">TTE-1 Name</label>
+                <label style="font-size:13px;">TTE-1 Name</label>
                 <input type="text" id="admin-edit-tte1">
-                <label style="font-size:12px;">TTE-2 Name</label>
+                <label style="font-size:13px;">TTE-2 Name</label>
                 <input type="text" id="admin-edit-tte2">
                 <button class="action" style="background:var(--green);" onclick="saveTeamEdit()">Save Team</button>
             </div>
         </div>
 
         <div class="card">
-            <h3 style="margin:0 0 10px 0; font-size:14px; color:var(--purple);">🚂 Edit Link Programme</h3>
+            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--purple);">🚂 Edit Link Programme</h3>
             <select id="admin-prog-select">
                 <option value="">-- Select program to edit --</option>
             </select>
@@ -144,8 +170,8 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyClDJ3enyipS3sHJujYJTkxdunvvVgju64",
@@ -157,13 +183,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 window.db = db;
-window.dbRef = ref;
-window.dbGet = get;
-window.dbSet = set;
 
 window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
 
-// ============ DEFAULT DATA (seeded on first load if Firebase is empty) ============
 const DEFAULT_TEAM_MASTER = {
     1:{baseProg:35,cor:"Anil Kumar",tte1:"Dheeraj Pal",tte2:"Rajhans Sonkar"},
     2:{baseProg:36,cor:"Krishan Kumar Gupta",tte1:"Shiva Kant Verma",tte2:"Akhilesh Kumar Gupta"},
@@ -213,7 +235,6 @@ const DEFAULT_TEAM_MASTER = {
 const SLOT_ORDER = ["MON_OUT","TUE_IN","TUE_OUT","WED_IN","WED_OUT","THU_IN","THU_OUT","FRI_IN","FRI_OUT","SAT_IN","SAT_OUT","SUN_IN","SUN_OUT","MON_IN"];
 const SLOT_LABELS = {MON_OUT:"Mon (Out)",TUE_IN:"Tue (In)",TUE_OUT:"Tue (Out)",WED_IN:"Wed (In)",WED_OUT:"Wed (Out)",THU_IN:"Thu (In)",THU_OUT:"Thu (Out)",FRI_IN:"Fri (In)",FRI_OUT:"Fri (Out)",SAT_IN:"Sat (In)",SAT_OUT:"Sat (Out)",SUN_IN:"Sun (In)",SUN_OUT:"Sun (Out)",MON_IN:"Mon (In)"};
 
-// Default Link Programme: program -> {slot: "train" or "train1/train2" or "REST" or "LR"}
 const DEFAULT_LINK_PROGRAMME = {
     1:{MON_OUT:"15018", TUE_OUT:"15018", WED_OUT:"15018/15159", THU_OUT:"15018", FRI_OUT:"15018", SAT_OUT:"15018/15159", SUN_OUT:"15018"},
     2:{TUE_IN:"20416", WED_IN:"12669", THU_IN:"15017", FRI_IN:"15017", SAT_IN:"22969", SUN_IN:"15017", MON_IN:"12669"},
@@ -257,61 +278,100 @@ const DEFAULT_LINK_PROGRAMME = {
     43:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"}
 };
 
-const DEFAULT_ANCHOR_DATE = "2026-06-11"; // date when Team-1 = Program 35 (corrected)
+const DEFAULT_ANCHOR_DATE = "2026-06-11";
 
 window.appData = { teamMaster: {}, linkProgramme: {}, anchorDate: DEFAULT_ANCHOR_DATE };
 window.currentUid = null;
 window.isAdmin = false;
 
-// ============ CORE LOGIC ============
+// ============ CORE LOGIC (rewritten: OUT-anchored, same-column IN lookup) ============
 
-// Get program number for a team on a given date
 function getProgramForTeamOnDate(teamNo, dateStr) {
     const team = window.appData.teamMaster[teamNo];
     if (!team) return null;
     const anchor = new Date(window.appData.anchorDate + 'T00:00:00');
     const target = new Date(dateStr + 'T00:00:00');
     const dayDiff = Math.round((target - anchor) / (1000*60*60*24));
-    let prog = ((team.baseProg - 1 + dayDiff) % 43 + 43) % 43 + 1;
-    return prog;
+    return ((team.baseProg - 1 + dayDiff) % 43 + 43) % 43 + 1;
 }
 
-// Find the duty for a team on a specific date
-function getDutyForTeamOnDate(teamNo, dateStr) {
+function addDays(dateStr, n) {
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setDate(d.getDate() + n);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function nextProgNo(p) { return (p % 43) + 1; }
+
+// Finds the trip that STARTS on this exact date for this team (i.e. this date has an OUT entry for the team's program).
+// Returns null if this date is not an OUT day for the team.
+function getTripStartingOn(teamNo, dateStr) {
     const prog = getProgramForTeamOnDate(teamNo, dateStr);
     if (!prog) return null;
     const progData = window.appData.linkProgramme[prog];
     const d = new Date(dateStr + 'T00:00:00');
-    const dow = d.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+    const dow = d.getDay();
     const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
     const dayPrefix = dayNames[dow];
-    
-    if (!progData) return { prog, status: 'off', dateStr };
-    
-    // Each program has AT MOST ONE slot per weekday (either _IN or _OUT, never both).
-    // Check both possible slot names and use whichever actually exists in this program's data.
     const outSlot = `${dayPrefix}_OUT`;
-    const inSlot = `${dayPrefix}_IN`;
-    let matchedSlot = null, train = null;
-    
-    if (progData[outSlot] !== undefined) {
-        matchedSlot = outSlot;
-        train = progData[outSlot];
-    } else if (progData[inSlot] !== undefined) {
-        matchedSlot = inSlot;
-        train = progData[inSlot];
-    }
-    
-    if (!matchedSlot) return { prog, status: 'off', dateStr };
-    if (train === 'REST') return { prog, status: 'rest', dateStr, slot: matchedSlot };
-    if (train === 'LR') return { prog, status: 'lr', dateStr, slot: matchedSlot };
-    if (train === 'SPARE') return { prog, status: 'spare', dateStr, slot: matchedSlot };
-    
-    return { prog, status: 'duty', dateStr, slot: matchedSlot, train, isOut: matchedSlot.endsWith('_OUT') };
-}
 
-window.getDutyForTeamOnDate = getDutyForTeamOnDate;
+    if (!progData || progData[outSlot] === undefined) return null;
+
+    const outVal = progData[outSlot];
+    if (outVal === 'REST') return { prog, dateStr, status: 'rest' };
+    if (outVal === 'LR') return { prog, dateStr, status: 'lr' };
+    if (outVal === 'SPARE') return { prog, dateStr, status: 'spare' };
+
+    // The return (IN) slot is always the SAME single column position (one slot forward in sequence).
+    // For a 2-day duty, Program+1 has the entry there. For a 3-day duty, Program+1 has NOTHING at all
+    // in that column (it's the skipped intermediate halt day) and Program+2 has the entry there instead.
+    const outIdx = SLOT_ORDER.indexOf(outSlot);
+    const inSlot = SLOT_ORDER[(outIdx + 1) % SLOT_ORDER.length];
+    const prog1 = nextProgNo(prog);
+    const prog1Data = window.appData.linkProgramme[prog1];
+
+    let returnTrain = null, returnDate = null, dayCount = 2;
+
+    if (prog1Data && prog1Data[inSlot] !== undefined) {
+        returnTrain = prog1Data[inSlot];
+        returnDate = addDays(dateStr, 1);
+        dayCount = 2;
+    } else {
+        const prog2 = nextProgNo(prog1);
+        const prog2Data = window.appData.linkProgramme[prog2];
+        if (prog2Data && prog2Data[inSlot] !== undefined) {
+            returnTrain = prog2Data[inSlot];
+            returnDate = addDays(dateStr, 2);
+            dayCount = 3;
+        }
+    }
+
+    return { prog, dateStr, status: 'duty', outTrain: outVal, returnTrain, returnDate, dayCount };
+}
+window.getTripStartingOn = getTripStartingOn;
 window.getProgramForTeamOnDate = getProgramForTeamOnDate;
+
+function collectTrips(teamNo, direction, count) {
+    const trips = [];
+    const today = new Date(); today.setHours(0,0,0,0);
+    let d = new Date(today);
+    if (direction === 'past') d.setDate(d.getDate() - 1);
+
+    let iterations = 0;
+    const maxIterations = 120;
+
+    while (trips.length < count && iterations < maxIterations) {
+        iterations++;
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        const trip = getTripStartingOn(teamNo, dateStr);
+        if (trip) trips.push(trip);
+        if (direction === 'future') d.setDate(d.getDate() + 1);
+        else d.setDate(d.getDate() - 1);
+    }
+    if (direction === 'past') trips.reverse();
+    return trips;
+}
+window.collectTrips = collectTrips;
 
 // ============ FIREBASE LOAD ============
 async function loadRosterData() {
@@ -323,16 +383,12 @@ async function loadRosterData() {
             window.appData.linkProgramme = data.linkProgramme;
             window.appData.anchorDate = data.anchorDate || DEFAULT_ANCHOR_DATE;
         } else {
-            // Seed defaults into Firebase (first time setup)
             window.appData.teamMaster = DEFAULT_TEAM_MASTER;
             window.appData.linkProgramme = DEFAULT_LINK_PROGRAMME;
             window.appData.anchorDate = DEFAULT_ANCHOR_DATE;
-            if (window.isAdmin) {
-                await set(ref(db, 'roster/BSB'), window.appData);
-            }
+            if (window.isAdmin) await set(ref(db, 'roster/BSB'), window.appData);
         }
     } catch(e) {
-        console.error('Roster load error', e);
         window.appData.teamMaster = DEFAULT_TEAM_MASTER;
         window.appData.linkProgramme = DEFAULT_LINK_PROGRAMME;
         window.appData.anchorDate = DEFAULT_ANCHOR_DATE;
@@ -343,8 +399,7 @@ async function loadRosterData() {
 window.loadRosterData = loadRosterData;
 
 function populateTeamSelectors() {
-    const selectors = ['my-team-select', 'admin-team-select'];
-    selectors.forEach(selId => {
+    ['my-team-select', 'admin-team-select'].forEach(selId => {
         const sel = document.getElementById(selId);
         if (!sel) return;
         const currentVal = sel.value;
@@ -358,9 +413,7 @@ function populateTeamSelectors() {
     const progSel = document.getElementById('admin-prog-select');
     if (progSel) {
         progSel.innerHTML = '<option value="">-- Select program --</option>';
-        for (let i = 1; i <= 43; i++) {
-            progSel.innerHTML += `<option value="${i}">Program ${i}</option>`;
-        }
+        for (let i = 1; i <= 43; i++) progSel.innerHTML += `<option value="${i}">Program ${i}</option>`;
     }
 }
 
@@ -371,175 +424,98 @@ window.onMyTeamChange = function() {
     renderMyDutyWeek();
 };
 
-// Collect a range of "trips" for a team. A trip = one duty block (OUT day + its paired IN day, or single REST/LR/SPARE day).
-// direction: 'future' collects forward from today, 'past' collects backward from yesterday.
-function collectTrips(teamNo, direction, count) {
-    const trips = [];
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    let d = new Date(today);
-    if (direction === 'past') d.setDate(d.getDate() - 1);
-    
-    let seenDates = new Set();
-    let iterations = 0;
-    const maxIterations = 90; // safety cap
-    
-    while (trips.length < count && iterations < maxIterations) {
-        iterations++;
-        const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        if (!seenDates.has(dateStr)) {
-            seenDates.add(dateStr);
-            const duty = getDutyForTeamOnDate(teamNo, dateStr);
-            const dateLabel = d.toLocaleDateString('en-GB', {weekday:'short', day:'2-digit', month:'short'});
-            if (duty && duty.status === 'duty') {
-                trips.push({ dateLabel, duty, dateStr });
-            } else if (duty && (duty.status === 'rest' || duty.status === 'lr' || duty.status === 'spare')) {
-                trips.push({ dateLabel, duty, dateStr });
-            }
-            // 'off' status (no data for that weekday) is skipped, not counted as a trip
-        }
-        if (direction === 'future') d.setDate(d.getDate() + 1);
-        else d.setDate(d.getDate() - 1);
-    }
-    
-    if (direction === 'past') trips.reverse(); // show chronological order (oldest first among the "last 1")
-    return trips;
+function fmtDateLabel(dateStr) {
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', {weekday:'short', day:'2-digit', month:'short'});
 }
 
 function renderMyDutyWeek() {
     const container = document.getElementById('my-duty-week');
     const teamNo = document.getElementById('my-team-select').value;
     if (!teamNo) { container.innerHTML = ''; return; }
-    
+
     const team = window.appData.teamMaster[teamNo];
-    let html = `<div class="card">
-        <div style="font-size:13px; font-weight:900; color:var(--text); margin-bottom:4px;">Team ${teamNo}</div>
-        <div style="font-size:12px; color:var(--text-muted);">COR: ${team.cor}<br>TTE-1: ${team.tte1}${team.tte2 ? '<br>TTE-2: '+team.tte2 : ''}</div>
+    let html = `<div class="card team-info-card">
+        <div class="team-title">Team ${teamNo}</div>
+        <div class="team-members">COR: ${team.cor}<br>TTE-1: ${team.tte1}${team.tte2 ? '<br>TTE-2: '+team.tte2 : ''}</div>
     </div>`;
-    
-    // Suggestion 2: Next 3 trips (up+down counted as one trip)
-    const futureTrips = collectTrips(teamNo, 'future', 3);
-    html += '<h3 class="section-title">🔜 Next 3 Trips</h3>';
-    html += '<div class="duty-box-grid">';
-    futureTrips.forEach(t => { html += renderDutyBox(t.dateLabel, t.duty); });
-    if (futureTrips.length === 0) html += '<p style="grid-column:1/-1; color:var(--text-muted); font-size:12px; text-align:center;">No upcoming trips found</p>';
+
+    const futureTrips = collectTrips(teamNo, 'future', 4);
+    html += '<h3 class="section-title">🔜 Next 4 Trips</h3><div class="duty-box-grid">';
+    futureTrips.forEach(t => { html += renderTripBox(t); });
+    if (futureTrips.length === 0) html += '<p style="grid-column:1/-1; color:var(--text-muted); font-size:13px; text-align:center;">No upcoming trips found</p>';
     html += '</div>';
-    
-    // Suggestion 2: Last 1 trip
-    const pastTrips = collectTrips(teamNo, 'past', 1);
-    html += '<h3 class="section-title">🔙 Last Trip</h3>';
-    html += '<div class="duty-box-grid">';
-    pastTrips.forEach(t => { html += renderDutyBox(t.dateLabel, t.duty); });
-    if (pastTrips.length === 0) html += '<p style="grid-column:1/-1; color:var(--text-muted); font-size:12px; text-align:center;">No recent trip found</p>';
+
+    const pastTrips = collectTrips(teamNo, 'past', 2);
+    html += '<h3 class="section-title">🔙 Last 2 Trips</h3><div class="duty-box-grid">';
+    pastTrips.forEach(t => { html += renderTripBox(t); });
+    if (pastTrips.length === 0) html += '<p style="grid-column:1/-1; color:var(--text-muted); font-size:13px; text-align:center;">No recent trips found</p>';
     html += '</div>';
-    
+
     container.innerHTML = html;
 }
 
-// Suggestion 3: Compact box renderer (used in My Duty and Search)
-function renderDutyBox(dateLabel, duty) {
-    if (!duty) return `<div class="duty-box"><div class="db-date">${dateLabel}</div><div class="db-content" style="color:var(--text-muted);">No data</div></div>`;
-    
-    let cls = 'duty-box', badge = '', content = '';
-    if (duty.status === 'rest') {
-        cls += ' rest'; badge = '<span class="db-badge" style="background:#94a3b820;color:var(--text-muted);">REST</span>';
-        content = `Program ${duty.prog}`;
-    } else if (duty.status === 'lr') {
-        cls += ' lr'; badge = '<span class="db-badge" style="background:rgba(168,85,247,0.15);color:var(--purple);">LR</span>';
-        content = `Prog ${duty.prog} — Leave Reserve`;
-    } else if (duty.status === 'spare') {
-        badge = '<span class="db-badge" style="background:rgba(234,179,8,0.15);color:var(--yellow);">SPARE</span>';
-        content = `Program ${duty.prog}`;
-    } else if (duty.status === 'duty') {
-        const dirIcon = duty.isOut 
-            ? '<span style="color:#16a34a; font-weight:900;">⬆</span>' 
-            : '<span style="color:#2563eb; font-weight:900;">⬇</span>';
-        const trains = duty.train.split('/');
-        if (trains.length === 2) {
-            content = `${dirIcon} ${trains[0]}<br><span style="font-size:10px; color:var(--text-muted);">+ ${trains[1]} (TTE-2)</span>`;
-        } else {
-            content = `${dirIcon} ${trains[0]}`;
-        }
-        badge = `<span class="db-badge" style="background:rgba(59,130,246,0.15);color:var(--blue);">Prog ${duty.prog}</span>`;
-    } else {
-        content = 'Off';
+function renderTripBox(trip) {
+    if (trip.status === 'rest') {
+        return `<div class="duty-box rest-box">
+            <div class="db-date">${fmtDateLabel(trip.dateStr)}</div>
+            <div class="db-up" style="color:var(--text-muted);">REST</div>
+            <div class="db-badge">Prog ${trip.prog}</div>
+        </div>`;
     }
-    
-    return `<div class="${cls}">
-        <div class="db-date">${dateLabel}</div>
-        <div class="db-content">${content}</div>
-        ${badge}
+    if (trip.status === 'lr') {
+        return `<div class="duty-box lr-box">
+            <div class="db-date">${fmtDateLabel(trip.dateStr)}</div>
+            <div class="db-up" style="color:var(--purple);">LR Duty</div>
+            <div class="db-badge" style="background:rgba(168,85,247,0.18); color:var(--purple);">Prog ${trip.prog}</div>
+        </div>`;
+    }
+    if (trip.status === 'spare') {
+        return `<div class="duty-box rest-box">
+            <div class="db-date">${fmtDateLabel(trip.dateStr)}</div>
+            <div class="db-up" style="color:var(--yellow);">SPARE</div>
+            <div class="db-badge" style="background:rgba(234,179,8,0.18); color:var(--yellow);">Prog ${trip.prog}</div>
+        </div>`;
+    }
+    const upTrains = (trip.outTrain || '').split('/');
+    const upLabel = upTrains.length === 2 ? `⬆ ${upTrains[0]} <span style="font-size:11px;">+${upTrains[1]}</span>` : `⬆ ${trip.outTrain}`;
+    let downHtml = '<div class="db-down" style="color:var(--text-muted); font-size:13px;">Return: pending</div>';
+    if (trip.returnTrain) {
+        const downTrains = trip.returnTrain.split('/');
+        const downLabel = downTrains.length === 2 ? `⬇ ${downTrains[0]} <span style="font-size:11px;">+${downTrains[1]}</span>` : `⬇ ${trip.returnTrain}`;
+        downHtml = `<div class="db-down">${downLabel}</div><div class="db-arr-date">Arrives HQ: ${fmtDateLabel(trip.returnDate)}</div>`;
+    }
+    return `<div class="duty-box trip-box">
+        <div class="db-date">${fmtDateLabel(trip.dateStr)}</div>
+        <div class="db-up">${upLabel}</div>
+        ${downHtml}
+        <div class="db-badge">Prog ${trip.prog} · ${trip.dayCount||2}-day</div>
     </div>`;
 }
-
-function renderDutyRow(dateLabel, duty, team) {
-    if (!duty) return `<div class="duty-row"><span>${dateLabel}</span><span style="color:var(--text-muted);">No data</span></div>`;
-    
-    let cls = 'duty-row', badge = '', content = '';
-    if (duty.status === 'rest') {
-        cls += ' rest'; badge = '<span class="badge" style="background:#94a3b820;color:var(--text-muted);">REST</span>';
-        content = `Program ${duty.prog}`;
-    } else if (duty.status === 'lr') {
-        cls += ' lr'; badge = '<span class="badge" style="background:rgba(168,85,247,0.15);color:var(--purple);">LR</span>';
-        content = `Program ${duty.prog} — Leave Reserve (check with admin)`;
-    } else if (duty.status === 'spare') {
-        badge = '<span class="badge" style="background:rgba(234,179,8,0.15);color:var(--yellow);">SPARE</span>';
-        content = `Program ${duty.prog} — Spare Duty`;
-    } else if (duty.status === 'duty') {
-        // Suggestion 1: colored up/down icon based on direction
-        const dirIcon = duty.isOut 
-            ? '<span style="color:#16a34a; font-weight:900; font-size:15px;">⬆</span>' 
-            : '<span style="color:#2563eb; font-weight:900; font-size:15px;">⬇</span>';
-        const dirLabel = duty.isOut ? 'Outward' : 'Inward';
-        const trains = duty.train.split('/');
-        if (trains.length === 2) {
-            content = `${dirIcon} <span class="train-pill">${trains[0]}</span> (COR+TTE-1) &nbsp; <span class="train-pill">${trains[1]}</span> (TTE-2)`;
-        } else {
-            content = `${dirIcon} <span class="train-pill">${trains[0]}</span> <span style="font-size:10px; color:var(--text-muted);">${dirLabel}</span>`;
-        }
-        badge = `<span class="badge" style="background:rgba(59,130,246,0.15);color:var(--blue);">Prog ${duty.prog}</span>`;
-    } else {
-        content = 'Off / No duty this day';
-    }
-    
-    return `<div class="${cls}">
-        <div style="flex:1;">
-            <div style="font-size:12px; font-weight:700; color:var(--text-muted);">${dateLabel}</div>
-            <div style="font-size:13px; margin-top:2px;">${content}</div>
-        </div>
-        ${badge}
-    </div>`;
-}
+window.renderTripBox = renderTripBox;
 
 // ============ SEARCH ============
 window.renderDateSearch = function() {
     const dateStr = document.getElementById('search-date').value;
     const result = document.getElementById('search-date-result');
     if (!dateStr) { result.innerHTML = ''; return; }
-    
-    let html = `<h3 class="section-title">Teams on Duty — ${dateStr}</h3><div class="duty-box-grid">`;
+
+    let html = `<h3 class="section-title">Teams starting duty — ${dateStr}</h3><div class="duty-box-grid">`;
     let count = 0;
     Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
-        const duty = getDutyForTeamOnDate(t, dateStr);
-        if (duty && duty.status === 'duty') {
+        const trip = getTripStartingOn(t, dateStr);
+        if (trip && trip.status === 'duty') {
             count++;
             const team = window.appData.teamMaster[t];
-            const dirIcon = duty.isOut 
-                ? '<span style="color:#16a34a; font-weight:900;">⬆</span>' 
-                : '<span style="color:#2563eb; font-weight:900;">⬇</span>';
-            const trains = duty.train.split('/');
-            const trainHtml = trains.length === 2 
-                ? `${dirIcon} ${trains[0]}<br><span style="font-size:10px; color:var(--text-muted);">+ ${trains[1]}</span>`
-                : `${dirIcon} ${trains[0]}`;
-            html += `<div class="duty-box">
-                <div class="db-date">Team ${t}</div>
-                <div style="font-size:11px; color:var(--text-muted); margin-bottom:3px;">${team.cor}</div>
-                <div class="db-content">${trainHtml}</div>
+            html += `<div class="duty-box trip-box">
+                <div class="db-date">Team ${t} — ${team.cor}</div>
+                <div class="db-up">⬆ ${trip.outTrain}</div>
+                ${trip.returnTrain ? `<div class="db-down">⬇ ${trip.returnTrain}</div><div class="db-arr-date">Arrives HQ: ${fmtDateLabel(trip.returnDate)}</div>` : ''}
             </div>`;
         }
     });
     html += '</div>';
-    if (count === 0) html = `<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No teams on duty this date.</p>`;
+    if (count === 0) html = `<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No teams starting duty this date.</p>`;
     result.innerHTML = html;
 };
 
@@ -547,19 +523,19 @@ window.renderTeamSearch = function() {
     const teamNo = document.getElementById('search-team').value;
     const result = document.getElementById('search-team-result');
     if (!teamNo || !window.appData.teamMaster[teamNo]) { result.innerHTML = ''; return; }
-    
+
     const team = window.appData.teamMaster[teamNo];
     let html = `<div class="card">
-        <div style="font-weight:900; margin-bottom:5px;">Team ${teamNo}</div>
-        <div style="font-size:12px; color:var(--text-muted);">COR: ${team.cor}<br>TTE-1: ${team.tte1}${team.tte2 ? '<br>TTE-2: '+team.tte2 : ''}</div>
+        <div style="font-weight:900; font-size:16px; margin-bottom:5px;">Team ${teamNo}</div>
+        <div style="font-size:13px; color:var(--text-muted);">COR: ${team.cor}<br>TTE-1: ${team.tte1}${team.tte2 ? '<br>TTE-2: '+team.tte2 : ''}</div>
     </div>`;
-    
-    const futureTrips = collectTrips(teamNo, 'future', 3);
-    html += '<h3 class="section-title">🔜 Next 3 Trips</h3><div class="duty-box-grid">';
-    futureTrips.forEach(t => { html += renderDutyBox(t.dateLabel, t.duty); });
+
+    const futureTrips = collectTrips(teamNo, 'future', 4);
+    html += '<h3 class="section-title">🔜 Next 4 Trips</h3><div class="duty-box-grid">';
+    futureTrips.forEach(t => { html += renderTripBox(t); });
     if (futureTrips.length === 0) html += '<p style="grid-column:1/-1; color:var(--text-muted); font-size:12px; text-align:center;">No upcoming trips</p>';
     html += '</div>';
-    
+
     result.innerHTML = html;
 };
 
@@ -567,30 +543,32 @@ window.renderTrainSearch = function() {
     const trainNo = document.getElementById('search-train').value.trim();
     const result = document.getElementById('search-train-result');
     if (!trainNo) { result.innerHTML = ''; return; }
-    
-    let html = `<h3 class="section-title">Teams running Train ${trainNo} (next 7 days)</h3><div class="duty-box-grid">`;
+
+    let html = `<h3 class="section-title">Teams running Train ${trainNo} (next 10 days)</h3><div class="duty-box-grid">`;
     let found = false;
     const today = new Date();
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 10; i++) {
         const d = new Date(today); d.setDate(d.getDate()+i);
         const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        const dateLabel = d.toLocaleDateString('en-GB', {weekday:'short', day:'2-digit', month:'short'});
         Object.keys(window.appData.teamMaster).forEach(t => {
-            const duty = getDutyForTeamOnDate(t, dateStr);
-            if (duty && duty.status === 'duty' && duty.train.includes(trainNo)) {
-                found = true;
-                const team = window.appData.teamMaster[t];
-                const dirIcon = duty.isOut ? '<span style="color:#16a34a;">⬆</span>' : '<span style="color:#2563eb;">⬇</span>';
-                html += `<div class="duty-box">
-                    <div class="db-date">${dateLabel}</div>
-                    <div style="font-size:12px; font-weight:900;">${dirIcon} Team ${t}</div>
-                    <div style="font-size:10px; color:var(--text-muted);">${team.cor}${team.tte1 ? ', '+team.tte1 : ''}${team.tte2 ? ', '+team.tte2 : ''}</div>
-                </div>`;
+            const trip = getTripStartingOn(t, dateStr);
+            if (trip && trip.status === 'duty') {
+                const isUp = trip.outTrain && trip.outTrain.includes(trainNo);
+                const isDown = trip.returnTrain && trip.returnTrain.includes(trainNo);
+                if (isUp || isDown) {
+                    found = true;
+                    const team = window.appData.teamMaster[t];
+                    html += `<div class="duty-box trip-box">
+                        <div class="db-date">${fmtDateLabel(dateStr)} — Team ${t}</div>
+                        <div class="db-up" style="color:${isUp?'#15803d':'#1d4ed8'};">${isUp?'⬆':'⬇'} Train ${trainNo}</div>
+                        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;">${team.cor}${team.tte1?', '+team.tte1:''}${team.tte2?', '+team.tte2:''}</div>
+                    </div>`;
+                }
             }
         });
     }
     html += '</div>';
-    if (!found) html = '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No matches in next 7 days</p>';
+    if (!found) html = '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No matches in next 10 days</p>';
     result.innerHTML = html;
 };
 
@@ -598,12 +576,10 @@ window.clearDateSearch = function() {
     document.getElementById('search-date').value = '';
     document.getElementById('search-date-result').innerHTML = '';
 };
-
 window.clearTeamSearch = function() {
     document.getElementById('search-team').value = '';
     document.getElementById('search-team-result').innerHTML = '';
 };
-
 window.clearTrainSearch = function() {
     document.getElementById('search-train').value = '';
     document.getElementById('search-train-result').innerHTML = '';
@@ -662,7 +638,7 @@ document.getElementById('admin-prog-select').addEventListener('change', function
     const progData = window.appData.linkProgramme[p] || {};
     slotsDiv.innerHTML = SLOT_ORDER.map(slot => `
         <div style="margin-bottom:8px;">
-            <label style="font-size:11px; color:var(--text-muted);">${SLOT_LABELS[slot]}</label>
+            <label style="font-size:12px; color:var(--text-muted);">${SLOT_LABELS[slot]}</label>
             <input type="text" id="prog-slot-${slot}" value="${progData[slot] || ''}" placeholder="Train no / REST / LR / SPARE / blank">
         </div>
     `).join('');
@@ -682,52 +658,39 @@ window.saveProgEdit = async function() {
     alert('Program ' + p + ' updated');
 };
 
-// ============ AUTH & INIT ============
+// ============ AUTH & INIT (always starts on My Duty tab) ============
+function initAfterAuth() {
+    if (window.isAdmin) document.getElementById('tab-admin').classList.remove('hidden');
+    switchTab('mine');
+    const savedTeam = localStorage.getItem('roster_my_team');
+    loadRosterData().then(() => {
+        if (savedTeam) {
+            document.getElementById('my-team-select').value = savedTeam;
+            renderMyDutyWeek();
+        }
+    });
+}
+
 onAuthStateChanged(auth, (user) => {
     if (user) {
         window.currentUid = user.uid;
         window.isAdmin = (user.uid === window.ADMIN_UID);
-        document.getElementById('user-label').innerText = user.displayName || '';
-        if (window.isAdmin) {
-            document.getElementById('tab-admin').classList.remove('hidden');
-        }
-        // Restore saved team selection
-        const savedTeam = localStorage.getItem('roster_my_team');
-        loadRosterData().then(() => {
-            if (savedTeam) {
-                document.getElementById('my-team-select').value = savedTeam;
-                renderMyDutyWeek();
-            }
-        });
+        initAfterAuth();
     }
-    // If not signed in directly, wait for parent (TTE LOGS) to send user info via postMessage
 });
 
-// ========== POSTMESSAGE BRIDGE (receives user info from TTE LOGS parent) ==========
 window.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'TTE_LOGS_USER') {
         window.currentUid = event.data.uid;
         window.isAdmin = event.data.isAdmin;
-        document.getElementById('user-label').innerText = event.data.name || '';
-        if (window.isAdmin) {
-            document.getElementById('tab-admin').classList.remove('hidden');
-        }
-        const savedTeam = localStorage.getItem('roster_my_team');
-        loadRosterData().then(() => {
-            if (savedTeam) {
-                document.getElementById('my-team-select').value = savedTeam;
-                renderMyDutyWeek();
-            }
-        });
+        initAfterAuth();
     }
 });
 
-// Signal to parent that we're ready to receive user info
 if (window.parent !== window) {
     window.parent.postMessage({ type: 'ROSTER_READY' }, '*');
 }
 
-// Set default date in search
 document.getElementById('search-date').valueAsDate = new Date();
 document.getElementById('admin-anchor-date').value = DEFAULT_ANCHOR_DATE;
 
