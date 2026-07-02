@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BSB Duty Roster</title>
+<style>
+    :root {
+        --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --text-muted: #64748b;
+        --border: #e2e8f0; --blue: #3b82f6; --green: #22c55e; --red: #ef4444;
+        --orange: #f97316; --purple: #a855f7; --yellow: #eab308;
+        --top-bar-bg: #0f172a; --input-bg: #f8fafc; --shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    body.dark-mode {
+        --bg: #0d1117; --card: #161b22; --text: #e6edf3; --text-muted: #8b949e;
+        --border: #30363d; --input-bg: #21262d; --shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; padding-bottom: 70px; }
+    .top-bar { position: sticky; top: 0; background: var(--top-bar-bg); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+    .top-bar h1 { margin: 0; font-size: 17px; font-weight: 900; color: #fde047; }
+    .back-btn { background: transparent; border: none; color: white; font-size: 14px; cursor: pointer; padding: 4px 8px; }
+    .screen-content { padding: 15px; max-width: 600px; margin: 0 auto; }
+    .card { background: var(--card); border-radius: 14px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .tab-bar { display: flex; background: var(--card); border-radius: 30px; padding: 4px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .tab-btn { flex: 1; padding: 10px; text-align: center; border-radius: 30px; font-size: 13px; font-weight: 700; color: var(--text-muted); cursor: pointer; }
+    .tab-btn.active { background: var(--blue); color: white; }
+    input, select { width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 14px; margin-bottom: 10px; }
+    button.action { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: 700; font-size: 14px; color: white; background: var(--blue); cursor: pointer; box-shadow: var(--shadow); }
+    .hidden { display: none !important; }
+    .duty-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 10px; background: var(--input-bg); margin-bottom: 8px; border-left: 4px solid var(--blue); }
+    .duty-row.rest { border-left-color: var(--text-muted); opacity: 0.7; }
+    .duty-row.lr { border-left-color: var(--purple); }
+    .badge { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; }
+    h3.section-title { font-size: 13px; font-weight: 900; color: var(--blue); text-transform: uppercase; margin: 18px 0 8px 0; }
+    .loading { text-align: center; padding: 30px; color: var(--text-muted); }
+    .train-pill { display: inline-block; background: rgba(59,130,246,0.12); color: var(--blue); padding: 3px 10px; border-radius: 8px; font-weight: 800; font-size: 13px; margin-right: 6px; }    .duty-box-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .duty-box { background: var(--input-bg); border-radius: 10px; padding: 10px; border-left: 4px solid var(--blue); }
+    .duty-box.rest { border-left-color: var(--text-muted); opacity: 0.75; }
+    .duty-box.lr { border-left-color: var(--purple); }
+    .duty-box .db-date { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .duty-box .db-content { font-size: 12px; font-weight: 700; }
+    .duty-box .db-badge { font-size: 9px; font-weight: 800; padding: 1px 6px; border-radius: 8px; display: inline-block; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <span id="header-title" style="flex:1;">📋 BSB Duty Roster</span>
+    <span id="user-label" style="font-size:11px; color:#94a3b8;"></span>
+</div>
+
+<div class="screen-content">
+
+    <!-- MY DUTY TAB (default) -->
+    <div class="tab-bar">
+        <div class="tab-btn active" id="tab-mine" onclick="switchTab('mine')">My Duty</div>
+        <div class="tab-btn" id="tab-search" onclick="switchTab('search')">Search</div>
+        <div class="tab-btn hidden" id="tab-admin" onclick="switchTab('admin')">Admin</div>
+    </div>
+
+    <!-- MY DUTY VIEW -->
+    <div id="view-mine">
+        <div class="card">
+            <label style="font-size:12px; font-weight:700; color:var(--blue);">Your Team Number</label>
+            <select id="my-team-select" onchange="onMyTeamChange()">
+                <option value="">-- Select your team --</option>
+            </select>
+            <p style="font-size:11px; color:var(--text-muted); margin:5px 0 0 0;">Don't know your team? Use Search tab and find your name.</p>
+        </div>
+        <div id="my-duty-week"></div>
+    </div>
+
+    <!-- SEARCH VIEW -->
+    <div id="view-search" class="hidden">
+        <div class="card">
+            <label style="font-size:12px; font-weight:700; color:var(--blue);">Search by Date</label>
+            <div style="display:flex; gap:8px;">
+                <input type="date" id="search-date" onchange="renderDateSearch()" style="flex:1;">
+                <button onclick="window.clearDateSearch()" style="width:auto; padding:0 16px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;">✕</button>
+            </div>
+        </div>
+        <div id="search-date-result"></div>
+
+        <div class="card">
+            <label style="font-size:12px; font-weight:700; color:var(--purple);">Search by Team No</label>
+            <div style="display:flex; gap:8px;">
+                <input type="number" id="search-team" placeholder="e.g. 9" oninput="renderTeamSearch()" style="flex:1;">
+                <button onclick="window.clearTeamSearch()" style="width:auto; padding:0 16px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;">✕</button>
+            </div>
+        </div>
+        <div id="search-team-result"></div>
+
+        <div class="card">
+            <label style="font-size:12px; font-weight:700; color:var(--orange);">Search by Train No</label>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="search-train" placeholder="e.g. 15127" oninput="renderTrainSearch()" style="flex:1;">
+                <button onclick="window.clearTrainSearch()" style="width:auto; padding:0 16px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:10px; font-size:12px; font-weight:700; cursor:pointer;">✕</button>
+            </div>
+        </div>
+        <div id="search-train-result"></div>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div id="view-admin" class="hidden">
+        <div class="card">
+            <h3 style="margin:0 0 10px 0; font-size:14px; color:var(--red);">⚙️ Roster Admin</h3>
+            <label style="font-size:12px; font-weight:700;">Rotation Anchor Date</label>
+            <input type="date" id="admin-anchor-date">
+            <button class="action" style="background:var(--green); margin-top:5px;" onclick="saveAnchorDate()">Save Anchor Date</button>
+        </div>
+
+        <div class="card">
+            <h3 style="margin:0 0 10px 0; font-size:14px; color:var(--blue);">👥 Edit Team Master</h3>
+            <select id="admin-team-select" onchange="loadTeamForEdit()">
+                <option value="">-- Select team to edit --</option>
+            </select>
+            <div id="admin-team-edit-form" class="hidden">
+                <label style="font-size:12px;">Base Program No</label>
+                <input type="number" id="admin-edit-baseprog">
+                <label style="font-size:12px;">COR Name</label>
+                <input type="text" id="admin-edit-cor">
+                <label style="font-size:12px;">TTE-1 Name</label>
+                <input type="text" id="admin-edit-tte1">
+                <label style="font-size:12px;">TTE-2 Name</label>
+                <input type="text" id="admin-edit-tte2">
+                <button class="action" style="background:var(--green);" onclick="saveTeamEdit()">Save Team</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin:0 0 10px 0; font-size:14px; color:var(--purple);">🚂 Edit Link Programme</h3>
+            <select id="admin-prog-select">
+                <option value="">-- Select program to edit --</option>
+            </select>
+            <div id="admin-prog-edit-form" class="hidden" style="margin-top:10px;">
+                <div id="admin-prog-slots"></div>
+                <button class="action" style="background:var(--green); margin-top:10px;" onclick="saveProgEdit()">Save Program</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, get, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyClDJ3enyipS3sHJujYJTkxdunvvVgju64",
+    authDomain: "tte-journal.firebaseapp.com",
+    databaseURL: "https://tte-journal-default-rtdb.firebaseio.com",
+    projectId: "tte-journal"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+window.db = db;
+window.dbRef = ref;
+window.dbGet = get;
+window.dbSet = set;
+
+window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
+
+// ============ DEFAULT DATA (seeded on first load if Firebase is empty) ============
+const DEFAULT_TEAM_MASTER = {
+    1:{baseProg:35,cor:"Anil Kumar",tte1:"Dheeraj Pal",tte2:"Rajhans Sonkar"},
+    2:{baseProg:36,cor:"Krishan Kumar Gupta",tte1:"Shiva Kant Verma",tte2:"Akhilesh Kumar Gupta"},
+    3:{baseProg:37,cor:"Sikandar Kumar",tte1:"Sanjay Kumar",tte2:""},
+    4:{baseProg:38,cor:"Ravikant Verma",tte1:"Rajeev Ranjan Priyadarshi",tte2:"Shankar Kumar Chaudhari"},
+    5:{baseProg:39,cor:"Praveen Kumar",tte1:"Saroj Kumar",tte2:"Amit Kumar"},
+    6:{baseProg:40,cor:"Santosh Kumar-1",tte1:"Shivesh Kumar Tiwari",tte2:"Shanu Kumar"},
+    7:{baseProg:41,cor:"Ramswaroop Meena",tte1:"Sushil Kumar Sinha",tte2:""},
+    8:{baseProg:42,cor:"Shiva Gunjan",tte1:"Sudhir Kumar Singh",tte2:""},
+    9:{baseProg:43,cor:"Sanjeev Kumar-I",tte1:"Sanjeev Kumar-II",tte2:"Ashok Kumar Mishra"},
+    10:{baseProg:1,cor:"Anish Khan",tte1:"Ansarul Haq Khan",tte2:""},
+    11:{baseProg:2,cor:"Kamlesh Singh",tte1:"Bajrangi Kumar",tte2:"Prince Kumar Singh"},
+    12:{baseProg:3,cor:"Vinod Kumar Jaiswal",tte1:"Dinesh Kumar",tte2:"Anuj Kumar Gupta"},
+    13:{baseProg:4,cor:"Pradeep Kumar Mishra",tte1:"Fakhrey Alam",tte2:"Manish Kumar"},
+    14:{baseProg:5,cor:"Virendra Yadav",tte1:"Asif Ansari",tte2:""},
+    15:{baseProg:6,cor:"Devdas",tte1:"Sanjay Kumar Bharati",tte2:"Bhola Kumar"},
+    16:{baseProg:7,cor:"Shyam Lal Yadav",tte1:"Arvind Kumar Singh",tte2:"Rahul Kumar"},
+    17:{baseProg:8,cor:"Binod Kumar Rai",tte1:"Sardar Harjeet Singh",tte2:""},
+    18:{baseProg:9,cor:"Ranjeet Kumar",tte1:"Dheeraj Kumar Jha",tte2:"Raviranjan Singh"},
+    19:{baseProg:10,cor:"Vijay Kumar Maurya",tte1:"Rajesh Kumar-1",tte2:"Sanjay Kumar Tripathi"},
+    20:{baseProg:11,cor:"Saroj Kumar Jha",tte1:"Sheshmani Yadav",tte2:""},
+    21:{baseProg:12,cor:"Prem Prakash Vishwakarma",tte1:"Ashutosh Kumar-I",tte2:""},
+    22:{baseProg:13,cor:"Rajendra Kumar Yadav",tte1:"Brijesh Kumar Tiwari",tte2:""},
+    23:{baseProg:14,cor:"Vinod Kumar Gupta",tte1:"Naveen Kumar Singh",tte2:"Suman Kumar"},
+    24:{baseProg:15,cor:"Hatim Ansari",tte1:"Nitish Kumar",tte2:"Gulshan Kumar Srivastava"},
+    25:{baseProg:16,cor:"Manoj Kumar Singh",tte1:"Dharmendra Singh",tte2:"Sanjay Kumar Rajak"},
+    26:{baseProg:17,cor:"Satish Kumar Tripathi",tte1:"Dinesh Kumar Gupta",tte2:"Prashant Rai"},
+    27:{baseProg:18,cor:"Pappu Kumar Sahu",tte1:"Ankit Kumar Singh",tte2:""},
+    28:{baseProg:19,cor:"Manoj Kumar-1",tte1:"Sanny Kumar",tte2:"Amarjeet Singh"},
+    29:{baseProg:20,cor:"Shiv Prasad Pal",tte1:"Md Meraj Ahmed Khan",tte2:"Pintu Ram"},
+    30:{baseProg:21,cor:"Wahid Ansari",tte1:"Ashutosh Kumar-II",tte2:"Vikas Choubey"},
+    31:{baseProg:22,cor:"Saurabh Bhattacharya",tte1:"Raju Kumar",tte2:"Sachin Kumar"},
+    32:{baseProg:23,cor:"Pawan Kumar Singh",tte1:"Mohit Kumar Sinha",tte2:"Chandra Bhan Tiwari"},
+    33:{baseProg:24,cor:"Shrawan Kumar Mishra",tte1:"Arjun Kumar",tte2:"Amit Kumar Singh-III"},
+    34:{baseProg:25,cor:"Pramod Kumar-1",tte1:"Om Prakash Meena",tte2:"Gaurav Singh"},
+    35:{baseProg:26,cor:"Vikash Choubey",tte1:"Ajay Kumar Tripathi",tte2:""},
+    36:{baseProg:27,cor:"Durgesh Kumar",tte1:"Ghanshyam Kumar",tte2:"Amrit Kumar"},
+    37:{baseProg:28,cor:"Suprabhatam Chaturvedi",tte1:"Md Javed",tte2:"Ashish Kumar Pandey"},
+    38:{baseProg:29,cor:"Ramesh Kumar Yadav",tte1:"Etwa Uraon",tte2:"Chandan Kumar"},
+    39:{baseProg:30,cor:"Naveen Prakash",tte1:"Vinay Prakash Singh",tte2:""},
+    40:{baseProg:31,cor:"Ajay Kumar",tte1:"Sunil Kumar Yadav",tte2:""},
+    41:{baseProg:32,cor:"Sandeep Kumar",tte1:"Shashi bhushan Bhardwaj",tte2:"Mithilesh Kumar"},
+    42:{baseProg:33,cor:"Rameshwar Prasad",tte1:"Shivshanker Kumar",tte2:"Satish Yadav"},
+    43:{baseProg:34,cor:"Anjali Kumari",tte1:"Pratibha Singh",tte2:"Parvez Ansari"}
+};
+
+const SLOT_ORDER = ["MON_OUT","TUE_IN","TUE_OUT","WED_IN","WED_OUT","THU_IN","THU_OUT","FRI_IN","FRI_OUT","SAT_IN","SAT_OUT","SUN_IN","SUN_OUT","MON_IN"];
+const SLOT_LABELS = {MON_OUT:"Mon (Out)",TUE_IN:"Tue (In)",TUE_OUT:"Tue (Out)",WED_IN:"Wed (In)",WED_OUT:"Wed (Out)",THU_IN:"Thu (In)",THU_OUT:"Thu (Out)",FRI_IN:"Fri (In)",FRI_OUT:"Fri (Out)",SAT_IN:"Sat (In)",SAT_OUT:"Sat (Out)",SUN_IN:"Sun (In)",SUN_OUT:"Sun (Out)",MON_IN:"Mon (In)"};
+
+// Default Link Programme: program -> {slot: "train" or "train1/train2" or "REST" or "LR"}
+const DEFAULT_LINK_PROGRAMME = {
+    1:{MON_OUT:"15018", TUE_OUT:"15018", WED_OUT:"15018/15159", THU_OUT:"15018", FRI_OUT:"15018", SAT_OUT:"15018/15159", SUN_OUT:"15018"},
+    2:{TUE_IN:"20416", WED_IN:"12669", THU_IN:"15017", FRI_IN:"15017", SAT_IN:"22969", SUN_IN:"15017", MON_IN:"12669"},
+    3:{MON_OUT:"15743/15107", TUE_OUT:"15733/15107", WED_OUT:"15743/15107", THU_OUT:"15743/15107", FRI_OUT:"15733/15107", SAT_OUT:"15743/15107", SUN_OUT:"15733/15107"},
+    4:{TUE_IN:"15734/15108", WED_IN:"15744/15108", THU_IN:"15734/15108", FRI_IN:"15744/15108", SAT_IN:"15744/15108", SUN_IN:"15734/15108", MON_IN:"15744/15108"},
+    5:{MON_OUT:"14235", TUE_OUT:"14235", WED_OUT:"14235", THU_OUT:"22541", FRI_OUT:"14235", SAT_OUT:"14235", SUN_OUT:"22541"},
+    7:{TUE_IN:"14236", WED_IN:"14236", THU_IN:"14236", FRI_IN:"22542", SAT_IN:"14236", SUN_IN:"14236", MON_IN:"22542"},
+    8:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"},
+    9:{MON_OUT:"13239/14213", TUE_OUT:"13237/14213", WED_OUT:"13239/14213", THU_OUT:"13239/14213", FRI_OUT:"13239/14213", SAT_OUT:"13237/14213", SUN_OUT:"13237/14213"},
+    10:{TUE_IN:"13038/14214", WED_IN:"13038/14214", THU_IN:"13036/14214", FRI_IN:"13038/14214", SAT_IN:"13038/14214", SUN_IN:"13036/14214", MON_IN:"13038/14214"},
+    11:{MON_OUT:"14015", TUE_OUT:"12237", WED_OUT:"14015", THU_OUT:"14007", FRI_OUT:"14017", SAT_OUT:"14007", SUN_OUT:"12237"},
+    12:{TUE_IN:"22418", WED_IN:"14008", THU_IN:"14018", FRI_IN:"14008/14004", SAT_IN:"14016/18104", SUN_IN:"13430", MON_IN:"14016"},
+    13:{MON_OUT:"15127", TUE_OUT:"15127", WED_OUT:"15127", THU_OUT:"15127", FRI_OUT:"15127", SAT_OUT:"15127", SUN_OUT:"15127"},
+    14:{TUE_IN:"13240", WED_IN:"13240", THU_IN:"13240", FRI_IN:"13238", SAT_IN:"13238", SUN_IN:"13240", MON_IN:"13238"},
+    15:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"},
+    16:{MON_OUT:"14853", TUE_OUT:"14863", WED_OUT:"14853", THU_OUT:"14865", FRI_OUT:"14863", SAT_OUT:"14853", SUN_OUT:"14863"},
+    18:{TUE_IN:"14864", WED_IN:"14866", THU_IN:"14854", FRI_IN:"14864/20414", SAT_IN:"14854", SUN_IN:"14864/15667", MON_IN:"14854"},
+    19:{MON_OUT:"19322", TUE_OUT:"22417", WED_OUT:"22355", THU_OUT:"22417", FRI_OUT:"19314", SAT_OUT:"13041", SUN_OUT:"22355"},
+    21:{TUE_IN:"12876", WED_IN:"22418", THU_IN:"12358", FRI_IN:"22418", SAT_IN:"15635", SUN_IN:"12876", MON_IN:"12358"},
+    22:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"},
+    23:{MON_OUT:"13037", TUE_OUT:"13035/14003", WED_OUT:"13037/15933", THU_OUT:"13037", FRI_OUT:"13035/13429", SAT_OUT:"13037/14003", SUN_OUT:"13037"},
+    24:{TUE_IN:"20402", WED_IN:"20402", THU_IN:"20402", FRI_IN:"20402", SAT_IN:"20402", SUN_IN:"20402", MON_IN:"20402"},
+    25:{MON_OUT:"11072", TUE_OUT:"11072", WED_OUT:"11072/22585", THU_OUT:"11072", FRI_OUT:"11072", SAT_OUT:"11072", SUN_OUT:"11072"},
+    26:{TUE_IN:"11071", WED_IN:"11071", THU_IN:"11071", FRI_IN:"11071", SAT_IN:"11071", SUN_IN:"11071", MON_IN:"11071"},
+    27:{MON_OUT:"12237", TUE_OUT:"12237", WED_OUT:"12237", THU_OUT:"12237", FRI_OUT:"12237", SAT_OUT:"12237", SUN_OUT:"12237"},
+    28:{TUE_IN:"12238", WED_IN:"12238", THU_IN:"12238", FRI_IN:"12238", SAT_IN:"12238", SUN_IN:"12326", MON_IN:"12238"},
+    29:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"},
+    30:{MON_OUT:"14523", TUE_OUT:"24013", WED_OUT:"13041", THU_OUT:"24013", FRI_OUT:"12391", SAT_OUT:"20964", SUN_OUT:"13041"},
+    31:{TUE_IN:"22356", WED_IN:"SPARE", THU_IN:"18104", FRI_IN:"12876", SAT_IN:"20963", SUN_IN:"12354", MON_IN:"14004"},
+    32:{MON_OUT:"15159", TUE_OUT:"15159", WED_OUT:"19314", THU_OUT:"15159", FRI_OUT:"15159", SAT_OUT:"22417", SUN_OUT:"15159"},
+    33:{TUE_IN:"15017", WED_IN:"15017", THU_IN:"SPARE", FRI_IN:"15160", SAT_IN:"15017/22586", SUN_IN:"12238", MON_IN:"15017"},
+    34:{MON_OUT:"12875/19306", TUE_OUT:"18103", WED_OUT:"12875", THU_OUT:"18103/15668", FRI_OUT:"12237", SAT_OUT:"12875", SUN_OUT:"LR"},
+    35:{TUE_IN:"19313", WED_IN:"12318", THU_IN:"24014/19313", FRI_IN:"12372/19305", SAT_IN:"12318", SUN_IN:"19321", MON_IN:"LR"},
+    36:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"},
+    37:{MON_OUT:"12371", TUE_OUT:"12357", WED_OUT:"12371", THU_OUT:"14523", FRI_OUT:"12353", SAT_OUT:"12357", SUN_OUT:"12317"},
+    38:{TUE_IN:"13042", WED_IN:"14524", THU_IN:"12238", FRI_IN:"13042", SAT_IN:"15934", SUN_IN:"14524", MON_IN:"13042"},
+    39:{MON_OUT:"12670", TUE_OUT:"11072", WED_OUT:"12670", THU_OUT:"12325", FRI_OUT:"11072", SAT_OUT:"11072", SUN_OUT:"20415"},
+    40:{TUE_IN:"15160", WED_IN:"15160", THU_IN:"15160", FRI_IN:"22356", SAT_IN:"15160", SUN_IN:"15160", MON_IN:"15160"},
+    41:{MON_OUT:"20401", TUE_OUT:"20401", WED_OUT:"20401", THU_OUT:"20401", FRI_OUT:"20401", SAT_OUT:"20401", SUN_OUT:"20401"},
+    42:{TUE_IN:"15128", WED_IN:"15128", THU_IN:"15128", FRI_IN:"15128", SAT_IN:"15128", SUN_IN:"15128", MON_IN:"15128"},
+    43:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"}
+};
+
+const DEFAULT_ANCHOR_DATE = "2026-06-11"; // date when Team-1 = Program 35 (corrected)
+
+window.appData = { teamMaster: {}, linkProgramme: {}, anchorDate: DEFAULT_ANCHOR_DATE };
+window.currentUid = null;
+window.isAdmin = false;
+
+// ============ CORE LOGIC ============
+
+// Get program number for a team on a given date
+function getProgramForTeamOnDate(teamNo, dateStr) {
+    const team = window.appData.teamMaster[teamNo];
+    if (!team) return null;
+    const anchor = new Date(window.appData.anchorDate + 'T00:00:00');
+    const target = new Date(dateStr + 'T00:00:00');
+    const dayDiff = Math.round((target - anchor) / (1000*60*60*24));
+    let prog = ((team.baseProg - 1 + dayDiff) % 43 + 43) % 43 + 1;
+    return prog;
+}
+
+// Find the duty for a team on a specific date
+function getDutyForTeamOnDate(teamNo, dateStr) {
+    const prog = getProgramForTeamOnDate(teamNo, dateStr);
+    if (!prog) return null;
+    const progData = window.appData.linkProgramme[prog];
+    const d = new Date(dateStr + 'T00:00:00');
+    const dow = d.getDay(); // 0=Sun,1=Mon,2=Tue,3=Wed,4=Thu,5=Fri,6=Sat
+    const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+    const dayPrefix = dayNames[dow];
+    
+    if (!progData) return { prog, status: 'off', dateStr };
+    
+    // Each program has AT MOST ONE slot per weekday (either _IN or _OUT, never both).
+    // Check both possible slot names and use whichever actually exists in this program's data.
+    const outSlot = `${dayPrefix}_OUT`;
+    const inSlot = `${dayPrefix}_IN`;
+    let matchedSlot = null, train = null;
+    
+    if (progData[outSlot] !== undefined) {
+        matchedSlot = outSlot;
+        train = progData[outSlot];
+    } else if (progData[inSlot] !== undefined) {
+        matchedSlot = inSlot;
+        train = progData[inSlot];
+    }
+    
+    if (!matchedSlot) return { prog, status: 'off', dateStr };
+    if (train === 'REST') return { prog, status: 'rest', dateStr, slot: matchedSlot };
+    if (train === 'LR') return { prog, status: 'lr', dateStr, slot: matchedSlot };
+    if (train === 'SPARE') return { prog, status: 'spare', dateStr, slot: matchedSlot };
+    
+    return { prog, status: 'duty', dateStr, slot: matchedSlot, train, isOut: matchedSlot.endsWith('_OUT') };
+}
+
+window.getDutyForTeamOnDate = getDutyForTeamOnDate;
+window.getProgramForTeamOnDate = getProgramForTeamOnDate;
+
+// ============ FIREBASE LOAD ============
+async function loadRosterData() {
+    try {
+        const snap = await get(ref(db, 'roster/BSB'));
+        const data = snap.val();
+        if (data && data.teamMaster && data.linkProgramme) {
+            window.appData.teamMaster = data.teamMaster;
+            window.appData.linkProgramme = data.linkProgramme;
+            window.appData.anchorDate = data.anchorDate || DEFAULT_ANCHOR_DATE;
+        } else {
+            // Seed defaults into Firebase (first time setup)
+            window.appData.teamMaster = DEFAULT_TEAM_MASTER;
+            window.appData.linkProgramme = DEFAULT_LINK_PROGRAMME;
+            window.appData.anchorDate = DEFAULT_ANCHOR_DATE;
+            if (window.isAdmin) {
+                await set(ref(db, 'roster/BSB'), window.appData);
+            }
+        }
+    } catch(e) {
+        console.error('Roster load error', e);
+        window.appData.teamMaster = DEFAULT_TEAM_MASTER;
+        window.appData.linkProgramme = DEFAULT_LINK_PROGRAMME;
+        window.appData.anchorDate = DEFAULT_ANCHOR_DATE;
+    }
+    populateTeamSelectors();
+    renderMyDutyWeek();
+}
+window.loadRosterData = loadRosterData;
+
+function populateTeamSelectors() {
+    const selectors = ['my-team-select', 'admin-team-select'];
+    selectors.forEach(selId => {
+        const sel = document.getElementById(selId);
+        if (!sel) return;
+        const currentVal = sel.value;
+        sel.innerHTML = '<option value="">-- Select team --</option>';
+        Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
+            const team = window.appData.teamMaster[t];
+            sel.innerHTML += `<option value="${t}">Team ${t} — ${team.cor}</option>`;
+        });
+        sel.value = currentVal;
+    });
+    const progSel = document.getElementById('admin-prog-select');
+    if (progSel) {
+        progSel.innerHTML = '<option value="">-- Select program --</option>';
+        for (let i = 1; i <= 43; i++) {
+            progSel.innerHTML += `<option value="${i}">Program ${i}</option>`;
+        }
+    }
+}
+
+// ============ UI: MY DUTY ============
+window.onMyTeamChange = function() {
+    const team = document.getElementById('my-team-select').value;
+    localStorage.setItem('roster_my_team', team);
+    renderMyDutyWeek();
+};
+
+// Collect a range of "trips" for a team. A trip = one duty block (OUT day + its paired IN day, or single REST/LR/SPARE day).
+// direction: 'future' collects forward from today, 'past' collects backward from yesterday.
+function collectTrips(teamNo, direction, count) {
+    const trips = [];
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    let d = new Date(today);
+    if (direction === 'past') d.setDate(d.getDate() - 1);
+    
+    let seenDates = new Set();
+    let iterations = 0;
+    const maxIterations = 90; // safety cap
+    
+    while (trips.length < count && iterations < maxIterations) {
+        iterations++;
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        if (!seenDates.has(dateStr)) {
+            seenDates.add(dateStr);
+            const duty = getDutyForTeamOnDate(teamNo, dateStr);
+            const dateLabel = d.toLocaleDateString('en-GB', {weekday:'short', day:'2-digit', month:'short'});
+            if (duty && duty.status === 'duty') {
+                trips.push({ dateLabel, duty, dateStr });
+            } else if (duty && (duty.status === 'rest' || duty.status === 'lr' || duty.status === 'spare')) {
+                trips.push({ dateLabel, duty, dateStr });
+            }
+            // 'off' status (no data for that weekday) is skipped, not counted as a trip
+        }
+        if (direction === 'future') d.setDate(d.getDate() + 1);
+        else d.setDate(d.getDate() - 1);
+    }
+    
+    if (direction === 'past') trips.reverse(); // show chronological order (oldest first among the "last 1")
+    return trips;
+}
+
+function renderMyDutyWeek() {
+    const container = document.getElementById('my-duty-week');
+    const teamNo = document.getElementById('my-team-select').value;
+    if (!teamNo) { container.innerHTML = ''; return; }
+    
+    const team = window.appData.teamMaster[teamNo];
+    let html = `<div class="card">
+        <div style="font-size:13px; font-weight:900; color:var(--text); margin-bottom:4px;">Team ${teamNo}</div>
+        <div style="font-size:12px; color:var(--text-muted);">COR: ${team.cor}<br>TTE-1: ${team.tte1}${team.tte2 ? '<br>TTE-2: '+team.tte2 : ''}</div>
+    </div>`;
+    
+    // Suggestion 2: Next 3 trips (up+down counted as one trip)
+    const futureTrips = collectTrips(teamNo, 'future', 3);
+    html += '<h3 class="section-title">🔜 Next 3 Trips</h3>';
+    html += '<div class="duty-box-grid">';
+    futureTrips.forEach(t => { html += renderDutyBox(t.dateLabel, t.duty); });
+    if (futureTrips.length === 0) html += '<p style="grid-column:1/-1; color:var(--text-muted); font-size:12px; text-align:center;">No upcoming trips found</p>';
+    html += '</div>';
+    
+    // Suggestion 2: Last 1 trip
+    const pastTrips = collectTrips(teamNo, 'past', 1);
+    html += '<h3 class="section-title">🔙 Last Trip</h3>';
+    html += '<div class="duty-box-grid">';
+    pastTrips.forEach(t => { html += renderDutyBox(t.dateLabel, t.duty); });
+    if (pastTrips.length === 0) html += '<p style="grid-column:1/-1; color:var(--text-muted); font-size:12px; text-align:center;">No recent trip found</p>';
+    html += '</div>';
+    
+    container.innerHTML = html;
+}
+
+// Suggestion 3: Compact box renderer (used in My Duty and Search)
+function renderDutyBox(dateLabel, duty) {
+    if (!duty) return `<div class="duty-box"><div class="db-date">${dateLabel}</div><div class="db-content" style="color:var(--text-muted);">No data</div></div>`;
+    
+    let cls = 'duty-box', badge = '', content = '';
+    if (duty.status === 'rest') {
+        cls += ' rest'; badge = '<span class="db-badge" style="background:#94a3b820;color:var(--text-muted);">REST</span>';
+        content = `Program ${duty.prog}`;
+    } else if (duty.status === 'lr') {
+        cls += ' lr'; badge = '<span class="db-badge" style="background:rgba(168,85,247,0.15);color:var(--purple);">LR</span>';
+        content = `Prog ${duty.prog} — Leave Reserve`;
+    } else if (duty.status === 'spare') {
+        badge = '<span class="db-badge" style="background:rgba(234,179,8,0.15);color:var(--yellow);">SPARE</span>';
+        content = `Program ${duty.prog}`;
+    } else if (duty.status === 'duty') {
+        const dirIcon = duty.isOut 
+            ? '<span style="color:#16a34a; font-weight:900;">⬆</span>' 
+            : '<span style="color:#2563eb; font-weight:900;">⬇</span>';
+        const trains = duty.train.split('/');
+        if (trains.length === 2) {
+            content = `${dirIcon} ${trains[0]}<br><span style="font-size:10px; color:var(--text-muted);">+ ${trains[1]} (TTE-2)</span>`;
+        } else {
+            content = `${dirIcon} ${trains[0]}`;
+        }
+        badge = `<span class="db-badge" style="background:rgba(59,130,246,0.15);color:var(--blue);">Prog ${duty.prog}</span>`;
+    } else {
+        content = 'Off';
+    }
+    
+    return `<div class="${cls}">
+        <div class="db-date">${dateLabel}</div>
+        <div class="db-content">${content}</div>
+        ${badge}
+    </div>`;
+}
+
+function renderDutyRow(dateLabel, duty, team) {
+    if (!duty) return `<div class="duty-row"><span>${dateLabel}</span><span style="color:var(--text-muted);">No data</span></div>`;
+    
+    let cls = 'duty-row', badge = '', content = '';
+    if (duty.status === 'rest') {
+        cls += ' rest'; badge = '<span class="badge" style="background:#94a3b820;color:var(--text-muted);">REST</span>';
+        content = `Program ${duty.prog}`;
+    } else if (duty.status === 'lr') {
+        cls += ' lr'; badge = '<span class="badge" style="background:rgba(168,85,247,0.15);color:var(--purple);">LR</span>';
+        content = `Program ${duty.prog} — Leave Reserve (check with admin)`;
+    } else if (duty.status === 'spare') {
+        badge = '<span class="badge" style="background:rgba(234,179,8,0.15);color:var(--yellow);">SPARE</span>';
+        content = `Program ${duty.prog} — Spare Duty`;
+    } else if (duty.status === 'duty') {
+        // Suggestion 1: colored up/down icon based on direction
+        const dirIcon = duty.isOut 
+            ? '<span style="color:#16a34a; font-weight:900; font-size:15px;">⬆</span>' 
+            : '<span style="color:#2563eb; font-weight:900; font-size:15px;">⬇</span>';
+        const dirLabel = duty.isOut ? 'Outward' : 'Inward';
+        const trains = duty.train.split('/');
+        if (trains.length === 2) {
+            content = `${dirIcon} <span class="train-pill">${trains[0]}</span> (COR+TTE-1) &nbsp; <span class="train-pill">${trains[1]}</span> (TTE-2)`;
+        } else {
+            content = `${dirIcon} <span class="train-pill">${trains[0]}</span> <span style="font-size:10px; color:var(--text-muted);">${dirLabel}</span>`;
+        }
+        badge = `<span class="badge" style="background:rgba(59,130,246,0.15);color:var(--blue);">Prog ${duty.prog}</span>`;
+    } else {
+        content = 'Off / No duty this day';
+    }
+    
+    return `<div class="${cls}">
+        <div style="flex:1;">
+            <div style="font-size:12px; font-weight:700; color:var(--text-muted);">${dateLabel}</div>
+            <div style="font-size:13px; margin-top:2px;">${content}</div>
+        </div>
+        ${badge}
+    </div>`;
+}
+
+// ============ SEARCH ============
+window.renderDateSearch = function() {
+    const dateStr = document.getElementById('search-date').value;
+    const result = document.getElementById('search-date-result');
+    if (!dateStr) { result.innerHTML = ''; return; }
+    
+    let html = `<h3 class="section-title">Teams on Duty — ${dateStr}</h3><div class="duty-box-grid">`;
+    let count = 0;
+    Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
+        const duty = getDutyForTeamOnDate(t, dateStr);
+        if (duty && duty.status === 'duty') {
+            count++;
+            const team = window.appData.teamMaster[t];
+            const dirIcon = duty.isOut 
+                ? '<span style="color:#16a34a; font-weight:900;">⬆</span>' 
+                : '<span style="color:#2563eb; font-weight:900;">⬇</span>';
+            const trains = duty.train.split('/');
+            const trainHtml = trains.length === 2 
+                ? `${dirIcon} ${trains[0]}<br><span style="font-size:10px; color:var(--text-muted);">+ ${trains[1]}</span>`
+                : `${dirIcon} ${trains[0]}`;
+            html += `<div class="duty-box">
+                <div class="db-date">Team ${t}</div>
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:3px;">${team.cor}</div>
+                <div class="db-content">${trainHtml}</div>
+            </div>`;
+        }
+    });
+    html += '</div>';
+    if (count === 0) html = `<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No teams on duty this date.</p>`;
+    result.innerHTML = html;
+};
+
+window.renderTeamSearch = function() {
+    const teamNo = document.getElementById('search-team').value;
+    const result = document.getElementById('search-team-result');
+    if (!teamNo || !window.appData.teamMaster[teamNo]) { result.innerHTML = ''; return; }
+    
+    const team = window.appData.teamMaster[teamNo];
+    let html = `<div class="card">
+        <div style="font-weight:900; margin-bottom:5px;">Team ${teamNo}</div>
+        <div style="font-size:12px; color:var(--text-muted);">COR: ${team.cor}<br>TTE-1: ${team.tte1}${team.tte2 ? '<br>TTE-2: '+team.tte2 : ''}</div>
+    </div>`;
+    
+    const futureTrips = collectTrips(teamNo, 'future', 3);
+    html += '<h3 class="section-title">🔜 Next 3 Trips</h3><div class="duty-box-grid">';
+    futureTrips.forEach(t => { html += renderDutyBox(t.dateLabel, t.duty); });
+    if (futureTrips.length === 0) html += '<p style="grid-column:1/-1; color:var(--text-muted); font-size:12px; text-align:center;">No upcoming trips</p>';
+    html += '</div>';
+    
+    result.innerHTML = html;
+};
+
+window.renderTrainSearch = function() {
+    const trainNo = document.getElementById('search-train').value.trim();
+    const result = document.getElementById('search-train-result');
+    if (!trainNo) { result.innerHTML = ''; return; }
+    
+    let html = `<h3 class="section-title">Teams running Train ${trainNo} (next 7 days)</h3><div class="duty-box-grid">`;
+    let found = false;
+    const today = new Date();
+    for (let i = 0; i < 7; i++) {
+        const d = new Date(today); d.setDate(d.getDate()+i);
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        const dateLabel = d.toLocaleDateString('en-GB', {weekday:'short', day:'2-digit', month:'short'});
+        Object.keys(window.appData.teamMaster).forEach(t => {
+            const duty = getDutyForTeamOnDate(t, dateStr);
+            if (duty && duty.status === 'duty' && duty.train.includes(trainNo)) {
+                found = true;
+                const team = window.appData.teamMaster[t];
+                const dirIcon = duty.isOut ? '<span style="color:#16a34a;">⬆</span>' : '<span style="color:#2563eb;">⬇</span>';
+                html += `<div class="duty-box">
+                    <div class="db-date">${dateLabel}</div>
+                    <div style="font-size:12px; font-weight:900;">${dirIcon} Team ${t}</div>
+                    <div style="font-size:10px; color:var(--text-muted);">${team.cor}${team.tte1 ? ', '+team.tte1 : ''}${team.tte2 ? ', '+team.tte2 : ''}</div>
+                </div>`;
+            }
+        });
+    }
+    html += '</div>';
+    if (!found) html = '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No matches in next 7 days</p>';
+    result.innerHTML = html;
+};
+
+window.clearDateSearch = function() {
+    document.getElementById('search-date').value = '';
+    document.getElementById('search-date-result').innerHTML = '';
+};
+
+window.clearTeamSearch = function() {
+    document.getElementById('search-team').value = '';
+    document.getElementById('search-team-result').innerHTML = '';
+};
+
+window.clearTrainSearch = function() {
+    document.getElementById('search-train').value = '';
+    document.getElementById('search-train-result').innerHTML = '';
+};
+
+// ============ TABS ============
+window.switchTab = function(tab) {
+    ['mine','search','admin'].forEach(t => {
+        document.getElementById('view-'+t).classList.toggle('hidden', t !== tab);
+        document.getElementById('tab-'+t).classList.toggle('active', t === tab);
+    });
+};
+
+// ============ ADMIN FUNCTIONS ============
+window.saveAnchorDate = async function() {
+    const date = document.getElementById('admin-anchor-date').value;
+    if (!date) return alert('Select a date');
+    window.appData.anchorDate = date;
+    await set(ref(db, 'roster/BSB/anchorDate'), date);
+    alert('Anchor date saved: ' + date);
+    renderMyDutyWeek();
+};
+
+window.loadTeamForEdit = function() {
+    const t = document.getElementById('admin-team-select').value;
+    const form = document.getElementById('admin-team-edit-form');
+    if (!t) { form.classList.add('hidden'); return; }
+    const team = window.appData.teamMaster[t];
+    document.getElementById('admin-edit-baseprog').value = team.baseProg;
+    document.getElementById('admin-edit-cor').value = team.cor;
+    document.getElementById('admin-edit-tte1').value = team.tte1;
+    document.getElementById('admin-edit-tte2').value = team.tte2 || '';
+    form.classList.remove('hidden');
+};
+
+window.saveTeamEdit = async function() {
+    const t = document.getElementById('admin-team-select').value;
+    if (!t) return;
+    const updated = {
+        baseProg: parseInt(document.getElementById('admin-edit-baseprog').value),
+        cor: document.getElementById('admin-edit-cor').value.trim(),
+        tte1: document.getElementById('admin-edit-tte1').value.trim(),
+        tte2: document.getElementById('admin-edit-tte2').value.trim()
+    };
+    window.appData.teamMaster[t] = updated;
+    await set(ref(db, `roster/BSB/teamMaster/${t}`), updated);
+    alert('Team ' + t + ' updated');
+    populateTeamSelectors();
+};
+
+document.getElementById('admin-prog-select').addEventListener('change', function() {
+    const p = this.value;
+    const form = document.getElementById('admin-prog-edit-form');
+    const slotsDiv = document.getElementById('admin-prog-slots');
+    if (!p) { form.classList.add('hidden'); return; }
+    const progData = window.appData.linkProgramme[p] || {};
+    slotsDiv.innerHTML = SLOT_ORDER.map(slot => `
+        <div style="margin-bottom:8px;">
+            <label style="font-size:11px; color:var(--text-muted);">${SLOT_LABELS[slot]}</label>
+            <input type="text" id="prog-slot-${slot}" value="${progData[slot] || ''}" placeholder="Train no / REST / LR / SPARE / blank">
+        </div>
+    `).join('');
+    form.classList.remove('hidden');
+});
+
+window.saveProgEdit = async function() {
+    const p = document.getElementById('admin-prog-select').value;
+    if (!p) return;
+    const newData = {};
+    SLOT_ORDER.forEach(slot => {
+        const val = document.getElementById('prog-slot-'+slot).value.trim();
+        if (val) newData[slot] = val;
+    });
+    window.appData.linkProgramme[p] = newData;
+    await set(ref(db, `roster/BSB/linkProgramme/${p}`), newData);
+    alert('Program ' + p + ' updated');
+};
+
+// ============ AUTH & INIT ============
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        window.currentUid = user.uid;
+        window.isAdmin = (user.uid === window.ADMIN_UID);
+        document.getElementById('user-label').innerText = user.displayName || '';
+        if (window.isAdmin) {
+            document.getElementById('tab-admin').classList.remove('hidden');
+        }
+        // Restore saved team selection
+        const savedTeam = localStorage.getItem('roster_my_team');
+        loadRosterData().then(() => {
+            if (savedTeam) {
+                document.getElementById('my-team-select').value = savedTeam;
+                renderMyDutyWeek();
+            }
+        });
+    }
+    // If not signed in directly, wait for parent (TTE LOGS) to send user info via postMessage
+});
+
+// ========== POSTMESSAGE BRIDGE (receives user info from TTE LOGS parent) ==========
+window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'TTE_LOGS_USER') {
+        window.currentUid = event.data.uid;
+        window.isAdmin = event.data.isAdmin;
+        document.getElementById('user-label').innerText = event.data.name || '';
+        if (window.isAdmin) {
+            document.getElementById('tab-admin').classList.remove('hidden');
+        }
+        const savedTeam = localStorage.getItem('roster_my_team');
+        loadRosterData().then(() => {
+            if (savedTeam) {
+                document.getElementById('my-team-select').value = savedTeam;
+                renderMyDutyWeek();
+            }
+        });
+    }
+});
+
+// Signal to parent that we're ready to receive user info
+if (window.parent !== window) {
+    window.parent.postMessage({ type: 'ROSTER_READY' }, '*');
+}
+
+// Set default date in search
+document.getElementById('search-date').valueAsDate = new Date();
+document.getElementById('admin-anchor-date').value = DEFAULT_ANCHOR_DATE;
+
+</script>
+</body>
+</html>
