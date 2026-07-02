@@ -1440,15 +1440,21 @@
                 if (uids.length === 0) { rosterEl.innerHTML = '<p style="color:var(--text-muted); font-size:13px; text-align:center;">No registered users found.</p>'; return; }
 
                 let hqBreakdown = {};
+                let debugInfo = []; // TEMP DEBUG
                 let rosterRows = uids.map(uid => {
                     const u = users[uid];
                     const prof = u.profile || {};
+                    const rawLegs = u.legs;
                     const legs = Object.values(u.legs || {});
                     const hq = prof.hq || 'Unknown';
                     hqBreakdown[hq] = (hqBreakdown[hq] || 0) + 1;
+                    // DEBUG: capture what we actually see
+                    debugInfo.push(`${prof.name||uid}: rawLegs type=${typeof rawLegs}, isArray=${Array.isArray(rawLegs)}, count=${legs.length}, firstId=${legs[0]?legs[0].id:'none'}`);
                     let lastSync = '—';
                     if (legs.length > 0) {
-                        const maxId = Math.max(...legs.map(l => parseInt(l.id) || 0).filter(x => x > 1000000000000));
+                        const allIds = legs.map(l => parseInt(l.id) || 0);
+                        const validIds = allIds.filter(x => x > 1000000000000);
+                        const maxId = validIds.length > 0 ? Math.max(...validIds) : 0;
                         if (maxId > 0) {
                             const d = new Date(maxId);
                             lastSync = `${d.getDate()}/${d.getMonth()+1} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
@@ -1490,7 +1496,11 @@
                     </div>
                     <p style="font-size:10px; color:var(--text-muted); text-align:center; margin:-12px 0 12px 0;">← Scroll table sideways to see all columns →</p>
                     <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Users per HQ</div>
-                    ${hqRows}`;
+                    ${hqRows}
+                    <div style="margin-top:15px; padding:10px; background:var(--input-bg); border-radius:8px; border:1px solid var(--border);">
+                        <div style="font-size:10px; font-weight:900; color:var(--orange); margin-bottom:5px;">🔍 DEBUG INFO</div>
+                        ${debugInfo.map(d => `<div style="font-size:10px; color:var(--text-muted); word-break:break-all; margin-bottom:3px;">${d}</div>`).join('')}
+                    </div>`;
             }).catch(err => { rosterEl.innerHTML = `<p style="color:var(--red); font-size:13px; text-align:center;">${err.message}</p>`; });
         });
     };
