@@ -785,13 +785,12 @@
                         <div class="nav-sub-text">Save your data</div>
                     </div>
                 </div>
-                <div class="nav-card" id="roster-nav-card" onclick="window.openRosterModal()" style="width: 100%; margin-top: 10px; flex-direction: row; justify-content: center; gap: 10px; min-height: 92px; padding: 12px 10px;">
-                    <div class="nav-icon" style="margin: 0; font-size: 28px;">📅</div>
-                    <div style="text-align: left;">
-                        <div class="nav-main-text" style="color: var(--text); font-size: 16px;">Roster</div>
-                        <div class="nav-sub-text" style="font-size: 11px;">BSB Only</div>
-                    </div>
+                <div class="nav-card" id="roster-nav-card" onclick="window.openRosterModal()" style="width: 100%; margin-top: 10px;">
+                    <div class="nav-icon">🗓️</div>
+                    <div class="nav-main-text" style="color: var(--purple);">Roster</div>
+                    <div class="nav-sub-text">Roster of BSB Only</div>
                 </div>
+                <div id="your-duty-row" class="hidden" style="width: 100%; margin-top: 8px; background: rgba(59,130,246,0.18); border: 1px solid rgba(59,130,246,0.40); border-radius: 14px; padding: 10px 14px; font-size: 13px; color: var(--text); text-align: center; box-shadow: var(--shadow); line-height: 1.5;"></div>
             </div>
         </div>
     </div>
@@ -826,7 +825,7 @@
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Departure Time <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt for today/future)</span></label>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Departure Time</label>
                             <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; width: 100%;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
@@ -2871,6 +2870,132 @@
         showModal("Saved!", `Departure updated: ${depTime}`, "success", false);
     };
 
+    // ========== YOUR DUTY (mini roster calc, mirrors roster.html logic) ==========
+    window._rosterMiniData = null;
+    async function loadMiniRosterData() {
+        if (window._rosterMiniData) return window._rosterMiniData;
+        if (!window.db) return null;
+        try {
+            const { ref: r, get } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js");
+            const snap = await get(r(window.db, 'roster/BSB'));
+            const data = snap.val();
+            if (data && data.teamMaster && data.linkProgramme) {
+                window._rosterMiniData = data;
+                return data;
+            }
+        } catch (e) { /* silent — widget just stays hidden */ }
+        return null;
+    }
+
+    const MINI_SLOT_ORDER = ["MON_OUT","TUE_IN","TUE_OUT","WED_IN","WED_OUT","THU_IN","THU_OUT","FRI_IN","FRI_OUT","SAT_IN","SAT_OUT","SUN_IN","SUN_OUT","MON_IN"];
+
+    function miniAddDays(dateStr, n) {
+        const d = new Date(dateStr + 'T00:00:00'); d.setDate(d.getDate() + n);
+        return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+    function miniNextProg(p) { return (p % 43) + 1; }
+
+    function miniGetProgramForTeamOnDate(data, teamNo, dateStr) {
+        const team = data.teamMaster[teamNo]; if (!team) return null;
+        const anchor = new Date((data.anchorDate || '2026-06-11') + 'T00:00:00');
+        const target = new Date(dateStr + 'T00:00:00');
+        const dayDiff = Math.round((target - anchor) / (1000*60*60*24));
+        return ((team.baseProg - 1 + dayDiff) % 43 + 43) % 43 + 1;
+    }
+
+    function miniGetTripStartingOn(data, teamNo, dateStr) {
+        const prog = miniGetProgramForTeamOnDate(data, teamNo, dateStr);
+        if (!prog) return null;
+        const progData = data.linkProgramme[prog];
+        const d = new Date(dateStr + 'T00:00:00');
+        const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+        const outSlot = `${dayNames[d.getDay()]}_OUT`;
+        if (!progData || progData[outSlot] === undefined) return null;
+        const outVal = progData[outSlot];
+        if (outVal === 'REST') return { prog, dateStr, status: 'rest' };
+        if (outVal === 'LR') return { prog, dateStr, status: 'lr' };
+        if (outVal === 'SPARE') return { prog, dateStr, status: 'spare' };
+        const outIdx = MINI_SLOT_ORDER.indexOf(outSlot);
+        const inSlot = MINI_SLOT_ORDER[(outIdx + 1) % MINI_SLOT_ORDER.length];
+        const prog1 = miniNextProg(prog);
+        const prog1Data = data.linkProgramme[prog1];
+        let returnTrain = null, returnDate = null, dayCount = 2;
+        if (prog1Data && prog1Data[inSlot] !== undefined) {
+            returnTrain = prog1Data[inSlot]; returnDate = miniAddDays(dateStr, 1); dayCount = 2;
+        } else {
+            const prog2 = miniNextProg(prog1); const prog2Data = data.linkProgramme[prog2];
+            if (prog2Data && prog2Data[inSlot] !== undefined) {
+                returnTrain = prog2Data[inSlot]; returnDate = miniAddDays(dateStr, 2); dayCount = 3;
+            }
+        }
+        return { prog, dateStr, status: 'duty', outTrain: outVal, returnTrain, returnDate, dayCount };
+    }
+
+    function miniGetDutyStatusOnDate(data, teamNo, dateStr) {
+        const trip = miniGetTripStartingOn(data, teamNo, dateStr);
+        if (trip) {
+            if (trip.status === 'rest') return { type: 'rest' };
+            if (trip.status === 'lr') return { type: 'lr' };
+            if (trip.status === 'spare') return { type: 'spare' };
+            return { type: 'out', trip };
+        }
+        for (let back = 1; back <= 2; back++) {
+            const startDate = miniAddDays(dateStr, -back);
+            const t = miniGetTripStartingOn(data, teamNo, startDate);
+            if (t && t.status === 'duty' && t.returnDate === dateStr) return { type: 'in', trip: t };
+            if (t && t.status === 'duty' && t.dayCount === 3 && back === 1 && miniAddDays(startDate, 1) === dateStr) return { type: 'halt', trip: t };
+        }
+        const prog = miniGetProgramForTeamOnDate(data, teamNo, dateStr);
+        const progData = data.linkProgramme[prog];
+        if (progData) {
+            const d = new Date(dateStr + 'T00:00:00');
+            const dayNames = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+            const val = progData[`${dayNames[d.getDay()]}_OUT`] || progData[`${dayNames[d.getDay()]}_IN`];
+            if (val === 'REST') return { type: 'rest' };
+            if (val === 'LR') return { type: 'lr' };
+        }
+        return { type: 'none' };
+    }
+
+    window.renderYourDutyBox = async function() {
+        const box = document.getElementById('your-duty-row');
+        if (!box) return;
+        const userHq = (window.appState.profile && window.appState.profile.hq) ? window.appState.profile.hq.trim().toUpperCase() : '';
+        const teamNo = localStorage.getItem('roster_my_team');
+        if (userHq !== 'BSB' || !teamNo) { box.classList.add('hidden'); return; }
+
+        const data = await loadMiniRosterData();
+        if (!data || !data.teamMaster[teamNo]) { box.classList.add('hidden'); return; }
+
+        const now = new Date(); now.setHours(0,0,0,0);
+        const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+        const status = miniGetDutyStatusOnDate(data, teamNo, dateStr);
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const dayNamesFull = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const dateLabel = `${String(now.getDate()).padStart(2,'0')}-${months[now.getMonth()]}-${String(now.getFullYear()).slice(-2)}`;
+        const dayLabel = dayNamesFull[now.getDay()];
+        const dateDayHtml = `<span style="color:var(--blue); font-weight:800;">${dateLabel} (${dayLabel})</span>`;
+
+        let mainHtml = '';
+        if (status.type === 'out') {
+            mainHtml = `<b>${status.trip.outTrain}</b> &nbsp; <span style="color:var(--red); font-weight:800;">Departs HQ</span>`;
+        } else if (status.type === 'in') {
+            mainHtml = `<b>${status.trip.returnTrain}</b> &nbsp; <span style="color:var(--green); font-weight:800;">Arrives HQ</span>`;
+        } else if (status.type === 'halt') {
+            mainHtml = `<span style="font-weight:800;">Halt Day</span> <span style="color:var(--text-muted); font-size:12px;">(Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain || 'pending'})</span>`;
+        } else if (status.type === 'rest') {
+            mainHtml = `<span style="color:var(--green); font-weight:800;">REST</span>`;
+        } else if (status.type === 'lr') {
+            mainHtml = `<span style="color:var(--purple); font-weight:800;">LR DUTY</span>`;
+        } else if (status.type === 'spare') {
+            mainHtml = `<span style="color:#854d0e; font-weight:800;">SPARE</span>`;
+        } else {
+            box.classList.add('hidden'); return;
+        }
+        box.innerHTML = `<span style="font-weight:900;">Your Duty :</span> ${dateDayHtml} &nbsp; ${mainHtml}`;
+        box.classList.remove('hidden');
+    };
+
     // ========== DUTY ROSTER IFRAME BRIDGE ==========
     window._rosterIframeLoaded = false;
     window.openRosterModal = function() {
@@ -2885,6 +3010,7 @@
 
     window.closeRosterModal = function() {
         document.getElementById('roster-iframe-modal').classList.add('hidden');
+        window.renderYourDutyBox && window.renderYourDutyBox();
     };
 
     // Send logged-in user info to roster.html once it signals it's ready
@@ -3356,6 +3482,7 @@
             const userHq = (window.appState.profile && window.appState.profile.hq) ? window.appState.profile.hq.trim().toUpperCase() : '';
             rosterCard.classList.toggle('hidden', userHq !== 'BSB');
         }
+        window.renderYourDutyBox && window.renderYourDutyBox();
 
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
         
