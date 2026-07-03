@@ -11,12 +11,26 @@
         --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --text-muted: #64748b;
         --border: #e2e8f0; --blue: #3b82f6; --green: #22c55e; --red: #ef4444;
         --orange: #f97316; --purple: #a855f7; --yellow: #eab308;
-        --top-bar-bg: #0f172a; --input-bg: #f8fafc; --shadow: 0 3px 10px rgba(0,0,0,0.08);
+        --top-bar-bg: #0f172a; --input-bg: #f8fafc; --shadow: 0 4px 14px rgba(30,41,59,0.15), 0 1px 3px rgba(30,41,59,0.10);
     }
     body.dark-mode {
         --bg: #0d1117; --card: #161b22; --text: #e6edf3; --text-muted: #8b949e;
-        --border: #30363d; --input-bg: #21262d; --shadow: 0 3px 10px rgba(0,0,0,0.4);
+        --border: #30363d; --input-bg: #21262d; --shadow: 0 4px 14px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.35);
     }
+    body.dark-mode .team-info-card { background: rgba(234,179,8,0.18); }
+    body.dark-mode .team-info-card .cor-name, body.dark-mode .team-info-card .tte-name { color: #fde047; }
+    body.dark-mode .team-saved-card { background: rgba(59,130,246,0.10); }
+    body.dark-mode table.trip-table td.td-date { color: #60a5fa; }
+    body.dark-mode table.trip-table td.td-day { color: #4ade80; }
+    body.dark-mode table.trip-table td.td-day.day-sun { color: #f87171; }
+    body.dark-mode .ud-depart { color: #fca5a5; background: rgba(239,68,68,0.22); }
+    body.dark-mode .ud-arrive { color: #86efac; background: rgba(34,197,94,0.22); }
+    body.dark-mode .team-chip { color: #93c5fd; border-color: #60a5fa; background: rgba(59,130,246,0.15); }
+    body.dark-mode table.trip-table tr.trip-row-rest td { color: #86efac; }
+    body.dark-mode table.trip-table tr.trip-row-lr td { color: #d8b4fe; }
+    body.dark-mode table.trip-table tr.trip-row-spare td, body.dark-mode table.trip-table tr.trip-row-halt td { color: #fde047; }
+    body.dark-mode .cor-name, body.dark-mode .tte-name { color: #fde047; }
+    body.dark-mode .section-title-box { background: rgba(59,130,246,0.18); }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; padding-bottom: 75px; font-size: 15px; overscroll-behavior-y: contain; }
     .top-bar { position: sticky; top: 0; background: var(--top-bar-bg); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: center; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
@@ -31,8 +45,8 @@
     .tab-bar { display: flex; background: var(--card); border-radius: 30px; padding: 4px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid var(--border); }
     .tab-btn { flex: 1; padding: 11px; text-align: center; border-radius: 30px; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; }
     .tab-btn.active { background: var(--blue); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.4); }
-    input, select { width: 100%; padding: 11px 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 15px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; -webkit-appearance: none; appearance: none; }
-    input[type="date"] { -webkit-appearance: none; appearance: none; border-radius: 14px; min-height: 44px; }
+    .swipe-hint { text-align: center; font-size: 12px; font-weight: 700; color: var(--red); margin: 0 0 12px 0; }
+    input, select { width: 100%; padding: 11px 14px; border-radius: 30px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 15px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; }
     select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 36px; }
     button.action { width: 100%; padding: 13px; border: none; border-radius: 30px; font-weight: 700; font-size: 15px; color: white; background: var(--blue); cursor: pointer; box-shadow: 0 3px 8px rgba(59,130,246,0.35); font-family: 'Roboto', sans-serif; }
     .hidden { display: none !important; }
@@ -74,20 +88,24 @@
     table.trip-table td.td-date { text-align: left; padding-left: 10px; color: var(--blue); font-weight: 800; }
     table.trip-table td.td-day { color: var(--green); font-weight: 800; }
     table.trip-table td.td-day.day-sun { color: var(--red); }
-    table.trip-table tr.trip-divider td { border-bottom: 2px dashed var(--border); }
-    table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td { text-align: center; font-weight: 900; padding: 11px; letter-spacing: 0.5px; }
+    table.trip-table tr.trip-divider td { border-bottom: 2px dashed #1e3a8a; }
+    table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td, table.trip-table tr.trip-row-halt td { text-align: center; font-weight: 900; padding: 11px; letter-spacing: 0.5px; }
     table.trip-table tr.trip-row-rest td { background: rgba(34,197,94,0.30); color: #15803d; }
     table.trip-table tr.trip-row-lr td { background: rgba(168,85,247,0.25); color: var(--purple); }
     table.trip-table tr.trip-row-spare td { background: rgba(234,179,8,0.30); color: #854d0e; }
+    table.trip-table tr.trip-row-halt td { background: rgba(234,179,8,0.30); color: #854d0e; text-align: left; padding-left: 10px; }
     .ud-badge { font-size: 10px; font-weight: 900; padding: 3px 9px; border-radius: 12px; display: inline-block; }
     .ud-depart { color: #b91c1c; background: rgba(239,68,68,0.15); }
     .ud-arrive { color: #15803d; background: rgba(34,197,94,0.15); }
     .team-chip { display: inline-block; padding: 3px 10px; border-radius: 12px; border: 1.5px solid var(--blue); color: var(--blue); font-weight: 900; font-size: 12px; cursor: pointer; background: rgba(59,130,246,0.08); }
-    .search-card { border-radius: 16px; padding: 14px 16px; }
+    .team-click-hint { font-size: 11.5px; font-weight: 700; color: var(--blue); text-align: center; margin: 0 0 10px 0; }
+    .select-clear-row { display: flex; gap: 8px; align-items: center; }
+    .select-clear-row select { flex: 1; margin-bottom: 10px; }
+    .search-card { border-radius: 16px; padding: 14px 16px; margin-bottom: 22px; }
     .search-card label { display: block; text-align: center; font-size: 16px; font-weight: 900; margin-bottom: 10px; padding: 6px 12px; border-radius: 20px; }
     .search-row-3 { display: flex; gap: 6px; align-items: stretch; }
-    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 9px 10px; font-size: 13px; height: 40px; border-radius: 12px; }
-    .icon-search-btn, .clear-btn { width: 40px; height: 40px; flex-shrink: 0; padding: 0; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; }
+    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 9px 10px; font-size: 13px; height: 40px; border-radius: 20px; }
+    .icon-search-btn, .clear-btn { width: 40px; height: 40px; flex-shrink: 0; padding: 0; border: none; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
     .icon-search-btn { background: var(--blue); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     .clear-btn { background: rgba(239,68,68,0.5); color: white; font-weight: 900; }
     .result-modal-box { background: var(--card); border-radius: 18px; padding: 18px; width: 92%; max-width: 460px; max-height: 82vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
@@ -128,9 +146,10 @@ if (window.parent !== window) {
 }
 </script>
 <div id="roster-float-back" class="floating-back">← Back</div>
-<div class="top-bar"><span>📅 BSB Duty Roster</span></div>
+<div class="top-bar"><span>BSB Duty Roster</span></div>
 <div id="save-toast">✅ Saved successfully!</div>
 <div class="screen-content" id="swipe-area">
+    <p class="swipe-hint">↔️ Swipe left or right to switch tabs</p>
     <div class="tab-bar">
         <div class="tab-btn active" id="tab-mine" onclick="switchTab('mine')">My Duty</div>
         <div class="tab-btn" id="tab-search" onclick="switchTab('search')">Search</div>
@@ -193,9 +212,12 @@ if (window.parent !== window) {
         <div class="card">
             <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--blue);">👥 Edit Team Master</h3>
             <button class="action table-toggle-btn" onclick="window.toggleTeamTable()">📋 View All Teams (Table)</button>
-            <select id="admin-team-select" onchange="loadTeamForEdit()">
-                <option value="">-- Select team to edit --</option>
-            </select>
+            <div class="select-clear-row">
+                <select id="admin-team-select" onchange="loadTeamForEdit()">
+                    <option value="">-- Select team to edit --</option>
+                </select>
+                <button class="clear-btn" onclick="window.clearTeamEditSelect()">✕</button>
+            </div>
             <div id="admin-team-edit-form" class="hidden">
                 <label style="font-size:13px;">Base Program No</label>
                 <input type="number" id="admin-edit-baseprog">
@@ -211,9 +233,12 @@ if (window.parent !== window) {
         <div class="card">
             <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--purple);">🚂 Edit Link Programme</h3>
             <button class="action table-toggle-btn" onclick="window.toggleProgTable()">📋 View Full Link Programme (Table)</button>
-            <select id="admin-prog-select">
-                <option value="">-- Select program to edit --</option>
-            </select>
+            <div class="select-clear-row">
+                <select id="admin-prog-select">
+                    <option value="">-- Select program to edit --</option>
+                </select>
+                <button class="clear-btn" onclick="window.clearProgEditSelect()">✕</button>
+            </div>
             <div id="admin-prog-edit-form" class="hidden" style="margin-top:10px;">
                 <div id="admin-prog-slots"></div>
                 <button class="action" style="background:var(--green); margin-top:10px;" onclick="window.saveProgEdit()">Save Program</button>
@@ -433,7 +458,13 @@ window.getProgramForTeamOnDate = getProgramForTeamOnDate;
 
 function getDutyStatusOnDate(teamNo, dateStr) {
     const trip = getTripStartingOn(teamNo, dateStr);
-    if (trip) return { type: 'out', trip };
+    if (trip) {
+        // Fix: REST/LR/SPARE trips must route to their own type, not be treated as a duty 'out' day
+        if (trip.status === 'rest') return { type: 'rest', prog: trip.prog };
+        if (trip.status === 'lr') return { type: 'lr', prog: trip.prog };
+        if (trip.status === 'spare') return { type: 'spare', prog: trip.prog };
+        return { type: 'out', trip };
+    }
 
     for (let back = 1; back <= 2; back++) {
         const startDate = addDays(dateStr, -back);
@@ -608,10 +639,7 @@ function dayTd(dateStr) {
     return `<td class="td-day${isSun ? ' day-sun' : ''}">${day}</td>`;
 }
 
-// Builds the Date / Train No / Day / Prog No / Up-Down table for a list of trips.
-// Fix 1-iv: multiple trains on the same leg (e.g. COR+TTE-1 / TTE-2) shown together in ONE row as "13237/14213".
-// Fix 1-viii: no background color coding on Up/Down rows — only REST/LR/SPARE keep their color.
-// Fix 1-vi: dotted divider line after each trip AND after each rest row.
+// Builds the Date / Train No / Day / Up-Down table for a list of trips (Point 1: Prog No removed).
 function buildTripTable(trips) {
     if (!trips || trips.length === 0) {
         return '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:14px;">No trips found</p>';
@@ -619,24 +647,21 @@ function buildTripTable(trips) {
     let rows = '';
     trips.forEach(trip => {
         if (trip.status === 'rest') {
-            // Fix 1-iii: "06-Jul (Mon) : REST" format
-            rows += `<tr class="trip-row-rest trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : REST</td></tr>`;
+            rows += `<tr class="trip-row-rest trip-divider"><td colspan="4">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : REST</td></tr>`;
             return;
         }
         if (trip.status === 'lr') {
-            rows += `<tr class="trip-row-lr trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : LR DUTY</td></tr>`;
+            rows += `<tr class="trip-row-lr trip-divider"><td colspan="4">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : LR DUTY</td></tr>`;
             return;
         }
         if (trip.status === 'spare') {
-            rows += `<tr class="trip-row-spare trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : SPARE</td></tr>`;
+            rows += `<tr class="trip-row-spare trip-divider"><td colspan="4">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : SPARE</td></tr>`;
             return;
         }
-        // Up row: keep multi-train together as "13237/14213", single row
         rows += `<tr>
             <td class="td-date">${fmtDateLabel(trip.dateStr)}</td>
             <td>${trip.outTrain}</td>
             ${dayTd(trip.dateStr)}
-            <td>${trip.prog}</td>
             <td><span class="ud-badge ud-depart">Departs HQ</span></td>
         </tr>`;
         if (trip.returnTrain) {
@@ -644,17 +669,16 @@ function buildTripTable(trips) {
                 <td class="td-date">${fmtDateLabel(trip.returnDate)}</td>
                 <td>${trip.returnTrain}</td>
                 ${dayTd(trip.returnDate)}
-                <td>${trip.returnProg || ''}</td>
                 <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
         } else {
             rows += `<tr class="trip-divider">
-                <td colspan="4" style="color:var(--text-muted); font-weight:600; text-align:left; padding-left:10px;">Return pending</td>
+                <td colspan="3" style="color:var(--text-muted); font-weight:600; text-align:left; padding-left:10px;">Return pending</td>
                 <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
         }
     });
-    return `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Prog No</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
+    return `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 window.buildTripTable = buildTripTable;
 
@@ -748,17 +772,16 @@ window.renderTeamSearch = function() {
     if (status.type === 'out') {
         html += `<div class="trip-table-wrap">${buildTripTable([status.trip])}</div>`;
     } else if (status.type === 'in') {
-        html += `<div class="trip-table-wrap"><table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Prog No</th><th>Up/Down</th></tr></thead><tbody>
-            <tr class="trip-divider"><td class="td-date">${fmtDateLabel(dateStr)}</td><td>${status.trip.returnTrain}</td>${dayTd(dateStr)}<td>${status.trip.returnProg||''}</td><td><span class="ud-badge ud-arrive">Arrives HQ</span></td></tr>
+        html += `<div class="trip-table-wrap"><table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Up/Down</th></tr></thead><tbody>
+            <tr class="trip-divider"><td class="td-date">${fmtDateLabel(dateStr)}</td><td>${status.trip.returnTrain}</td>${dayTd(dateStr)}<td><span class="ud-badge ud-arrive">Arrives HQ</span></td></tr>
         </tbody></table></div>`;
     } else if (status.type === 'halt') {
-        // Fix 6: show BOTH the up and down train of that trip during a halt day
-        html += `<div class="trip-table-wrap">${buildTripTable([status.trip])}</div>`;
-        html += `<p style="font-size:12px; color:var(--purple); text-align:center; margin-top:8px; font-weight:700;">Team is at intermediate halt station on ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})</p>`;
+        // Fix 6: show BOTH the up and down train of that trip during a halt day. Fix 3: yellow halt-day styling, Fix 12-ii: no Prog No
+        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-halt trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : Halt Day — Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'}</td></tr></tbody></table></div>`;
     } else if (status.type === 'rest') {
-        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-rest trip-divider"><td colspan="5">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : REST</td></tr></tbody></table></div>`;
+        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-rest trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : REST</td></tr></tbody></table></div>`;
     } else if (status.type === 'lr') {
-        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-lr trip-divider"><td colspan="5">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : LR DUTY</td></tr></tbody></table></div>`;
+        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-lr trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : LR DUTY</td></tr></tbody></table></div>`;
     } else {
         html += `<p style="color:var(--text-muted); font-size:13px; text-align:center;">No duty data for this date.</p>`;
     }
@@ -807,8 +830,9 @@ window.renderTrainSearch = function() {
     if (!found) {
         return showResultModal(`Train ${trainNo}`, '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No matches found.</p>');
     }
+    const hint = `<p class="team-click-hint">👆 Tap any Team number to view its members</p>`;
     const html = `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Team</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
-    showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 7 Days'}`, `<div class="trip-table-wrap">${html}</div>`);
+    showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 7 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
 };
 
 window.clearTeamSearch = function() {
@@ -820,20 +844,42 @@ window.clearTrainSearch = function() {
     document.getElementById('search-train-date').value = '';
 };
 
+window._dateSearchSort = { field: 'team', dir: 1 };
+
 window.renderDateOnlySearch = function() {
     const dateStr = document.getElementById('search-date-only').value;
     if (!dateStr) return showToast('❌ Select a date', true);
+    window._lastDateOnlySearch = dateStr;
+    buildDateOnlyResults(dateStr);
+};
+
+function buildDateOnlyResults(dateStr) {
+    let entries = [];
+    Object.keys(window.appData.teamMaster).forEach(t => {
+        const status = getDutyStatusOnDate(t, dateStr);
+        entries.push({ t: parseInt(t), status });
+    });
+
+    // Fix 12-iv: sort by team or prog no, ascending/descending
+    const { field, dir } = window._dateSearchSort;
+    entries.sort((a, b) => {
+        let av, bv;
+        if (field === 'team') { av = a.t; bv = b.t; }
+        else { // prog
+            av = a.status.trip ? a.status.trip.prog : (a.status.prog || 0);
+            bv = b.status.trip ? b.status.trip.prog : (b.status.prog || 0);
+        }
+        return (av - bv) * dir;
+    });
 
     let rows = '';
     let count = 0;
-    Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
-        const status = getDutyStatusOnDate(t, dateStr);
+    entries.forEach(({ t, status }) => {
         if (status.type === 'out') {
             count++;
             rows += `<tr class="trip-divider">
                 <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
                 <td>${status.trip.outTrain}</td>
-                ${dayTd(dateStr)}
                 <td>${status.trip.prog}</td>
                 <td><span class="ud-badge ud-depart">Departs HQ</span></td>
             </tr>`;
@@ -842,27 +888,46 @@ window.renderDateOnlySearch = function() {
             rows += `<tr class="trip-divider">
                 <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
                 <td>${status.trip.returnTrain}</td>
-                ${dayTd(dateStr)}
                 <td>${status.trip.returnProg||''}</td>
                 <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
         } else if (status.type === 'halt') {
             count++;
-            // Fix 6: show both up and down train during halt day
-            rows += `<tr class="trip-divider"><td colspan="5" style="text-align:left; padding-left:10px;"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span> — Halt day (Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'}) · Prog ${status.trip.prog}</td></tr>`;
+            // Fix 12-ii: halt day yellow, no Prog No column value shown
+            rows += `<tr class="trip-row-halt trip-divider"><td colspan="4"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span> — Halt day (Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'})</td></tr>`;
         } else if (status.type === 'rest') {
+            // Fix 12-i: REST now correctly detected (bug fixed in getDutyStatusOnDate)
             count++;
-            rows += `<tr class="trip-row-rest trip-divider"><td colspan="5">Team ${t} — REST</td></tr>`;
+            rows += `<tr class="trip-row-rest trip-divider"><td colspan="4">Team ${t} — REST</td></tr>`;
         } else if (status.type === 'lr') {
             count++;
-            rows += `<tr class="trip-row-lr trip-divider"><td colspan="5">Team ${t} — LR DUTY</td></tr>`;
+            rows += `<tr class="trip-row-lr trip-divider"><td colspan="4">Team ${t} — LR DUTY</td></tr>`;
         }
     });
     if (count === 0) {
         return showResultModal(`All Teams — ${fmtDateLabel(dateStr)}`, '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No duty data for this date.</p>');
     }
-    const html = `<table class="trip-table"><thead><tr><th>Team</th><th>Train No</th><th>Day</th><th>Prog No</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
-    showResultModal(`All Teams — ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})`, `<div class="trip-table-wrap">${html}</div>`);
+    // Fix 12-iii: day column removed since date is already fixed for this whole search
+    const teamArrow = window._dateSearchSort.field === 'team' ? (window._dateSearchSort.dir === 1 ? '▲' : '▼') : '⇅';
+    const progArrow = window._dateSearchSort.field === 'prog' ? (window._dateSearchSort.dir === 1 ? '▲' : '▼') : '⇅';
+    const hint = `<p class="team-click-hint">👆 Tap any Team number to view its members</p>`;
+    const html = `<table class="trip-table"><thead><tr>
+        <th onclick="window.toggleDateSort('team')" style="cursor:pointer;">Team ${teamArrow}</th>
+        <th>Train No</th>
+        <th onclick="window.toggleDateSort('prog')" style="cursor:pointer;">Prog No ${progArrow}</th>
+        <th>Up/Down</th>
+    </tr></thead><tbody>${rows}</tbody></table>`;
+    showResultModal(`All Teams — ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})`, `${hint}<div class="trip-table-wrap">${html}</div>`);
+}
+
+window.toggleDateSort = function(field) {
+    if (window._dateSearchSort.field === field) {
+        window._dateSearchSort.dir *= -1;
+    } else {
+        window._dateSearchSort.field = field;
+        window._dateSearchSort.dir = 1;
+    }
+    buildDateOnlyResults(window._lastDateOnlySearch);
 };
 
 window.clearDateOnlySearch = function() {
@@ -882,12 +947,15 @@ window.switchTab = function(tab) {
 };
 
 (function setupSwipe() {
-    let startX = 0, startY = 0;
+    let startX = 0, startY = 0, startInsideModal = false;
     document.addEventListener('touchstart', (e) => {
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
+        // Fix 13: don't trigger tab-swipe if the gesture starts inside the result modal (admin tables, etc.)
+        startInsideModal = !!e.target.closest('#result-modal-overlay, #feedback-modal-overlay');
     }, { passive: true });
     document.addEventListener('touchend', (e) => {
+        if (startInsideModal) return;
         const dx = e.changedTouches[0].clientX - startX;
         const dy = e.changedTouches[0].clientY - startY;
         if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
@@ -967,6 +1035,16 @@ window.loadTeamForEdit = function() {
     form.classList.remove('hidden');
 };
 
+window.clearTeamEditSelect = function() {
+    document.getElementById('admin-team-select').value = '';
+    document.getElementById('admin-team-edit-form').classList.add('hidden');
+};
+
+window.clearProgEditSelect = function() {
+    document.getElementById('admin-prog-select').value = '';
+    document.getElementById('admin-prog-edit-form').classList.add('hidden');
+};
+
 window.saveTeamEdit = async function() {
     const t = document.getElementById('admin-team-select').value;
     if (!t) return;
@@ -994,8 +1072,9 @@ window.toggleTeamTable = function() {
             <td>${t}</td><td>${team.cor}</td><td>${team.tte1||'-'}</td><td>${team.tte2||'-'}</td><td>${team.baseProg}</td><td>✏️</td>
         </tr>`;
     });
-    const html = `<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th>Prog</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
-    showResultModal('👥 All Teams — Tap row to edit', html);
+    const hint = `<p class="team-click-hint">👆 Tap any row to edit that team</p>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th>Prog</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    showResultModal('👥 All Teams', html);
 };
 
 window.jumpToTeamEdit = function(t) {
@@ -1044,8 +1123,9 @@ window.toggleProgTable = function() {
         const pd = window.appData.linkProgramme[p] || {};
         rows += `<tr onclick="window.jumpToProgEdit(${p})"><td>${p}</td>` + SLOT_ORDER.map(s => `<td>${pd[s] || '-'}</td>`).join('') + `</tr>`;
     }
-    const html = `<div class="admin-table-wrap"><table class="admin-table prog-table-bordered"><thead><tr><th>Prog</th>${SLOT_ORDER.map(s => `<th>${SLOT_LABELS[s]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
-    showResultModal('🚂 Full Link Programme — Tap row to edit', html);
+    const hint = `<p class="team-click-hint">👆 Tap any row to edit that program</p>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table prog-table-bordered"><thead><tr><th>Prog</th>${SLOT_ORDER.map(s => `<th>${SLOT_LABELS[s]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    showResultModal('🚂 Full Link Programme', html);
 };
 
 window.jumpToProgEdit = function(p) {
