@@ -37,7 +37,7 @@
     button.action { width: 100%; padding: 13px; border: none; border-radius: 30px; font-weight: 700; font-size: 15px; color: white; background: var(--blue); cursor: pointer; box-shadow: 0 3px 8px rgba(59,130,246,0.35); font-family: 'Roboto', sans-serif; }
     .hidden { display: none !important; }
     h3.section-title { font-size: 14px; font-weight: 900; color: var(--blue); text-transform: uppercase; margin: 18px 0 10px 0; }
-    .section-title-box { text-align: center; background: rgba(59,130,246,0.10); border-radius: 30px; padding: 8px 16px; margin: 18px 0 12px 0; font-size: 13px; font-weight: 900; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px; box-shadow: var(--shadow); }
+    .section-title-box { text-align: center; background: rgba(59,130,246,0.22); border: 1px solid rgba(59,130,246,0.35); border-radius: 30px; padding: 8px 16px; margin: 18px 0 12px 0; font-size: 13px; font-weight: 900; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px; box-shadow: var(--shadow); }
     .save-team-row { display: flex; gap: 8px; margin-bottom: 10px; }
     .save-team-row input { flex: 1; margin-bottom: 0; }
     .save-team-row button { width: auto; flex-shrink: 0; padding: 0 18px; border-radius: 12px; background: var(--green); color: white; border: none; font-weight: 700; font-size: 13px; box-shadow: 0 3px 8px rgba(34,197,94,0.3); font-family: 'Roboto', sans-serif; }
@@ -71,31 +71,35 @@
     table.trip-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--card); }
     table.trip-table th { background: var(--top-bar-bg); color: #fde047; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; }
     table.trip-table td { padding: 9px 3px; text-align: center; font-weight: 700; color: var(--text); }
-    table.trip-table tr.trip-row-up td { background: rgba(59,130,246,0.16); }
-    table.trip-table tr.trip-row-down td { background: var(--card); }
-    table.trip-table tr.trip-divider td { border-bottom: 3px solid var(--border); }
+    table.trip-table td.td-date { text-align: left; padding-left: 10px; color: var(--blue); font-weight: 800; }
+    table.trip-table td.td-day { color: var(--green); font-weight: 800; }
+    table.trip-table td.td-day.day-sun { color: var(--red); }
+    table.trip-table tr.trip-divider td { border-bottom: 2px dashed var(--border); }
     table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td { text-align: center; font-weight: 900; padding: 11px; letter-spacing: 0.5px; }
     table.trip-table tr.trip-row-rest td { background: rgba(34,197,94,0.30); color: #15803d; }
     table.trip-table tr.trip-row-lr td { background: rgba(168,85,247,0.25); color: var(--purple); }
     table.trip-table tr.trip-row-spare td { background: rgba(234,179,8,0.30); color: #854d0e; }
-    .ud-label { font-size: 10.5px; font-weight: 900; }
-    .ud-depart { color: #15803d; }
-    .ud-arrive { color: #1d4ed8; }
+    .ud-badge { font-size: 10px; font-weight: 900; padding: 3px 9px; border-radius: 12px; display: inline-block; }
+    .ud-depart { color: #b91c1c; background: rgba(239,68,68,0.15); }
+    .ud-arrive { color: #15803d; background: rgba(34,197,94,0.15); }
+    .team-chip { display: inline-block; padding: 3px 10px; border-radius: 12px; border: 1.5px solid var(--blue); color: var(--blue); font-weight: 900; font-size: 12px; cursor: pointer; background: rgba(59,130,246,0.08); }
     .search-card { border-radius: 16px; padding: 14px 16px; }
-    .search-card label { display: block; text-align: center; font-size: 16px; font-weight: 900; margin-bottom: 8px; padding: 6px 12px; border-radius: 20px; }
-    .search-card .date-hint { font-size: 10.5px; color: var(--text-muted); text-align: center; margin: -4px 0 8px 0; }
-    .search-row { display: flex; gap: 8px; }
-    .search-row input, .search-row select { flex: 1; margin-bottom: 0; padding: 8px 12px; font-size: 14px; }
-    .search-row button.action { padding: 9px; font-size: 14px; }
-    .clear-btn { width: 40px; height: 40px; flex-shrink: 0; padding: 0; background: var(--red); color: white; border: none; border-radius: 50%; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Roboto', sans-serif; display: flex; align-items: center; justify-content: center; }
+    .search-card label { display: block; text-align: center; font-size: 16px; font-weight: 900; margin-bottom: 10px; padding: 6px 12px; border-radius: 20px; }
+    .search-row-3 { display: flex; gap: 6px; align-items: stretch; }
+    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 9px 10px; font-size: 13px; height: 40px; border-radius: 12px; }
+    .icon-search-btn, .clear-btn { width: 40px; height: 40px; flex-shrink: 0; padding: 0; border: none; border-radius: 12px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; }
+    .icon-search-btn { background: var(--blue); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
+    .clear-btn { background: rgba(239,68,68,0.5); color: white; font-weight: 900; }
     .result-modal-box { background: var(--card); border-radius: 18px; padding: 18px; width: 92%; max-width: 460px; max-height: 82vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
     .result-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
     .result-modal-header h3 { margin: 0; font-size: 16px; font-weight: 900; color: var(--text); }
     .result-modal-close { width: auto; padding: 6px 14px; font-size: 13px; margin: 0; background: var(--text-muted); border-radius: 20px; border: none; color: white; cursor: pointer; font-family: 'Roboto', sans-serif; }
     .admin-table-wrap { overflow-x: auto; margin-bottom: 14px; border-radius: 12px; border: 1px solid var(--border); }
     table.admin-table { border-collapse: collapse; width: 100%; font-size: 12px; white-space: nowrap; }
-    table.admin-table th { background: var(--top-bar-bg); color: #fde047; padding: 7px 8px; font-size: 10.5px; text-transform: uppercase; position: sticky; top: 0; }
-    table.admin-table td { padding: 7px 8px; border-bottom: 1px solid var(--border); text-align: center; }
+    table.admin-table th { background: var(--top-bar-bg); color: #fde047; padding: 7px 8px; font-size: 10.5px; text-transform: uppercase; position: sticky; top: 0; border: 1px solid #334155; }
+    table.admin-table td { padding: 7px 8px; border: 1px solid var(--border); text-align: center; }
+    table.admin-table { border-collapse: collapse; }
+    table.prog-table-bordered th, table.prog-table-bordered td { border: 1px solid var(--border); }
     table.admin-table tbody tr { cursor: pointer; }
     table.admin-table tbody tr:active { background: rgba(59,130,246,0.15); }
     .table-toggle-btn { background: var(--purple); margin-bottom: 10px; }
@@ -151,39 +155,30 @@ if (window.parent !== window) {
         <div id="my-duty-week"></div>
     </div>
     <div id="view-search" class="hidden">
-        <div class="card search-card">
+        <div class="card search-card" style="border: 2px solid rgba(168,85,247,0.4);">
             <label style="background:rgba(168,85,247,0.15); color:var(--purple);">Search by Team No + Date</label>
-            <div class="search-row" style="margin-bottom:6px;">
-                <input type="number" id="search-team" placeholder="Team no e.g. 9">
-                <input type="date" id="search-team-date">
-            </div>
-            <p class="date-hint">e.g. select a date like 25-12-2026</p>
-            <div class="search-row">
-                <button class="action" style="margin:0;" onclick="renderTeamSearch()">🔍 Search</button>
+            <div class="search-row-3">
+                <input type="number" id="search-team" placeholder="Team no">
+                <input type="date" id="search-team-date" placeholder="Date">
+                <button class="icon-search-btn" onclick="renderTeamSearch()">🔍</button>
                 <button class="clear-btn" onclick="window.clearTeamSearch()">✕</button>
             </div>
         </div>
-        <div class="card search-card">
-            <label style="background:rgba(249,115,22,0.15); color:var(--orange);">Search by Train No</label>
-            <div class="search-row" style="margin-bottom:6px;">
-                <input type="text" id="search-train" placeholder="Train no e.g. 15127">
-                <input type="date" id="search-train-date">
-            </div>
-            <p class="date-hint">Date optional — e.g. 25-12-2026. Leave blank for next 7 days</p>
-            <div class="search-row">
-                <button class="action" style="margin:0;" onclick="renderTrainSearch()">🔍 Search</button>
+        <div class="card search-card" style="border: 2px solid rgba(249,115,22,0.4);">
+            <label style="background:rgba(249,115,22,0.15); color:var(--orange);">Search by Train No + Date</label>
+            <div class="search-row-3">
+                <input type="text" id="search-train" placeholder="Train no">
+                <input type="date" id="search-train-date" placeholder="Date">
+                <button class="icon-search-btn" onclick="renderTrainSearch()">🔍</button>
                 <button class="clear-btn" onclick="window.clearTrainSearch()">✕</button>
             </div>
         </div>
 
-        <div class="card search-card">
+        <div class="card search-card" style="border: 2px solid rgba(59,130,246,0.4);">
             <label style="background:rgba(59,130,246,0.15); color:var(--blue);">Search by Date Only</label>
-            <div class="search-row" style="margin-bottom:6px;">
-                <input type="date" id="search-date-only">
-            </div>
-            <p class="date-hint">e.g. select a date like 25-12-2026</p>
-            <div class="search-row">
-                <button class="action" style="margin:0;" onclick="renderDateOnlySearch()">🔍 Search</button>
+            <div class="search-row-3">
+                <input type="date" id="search-date-only" placeholder="Date" style="flex:2;">
+                <button class="icon-search-btn" onclick="renderDateOnlySearch()">🔍</button>
                 <button class="clear-btn" onclick="window.clearDateOnlySearch()">✕</button>
             </div>
         </div>
@@ -198,7 +193,6 @@ if (window.parent !== window) {
         <div class="card">
             <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--blue);">👥 Edit Team Master</h3>
             <button class="action table-toggle-btn" onclick="window.toggleTeamTable()">📋 View All Teams (Table)</button>
-            <div id="team-table-view" class="hidden admin-table-wrap"></div>
             <select id="admin-team-select" onchange="loadTeamForEdit()">
                 <option value="">-- Select team to edit --</option>
             </select>
@@ -217,7 +211,6 @@ if (window.parent !== window) {
         <div class="card">
             <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--purple);">🚂 Edit Link Programme</h3>
             <button class="action table-toggle-btn" onclick="window.toggleProgTable()">📋 View Full Link Programme (Table)</button>
-            <div id="prog-table-view" class="hidden admin-table-wrap"></div>
             <select id="admin-prog-select">
                 <option value="">-- Select program to edit --</option>
             </select>
@@ -576,8 +569,7 @@ window.onMyTeamChange = function() {
 function fmtDateLabel(dateStr) {
     const d = new Date(dateStr + 'T00:00:00');
     const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-    return `${String(d.getDate()).padStart(2,'0')}-${months[d.getMonth()]} (${days[d.getDay()]})`;
+    return `${String(d.getDate()).padStart(2,'0')}-${months[d.getMonth()]}`;
 }
 
 function renderMyDutyWeek() {
@@ -594,8 +586,8 @@ function renderMyDutyWeek() {
         </div>
     </div>`;
 
-    const futureTrips = collectTrips(teamNo, 'future', 4);
-    html += '<div class="section-title-box">Next Four Trips</div>';
+    const futureTrips = collectTrips(teamNo, 'future', 5);
+    html += '<div class="section-title-box">Next Five Trips</div>';
     html += `<div class="trip-table-wrap">${buildTripTable(futureTrips)}</div>`;
 
     const pastTrips = collectTrips(teamNo, 'past', 2);
@@ -610,7 +602,16 @@ function dayAbbrev(dateStr) {
     return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
 }
 
-// Builds the Date / Train No / Day / Prog / Up-Down table for a list of trips.
+function dayTd(dateStr) {
+    const day = dayAbbrev(dateStr);
+    const isSun = day === 'Sun';
+    return `<td class="td-day${isSun ? ' day-sun' : ''}">${day}</td>`;
+}
+
+// Builds the Date / Train No / Day / Prog No / Up-Down table for a list of trips.
+// Fix 1-iv: multiple trains on the same leg (e.g. COR+TTE-1 / TTE-2) shown together in ONE row as "13237/14213".
+// Fix 1-viii: no background color coding on Up/Down rows — only REST/LR/SPARE keep their color.
+// Fix 1-vi: dotted divider line after each trip AND after each rest row.
 function buildTripTable(trips) {
     if (!trips || trips.length === 0) {
         return '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:14px;">No trips found</p>';
@@ -618,48 +619,42 @@ function buildTripTable(trips) {
     let rows = '';
     trips.forEach(trip => {
         if (trip.status === 'rest') {
-            rows += `<tr class="trip-row-rest trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} - REST - ${dayAbbrev(trip.dateStr)}</td></tr>`;
+            // Fix 1-iii: "06-Jul (Mon) : REST" format
+            rows += `<tr class="trip-row-rest trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : REST</td></tr>`;
             return;
         }
         if (trip.status === 'lr') {
-            rows += `<tr class="trip-row-lr trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} - LR DUTY - ${dayAbbrev(trip.dateStr)}</td></tr>`;
+            rows += `<tr class="trip-row-lr trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : LR DUTY</td></tr>`;
             return;
         }
         if (trip.status === 'spare') {
-            rows += `<tr class="trip-row-spare trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} - SPARE - ${dayAbbrev(trip.dateStr)}</td></tr>`;
+            rows += `<tr class="trip-row-spare trip-divider"><td colspan="5">${fmtDateLabel(trip.dateStr)} (${dayAbbrev(trip.dateStr)}) : SPARE</td></tr>`;
             return;
         }
-        const upTrains = (trip.outTrain || '').split('/').filter(Boolean);
-        const downTrains = trip.returnTrain ? trip.returnTrain.split('/').filter(Boolean) : [];
-        upTrains.forEach((tno, i) => {
-            const isLastRowOfTrip = !downTrains.length && i === upTrains.length - 1;
-            rows += `<tr class="trip-row-up${isLastRowOfTrip ? ' trip-divider' : ''}">
-                <td>${fmtDateLabel(trip.dateStr)}</td>
-                <td>${tno}</td>
-                <td>${dayAbbrev(trip.dateStr)}</td>
-                <td>${trip.prog}</td>
-                <td class="ud-label ud-depart">${i === 0 ? 'Departs HQ' : ''}</td>
+        // Up row: keep multi-train together as "13237/14213", single row
+        rows += `<tr>
+            <td class="td-date">${fmtDateLabel(trip.dateStr)}</td>
+            <td>${trip.outTrain}</td>
+            ${dayTd(trip.dateStr)}
+            <td>${trip.prog}</td>
+            <td><span class="ud-badge ud-depart">Departs HQ</span></td>
+        </tr>`;
+        if (trip.returnTrain) {
+            rows += `<tr class="trip-divider">
+                <td class="td-date">${fmtDateLabel(trip.returnDate)}</td>
+                <td>${trip.returnTrain}</td>
+                ${dayTd(trip.returnDate)}
+                <td>${trip.returnProg || ''}</td>
+                <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
-        });
-        if (downTrains.length) {
-            downTrains.forEach((tno, i) => {
-                const isLast = i === downTrains.length - 1;
-                rows += `<tr class="trip-row-down${isLast ? ' trip-divider' : ''}">
-                    <td>${fmtDateLabel(trip.returnDate)}</td>
-                    <td>${tno}</td>
-                    <td>${dayAbbrev(trip.returnDate)}</td>
-                    <td>${trip.returnProg || ''}</td>
-                    <td class="ud-label ud-arrive">${i === 0 ? 'Arrives HQ' : ''}</td>
-                </tr>`;
-            });
-        } else if (upTrains.length) {
-            rows += `<tr class="trip-row-down trip-divider">
-                <td colspan="4" style="color:var(--text-muted); font-weight:600;">Return pending</td>
-                <td class="ud-label ud-arrive">Arrives HQ</td>
+        } else {
+            rows += `<tr class="trip-divider">
+                <td colspan="4" style="color:var(--text-muted); font-weight:600; text-align:left; padding-left:10px;">Return pending</td>
+                <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
         }
     });
-    return `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Prog</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
+    return `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Prog No</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 window.buildTripTable = buildTripTable;
 
@@ -717,6 +712,19 @@ function teamLine(team) {
     return `<span class="cor-name">${team.cor}</span>${team.tte1 ? ', <span class="tte-name">'+team.tte1+'</span>' : ''}${team.tte2 ? ', <span class="tte-name">'+team.tte2+'</span>' : ''}`;
 }
 
+window.showTeamInfo = function(t) {
+    const team = window.appData.teamMaster[t];
+    if (!team) return;
+    const html = `<div class="team-info-card" style="border-radius:14px;">
+        <div class="team-title-box">Team ${t}</div>
+        <div class="team-members">
+            <span class="cor-name">COR: ${team.cor}</span><br>
+            <span class="tte-name">TTE-1: ${team.tte1}</span>${team.tte2 ? `<br><span class="tte-name">TTE-2: ${team.tte2}</span>` : ''}
+        </div>
+    </div>`;
+    showResultModal(`Team ${t} Members`, html);
+};
+
 window.renderTeamSearch = function() {
     const teamNo = document.getElementById('search-team').value;
     const dateStr = document.getElementById('search-team-date').value;
@@ -724,26 +732,33 @@ window.renderTeamSearch = function() {
     if (!teamNo || !window.appData.teamMaster[teamNo]) {
         return showToast('❌ Enter a valid team number', true);
     }
-    if (!dateStr) {
-        return showToast('❌ Date is mandatory for Team search', true);
-    }
 
     const team = window.appData.teamMaster[teamNo];
-    const status = getDutyStatusOnDate(teamNo, dateStr);
     let html = `<div style="font-size:13px; color:var(--text-muted); margin-bottom:12px; text-align:center;">${teamLine(team)}</div>`;
 
+    if (!dateStr) {
+        // Fix 2-iii: date optional — show next 5 trips like My Duty
+        const trips = collectTrips(teamNo, 'future', 5);
+        html += `<div class="trip-table-wrap">${buildTripTable(trips)}</div>`;
+        showResultModal(`Team ${teamNo} — Next 5 Trips`, html);
+        return;
+    }
+
+    const status = getDutyStatusOnDate(teamNo, dateStr);
     if (status.type === 'out') {
         html += `<div class="trip-table-wrap">${buildTripTable([status.trip])}</div>`;
     } else if (status.type === 'in') {
-        html += `<div class="trip-table-wrap"><table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Prog</th><th>Up/Down</th></tr></thead><tbody>
-            <tr class="trip-row-down trip-divider"><td>${fmtDateLabel(dateStr)}</td><td>${status.trip.returnTrain}</td><td>${dayAbbrev(dateStr)}</td><td>${status.trip.returnProg||''}</td><td class="ud-label ud-arrive">Arrives HQ</td></tr>
+        html += `<div class="trip-table-wrap"><table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Prog No</th><th>Up/Down</th></tr></thead><tbody>
+            <tr class="trip-divider"><td class="td-date">${fmtDateLabel(dateStr)}</td><td>${status.trip.returnTrain}</td>${dayTd(dateStr)}<td>${status.trip.returnProg||''}</td><td><span class="ud-badge ud-arrive">Arrives HQ</span></td></tr>
         </tbody></table></div>`;
     } else if (status.type === 'halt') {
-        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-lr trip-divider"><td colspan="5">${fmtDateLabel(dateStr)} - Away from HQ (halt day) - Prog ${status.trip.prog}</td></tr></tbody></table></div>`;
+        // Fix 6: show BOTH the up and down train of that trip during a halt day
+        html += `<div class="trip-table-wrap">${buildTripTable([status.trip])}</div>`;
+        html += `<p style="font-size:12px; color:var(--purple); text-align:center; margin-top:8px; font-weight:700;">Team is at intermediate halt station on ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})</p>`;
     } else if (status.type === 'rest') {
-        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-rest trip-divider"><td colspan="5">${fmtDateLabel(dateStr)} - REST - ${dayAbbrev(dateStr)}</td></tr></tbody></table></div>`;
+        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-rest trip-divider"><td colspan="5">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : REST</td></tr></tbody></table></div>`;
     } else if (status.type === 'lr') {
-        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-lr trip-divider"><td colspan="5">${fmtDateLabel(dateStr)} - LR DUTY - ${dayAbbrev(dateStr)}</td></tr></tbody></table></div>`;
+        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-lr trip-divider"><td colspan="5">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : LR DUTY</td></tr></tbody></table></div>`;
     } else {
         html += `<p style="color:var(--text-muted); font-size:13px; text-align:center;">No duty data for this date.</p>`;
     }
@@ -775,14 +790,14 @@ window.renderTrainSearch = function() {
                 const isDown = trip.returnTrain && trip.returnTrain.includes(trainNo);
                 if (isUp || isDown) {
                     found = true;
-                    const team = window.appData.teamMaster[t];
                     const dispDate = isUp ? ds : trip.returnDate;
-                    rows += `<tr class="${isUp ? 'trip-row-up' : 'trip-row-down'} trip-divider">
-                        <td>${fmtDateLabel(dispDate)}</td>
-                        <td>${trainNo}</td>
-                        <td>${dayAbbrev(dispDate)}</td>
-                        <td>Team ${t}</td>
-                        <td class="ud-label ${isUp ? 'ud-depart' : 'ud-arrive'}">${isUp ? 'Departs HQ' : 'Arrives HQ'}</td>
+                    // Fix 7: team no shown in a bordered clickable box
+                    rows += `<tr class="trip-divider">
+                        <td class="td-date">${fmtDateLabel(dispDate)}</td>
+                        <td>${isUp ? trip.outTrain : trip.returnTrain}</td>
+                        ${dayTd(dispDate)}
+                        <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
+                        <td><span class="ud-badge ${isUp ? 'ud-depart' : 'ud-arrive'}">${isUp ? 'Departs HQ' : 'Arrives HQ'}</span></td>
                     </tr>`;
                 }
             }
@@ -813,38 +828,41 @@ window.renderDateOnlySearch = function() {
     let count = 0;
     Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
         const status = getDutyStatusOnDate(t, dateStr);
-        const team = window.appData.teamMaster[t];
         if (status.type === 'out') {
             count++;
-            const upTrains = (status.trip.outTrain || '').split('/').filter(Boolean);
-            upTrains.forEach((tno, i) => {
-                rows += `<tr class="trip-row-up${i === upTrains.length-1 ? ' trip-divider' : ''}">
-                    <td>Team ${t}</td><td>${tno}</td><td>${dayAbbrev(dateStr)}</td><td>${status.trip.prog}</td>
-                    <td class="ud-label ud-depart">${i===0 ? 'Departs HQ' : ''}</td>
-                </tr>`;
-            });
+            rows += `<tr class="trip-divider">
+                <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
+                <td>${status.trip.outTrain}</td>
+                ${dayTd(dateStr)}
+                <td>${status.trip.prog}</td>
+                <td><span class="ud-badge ud-depart">Departs HQ</span></td>
+            </tr>`;
         } else if (status.type === 'in') {
             count++;
-            rows += `<tr class="trip-row-down trip-divider">
-                <td>Team ${t}</td><td>${status.trip.returnTrain}</td><td>${dayAbbrev(dateStr)}</td><td>${status.trip.returnProg||''}</td>
-                <td class="ud-label ud-arrive">Arrives HQ</td>
+            rows += `<tr class="trip-divider">
+                <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
+                <td>${status.trip.returnTrain}</td>
+                ${dayTd(dateStr)}
+                <td>${status.trip.returnProg||''}</td>
+                <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
         } else if (status.type === 'halt') {
             count++;
-            rows += `<tr class="trip-row-lr trip-divider"><td colspan="5">Team ${t} — Away from HQ (halt day) · Prog ${status.trip.prog}</td></tr>`;
+            // Fix 6: show both up and down train during halt day
+            rows += `<tr class="trip-divider"><td colspan="5" style="text-align:left; padding-left:10px;"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span> — Halt day (Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'}) · Prog ${status.trip.prog}</td></tr>`;
         } else if (status.type === 'rest') {
             count++;
-            rows += `<tr class="trip-row-rest trip-divider"><td colspan="5">Team ${t} - REST - ${dayAbbrev(dateStr)}</td></tr>`;
+            rows += `<tr class="trip-row-rest trip-divider"><td colspan="5">Team ${t} — REST</td></tr>`;
         } else if (status.type === 'lr') {
             count++;
-            rows += `<tr class="trip-row-lr trip-divider"><td colspan="5">Team ${t} - LR DUTY - ${dayAbbrev(dateStr)}</td></tr>`;
+            rows += `<tr class="trip-row-lr trip-divider"><td colspan="5">Team ${t} — LR DUTY</td></tr>`;
         }
     });
     if (count === 0) {
         return showResultModal(`All Teams — ${fmtDateLabel(dateStr)}`, '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No duty data for this date.</p>');
     }
-    const html = `<table class="trip-table"><thead><tr><th>Team</th><th>Train No</th><th>Day</th><th>Prog</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
-    showResultModal(`All Teams — ${fmtDateLabel(dateStr)}`, `<div class="trip-table-wrap">${html}</div>`);
+    const html = `<table class="trip-table"><thead><tr><th>Team</th><th>Train No</th><th>Day</th><th>Prog No</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
+    showResultModal(`All Teams — ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})`, `<div class="trip-table-wrap">${html}</div>`);
 };
 
 window.clearDateOnlySearch = function() {
@@ -969,8 +987,6 @@ window.saveTeamEdit = async function() {
 };
 
 window.toggleTeamTable = function() {
-    const div = document.getElementById('team-table-view');
-    if (!div.classList.contains('hidden')) { div.classList.add('hidden'); return; }
     let rows = '';
     Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
         const team = window.appData.teamMaster[t];
@@ -978,11 +994,12 @@ window.toggleTeamTable = function() {
             <td>${t}</td><td>${team.cor}</td><td>${team.tte1||'-'}</td><td>${team.tte2||'-'}</td><td>${team.baseProg}</td><td>✏️</td>
         </tr>`;
     });
-    div.innerHTML = `<table class="admin-table"><thead><tr><th>Team</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th>Prog</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
-    div.classList.remove('hidden');
+    const html = `<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th>Prog</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    showResultModal('👥 All Teams — Tap row to edit', html);
 };
 
 window.jumpToTeamEdit = function(t) {
+    document.getElementById('result-modal-overlay').classList.add('hidden');
     const sel = document.getElementById('admin-team-select');
     sel.value = t;
     window.loadTeamForEdit();
@@ -1022,18 +1039,17 @@ window.saveProgEdit = async function() {
 };
 
 window.toggleProgTable = function() {
-    const div = document.getElementById('prog-table-view');
-    if (!div.classList.contains('hidden')) { div.classList.add('hidden'); return; }
     let rows = '';
     for (let p = 1; p <= 43; p++) {
         const pd = window.appData.linkProgramme[p] || {};
         rows += `<tr onclick="window.jumpToProgEdit(${p})"><td>${p}</td>` + SLOT_ORDER.map(s => `<td>${pd[s] || '-'}</td>`).join('') + `</tr>`;
     }
-    div.innerHTML = `<table class="admin-table"><thead><tr><th>Prog</th>${SLOT_ORDER.map(s => `<th>${SLOT_LABELS[s]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
-    div.classList.remove('hidden');
+    const html = `<div class="admin-table-wrap"><table class="admin-table prog-table-bordered"><thead><tr><th>Prog</th>${SLOT_ORDER.map(s => `<th>${SLOT_LABELS[s]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    showResultModal('🚂 Full Link Programme — Tap row to edit', html);
 };
 
 window.jumpToProgEdit = function(p) {
+    document.getElementById('result-modal-overlay').classList.add('hidden');
     const sel = document.getElementById('admin-prog-select');
     sel.value = p;
     sel.dispatchEvent(new Event('change'));
