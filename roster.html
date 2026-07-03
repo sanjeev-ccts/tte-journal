@@ -17,7 +17,7 @@
         --bg: #0d1117; --card: #161b22; --text: #e6edf3; --text-muted: #8b949e;
         --border: #30363d; --input-bg: #21262d; --shadow: 0 4px 14px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.35);
     }
-    body.dark-mode .team-info-card { background: rgba(234,179,8,0.18); }
+    body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
     body.dark-mode .team-info-card .cor-name, body.dark-mode .team-info-card .tte-name { color: #fde047; }
     body.dark-mode .team-saved-card { background: rgba(59,130,246,0.10); }
     body.dark-mode table.trip-table td.td-date { color: #60a5fa; }
@@ -58,14 +58,14 @@
     .team-select-card { padding: 14px 16px; text-align: center; }
     .team-select-card label { font-size: 12px; font-weight: 700; color: var(--green); display: block; margin-bottom: 5px; text-align: center; }
     #my-team-select { font-size: 16px; font-weight: 800; padding: 10px; text-align: center; text-align-last: center; }
-    .team-saved-card { padding: 12px 16px; }
+    .team-saved-card { padding: 6px 16px; border-radius: 30px; }
     .tsc-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
     .tsc-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
     .tsc-team { font-size: 18px; font-weight: 900; color: var(--blue); flex: 1; text-align: center; }
     .tsc-edit-btn { width: auto; flex-shrink: 0; padding: 7px 14px; border-radius: 20px; background: var(--blue); color: white; border: none; font-weight: 700; font-size: 12px; cursor: pointer; font-family: 'Roboto', sans-serif; }
-    .team-info-card { background: rgba(234,179,8,0.40); padding: 16px; text-align: center; }
-    .team-info-card .team-title-box { display: inline-block; background: var(--top-bar-bg); color: #fde047; font-size: 14px; font-weight: 900; padding: 5px 20px; border-radius: 20px; margin: 0 auto 10px auto; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-    .team-info-card .team-members { font-size: 15px; line-height: 1.8; text-align: center; }
+    .team-info-card { background: rgba(234,179,8,0.26); padding: 14px; text-align: center; }
+    .team-info-card .team-title-box { display: inline-block; background: var(--top-bar-bg); color: #fde047; font-size: 12.5px; font-weight: 900; padding: 4px 16px; border-radius: 18px; margin: 0 auto 10px auto; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .team-info-card .team-members { font-size: 13px; line-height: 1.6; text-align: center; }
     .team-info-card .cor-name { color: #854d0e; font-weight: 800; }
     .team-info-card .tte-name { color: #854d0e; font-weight: 800; }
     .duty-box-grid { display: flex; flex-direction: column; gap: 10px; }
@@ -85,10 +85,11 @@
     table.trip-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--card); }
     table.trip-table th { background: var(--top-bar-bg); color: #fde047; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; }
     table.trip-table td { padding: 9px 3px; text-align: center; font-weight: 700; color: var(--text); }
-    table.trip-table td.td-date { text-align: left; padding-left: 10px; color: var(--blue); font-weight: 800; }
+    table.trip-table td.td-date { text-align: center; color: var(--blue); font-weight: 800; }
     table.trip-table td.td-day { color: var(--green); font-weight: 800; }
     table.trip-table td.td-day.day-sun { color: var(--red); }
-    table.trip-table tr.trip-divider td { border-bottom: 2px dashed #1e3a8a; }
+    table.trip-table tr.trip-divider td { border-bottom: 1px dashed rgba(30,58,138,0.25); }
+    body.dark-mode table.trip-table tr.trip-divider td { border-bottom: 1px dashed rgba(148,163,184,0.25); }
     table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td, table.trip-table tr.trip-row-halt td { text-align: center; font-weight: 900; padding: 11px; letter-spacing: 0.5px; }
     table.trip-table tr.trip-row-rest td { background: rgba(34,197,94,0.30); color: #15803d; }
     table.trip-table tr.trip-row-lr td { background: rgba(168,85,247,0.25); color: var(--purple); }
@@ -99,13 +100,16 @@
     .ud-arrive { color: #15803d; background: rgba(34,197,94,0.15); }
     .team-chip { display: inline-block; padding: 3px 10px; border-radius: 12px; border: 1.5px solid var(--blue); color: var(--blue); font-weight: 900; font-size: 12px; cursor: pointer; background: rgba(59,130,246,0.08); }
     .team-click-hint { font-size: 11.5px; font-weight: 700; color: var(--blue); text-align: center; margin: 0 0 10px 0; }
+    .team-click-hint.hint-red { font-size: 13px; color: var(--red); }
     .select-clear-row { display: flex; gap: 8px; align-items: center; }
     .select-clear-row select { flex: 1; margin-bottom: 10px; }
     .search-card { border-radius: 16px; padding: 14px 16px; margin-bottom: 22px; }
     .search-card label { display: block; text-align: center; font-size: 16px; font-weight: 900; margin-bottom: 10px; padding: 6px 12px; border-radius: 20px; }
-    .search-row-3 { display: flex; gap: 6px; align-items: stretch; }
-    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 9px 10px; font-size: 13px; height: 40px; border-radius: 20px; }
-    .icon-search-btn, .clear-btn { width: 40px; height: 40px; flex-shrink: 0; padding: 0; border: none; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+    .search-row-3 { display: flex; gap: 6px; align-items: flex-start; }
+    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 9px 10px; font-size: 13px; height: 46px; border-radius: 20px; }
+    .search-field-wrap { flex: 1; min-width: 0; }
+    .search-field-caption { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-align: center; margin: 4px 0 0 0; }
+    .icon-search-btn, .clear-btn { width: 46px; height: 46px; flex-shrink: 0; padding: 0; border: none; border-radius: 16px; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
     .icon-search-btn { background: var(--blue); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     .clear-btn { background: rgba(239,68,68,0.5); color: white; font-weight: 900; }
     .result-modal-box { background: var(--card); border-radius: 18px; padding: 18px; width: 92%; max-width: 460px; max-height: 82vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
@@ -177,8 +181,14 @@ if (window.parent !== window) {
         <div class="card search-card" style="border: 2px solid rgba(168,85,247,0.4);">
             <label style="background:rgba(168,85,247,0.15); color:var(--purple);">Search by Team No + Date</label>
             <div class="search-row-3">
-                <input type="number" id="search-team" placeholder="Team no">
-                <input type="date" id="search-team-date" placeholder="Date">
+                <div class="search-field-wrap">
+                    <input type="number" id="search-team">
+                    <p class="search-field-caption">Team no</p>
+                </div>
+                <div class="search-field-wrap">
+                    <input type="date" id="search-team-date">
+                    <p class="search-field-caption">Date (optional)</p>
+                </div>
                 <button class="icon-search-btn" onclick="renderTeamSearch()">🔍</button>
                 <button class="clear-btn" onclick="window.clearTeamSearch()">✕</button>
             </div>
@@ -186,17 +196,30 @@ if (window.parent !== window) {
         <div class="card search-card" style="border: 2px solid rgba(249,115,22,0.4);">
             <label style="background:rgba(249,115,22,0.15); color:var(--orange);">Search by Train No + Date</label>
             <div class="search-row-3">
-                <input type="text" id="search-train" placeholder="Train no">
-                <input type="date" id="search-train-date" placeholder="Date">
+                <div class="search-field-wrap">
+                    <input type="text" id="search-train">
+                    <p class="search-field-caption">Train no</p>
+                </div>
+                <div class="search-field-wrap">
+                    <input type="date" id="search-train-date">
+                    <p class="search-field-caption">Date (optional)</p>
+                </div>
                 <button class="icon-search-btn" onclick="renderTrainSearch()">🔍</button>
                 <button class="clear-btn" onclick="window.clearTrainSearch()">✕</button>
             </div>
         </div>
 
         <div class="card search-card" style="border: 2px solid rgba(59,130,246,0.4);">
-            <label style="background:rgba(59,130,246,0.15); color:var(--blue);">Search by Date Only</label>
+            <label style="background:rgba(59,130,246,0.15); color:var(--blue);">Search by Date + Team/Train No</label>
             <div class="search-row-3">
-                <input type="date" id="search-date-only" placeholder="Date" style="flex:2;">
+                <div class="search-field-wrap">
+                    <input type="date" id="search-date-only">
+                    <p class="search-field-caption">Date</p>
+                </div>
+                <div class="search-field-wrap">
+                    <input type="number" id="search-date-extra">
+                    <p class="search-field-caption">Team (1-2 digit) or Train (5 digit) no — optional</p>
+                </div>
                 <button class="icon-search-btn" onclick="renderDateOnlySearch()">🔍</button>
                 <button class="clear-btn" onclick="window.clearDateOnlySearch()">✕</button>
             </div>
@@ -617,8 +640,8 @@ function renderMyDutyWeek() {
         </div>
     </div>`;
 
-    const futureTrips = collectTrips(teamNo, 'future', 5);
-    html += '<div class="section-title-box">Next Five Trips</div>';
+    const futureTrips = collectTrips(teamNo, 'future', 7);
+    html += '<div class="section-title-box">Next 7 Trips</div>';
     html += `<div class="trip-table-wrap">${buildTripTable(futureTrips)}</div>`;
 
     const pastTrips = collectTrips(teamNo, 'past', 2);
@@ -761,10 +784,10 @@ window.renderTeamSearch = function() {
     let html = `<div style="font-size:13px; color:var(--text-muted); margin-bottom:12px; text-align:center;">${teamLine(team)}</div>`;
 
     if (!dateStr) {
-        // Fix 2-iii: date optional — show next 5 trips like My Duty
-        const trips = collectTrips(teamNo, 'future', 5);
-        html += `<div class="trip-table-wrap">${buildTripTable(trips)}</div>`;
-        showResultModal(`Team ${teamNo} — Next 5 Trips`, html);
+        // Date optional — show up to 50 upcoming trips, scrollable
+        const trips = collectTrips(teamNo, 'future', 50);
+        html += `<div class="trip-table-wrap" style="max-height:420px; overflow-y:auto;">${buildTripTable(trips)}</div>`;
+        showResultModal(`Team ${teamNo} — Next 50 Trips`, html);
         return;
     }
 
@@ -798,7 +821,7 @@ window.renderTrainSearch = function() {
     const dateList = dateStr ? [dateStr] : (() => {
         const list = [];
         const today = new Date();
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < 15; i++) {
             const d = new Date(today); d.setDate(d.getDate()+i);
             list.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`);
         }
@@ -830,9 +853,9 @@ window.renderTrainSearch = function() {
     if (!found) {
         return showResultModal(`Train ${trainNo}`, '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No matches found.</p>');
     }
-    const hint = `<p class="team-click-hint">👆 Tap any Team number to view its members</p>`;
+    const hint = `<p class="team-click-hint hint-red">👆 Tap any Team number to view its members</p>`;
     const html = `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Team</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
-    showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 7 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
+    showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 15 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
 };
 
 window.clearTeamSearch = function() {
@@ -850,7 +873,30 @@ window.renderDateOnlySearch = function() {
     const dateStr = document.getElementById('search-date-only').value;
     if (!dateStr) return showToast('❌ Select a date', true);
     window._lastDateOnlySearch = dateStr;
-    buildDateOnlyResults(dateStr);
+
+    const extraEl = document.getElementById('search-date-extra');
+    const raw = extraEl ? extraEl.value.trim() : '';
+
+    if (!raw) {
+        buildDateOnlyResults(dateStr);
+        return;
+    }
+    if (!/^\d+$/.test(raw)) {
+        return showToast('❌ Enter digits only: Team No (1-2 digits) or Train No (5 digits)', true);
+    }
+    if (raw.length === 1 || raw.length === 2) {
+        const teamKey = String(parseInt(raw, 10));
+        if (!window.appData.teamMaster[teamKey]) return showToast('❌ Invalid team number', true);
+        document.getElementById('search-team').value = teamKey;
+        document.getElementById('search-team-date').value = dateStr;
+        renderTeamSearch();
+    } else if (raw.length === 5) {
+        document.getElementById('search-train').value = raw;
+        document.getElementById('search-train-date').value = dateStr;
+        renderTrainSearch();
+    } else {
+        showToast('❌ Invalid: use 1-2 digits for Team No, or 5 digits for Train No', true);
+    }
 };
 
 function buildDateOnlyResults(dateStr) {
@@ -878,17 +924,17 @@ function buildDateOnlyResults(dateStr) {
         if (status.type === 'out') {
             count++;
             rows += `<tr class="trip-divider">
+                <td>${status.trip.prog}</td>
                 <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
                 <td>${status.trip.outTrain}</td>
-                <td>${status.trip.prog}</td>
                 <td><span class="ud-badge ud-depart">Departs HQ</span></td>
             </tr>`;
         } else if (status.type === 'in') {
             count++;
             rows += `<tr class="trip-divider">
+                <td>${status.trip.returnProg||''}</td>
                 <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
                 <td>${status.trip.returnTrain}</td>
-                <td>${status.trip.returnProg||''}</td>
                 <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
         } else if (status.type === 'halt') {
@@ -910,11 +956,11 @@ function buildDateOnlyResults(dateStr) {
     // Fix 12-iii: day column removed since date is already fixed for this whole search
     const teamArrow = window._dateSearchSort.field === 'team' ? (window._dateSearchSort.dir === 1 ? '▲' : '▼') : '⇅';
     const progArrow = window._dateSearchSort.field === 'prog' ? (window._dateSearchSort.dir === 1 ? '▲' : '▼') : '⇅';
-    const hint = `<p class="team-click-hint">👆 Tap any Team number to view its members</p>`;
+    const hint = `<p class="team-click-hint hint-red">👆 Tap any Team number to view its members</p>`;
     const html = `<table class="trip-table"><thead><tr>
+        <th onclick="window.toggleDateSort('prog')" style="cursor:pointer;">Prog No ${progArrow}</th>
         <th onclick="window.toggleDateSort('team')" style="cursor:pointer;">Team ${teamArrow}</th>
         <th>Train No</th>
-        <th onclick="window.toggleDateSort('prog')" style="cursor:pointer;">Prog No ${progArrow}</th>
         <th>Up/Down</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
     showResultModal(`All Teams — ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})`, `${hint}<div class="trip-table-wrap">${html}</div>`);
@@ -932,6 +978,8 @@ window.toggleDateSort = function(field) {
 
 window.clearDateOnlySearch = function() {
     document.getElementById('search-date-only').value = '';
+    const extraEl = document.getElementById('search-date-extra');
+    if (extraEl) extraEl.value = '';
 };
 
 const TAB_ORDER = ['mine', 'search', 'admin'];
