@@ -107,7 +107,7 @@
         .top-bar h1 { margin: 0; font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 0.5px; text-align: center; width: 100%; pointer-events: none; user-select: none; }
         .top-bar-content { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; pointer-events: none; }
         
-        .dash-header { min-height: 80px; }
+        .dash-header { min-height: 62px; padding-top: 6px; padding-bottom: 6px; }
         .dash-title-pill { font-size: 20px; font-weight: 900; color: #fde047; letter-spacing: 1px; border: 1px solid rgba(253, 224, 71, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block; background: transparent; pointer-events: none; user-select: none; }
         
         /* Back button: fixed overlay, completely independent of top-bar DOM */
@@ -744,15 +744,12 @@
         </div>
         <div class="screen-content">
             
-            <div class="card" style="padding: 15px; margin-bottom: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                    <div>
-                        <div style="font-size: 13px; color: var(--text-muted); font-weight: 500;">Welcome back,</div>
-                        <div style="font-size: 18px; font-weight: 900; color: var(--blue);" id="dash-hi-name">Hello 👋</div>
-                    </div>
+            <div class="card" style="padding: 12px 15px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div style="font-size: 15px; font-weight: 900; color: var(--blue);" id="dash-hi-name">Hello 👋</div>
                     <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
                 </div>
-                <hr style="border: 0; border-top: 1px dashed var(--border); margin: 15px 0 10px 0;">
+                <hr style="border: 0; border-top: 1px dashed var(--border); margin: 10px 0 8px 0;">
                 <h4 style="margin: 0 0 10px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Recent Entries</h4>
                 <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"></div>
             </div>
@@ -788,11 +785,11 @@
                         <div class="nav-sub-text">Save your data</div>
                     </div>
                 </div>
-                <div class="nav-card" onclick="window.openRosterModal()" style="width: 100%; margin-top: 10px; flex-direction: row; justify-content: center; gap: 8px; min-height: 46px; padding: 10px;">
-                    <div class="nav-icon" style="margin: 0;">📅</div>
+                <div class="nav-card" id="roster-nav-card" onclick="window.openRosterModal()" style="width: 100%; margin-top: 10px; flex-direction: row; justify-content: center; gap: 10px; min-height: 92px; padding: 12px 10px;">
+                    <div class="nav-icon" style="margin: 0; font-size: 28px;">📅</div>
                     <div style="text-align: left;">
-                        <div class="nav-main-text" style="color: var(--text); font-size: 14px;">Roster (BSB)</div>
-                        <div class="nav-sub-text" style="font-size: 10px;">Duty Roster</div>
+                        <div class="nav-main-text" style="color: var(--text); font-size: 16px;">Roster</div>
+                        <div class="nav-sub-text" style="font-size: 11px;">BSB Only</div>
                     </div>
                 </div>
             </div>
@@ -1110,7 +1107,6 @@
 
                 <!-- NDA SUMMARY ROWS -->
                 <div id="nda-summary-rows" class="hidden">
-                    <div class="summary-row" style="color: var(--text);"><span>Entries this period</span><span id="rep-count" style="font-weight: bold;">0</span></div>
                     <div class="summary-row" style="color: var(--text);"><span>Total No. of Night Trains</span><span id="rep-nda-trains" style="font-weight: bold;">0</span></div>
                     <div class="summary-row" style="color: var(--text);"><span>Total NDA Hours</span><span id="rep-nda-hours" style="font-weight: bold; color: var(--blue);">0:00 Hrs</span></div>
                     <div class="summary-row" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span style="font-weight:800;">Total NDA</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
@@ -3354,6 +3350,13 @@
         checkProfileNotifications();
         checkGlobalNotifications();
 
+        // Point 6: Roster nav card only visible when user's Main HQ is BSB
+        const rosterCard = document.getElementById('roster-nav-card');
+        if (rosterCard) {
+            const userHq = (window.appState.profile && window.appState.profile.hq) ? window.appState.profile.hq.trim().toUpperCase() : '';
+            rosterCard.classList.toggle('hidden', userHq !== 'BSB');
+        }
+
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
         
         const p = window.appState.profile || {};
@@ -3438,7 +3441,7 @@
             rcHTMLDash = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No duty entries yet.</p>'; 
         } else { 
             let sortedDuty = [...dutyOnlyDash].sort((a, b) => b.depDate.localeCompare(a.depDate));
-            let recentDashArr = sortedDuty.slice(0, 4); 
+            let recentDashArr = sortedDuty.slice(0, 3); 
             let hasPending = recentDashArr.some(l => l.inProgress || l.depPending);
             // Header WITHOUT "Tr/Type" and WITHOUT extra blank column — Dep/Arr columns hold either time or +Add button
             let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Train</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
@@ -3459,7 +3462,7 @@
             });
             rcHTMLDash += `</tbody></table>`;
             if (hasPending) {
-                rcHTMLDash += `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 0 0 0; font-weight:600;">⏳ Some journeys have departure/arrival pending — tap + Add to complete</p>`;
+                rcHTMLDash += `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 0 0 0; font-weight:600;">⏳ Departure/Arrival time pending, Tap (+add) to complete</p>`;
             }
         } 
         if(rcDash) rcDash.innerHTML = rcHTMLDash;
@@ -3575,7 +3578,6 @@
                 const combinedMins = nda.totalNdaMinutes + stationDuty.totalMins;
                 totalEligibleHours = Math.floor(combinedMins / 60);
                 remainingMinutes = Math.round(combinedMins % 60);
-                document.getElementById('rep-count').innerText = nda.ndaData.length + stationDuty.entries.length;
                 
                 nda.ndaData.forEach(entry => {
                     entry.trips.forEach(trip => { if (trip.train) nightTrainCount++; });
@@ -3590,8 +3592,6 @@
                     const unitHours = (totalEligibleHours / 6).toFixed(2);
                     ndaAmt = parseFloat(unitHours) * hourlyRate;
                 }
-            } else {
-                document.getElementById('rep-count').innerText = "0";
             }
             if(document.getElementById('rep-nda-trains')) document.getElementById('rep-nda-trains').innerText = nightTrainCount;
             if(document.getElementById('rep-nda-hours')) document.getElementById('rep-nda-hours').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} Hrs`;
@@ -3605,6 +3605,14 @@
         
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
         if(dutyOnly.length === 0) return showModal("Empty", "No entries to generate.", "warning", false);
+
+        // Point 1: Block generation entirely if any duty leg has pending departure or arrival time
+        const pendingLegs = dutyOnly.filter(l => l.depPending || l.inProgress);
+        if (pendingLegs.length > 0) {
+            const pendingList = pendingLegs.slice(0, 5).map(l => `• Train ${l.train} (${formatDateShort(l.depDate)}) — ${l.depPending ? 'Departure' : ''}${l.depPending && l.inProgress ? ' & ' : ''}${l.inProgress ? 'Arrival' : ''} time missing`).join('\n');
+            const moreCount = pendingLegs.length > 5 ? `\n...and ${pendingLegs.length - 5} more` : '';
+            return showModal("⏳ Pending Entries", `Cannot generate PDF — some journeys have missing departure or arrival time.\n\n${pendingList}${moreCount}\n\nGo to Dashboard's Recent Entries and tap (+ Add) to complete them first.`, "error", false);
+        }
 
         let sortedLegs = [...dutyOnly].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
