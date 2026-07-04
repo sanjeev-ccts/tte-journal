@@ -28,11 +28,14 @@
     body.dark-mode .ud-depart { color: #fca5a5; background: rgba(239,68,68,0.22); }
     body.dark-mode .ud-arrive { color: #86efac; background: rgba(34,197,94,0.22); }
     body.dark-mode .team-chip { color: white; border-color: #60a5fa; background: #2563eb; }
+    body.dark-mode .tsc-team-chip { color: #60a5fa; background: var(--card); }
     body.dark-mode table.trip-table tr.trip-row-rest td { color: #86efac; }
     body.dark-mode table.trip-table tr.trip-row-lr td { color: #d8b4fe; }
     body.dark-mode table.trip-table tr.trip-row-spare td, body.dark-mode table.trip-table tr.trip-row-halt td { color: #fde047; }
     body.dark-mode .cor-name, body.dark-mode .tte-name { color: #60a5fa; }
     body.dark-mode .section-title-box { background: rgba(59,130,246,0.18); }
+    body.dark-mode .team-detail-members { background: rgba(99,102,241,0.15); }
+    body.dark-mode .tdm-cor, body.dark-mode .tdm-tte1, body.dark-mode .tdm-tte2 { color: #a5b4fc; }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; padding-bottom: 75px; font-size: 15px; overscroll-behavior-y: contain; }
     .top-bar { position: sticky; top: 0; background: var(--top-bar-bg); color: white; padding: 14px 16px; display: flex; align-items: center; justify-content: center; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.4); }
@@ -61,13 +64,14 @@
     .team-select-card { padding: 14px 16px; text-align: center; }
     .team-select-card label { font-size: 12px; font-weight: 700; color: var(--green); display: block; margin-bottom: 5px; text-align: center; }
     #my-team-select { font-size: 16px; font-weight: 800; padding: 10px; text-align: center; text-align-last: center; }
-    .team-saved-card { padding: 10px 12px; border-radius: 16px; margin-bottom: 0; }
+    .team-saved-card { padding: 10px 12px; border-radius: 30px; margin-bottom: 0; }
     .tsc-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-    .tsc-team { font-size: 14px; font-weight: 900; color: var(--blue); flex: 1; text-align: center; }
+    .tsc-team { flex: 1; text-align: center; cursor: pointer; }
+    .tsc-team-chip { display: inline-block; padding: 7px 18px; border-radius: 30px; border: none; color: var(--blue); font-weight: 900; font-size: 14px; background: var(--card); box-shadow: 0 2px 6px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.4); cursor: pointer; }
     .tsc-edit-btn { width: auto; flex-shrink: 0; padding: 6px 10px; border-radius: 20px; background: var(--blue); color: white; border: none; font-size: 13px; cursor: pointer; font-family: 'Roboto', sans-serif; }
     .two-col-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: stretch; }
     .two-col-row .card { flex: 1; margin-bottom: 0; }
-    .view-edit-team-btn { border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--blue); font-weight: 900; font-size: 13px; font-family: 'Roboto', sans-serif; background: var(--card); padding: 10px 8px; }
+    .view-edit-team-btn { border: none; border-radius: 30px !important; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--blue); font-weight: 900; font-size: 14px; font-family: 'Roboto', sans-serif; background: var(--card); padding: 10px 8px; }
     .cor-name, .tte-name { color: #1d4ed8; font-weight: 800; }
     #view-admin .card { padding: 10px 14px; margin-bottom: 10px; }
     #view-admin .card h3 { margin-bottom: 6px !important; font-size: 13.5px !important; }
@@ -92,35 +96,46 @@
     .duty-box.rest-box .db-up { color: #15803d; font-weight: 900; }
     .duty-box.lr-box { background: rgba(168,85,247,0.25); }
     .duty-box .db-badge { font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 10px; display: inline-block; margin-top: 8px; background: rgba(59,130,246,0.18); color: var(--blue); }
-    .trip-table-wrap { border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 14px; border: 1px solid var(--border); }
+    .trip-table-wrap { border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 14px; border: 1px solid rgba(59,130,246,0.25); }
     table.trip-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--card); }
-    table.trip-table th { background: var(--top-bar-bg); color: #fde047; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; }
+    table.trip-table th { background: var(--blue); color: white; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; }
     table.trip-table td { padding: 9px 3px; text-align: center; font-weight: 700; color: var(--text); }
-    table.trip-table td:first-child, table.trip-table th:first-child { width: 92px; min-width: 92px; border-right: 1px solid var(--border); }
-    .team-col { background: var(--card) !important; }
+    .team-col { width: 92px; min-width: 92px; }
     table.trip-table td.td-date { text-align: center; color: var(--blue); font-weight: 800; }
     table.trip-table td.td-day { color: #0d9488; font-weight: 800; }
     table.trip-table td.td-day.day-sun { color: var(--red); }
     table.trip-table tr.trip-divider td { border-bottom: 1px dashed rgba(30,58,138,0.25); }
     body.dark-mode table.trip-table tr.trip-divider td { border-bottom: 1px dashed rgba(148,163,184,0.25); }
-    table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td, table.trip-table tr.trip-row-halt td { text-align: left; font-weight: 900; padding: 5px 7px; letter-spacing: 0.5px; font-size: 12px; }
-    table.trip-table tr.trip-row-rest td:not(.team-col) { background: rgba(34,197,94,0.30); color: #15803d; }
-    table.trip-table tr.trip-row-lr td:not(.team-col) { background: rgba(168,85,247,0.25); color: var(--purple); }
-    table.trip-table tr.trip-row-spare td:not(.team-col) { background: rgba(234,179,8,0.30); color: #854d0e; }
-    table.trip-table tr.trip-row-halt td:not(.team-col) { background: rgba(234,179,8,0.30); color: #854d0e; }
+    table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td, table.trip-table tr.trip-row-halt td { text-align: center; font-weight: 900; padding: 5px 7px; letter-spacing: 0.5px; font-size: 12px; }
+    table.trip-table tr.trip-row-rest td { background: rgba(34,197,94,0.18); color: #15803d; }
+    table.trip-table tr.trip-row-lr td { background: rgba(168,85,247,0.25); color: var(--purple); }
+    table.trip-table tr.trip-row-spare td { background: rgba(234,179,8,0.30); color: #854d0e; }
+    table.trip-table tr.trip-row-halt td { background: rgba(234,179,8,0.18); color: #854d0e; }
+    .chip-rest { background: rgba(21,128,61,0.55) !important; border-color: rgba(21,128,61,0.55) !important; }
+    .chip-halt { background: rgba(133,77,14,0.55) !important; border-color: rgba(133,77,14,0.55) !important; }
+    .chip-lr { background: rgba(168,85,247,0.55) !important; border-color: rgba(168,85,247,0.55) !important; }
     .ud-badge { font-size: 10px; font-weight: 900; padding: 3px 9px; border-radius: 12px; display: inline-block; }
     .ud-depart { color: #b91c1c; background: rgba(239,68,68,0.15); }
     .ud-arrive { color: #15803d; background: rgba(34,197,94,0.15); }
     .team-duty-detail { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.15); }
     .tdd-row { font-size: 12.5px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
     .tdd-row b { color: var(--blue); }
-    .team-chip { display: inline-block; padding: 3px 8px; border-radius: 12px; border: 1.5px solid var(--blue); color: white; font-weight: 900; font-size: 11.5px; cursor: pointer; background: var(--blue); white-space: nowrap; }
+    .team-detail-card { border-radius: 16px; padding: 4px; }
+    .team-detail-title { display: inline-block; background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; font-size: 15px; font-weight: 900; padding: 7px 22px; border-radius: 20px; margin: 0 auto 14px auto; box-shadow: 0 3px 10px rgba(99,102,241,0.4); display: block; text-align: center; width: fit-content; }
+    .team-detail-members { background: rgba(99,102,241,0.08); border-radius: 14px; padding: 12px 16px; margin-bottom: 8px; }
+    .tdm-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed rgba(99,102,241,0.2); }
+    .tdm-row:last-child { border-bottom: none; }
+    .tdm-label { font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .tdm-name { font-size: 14px; font-weight: 800; text-align: right; }
+    .tdm-cor, .tdm-tte1, .tdm-tte2 { color: #4f46e5; }
+    .team-chip { display: inline-block; padding: 3px 8px; border-radius: 12px; border: 1.5px solid var(--blue); color: white; font-weight: 900; font-size: 11.5px; cursor: pointer; background: var(--blue); white-space: nowrap; transition: transform 0.12s ease, filter 0.12s ease; }
+    .team-chip:active { transform: scale(0.92); filter: brightness(1.25); }
     .team-click-hint { font-size: 11.5px; font-weight: 700; color: var(--blue); text-align: center; margin: 0 0 10px 0; }
     .team-click-hint.hint-red { font-size: 13px; color: var(--red); }
     .select-clear-row { display: flex; gap: 8px; align-items: center; }
     .select-clear-row select { flex: 1; margin-bottom: 10px; }
     .search-card { border-radius: 16px; padding: 14px 16px; margin-bottom: 22px; }
-    .search-card label { display: block; text-align: center; font-size: 16px; font-weight: 900; margin-bottom: 10px; padding: 6px 12px; border-radius: 30px; border: 1px solid currentColor; }
+    .search-card label { display: block; text-align: center; font-size: 13.5px; font-weight: 900; margin-bottom: 10px; padding: 5px 12px; color: var(--blue); }
     .search-row-3 { display: flex; gap: 6px; align-items: flex-start; }
     .search-row-3 input { flex: 1; margin-bottom: 0; padding: 8px 10px; font-size: 13px; height: 40px; border-radius: 30px; }
     .search-field-wrap { flex: 1; min-width: 0; }
@@ -169,12 +184,7 @@ if (window.parent !== window) {
 }
 </script>
 <div id="roster-float-back" class="floating-back">← Back</div>
-<div class="top-bar" style="position:relative;">
-    <div id="roster-admin-feedback-bell" class="hidden" onclick="window.goToFeedbackInbox()" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); font-size:19px; cursor:pointer; z-index:10;">
-        🔔<div id="roster-feedback-badge-header" class="hidden" style="position:absolute; top:-6px; right:-8px; background:var(--red); color:white; font-size:9px; font-weight:900; border-radius:50%; width:15px; height:15px; display:flex; align-items:center; justify-content:center;">0</div>
-    </div>
-    <span>BSB Duty Roster</span>
-</div>
+<div class="top-bar"><span>BSB Duty Roster</span></div>
 <div id="save-toast">✅ Saved successfully!</div>
 <div class="screen-content" id="swipe-area">
     <p class="swipe-hint">↔️ Swipe left or right to switch tabs</p>
@@ -195,7 +205,7 @@ if (window.parent !== window) {
         <div class="two-col-row">
             <div class="card team-saved-card hidden" id="team-saved-card">
                 <div class="tsc-row">
-                    <span class="tsc-team" id="tsc-team-no">Team --</span>
+                    <span class="tsc-team tsc-team-chip" id="tsc-team-no">Team --</span>
                     <button class="tsc-edit-btn" onclick="window.editMyTeam()">✏️</button>
                 </div>
             </div>
@@ -205,7 +215,7 @@ if (window.parent !== window) {
     </div>
     <div id="view-search" class="hidden">
         <div class="card search-card">
-            <label style="background:rgba(168,85,247,0.15); color:var(--purple);">Search by Team No + Date</label>
+            <label>Search by Team No + Date</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
                     <input type="number" id="search-team" inputmode="numeric" maxlength="2" oninput="if(this.value.length>2) this.value=this.value.slice(0,2);">
@@ -220,7 +230,7 @@ if (window.parent !== window) {
             </div>
         </div>
         <div class="card search-card">
-            <label style="background:rgba(249,115,22,0.15); color:var(--orange);">Search by Train No + Date</label>
+            <label>Search by Train No + Date</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
                     <input type="text" id="search-train" inputmode="numeric" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5);">
@@ -236,7 +246,7 @@ if (window.parent !== window) {
         </div>
 
         <div class="card search-card">
-            <label style="background:rgba(59,130,246,0.15); color:var(--blue);">Search by Date + Team/Train No</label>
+            <label>Search by Date + Team/Train No</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
                     <input type="date" id="search-date-only">
@@ -261,6 +271,7 @@ if (window.parent !== window) {
         <div class="card">
             <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--blue);">👥 Edit Team Master</h3>
             <button class="action table-toggle-btn" onclick="window.toggleTeamTable()">📋 View All Teams (Table)</button>
+            <button class="action" style="background:var(--orange); margin-top:8px;" onclick="window.validateBaseProgramNumbers()">🔍 Validate Base Program Numbers</button>
             <div class="select-clear-row">
                 <select id="admin-team-select" onchange="loadTeamForEdit()">
                     <option value="">-- Select team to edit --</option>
@@ -655,7 +666,9 @@ function applySavedTeamState(teamNo) {
     const setupCard = document.getElementById('team-setup-card');
     const savedCard = document.getElementById('team-saved-card');
     if (teamNo && window.appData.teamMaster[teamNo]) {
-        document.getElementById('tsc-team-no').innerText = 'Team ' + teamNo;
+        const tscTeamEl = document.getElementById('tsc-team-no');
+        tscTeamEl.innerText = 'Team ' + teamNo + ' 👆';
+        tscTeamEl.onclick = () => window.showTeamInfo(teamNo);
         setupCard.classList.add('hidden');
         savedCard.classList.remove('hidden');
         document.getElementById('my-team-select').value = teamNo;
@@ -707,21 +720,12 @@ function renderMyDutyWeek() {
     const teamNo = document.getElementById('my-team-select').value;
     if (!teamNo) { container.innerHTML = ''; return; }
 
-    const team = window.appData.teamMaster[teamNo];
-    let html = `<div class="card team-info-card">
-        <div class="team-title-box">Team ${teamNo}</div>
-        <div class="team-members">
-            <span class="cor-name">COR: ${team.cor}</span><br>
-            <span class="tte-name">TTE-1: ${team.tte1}</span>${team.tte2 ? `<br><span class="tte-name">TTE-2: ${team.tte2}</span>` : ''}
-        </div>
-    </div>`;
-
     const futureTrips = collectTrips(teamNo, 'future', 7);
-    html += '<div class="section-title-box">Next 7 Trips</div>';
+    let html = '<div class="section-title-box">Upcoming Trips</div>';
     html += `<div class="trip-table-wrap">${buildTripTable(futureTrips)}</div>`;
 
     const pastTrips = collectTrips(teamNo, 'past', 2);
-    html += '<div class="section-title-box">Last Two Trips</div>';
+    html += '<div class="section-title-box">Last Trips</div>';
     html += `<div class="trip-table-wrap">${buildTripTable(pastTrips)}</div>`;
 
     container.innerHTML = html;
@@ -854,11 +858,12 @@ window.showTeamInfo = function(t, dutyInfoJson) {
             }
         } catch(e) {}
     }
-    const html = `<div class="team-info-card" style="border-radius:14px;">
-        <div class="team-title-box">Team ${t}</div>
-        <div class="team-members">
-            <span class="cor-name">COR: ${team.cor}</span><br>
-            <span class="tte-name">TTE-1: ${team.tte1}</span>${team.tte2 ? `<br><span class="tte-name">TTE-2: ${team.tte2}</span>` : ''}
+    const html = `<div class="team-detail-card">
+        <div class="team-detail-title">Team ${t}</div>
+        <div class="team-detail-members">
+            <div class="tdm-row"><span class="tdm-label">COR</span><span class="tdm-name tdm-cor">${team.cor}</span></div>
+            <div class="tdm-row"><span class="tdm-label">TTE-1</span><span class="tdm-name tdm-tte1">${team.tte1}</span></div>
+            ${team.tte2 ? `<div class="tdm-row"><span class="tdm-label">TTE-2</span><span class="tdm-name tdm-tte2">${team.tte2}</span></div>` : ''}
         </div>
         ${dutyHtml}
     </div>`;
@@ -923,7 +928,7 @@ window.renderTrainSearch = function() {
     const dateList = dateStr ? [dateStr] : (() => {
         const list = [];
         const today = new Date();
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 10; i++) {
             const d = new Date(today); d.setDate(d.getDate()+i);
             list.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`);
         }
@@ -956,7 +961,7 @@ window.renderTrainSearch = function() {
     }
     const hint = `<p class="team-click-hint hint-red">👆 tap any team no to show full details</p>`;
     const html = `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Team</th></tr></thead><tbody>${rows}</tbody></table>`;
-    showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 15 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
+    showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 10 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
 };
 
 window.clearTeamSearch = function() {
@@ -1029,6 +1034,7 @@ function buildDateOnlyResults(dateStr) {
                 <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
                 <td>${status.trip.outTrain}</td>
                 <td>${status.trip.prog}</td>
+                <td><span class="ud-badge ud-depart">Up</span></td>
             </tr>`;
         } else if (status.type === 'in') {
             count++;
@@ -1037,29 +1043,29 @@ function buildDateOnlyResults(dateStr) {
                 <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
                 <td>${status.trip.returnTrain}</td>
                 <td>${status.trip.returnProg||''}</td>
+                <td><span class="ud-badge ud-arrive">Down</span></td>
             </tr>`;
         } else if (status.type === 'halt') {
             count++;
             const info = dutyInfoAttr({outTrain: status.trip.outTrain, outDate: status.trip.dateStr, returnTrain: status.trip.returnTrain, returnDate: status.trip.returnDate});
-            // Point 2: only "Halt" shown in the row, aligned with Train No column; team chip in its own column
             rows += `<tr class="trip-row-halt trip-divider">
-                <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
-                <td colspan="2">Halt</td>
+                <td class="team-col"><span class="team-chip chip-halt" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
+                <td style="width:130px;">HALT</td><td>${status.trip.prog}</td><td></td>
             </tr>`;
         } else if (status.type === 'rest') {
             // Fix 12-i: REST now correctly detected (bug fixed in getDutyStatusOnDate)
             count++;
             const info = dutyInfoAttr({type: 'rest'});
             rows += `<tr class="trip-row-rest trip-divider">
-                <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
-                <td colspan="2">REST</td>
+                <td class="team-col"><span class="team-chip chip-rest" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
+                <td style="width:130px;">REST</td><td>${status.prog||''}</td><td></td>
             </tr>`;
         } else if (status.type === 'lr') {
             count++;
             const info = dutyInfoAttr({type: 'lr'});
             rows += `<tr class="trip-row-lr trip-divider">
-                <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
-                <td colspan="2">LR DUTY</td>
+                <td class="team-col"><span class="team-chip chip-lr" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
+                <td style="width:130px;">LR DUTY</td><td>${status.prog||''}</td><td></td>
             </tr>`;
         }
     });
@@ -1071,9 +1077,10 @@ function buildDateOnlyResults(dateStr) {
     const progArrow = window._dateSearchSort.field === 'prog' ? (window._dateSearchSort.dir === 1 ? '▲' : '▼') : '⇅';
     const hint = `<p class="team-click-hint hint-red">👆 tap any team no to show full details</p>`;
     const html = `<table class="trip-table"><thead><tr>
-        <th onclick="window.toggleDateSort('team')" style="cursor:pointer;">Team ${teamArrow}</th>
-        <th>Train No</th>
+        <th class="team-col" onclick="window.toggleDateSort('team')" style="cursor:pointer;">Team ${teamArrow}</th>
+        <th style="width:130px;">Train No</th>
         <th onclick="window.toggleDateSort('prog')" style="cursor:pointer;">Prog No ${progArrow}</th>
+        <th>Up/Down</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
     showResultModal(`All Teams — ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})`, `${hint}<div class="trip-table-wrap">${html}</div>`);
 }
@@ -1249,6 +1256,50 @@ window.toggleTeamTable = function() {
     showResultModal('👥 All Teams — Inline Edit', html);
 };
 
+// Checks that every Base Program number 1–43 appears exactly once across all 43 teams.
+// Flags duplicates (two teams sharing the same program) and any missing/skipped numbers.
+window.validateBaseProgramNumbers = function() {
+    const teamMaster = window.appData.teamMaster;
+    const progToTeams = {}; // program number -> [team numbers using it]
+
+    Object.keys(teamMaster).forEach(t => {
+        const bp = teamMaster[t].baseProg;
+        if (!progToTeams[bp]) progToTeams[bp] = [];
+        progToTeams[bp].push(t);
+    });
+
+    let duplicateRows = '';
+    let hasDuplicates = false;
+    Object.keys(progToTeams).sort((a,b)=>a-b).forEach(bp => {
+        const teams = progToTeams[bp];
+        if (teams.length > 1) {
+            hasDuplicates = true;
+            duplicateRows += `<tr><td>${bp}</td><td style="color:var(--red); font-weight:900;">${teams.map(t=>'Team '+t).join(', ')}</td></tr>`;
+        }
+    });
+
+    let missingNumbers = [];
+    for (let i = 1; i <= 43; i++) {
+        if (!progToTeams[i]) missingNumbers.push(i);
+    }
+
+    let html = '';
+    if (!hasDuplicates && missingNumbers.length === 0) {
+        html = `<p style="color:var(--green); font-size:14px; font-weight:800; text-align:center; padding:20px;">✅ All 43 Base Program numbers are correctly assigned — no duplicates, no gaps.</p>`;
+    } else {
+        if (hasDuplicates) {
+            html += `<h4 style="color:var(--red); font-size:13px; margin:0 0 8px 0;">⚠️ Duplicate Base Program Numbers</h4>
+                <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Prog No</th><th>Teams Using It</th></tr></thead><tbody>${duplicateRows}</tbody></table></div>`;
+        }
+        if (missingNumbers.length > 0) {
+            html += `<h4 style="color:var(--orange); font-size:13px; margin:14px 0 8px 0;">⚠️ Missing Program Numbers (no team assigned)</h4>
+                <p style="font-size:13px; font-weight:700; color:var(--orange);">${missingNumbers.join(', ')}</p>`;
+        }
+        html += `<p style="font-size:12px; color:var(--text-muted); margin-top:14px;">Fix these by opening "View All Teams (Table)" and correcting the affected teams' Base Program values, then save.</p>`;
+    }
+    showResultModal('🔍 Base Program Validation', html);
+};
+
 // Point 4: Excel-style inline save — reads the edited cell values directly from the row's DOM
 window.saveTeamRowInline = async function(t, btnEl) {
     const row = btnEl.closest('tr');
@@ -1354,23 +1405,12 @@ window.dismissRosterFeedback = async function(key) {
 
 window.updateRosterFeedbackBadge = function(count) {
     const badge = document.getElementById('admin-feedback-count-badge');
-    const headerBell = document.getElementById('roster-admin-feedback-bell');
-    const headerBadge = document.getElementById('roster-feedback-badge-header');
-    if (badge) {
-        if (count > 0) {
-            badge.innerText = count > 9 ? '9+' : count;
-            badge.classList.remove('hidden');
-        } else {
-            badge.classList.add('hidden');
-        }
-    }
-    if (headerBadge) {
-        if (count > 0) {
-            headerBadge.innerText = count > 9 ? '9+' : count;
-            headerBadge.classList.remove('hidden');
-        } else {
-            headerBadge.classList.add('hidden');
-        }
+    if (!badge) return;
+    if (count > 0) {
+        badge.innerText = count > 9 ? '9+' : count;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
     }
 };
 
@@ -1490,8 +1530,6 @@ window.submitFeedback = async function() {
 function initAfterAuth() {
     if (window.isAdmin) {
         document.getElementById('tab-admin').classList.remove('hidden');
-        const bell = document.getElementById('roster-admin-feedback-bell');
-        if (bell) bell.classList.remove('hidden');
         window.checkRosterFeedbackSilently();
     }
     switchTab('mine');
