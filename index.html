@@ -266,10 +266,12 @@
                 window.currentUserEmail = user.email;
                 
                 const isAdmin = (user.uid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(user.email);
+                window.isCurrentUserAdmin = () => isAdmin;
                 
                 // Show Admin Gear if authorized
                 if(isAdmin) {
                     document.getElementById('admin-gear-icon').classList.remove('hidden');
+                    window.checkFeedbackBadgeSilently();
                 }
 
                 // Global Cloud Listener
@@ -320,6 +322,7 @@
 
                     // Update admin UI if on admin screen
                     window.adminIsMaint = adminConfig.maintenance || false;
+                    window.lastAdminConfig = adminConfig;
                     if (!document.getElementById('screen-admin').classList.contains('hidden')) {
                         updateAdminUI(adminConfig);
                     }
@@ -604,9 +607,12 @@
     </div>
 
     <div id="screen-admin" class="hidden">
-        <div class="top-bar">
+        <div class="top-bar" style="position:relative;">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')" style="pointer-events:auto;">← Back</button>
             <h1 style="color: var(--yellow);">⚙️ ADMIN</h1>
+            <div id="admin-feedback-bell" onclick="window.scrollToFeedbackInbox()" style="position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:20px; cursor:pointer;">
+                🔔<div id="admin-feedback-badge" class="hidden" style="position:absolute; top:-6px; right:-8px; background:var(--red); color:white; font-size:10px; font-weight:900; border-radius:50%; width:16px; height:16px; display:flex; align-items:center; justify-content:center;">0</div>
+            </div>
         </div>
         <div class="screen-content">
 
@@ -788,9 +794,10 @@
                 <div class="nav-card" id="roster-nav-card" onclick="window.openRosterModal()" style="width: 100%; margin-top: 11px;">
                     <div class="nav-icon">🗓️</div>
                     <div class="nav-main-text" style="color: var(--purple);">Roster</div>
-                    <div class="nav-sub-text">Roster of BSB Only</div>
+                    <div class="nav-sub-text">Roster For BSB Only</div>
                 </div>
                 <div id="your-duty-row" class="hidden" style="width: 100%; margin-top: 11px; background: rgba(59,130,246,0.15); border: none; border-radius: 30px; padding: 8px 18px; font-size: 12px; color: var(--text); text-align: center; box-shadow: var(--shadow); line-height: 1.4;"></div>
+                <div id="next-duty-row" class="hidden" style="width: 100%; margin-top: 8px; background: rgba(234,179,8,0.20); border: none; border-radius: 30px; padding: 8px 18px; font-size: 12px; color: var(--text); text-align: center; box-shadow: var(--shadow); line-height: 1.4;"></div>
             </div>
         </div>
     </div>
@@ -811,7 +818,7 @@
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div style="padding: 10px 12px; border-bottom: 1px solid var(--border);">
                         <label style="font-size: 13px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Train No.</label>
-                        <input type="text" id="trip-train" style="margin: 0; width: 100%;">
+                        <input type="text" id="trip-train" inputmode="numeric" maxlength="5" style="margin: 0; width: 100%;">
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
@@ -825,11 +832,11 @@
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Departure Time</label>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Departure Time <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
                             <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; width: 100%;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Time</label>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Arrival Time <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
                             <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; width: 100%;">
                         </div>
                     </div>
@@ -924,8 +931,8 @@
             <button id="btn-save-duty" onclick="window.saveLeg()">Save This Journey</button>
             <button id="btn-save-nonduty" class="hidden" style="background: var(--green);" onclick="window.saveNonDuty()">Save Record</button>
             
-            <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px; color: var(--blue); font-weight: 800;" id="recent-duty-title">Recent Duty Entries</h3>
-            <div id="recent-logs-add" style="border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border);"></div>
+            <h3 style="font-size: 15px; margin-top: 25px; margin-bottom: 10px; color: var(--blue); font-weight: 800; display: none;" id="recent-duty-title">Recent Duty Entries</h3>
+            <div id="recent-logs-add" style="border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--border); display: none;"></div>
         </div>
     </div>
 
@@ -1575,6 +1582,7 @@
             get(r(window.db, 'feedback')).then(snap => {
                 const items = snap.val() || {};
                 const keys = Object.keys(items).sort().reverse();
+                window.updateFeedbackBadge(keys.length);
                 if (keys.length === 0) { el.innerHTML = '<p style="font-size:12px; color:var(--text-muted); text-align:center;">No feedback yet.</p>'; return; }
                 el.innerHTML = keys.map(k => {
                     const f = items[k];
@@ -1591,6 +1599,35 @@
                 }).join('') + `<p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:5px;">${keys.length} item${keys.length > 1 ? 's' : ''}</p>`;
             }).catch(err => { el.innerHTML = `<p style="color:var(--red); font-size:12px; text-align:center;">${err.message}</p>`; });
         });
+    };
+
+    // Fix Point 4: badge on the Admin header bell shows unread feedback count
+    window.updateFeedbackBadge = (count) => {
+        const badge = document.getElementById('admin-feedback-badge');
+        if (!badge) return;
+        if (count > 0) {
+            badge.innerText = count > 9 ? '9+' : count;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    };
+
+    // Lightweight background check for admins — runs without opening the inbox, just to populate the badge
+    window.checkFeedbackBadgeSilently = () => {
+        if (!window.isCurrentUserAdmin || !window.isCurrentUserAdmin()) return;
+        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
+            get(r(window.db, 'feedback')).then(snap => {
+                const items = snap.val() || {};
+                window.updateFeedbackBadge(Object.keys(items).length);
+            }).catch(() => {});
+        });
+    };
+
+    window.scrollToFeedbackInbox = () => {
+        window.loadFeedbackInbox();
+        const el = document.getElementById('admin-feedback-area');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
     window.dismissFeedback = (key) => {
@@ -2041,6 +2078,13 @@
             } else {
                 document.getElementById('admin-maint-btn').innerText = "Turn ON Maintenance";
             }
+            // Fix: always refresh the live version label when entering Admin, don't rely solely on the Firebase listener timing
+            const curVerLbl = document.getElementById('admin-current-ver-label');
+            if (curVerLbl) curVerLbl.innerText = `Current live app: v${window.APP_VERSION}`;
+            // Also pull the latest admin_config snapshot so gate status / DA push status are fresh
+            if (window.db && window.firebaseRef && window.lastAdminConfig) {
+                updateAdminUI(window.lastAdminConfig);
+            }
         }
     }
 
@@ -2441,6 +2485,9 @@
         if(!leg.depDate || !leg.train || !leg.depStn || !leg.arrStn) {
             return showModal("ERROR", "Train No., Departure Date, Station From and Station To are mandatory.", "error", false);
         }
+        if(!/^\d{5}$/.test(leg.train)) {
+            return showModal("ERROR", "Train No. must be exactly 5 digits.\n\nYou entered: " + leg.train, "error", false);
+        }
         if(isPastDuty && !leg.depTime) {
             return showModal("ERROR", "Departure Time is mandatory for past journeys.\n\nOnly today's or future duty entries can have departure time filled later.", "error", false);
         }
@@ -2470,13 +2517,24 @@
 
             if(hqGroup.includes(prev.arrStn)) {
                 if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", `Previous journey ended at HQ. New journey must start from HQ.`, "error", false);
+                finalizeLegSave(leg, testLegs);
+            } else if(leg.depStn !== prev.arrStn) {
+                // Option B: don't hard-block — this may be a legitimate diversion (e.g. return train stops at
+                // a nearby station like AMG instead of LKO). Warn and let the user confirm before saving.
+                showModal("⚠️ Station Mismatch", `Previous journey ended at ${prev.arrStn}, but this new journey starts from ${leg.depStn}.\n\nIf this is due to a train diversion (e.g. your return train stopped at a nearby station instead of the original destination), tap Confirm to save anyway.\n\nOtherwise, cancel and check your entry.`, "warning", true, (proceed) => {
+                    if (proceed) finalizeLegSave(leg, testLegs);
+                });
+                return;
             } else {
-                if(leg.depStn !== prev.arrStn) return showModal("CHAIN ERROR", `Previous journey ended at ${prev.arrStn}. You must start from ${prev.arrStn}.`, "error", false);
+                finalizeLegSave(leg, testLegs);
             }
         } else {
             if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", `Your very first duty journey must start from HQ.`, "error", false);
+            finalizeLegSave(leg, testLegs);
         }
-        
+    }
+
+    function finalizeLegSave(leg, testLegs) {
         window.appState.legs = testLegs; 
         
         document.getElementById('trip-train').value = ''; 
@@ -2996,6 +3054,45 @@
         box.classList.remove('hidden');
     };
 
+    window.renderNextDutyBox = async function() {
+        const box = document.getElementById('next-duty-row');
+        if (!box) return;
+        const userHq = (window.appState.profile && window.appState.profile.hq) ? window.appState.profile.hq.trim().toUpperCase() : '';
+        const teamNo = localStorage.getItem('roster_my_team');
+        if (userHq !== 'BSB' || !teamNo) { box.classList.add('hidden'); return; }
+
+        const data = await loadMiniRosterData();
+        if (!data || !data.teamMaster[teamNo]) { box.classList.add('hidden'); return; }
+
+        const tomorrow = new Date(); tomorrow.setHours(0,0,0,0); tomorrow.setDate(tomorrow.getDate() + 1);
+        const dateStr = `${tomorrow.getFullYear()}-${String(tomorrow.getMonth()+1).padStart(2,'0')}-${String(tomorrow.getDate()).padStart(2,'0')}`;
+        const status = miniGetDutyStatusOnDate(data, teamNo, dateStr);
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const dayNamesFull = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+        const dateLabel = `${String(tomorrow.getDate()).padStart(2,'0')}-${months[tomorrow.getMonth()]}-${String(tomorrow.getFullYear()).slice(-2)}`;
+        const dayLabel = dayNamesFull[tomorrow.getDay()];
+        const dateDayHtml = `<span style="color:var(--blue); font-weight:800;">${dateLabel} (${dayLabel})</span>`;
+
+        let mainHtml = '';
+        if (status.type === 'out') {
+            mainHtml = `<b>${status.trip.outTrain}</b> &nbsp; <span style="color:var(--red); font-weight:800;">Departs HQ</span>`;
+        } else if (status.type === 'in') {
+            mainHtml = `<b>${status.trip.returnTrain}</b> &nbsp; <span style="color:var(--green); font-weight:800;">Arrives HQ</span>`;
+        } else if (status.type === 'halt') {
+            mainHtml = `<span style="font-weight:800;">Halt Day</span> <span style="color:var(--text-muted); font-size:12px;">(Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain || 'pending'})</span>`;
+        } else if (status.type === 'rest') {
+            mainHtml = `<span style="color:var(--green); font-weight:800;">REST</span>`;
+        } else if (status.type === 'lr') {
+            mainHtml = `<span style="color:var(--purple); font-weight:800;">LR DUTY</span>`;
+        } else if (status.type === 'spare') {
+            mainHtml = `<span style="color:#854d0e; font-weight:800;">SPARE</span>`;
+        } else {
+            box.classList.add('hidden'); return;
+        }
+        box.innerHTML = `<span style="font-weight:900;">Next Duty :</span> ${dateDayHtml} &nbsp; ${mainHtml}`;
+        box.classList.remove('hidden');
+    };
+
     // ========== DUTY ROSTER IFRAME BRIDGE ==========
     window._rosterIframeLoaded = false;
     window.openRosterModal = function() {
@@ -3004,6 +3101,10 @@
         if (!window._rosterIframeLoaded) {
             iframe.src = 'roster.html';
             window._rosterIframeLoaded = true;
+        } else if (iframe.contentWindow) {
+            // Point 2: iframe already loaded (kept alive in background) — tell it it's being shown again
+            // so the floating back button resets to its default position instead of staying wherever it was dragged
+            iframe.contentWindow.postMessage({ type: 'ROSTER_SHOWN' }, '*');
         }
         modal.classList.remove('hidden');
     };
@@ -3011,6 +3112,7 @@
     window.closeRosterModal = function() {
         document.getElementById('roster-iframe-modal').classList.add('hidden');
         window.renderYourDutyBox && window.renderYourDutyBox();
+        window.renderNextDutyBox && window.renderNextDutyBox();
     };
 
     // Send logged-in user info to roster.html once it signals it's ready
@@ -3483,6 +3585,7 @@
             rosterCard.classList.toggle('hidden', userHq !== 'BSB');
         }
         window.renderYourDutyBox && window.renderYourDutyBox();
+        window.renderNextDutyBox && window.renderNextDutyBox();
 
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
         
@@ -3749,8 +3852,18 @@
             let curr = sortedLegs[i]; let next = sortedLegs[i+1];
             if (hqGroup.includes(curr.arrStn)) { if (!hqGroup.includes(next.depStn)) { hasBreak = true; breakMsg = `HQ to ${next.depStn}`; break; } } else { if (curr.arrStn !== next.depStn) { hasBreak = true; breakMsg = `${curr.arrStn} to ${next.depStn}`; break; } }
         }
-        if (hasBreak) { return showModal("INVALID CYCLE", `Invalid Cycle detected. You have a broken link connecting [${breakMsg}].\n\nPlease add the missing connecting journey in All Journey before generating the PDF.`, "error", false); }
+        if (hasBreak) { 
+            // Option B: warn instead of hard-blocking — this may be an already-confirmed diversion (e.g. return
+            // train stopped at a nearby station instead of the original destination). Let the user proceed if intended.
+            showModal("⚠️ Possible Chain Gap", `A gap was detected connecting [${breakMsg}].\n\nIf this is due to a train diversion you already confirmed while saving the journey, it's safe to continue.\n\nOtherwise, cancel and add the missing connecting journey in All Journey first.`, "warning", true, (proceed) => {
+                if (proceed) proceedWithGeneration(mo);
+            });
+            return;
+        }
+        proceedWithGeneration(mo);
+    }
 
+    function proceedWithGeneration(mo) {
         if(currentTab === 'ta') { generateTAPDF(); } else { 
             showModal("NOTICE", "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month.", "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
         } 
