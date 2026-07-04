@@ -18,18 +18,18 @@
         --border: #30363d; --input-bg: #21262d; --shadow: 0 4px 14px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.35);
     }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
-    body.dark-mode .team-info-card .cor-name, body.dark-mode .team-info-card .tte-name { color: #fde047; }
-    body.dark-mode .team-saved-card { background: rgba(59,130,246,0.10); }
+    body.dark-mode .team-info-card .cor-name, body.dark-mode .team-info-card .tte-name { color: #60a5fa; }
+    body.dark-mode .team-saved-card, body.dark-mode .view-edit-team-btn { background: rgba(59,130,246,0.10); }
     body.dark-mode table.trip-table td.td-date { color: #60a5fa; }
-    body.dark-mode table.trip-table td.td-day { color: #4ade80; }
+    body.dark-mode table.trip-table td.td-day { color: var(--text); }
     body.dark-mode table.trip-table td.td-day.day-sun { color: #f87171; }
     body.dark-mode .ud-depart { color: #fca5a5; background: rgba(239,68,68,0.22); }
     body.dark-mode .ud-arrive { color: #86efac; background: rgba(34,197,94,0.22); }
-    body.dark-mode .team-chip { color: #93c5fd; border-color: #60a5fa; background: rgba(59,130,246,0.15); }
+    body.dark-mode .team-chip { color: white; border-color: #60a5fa; background: #2563eb; }
     body.dark-mode table.trip-table tr.trip-row-rest td { color: #86efac; }
     body.dark-mode table.trip-table tr.trip-row-lr td { color: #d8b4fe; }
     body.dark-mode table.trip-table tr.trip-row-spare td, body.dark-mode table.trip-table tr.trip-row-halt td { color: #fde047; }
-    body.dark-mode .cor-name, body.dark-mode .tte-name { color: #fde047; }
+    body.dark-mode .cor-name, body.dark-mode .tte-name { color: #60a5fa; }
     body.dark-mode .section-title-box { background: rgba(59,130,246,0.18); }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg); color: var(--text); transition: background 0.3s, color 0.3s; padding-bottom: 75px; font-size: 15px; overscroll-behavior-y: contain; }
@@ -42,12 +42,10 @@
     body.in-iframe .floating-back { display: flex; }
     .screen-content { padding: 15px; max-width: 600px; margin: 0 auto; }
     .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .tab-bar { display: flex; background: var(--card); border-radius: 30px; padding: 4px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .tab-bar { display: flex; background: var(--card); border-radius: 30px; padding: 4px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1.5px solid var(--blue); }
     .tab-btn { flex: 1; padding: 11px; text-align: center; border-radius: 30px; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; }
     .tab-btn.active { color: white; }
-    #tab-mine.active { background: var(--purple); box-shadow: 0 2px 6px rgba(168,85,247,0.4); }
-    #tab-search.active { background: var(--green); box-shadow: 0 2px 6px rgba(34,197,94,0.4); }
-    #tab-admin.active { background: var(--yellow); box-shadow: 0 2px 6px rgba(234,179,8,0.4); }
+    #tab-mine.active, #tab-search.active, #tab-admin.active { background: var(--blue); box-shadow: 0 2px 6px rgba(59,130,246,0.4); }
     .swipe-hint { text-align: center; font-size: 12px; font-weight: 700; color: var(--red); margin: 0 0 12px 0; }
     input, select { width: 100%; padding: 11px 14px; border-radius: 30px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 15px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; }
     select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 36px; }
@@ -61,16 +59,24 @@
     .team-select-card { padding: 14px 16px; text-align: center; }
     .team-select-card label { font-size: 12px; font-weight: 700; color: var(--green); display: block; margin-bottom: 5px; text-align: center; }
     #my-team-select { font-size: 16px; font-weight: 800; padding: 10px; text-align: center; text-align-last: center; }
-    .team-saved-card { padding: 6px 16px; border-radius: 30px; }
-    .tsc-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .tsc-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-    .tsc-team { font-size: 18px; font-weight: 900; color: var(--blue); flex: 1; text-align: center; }
-    .tsc-edit-btn { width: auto; flex-shrink: 0; padding: 7px 14px; border-radius: 20px; background: var(--blue); color: white; border: none; font-weight: 700; font-size: 12px; cursor: pointer; font-family: 'Roboto', sans-serif; }
-    .team-info-card { background: rgba(234,179,8,0.26); padding: 14px; text-align: center; }
-    .team-info-card .team-title-box { display: inline-block; background: var(--top-bar-bg); color: #fde047; font-size: 12.5px; font-weight: 900; padding: 4px 16px; border-radius: 18px; margin: 0 auto 10px auto; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    .team-saved-card { padding: 10px 12px; border-radius: 16px; margin-bottom: 0; }
+    .tsc-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+    .tsc-team { font-size: 14px; font-weight: 900; color: var(--blue); flex: 1; text-align: center; }
+    .tsc-edit-btn { width: auto; flex-shrink: 0; padding: 6px 10px; border-radius: 20px; background: var(--blue); color: white; border: none; font-size: 13px; cursor: pointer; font-family: 'Roboto', sans-serif; }
+    .two-col-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: stretch; }
+    .two-col-row .card { flex: 1; margin-bottom: 0; }
+    .view-edit-team-btn { border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--blue); font-weight: 900; font-size: 13px; font-family: 'Roboto', sans-serif; background: var(--card); padding: 10px 8px; }
+    .cor-name, .tte-name { color: #1d4ed8; font-weight: 800; }
+    #view-admin .card { padding: 10px 14px; margin-bottom: 10px; }
+    #view-admin .card h3 { margin-bottom: 6px !important; font-size: 13.5px !important; }
+    #view-admin button.action { padding: 9px; font-size: 13.5px; margin-top: 4px; margin-bottom: 6px; }
+    #view-admin label { font-size: 12px !important; }
+    #view-admin input, #view-admin select { padding: 7px 12px; height: 36px; margin-bottom: 6px; }
+    .team-info-card { background: rgba(59,130,246,0.26); padding: 14px; text-align: center; }
+    .team-info-card .team-title-box { display: inline-block; background: var(--blue); color: white; font-size: 12.5px; font-weight: 900; padding: 4px 16px; border-radius: 18px; margin: 0 auto 10px auto; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     .team-info-card .team-members { font-size: 13px; line-height: 1.6; text-align: center; }
-    .team-info-card .cor-name { color: #854d0e; font-weight: 800; }
-    .team-info-card .tte-name { color: #854d0e; font-weight: 800; }
+    .team-info-card .cor-name { color: #1d4ed8; font-weight: 800; }
+    .team-info-card .tte-name { color: #1d4ed8; font-weight: 800; }
     .duty-box-grid { display: flex; flex-direction: column; gap: 10px; }
     .duty-box { border-radius: 16px; padding: 15px; background: var(--card); border: 1px solid var(--border); box-shadow: var(--shadow); }
     .duty-box .db-date { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
@@ -88,12 +94,13 @@
     table.trip-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--card); }
     table.trip-table th { background: var(--top-bar-bg); color: #fde047; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; }
     table.trip-table td { padding: 9px 3px; text-align: center; font-weight: 700; color: var(--text); }
+    table.trip-table td:first-child, table.trip-table th:first-child { width: 92px; min-width: 92px; }
     table.trip-table td.td-date { text-align: center; color: var(--blue); font-weight: 800; }
-    table.trip-table td.td-day { color: var(--green); font-weight: 800; }
+    table.trip-table td.td-day { color: var(--text); font-weight: 800; }
     table.trip-table td.td-day.day-sun { color: var(--red); }
     table.trip-table tr.trip-divider td { border-bottom: 1px dashed rgba(30,58,138,0.25); }
     body.dark-mode table.trip-table tr.trip-divider td { border-bottom: 1px dashed rgba(148,163,184,0.25); }
-    table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td, table.trip-table tr.trip-row-halt td { text-align: center; font-weight: 900; padding: 11px; letter-spacing: 0.5px; }
+    table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td, table.trip-table tr.trip-row-halt td { text-align: center; font-weight: 900; padding: 5px 7px; letter-spacing: 0.5px; font-size: 12px; }
     table.trip-table tr.trip-row-rest td { background: rgba(34,197,94,0.30); color: #15803d; }
     table.trip-table tr.trip-row-lr td { background: rgba(168,85,247,0.25); color: var(--purple); }
     table.trip-table tr.trip-row-spare td { background: rgba(234,179,8,0.30); color: #854d0e; }
@@ -101,18 +108,18 @@
     .ud-badge { font-size: 10px; font-weight: 900; padding: 3px 9px; border-radius: 12px; display: inline-block; }
     .ud-depart { color: #b91c1c; background: rgba(239,68,68,0.15); }
     .ud-arrive { color: #15803d; background: rgba(34,197,94,0.15); }
-    .team-chip { display: inline-block; padding: 3px 10px; border-radius: 12px; border: 1.5px solid var(--blue); color: var(--blue); font-weight: 900; font-size: 12px; cursor: pointer; background: rgba(59,130,246,0.08); }
+    .team-chip { display: inline-block; padding: 3px 8px; border-radius: 12px; border: 1.5px solid var(--blue); color: white; font-weight: 900; font-size: 11.5px; cursor: pointer; background: var(--blue); white-space: nowrap; }
     .team-click-hint { font-size: 11.5px; font-weight: 700; color: var(--blue); text-align: center; margin: 0 0 10px 0; }
     .team-click-hint.hint-red { font-size: 13px; color: var(--red); }
     .select-clear-row { display: flex; gap: 8px; align-items: center; }
     .select-clear-row select { flex: 1; margin-bottom: 10px; }
     .search-card { border-radius: 16px; padding: 14px 16px; margin-bottom: 22px; }
-    .search-card label { display: block; text-align: center; font-size: 16px; font-weight: 900; margin-bottom: 10px; padding: 6px 12px; border-radius: 20px; }
+    .search-card label { display: block; text-align: center; font-size: 16px; font-weight: 900; margin-bottom: 10px; padding: 6px 12px; border-radius: 30px; border: 1px solid currentColor; }
     .search-row-3 { display: flex; gap: 6px; align-items: flex-start; }
-    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 9px 10px; font-size: 13px; height: 46px; border-radius: 20px; }
+    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 8px 10px; font-size: 13px; height: 40px; border-radius: 30px; }
     .search-field-wrap { flex: 1; min-width: 0; }
     .search-field-caption { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-align: center; margin: 4px 0 0 0; }
-    .icon-search-btn, .clear-btn { width: 46px; height: 46px; flex-shrink: 0; padding: 0; border: none; border-radius: 16px; font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+    .icon-search-btn, .clear-btn { width: 40px; height: 40px; flex-shrink: 0; padding: 0; border: none; border-radius: 30px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
     .icon-search-btn { background: var(--blue); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     .clear-btn { background: rgba(239,68,68,0.5); color: white; font-weight: 900; }
     .result-modal-box { background: var(--card); border-radius: 18px; padding: 18px; width: 92%; max-width: 460px; max-height: 82vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
@@ -174,14 +181,15 @@ if (window.parent !== window) {
             <button class="action" style="background:var(--green); margin-top:6px;" onclick="window.saveMyTeamNumber()">Save</button>
             <p style="font-size:11px; color:var(--text-muted); margin:8px 0 0 0;">Don't know your team? Use Search tab and find your name.</p>
         </div>
-        <div class="card team-saved-card hidden" id="team-saved-card">
-            <div class="tsc-row">
-                <span class="tsc-label">Saved Team</span>
-                <span class="tsc-team" id="tsc-team-no">Team --</span>
-                <button class="tsc-edit-btn" onclick="window.editMyTeam()">✏️ Edit</button>
+        <div class="two-col-row">
+            <div class="card team-saved-card hidden" id="team-saved-card">
+                <div class="tsc-row">
+                    <span class="tsc-team" id="tsc-team-no">Team --</span>
+                    <button class="tsc-edit-btn" onclick="window.editMyTeam()">✏️</button>
+                </div>
             </div>
+            <button class="card view-edit-team-btn" onclick="window.showAllTeamsModal()">👥 View/Edit Team</button>
         </div>
-        <button class="card team-saved-card" style="width:100%; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:8px; color:var(--blue); font-weight:900; font-size:16px; font-family:'Roboto', sans-serif; background:rgba(59,130,246,0.95); color:white; padding:12px 16px;" onclick="window.showAllTeamsModal()">👥 View & Edit Your Team</button>
         <div id="my-duty-week"></div>
     </div>
     <div id="view-search" class="hidden">
@@ -225,7 +233,7 @@ if (window.parent !== window) {
                 </div>
                 <div class="search-field-wrap">
                     <input type="number" id="search-date-extra">
-                    <p class="search-field-caption">Team (1-2 digit) or Train (5 digit) no — optional</p>
+                    <p class="search-field-caption">Team/Train No (Opt)</p>
                 </div>
                 <button class="icon-search-btn" onclick="renderDateOnlySearch()">🔍</button>
                 <button class="clear-btn" onclick="window.clearDateOnlySearch()">✕</button>
@@ -300,6 +308,15 @@ if (window.parent !== window) {
             <button class="result-modal-close" onclick="document.getElementById('result-modal-overlay').classList.add('hidden')">✕ Close</button>
         </div>
         <div id="result-modal-body"></div>
+    </div>
+</div>
+<div id="team-info-modal-overlay" class="modal-overlay hidden" style="z-index:9500;">
+    <div class="result-modal-box" style="max-width:320px;">
+        <div class="result-modal-header">
+            <h3 id="team-info-modal-title">Team Info</h3>
+            <button class="result-modal-close" onclick="document.getElementById('team-info-modal-overlay').classList.add('hidden')">✕ Close</button>
+        </div>
+        <div id="team-info-modal-body"></div>
     </div>
 </div>
 <div id="feedback-modal-overlay" class="modal-overlay hidden">
@@ -814,7 +831,9 @@ window.showTeamInfo = function(t) {
             <span class="tte-name">TTE-1: ${team.tte1}</span>${team.tte2 ? `<br><span class="tte-name">TTE-2: ${team.tte2}</span>` : ''}
         </div>
     </div>`;
-    showResultModal(`Team ${t} Members`, html);
+    document.getElementById('team-info-modal-title').innerText = `Team ${t} Members`;
+    document.getElementById('team-info-modal-body').innerHTML = html;
+    document.getElementById('team-info-modal-overlay').classList.remove('hidden');
 };
 
 window.renderTeamSearch = function() {
@@ -889,7 +908,6 @@ window.renderTrainSearch = function() {
                         <td>${isUp ? trip.outTrain : trip.returnTrain}</td>
                         ${dayTd(dispDate)}
                         <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
-                        <td><span class="ud-badge ${isUp ? 'ud-depart' : 'ud-arrive'}">${isUp ? 'Departs HQ' : 'Arrives HQ'}</span></td>
                     </tr>`;
                 }
             }
@@ -900,7 +918,7 @@ window.renderTrainSearch = function() {
         return showResultModal(`Train ${trainNo}`, '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No matches found.</p>');
     }
     const hint = `<p class="team-click-hint hint-red">👆 Tap any Team number to view its members</p>`;
-    const html = `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Team</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
+    const html = `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Team</th></tr></thead><tbody>${rows}</tbody></table>`;
     showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 15 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
 };
 
@@ -970,30 +988,35 @@ function buildDateOnlyResults(dateStr) {
         if (status.type === 'out') {
             count++;
             rows += `<tr class="trip-divider">
-                <td>${status.trip.prog}</td>
                 <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
                 <td>${status.trip.outTrain}</td>
-                <td><span class="ud-badge ud-depart">Departs HQ</span></td>
+                <td>${status.trip.prog}</td>
             </tr>`;
         } else if (status.type === 'in') {
             count++;
             rows += `<tr class="trip-divider">
-                <td>${status.trip.returnProg||''}</td>
                 <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
                 <td>${status.trip.returnTrain}</td>
-                <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
+                <td>${status.trip.returnProg||''}</td>
             </tr>`;
         } else if (status.type === 'halt') {
             count++;
             // Fix 12-ii: halt day yellow, no Prog No column value shown
-            rows += `<tr class="trip-row-halt trip-divider"><td colspan="4"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span> — Halt day (Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'})</td></tr>`;
+            rows += `<tr class="trip-row-halt trip-divider"><td colspan="3"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span> — Halt (Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'})</td></tr>`;
         } else if (status.type === 'rest') {
             // Fix 12-i: REST now correctly detected (bug fixed in getDutyStatusOnDate)
+            // Point 5: team chip aligned under the Team column, not centered as a blob
             count++;
-            rows += `<tr class="trip-row-rest trip-divider"><td colspan="4">Team ${t} — REST</td></tr>`;
+            rows += `<tr class="trip-row-rest trip-divider">
+                <td style="text-align:left; padding-left:14px;"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
+                <td colspan="2" style="text-align:center;">REST</td>
+            </tr>`;
         } else if (status.type === 'lr') {
             count++;
-            rows += `<tr class="trip-row-lr trip-divider"><td colspan="4">Team ${t} — LR DUTY</td></tr>`;
+            rows += `<tr class="trip-row-lr trip-divider">
+                <td style="text-align:left; padding-left:14px;"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
+                <td colspan="2" style="text-align:center;">LR DUTY</td>
+            </tr>`;
         }
     });
     if (count === 0) {
@@ -1004,10 +1027,9 @@ function buildDateOnlyResults(dateStr) {
     const progArrow = window._dateSearchSort.field === 'prog' ? (window._dateSearchSort.dir === 1 ? '▲' : '▼') : '⇅';
     const hint = `<p class="team-click-hint hint-red">👆 Tap any Team number to view its members</p>`;
     const html = `<table class="trip-table"><thead><tr>
-        <th onclick="window.toggleDateSort('prog')" style="cursor:pointer;">Prog No ${progArrow}</th>
         <th onclick="window.toggleDateSort('team')" style="cursor:pointer;">Team ${teamArrow}</th>
         <th>Train No</th>
-        <th>Up/Down</th>
+        <th onclick="window.toggleDateSort('prog')" style="cursor:pointer;">Prog No ${progArrow}</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
     showResultModal(`All Teams — ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})`, `${hint}<div class="trip-table-wrap">${html}</div>`);
 }
@@ -1046,7 +1068,7 @@ window.switchTab = function(tab) {
         startX = e.touches[0].clientX;
         startY = e.touches[0].clientY;
         // Fix 13: don't trigger tab-swipe if the gesture starts inside the result modal (admin tables, etc.)
-        startInsideModal = !!e.target.closest('#result-modal-overlay, #feedback-modal-overlay');
+        startInsideModal = !!e.target.closest('#result-modal-overlay, #feedback-modal-overlay, #team-info-modal-overlay');
     }, { passive: true });
     document.addEventListener('touchend', (e) => {
         if (startInsideModal) return;
