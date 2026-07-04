@@ -44,7 +44,10 @@
     .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
     .tab-bar { display: flex; background: var(--card); border-radius: 30px; padding: 4px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1px solid var(--border); }
     .tab-btn { flex: 1; padding: 11px; text-align: center; border-radius: 30px; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; }
-    .tab-btn.active { background: var(--blue); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.4); }
+    .tab-btn.active { color: white; }
+    #tab-mine.active { background: var(--purple); box-shadow: 0 2px 6px rgba(168,85,247,0.4); }
+    #tab-search.active { background: var(--green); box-shadow: 0 2px 6px rgba(34,197,94,0.4); }
+    #tab-admin.active { background: var(--yellow); box-shadow: 0 2px 6px rgba(234,179,8,0.4); }
     .swipe-hint { text-align: center; font-size: 12px; font-weight: 700; color: var(--red); margin: 0 0 12px 0; }
     input, select { width: 100%; padding: 11px 14px; border-radius: 30px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 15px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; }
     select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 36px; }
@@ -178,6 +181,7 @@ if (window.parent !== window) {
                 <button class="tsc-edit-btn" onclick="window.editMyTeam()">✏️ Edit</button>
             </div>
         </div>
+        <button class="card team-saved-card" style="width:100%; cursor:pointer; border:none; display:flex; align-items:center; justify-content:center; gap:8px; color:var(--blue); font-weight:900; font-size:16px; font-family:'Roboto', sans-serif; background:rgba(59,130,246,0.95); color:white; padding:12px 16px;" onclick="window.showAllTeamsModal()">👥 View & Edit Your Team</button>
         <div id="my-duty-week"></div>
     </div>
     <div id="view-search" class="hidden">
@@ -568,6 +572,34 @@ async function loadRosterData() {
     renderMyDutyWeek();
 }
 window.loadRosterData = loadRosterData;
+
+// Point: opens the same style of dialogue modal used in Admin's "View All Teams" table,
+// but read-only with an Edit button that routes to a change-request instead of inline editing.
+window.showAllTeamsModal = function() {
+    if (!window.appData.teamMaster) return;
+    let rows = '';
+    Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
+        const team = window.appData.teamMaster[t];
+        rows += `<tr>
+            <td>${t}</td>
+            <td>${team.cor}</td>
+            <td>${team.tte1||'-'}</td>
+            <td>${team.tte2||'-'}</td>
+            <td><button class="inline-save-btn" style="background:var(--orange);" onclick="window.requestTeamChange('${t}')">✏️</button></td>
+        </tr>`;
+    });
+    const hint = `<p class="team-click-hint">✏️ Tap Edit to request a change for that team</p>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    showResultModal('👥 All Teams', html);
+};
+
+// Edit button on a team row opens the existing feedback modal, pre-filled with that team number
+window.requestTeamChange = function(t) {
+    document.getElementById('result-modal-overlay').classList.add('hidden');
+    window.openFeedbackModal();
+    const oldTeamInput = document.getElementById('fb-old-team');
+    if (oldTeamInput) oldTeamInput.value = t;
+};
 
 function populateTeamSelectors() {
     ['my-team-select', 'admin-team-select'].forEach(selId => {
