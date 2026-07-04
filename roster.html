@@ -15,13 +15,15 @@
     }
     body.dark-mode {
         --bg: #0d1117; --card: #161b22; --text: #e6edf3; --text-muted: #8b949e;
-        --border: #30363d; --input-bg: #21262d; --shadow: 0 4px 14px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.35);
+        --border: #30363d; --input-bg: #1c2128; --shadow: 0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+        --blue: #58a6ff; --green: #3fb950; --purple: #bc8cff; --yellow: #f0c040; --orange: #f0883e; --red: #ff7b72;
+        --modal-bg: #1c2128; --top-bar-bg: #010409;
     }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
     body.dark-mode .team-info-card .cor-name, body.dark-mode .team-info-card .tte-name { color: #60a5fa; }
     body.dark-mode .team-saved-card, body.dark-mode .view-edit-team-btn { background: rgba(59,130,246,0.10); }
     body.dark-mode table.trip-table td.td-date { color: #60a5fa; }
-    body.dark-mode table.trip-table td.td-day { color: var(--text); }
+    body.dark-mode table.trip-table td.td-day { color: #2dd4bf; }
     body.dark-mode table.trip-table td.td-day.day-sun { color: #f87171; }
     body.dark-mode .ud-depart { color: #fca5a5; background: rgba(239,68,68,0.22); }
     body.dark-mode .ud-arrive { color: #86efac; background: rgba(34,197,94,0.22); }
@@ -94,20 +96,24 @@
     table.trip-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--card); }
     table.trip-table th { background: var(--top-bar-bg); color: #fde047; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; }
     table.trip-table td { padding: 9px 3px; text-align: center; font-weight: 700; color: var(--text); }
-    table.trip-table td:first-child, table.trip-table th:first-child { width: 92px; min-width: 92px; }
+    table.trip-table td:first-child, table.trip-table th:first-child { width: 92px; min-width: 92px; border-right: 1px solid var(--border); }
+    .team-col { background: var(--card) !important; }
     table.trip-table td.td-date { text-align: center; color: var(--blue); font-weight: 800; }
-    table.trip-table td.td-day { color: var(--text); font-weight: 800; }
+    table.trip-table td.td-day { color: #0d9488; font-weight: 800; }
     table.trip-table td.td-day.day-sun { color: var(--red); }
     table.trip-table tr.trip-divider td { border-bottom: 1px dashed rgba(30,58,138,0.25); }
     body.dark-mode table.trip-table tr.trip-divider td { border-bottom: 1px dashed rgba(148,163,184,0.25); }
-    table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td, table.trip-table tr.trip-row-halt td { text-align: center; font-weight: 900; padding: 5px 7px; letter-spacing: 0.5px; font-size: 12px; }
-    table.trip-table tr.trip-row-rest td { background: rgba(34,197,94,0.30); color: #15803d; }
-    table.trip-table tr.trip-row-lr td { background: rgba(168,85,247,0.25); color: var(--purple); }
-    table.trip-table tr.trip-row-spare td { background: rgba(234,179,8,0.30); color: #854d0e; }
-    table.trip-table tr.trip-row-halt td { background: rgba(234,179,8,0.30); color: #854d0e; text-align: left; padding-left: 10px; }
+    table.trip-table tr.trip-row-rest td, table.trip-table tr.trip-row-lr td, table.trip-table tr.trip-row-spare td, table.trip-table tr.trip-row-halt td { text-align: left; font-weight: 900; padding: 5px 7px; letter-spacing: 0.5px; font-size: 12px; }
+    table.trip-table tr.trip-row-rest td:not(.team-col) { background: rgba(34,197,94,0.30); color: #15803d; }
+    table.trip-table tr.trip-row-lr td:not(.team-col) { background: rgba(168,85,247,0.25); color: var(--purple); }
+    table.trip-table tr.trip-row-spare td:not(.team-col) { background: rgba(234,179,8,0.30); color: #854d0e; }
+    table.trip-table tr.trip-row-halt td:not(.team-col) { background: rgba(234,179,8,0.30); color: #854d0e; }
     .ud-badge { font-size: 10px; font-weight: 900; padding: 3px 9px; border-radius: 12px; display: inline-block; }
     .ud-depart { color: #b91c1c; background: rgba(239,68,68,0.15); }
     .ud-arrive { color: #15803d; background: rgba(34,197,94,0.15); }
+    .team-duty-detail { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(0,0,0,0.15); }
+    .tdd-row { font-size: 12.5px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .tdd-row b { color: var(--blue); }
     .team-chip { display: inline-block; padding: 3px 8px; border-radius: 12px; border: 1.5px solid var(--blue); color: white; font-weight: 900; font-size: 11.5px; cursor: pointer; background: var(--blue); white-space: nowrap; }
     .team-click-hint { font-size: 11.5px; font-weight: 700; color: var(--blue); text-align: center; margin: 0 0 10px 0; }
     .team-click-hint.hint-red { font-size: 13px; color: var(--red); }
@@ -163,7 +169,12 @@ if (window.parent !== window) {
 }
 </script>
 <div id="roster-float-back" class="floating-back">← Back</div>
-<div class="top-bar"><span>BSB Duty Roster</span></div>
+<div class="top-bar" style="position:relative;">
+    <div id="roster-admin-feedback-bell" class="hidden" onclick="window.goToFeedbackInbox()" style="position:absolute; left:15px; top:50%; transform:translateY(-50%); font-size:19px; cursor:pointer; z-index:10;">
+        🔔<div id="roster-feedback-badge-header" class="hidden" style="position:absolute; top:-6px; right:-8px; background:var(--red); color:white; font-size:9px; font-weight:900; border-radius:50%; width:15px; height:15px; display:flex; align-items:center; justify-content:center;">0</div>
+    </div>
+    <span>BSB Duty Roster</span>
+</div>
 <div id="save-toast">✅ Saved successfully!</div>
 <div class="screen-content" id="swipe-area">
     <p class="swipe-hint">↔️ Swipe left or right to switch tabs</p>
@@ -193,7 +204,7 @@ if (window.parent !== window) {
         <div id="my-duty-week"></div>
     </div>
     <div id="view-search" class="hidden">
-        <div class="card search-card" style="border: 2px solid rgba(168,85,247,0.4);">
+        <div class="card search-card">
             <label style="background:rgba(168,85,247,0.15); color:var(--purple);">Search by Team No + Date</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
@@ -208,7 +219,7 @@ if (window.parent !== window) {
                 <button class="clear-btn" onclick="window.clearTeamSearch()">✕</button>
             </div>
         </div>
-        <div class="card search-card" style="border: 2px solid rgba(249,115,22,0.4);">
+        <div class="card search-card">
             <label style="background:rgba(249,115,22,0.15); color:var(--orange);">Search by Train No + Date</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
@@ -224,7 +235,7 @@ if (window.parent !== window) {
             </div>
         </div>
 
-        <div class="card search-card" style="border: 2px solid rgba(59,130,246,0.4);">
+        <div class="card search-card">
             <label style="background:rgba(59,130,246,0.15); color:var(--blue);">Search by Date + Team/Train No</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
@@ -824,20 +835,43 @@ function teamLine(team) {
     return `<span class="cor-name">${team.cor}</span>${team.tte1 ? ', <span class="tte-name">'+team.tte1+'</span>' : ''}${team.tte2 ? ', <span class="tte-name">'+team.tte2+'</span>' : ''}`;
 }
 
-window.showTeamInfo = function(t) {
+window.showTeamInfo = function(t, dutyInfoJson) {
     const team = window.appData.teamMaster[t];
     if (!team) return;
+    let dutyHtml = '';
+    if (dutyInfoJson) {
+        try {
+            const d = JSON.parse(decodeURIComponent(dutyInfoJson));
+            if (d.type === 'rest') {
+                dutyHtml = `<div class="team-duty-detail"><span class="db-badge" style="background:rgba(34,197,94,0.25); color:#15803d;">REST DAY</span></div>`;
+            } else if (d.type === 'lr') {
+                dutyHtml = `<div class="team-duty-detail"><span class="db-badge" style="background:rgba(168,85,247,0.2); color:var(--purple);">LR DUTY</span></div>`;
+            } else {
+                dutyHtml = `<div class="team-duty-detail">
+                    ${d.outTrain ? `<div class="tdd-row"><span class="ud-badge ud-depart">Up</span> Train <b>${d.outTrain}</b> — ${d.outDate ? fmtDateLabel(d.outDate) : ''}</div>` : ''}
+                    ${d.returnTrain ? `<div class="tdd-row"><span class="ud-badge ud-arrive">Down</span> Train <b>${d.returnTrain}</b> — ${d.returnDate ? fmtDateLabel(d.returnDate) : ''}</div>` : ''}
+                </div>`;
+            }
+        } catch(e) {}
+    }
     const html = `<div class="team-info-card" style="border-radius:14px;">
         <div class="team-title-box">Team ${t}</div>
         <div class="team-members">
             <span class="cor-name">COR: ${team.cor}</span><br>
             <span class="tte-name">TTE-1: ${team.tte1}</span>${team.tte2 ? `<br><span class="tte-name">TTE-2: ${team.tte2}</span>` : ''}
         </div>
+        ${dutyHtml}
     </div>`;
-    document.getElementById('team-info-modal-title').innerText = `Team ${t} Members`;
+    document.getElementById('team-info-modal-title').innerText = `Team ${t} — Full Details`;
     document.getElementById('team-info-modal-body').innerHTML = html;
     document.getElementById('team-info-modal-overlay').classList.remove('hidden');
 };
+
+// Helper: safely encode a duty-info object to pass through an onclick attribute
+function dutyInfoAttr(obj) {
+    return encodeURIComponent(JSON.stringify(obj));
+}
+window.dutyInfoAttr = dutyInfoAttr;
 
 window.renderTeamSearch = function() {
     const teamNo = document.getElementById('search-team').value;
@@ -910,7 +944,7 @@ window.renderTrainSearch = function() {
                         <td class="td-date">${fmtDateLabel(dispDate)}</td>
                         <td>${isUp ? trip.outTrain : trip.returnTrain}</td>
                         ${dayTd(dispDate)}
-                        <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
+                        <td><span class="team-chip" onclick="window.showTeamInfo('${t}', '${dutyInfoAttr({outTrain: trip.outTrain, outDate: ds, returnTrain: trip.returnTrain, returnDate: trip.returnDate})}')">Team ${t}</span></td>
                     </tr>`;
                 }
             }
@@ -920,7 +954,7 @@ window.renderTrainSearch = function() {
     if (!found) {
         return showResultModal(`Train ${trainNo}`, '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:15px;">No matches found.</p>');
     }
-    const hint = `<p class="team-click-hint hint-red">👆 Tap any Team number to view its members</p>`;
+    const hint = `<p class="team-click-hint hint-red">👆 tap any team no to show full details</p>`;
     const html = `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Team</th></tr></thead><tbody>${rows}</tbody></table>`;
     showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 15 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
 };
@@ -990,35 +1024,42 @@ function buildDateOnlyResults(dateStr) {
     entries.forEach(({ t, status }) => {
         if (status.type === 'out') {
             count++;
+            const info = dutyInfoAttr({outTrain: status.trip.outTrain, outDate: dateStr, returnTrain: status.trip.returnTrain, returnDate: status.trip.returnDate});
             rows += `<tr class="trip-divider">
-                <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
+                <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
                 <td>${status.trip.outTrain}</td>
                 <td>${status.trip.prog}</td>
             </tr>`;
         } else if (status.type === 'in') {
             count++;
+            const info = dutyInfoAttr({outTrain: status.trip.outTrain, outDate: status.trip.dateStr, returnTrain: status.trip.returnTrain, returnDate: dateStr});
             rows += `<tr class="trip-divider">
-                <td><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
+                <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
                 <td>${status.trip.returnTrain}</td>
                 <td>${status.trip.returnProg||''}</td>
             </tr>`;
         } else if (status.type === 'halt') {
             count++;
-            // Fix 12-ii: halt day yellow, no Prog No column value shown
-            rows += `<tr class="trip-row-halt trip-divider"><td colspan="3"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span> — Halt (Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'})</td></tr>`;
+            const info = dutyInfoAttr({outTrain: status.trip.outTrain, outDate: status.trip.dateStr, returnTrain: status.trip.returnTrain, returnDate: status.trip.returnDate});
+            // Point 2: only "Halt" shown in the row, aligned with Train No column; team chip in its own column
+            rows += `<tr class="trip-row-halt trip-divider">
+                <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
+                <td colspan="2">Halt</td>
+            </tr>`;
         } else if (status.type === 'rest') {
             // Fix 12-i: REST now correctly detected (bug fixed in getDutyStatusOnDate)
-            // Point 5: team chip aligned under the Team column, not centered as a blob
             count++;
+            const info = dutyInfoAttr({type: 'rest'});
             rows += `<tr class="trip-row-rest trip-divider">
-                <td style="text-align:left; padding-left:14px;"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
-                <td colspan="2" style="text-align:center;">REST</td>
+                <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
+                <td colspan="2">REST</td>
             </tr>`;
         } else if (status.type === 'lr') {
             count++;
+            const info = dutyInfoAttr({type: 'lr'});
             rows += `<tr class="trip-row-lr trip-divider">
-                <td style="text-align:left; padding-left:14px;"><span class="team-chip" onclick="window.showTeamInfo('${t}')">Team ${t}</span></td>
-                <td colspan="2" style="text-align:center;">LR DUTY</td>
+                <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
+                <td colspan="2">LR DUTY</td>
             </tr>`;
         }
     });
@@ -1028,7 +1069,7 @@ function buildDateOnlyResults(dateStr) {
     // Fix 12-iii: day column removed since date is already fixed for this whole search
     const teamArrow = window._dateSearchSort.field === 'team' ? (window._dateSearchSort.dir === 1 ? '▲' : '▼') : '⇅';
     const progArrow = window._dateSearchSort.field === 'prog' ? (window._dateSearchSort.dir === 1 ? '▲' : '▼') : '⇅';
-    const hint = `<p class="team-click-hint hint-red">👆 Tap any Team number to view its members</p>`;
+    const hint = `<p class="team-click-hint hint-red">👆 tap any team no to show full details</p>`;
     const html = `<table class="trip-table"><thead><tr>
         <th onclick="window.toggleDateSort('team')" style="cursor:pointer;">Team ${teamArrow}</th>
         <th>Train No</th>
@@ -1313,13 +1354,34 @@ window.dismissRosterFeedback = async function(key) {
 
 window.updateRosterFeedbackBadge = function(count) {
     const badge = document.getElementById('admin-feedback-count-badge');
-    if (!badge) return;
-    if (count > 0) {
-        badge.innerText = count > 9 ? '9+' : count;
-        badge.classList.remove('hidden');
-    } else {
-        badge.classList.add('hidden');
+    const headerBell = document.getElementById('roster-admin-feedback-bell');
+    const headerBadge = document.getElementById('roster-feedback-badge-header');
+    if (badge) {
+        if (count > 0) {
+            badge.innerText = count > 9 ? '9+' : count;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
     }
+    if (headerBadge) {
+        if (count > 0) {
+            headerBadge.innerText = count > 9 ? '9+' : count;
+            headerBadge.classList.remove('hidden');
+        } else {
+            headerBadge.classList.add('hidden');
+        }
+    }
+};
+
+// Point 4: Tapping the header bell jumps straight to Admin tab's Feedback Inbox
+window.goToFeedbackInbox = function() {
+    switchTab('admin');
+    window.loadRosterFeedback();
+    setTimeout(() => {
+        const el = document.getElementById('admin-feedback-list');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 100);
 };
 
 // Silent background check for admins, runs on load so the badge is populated even before opening Admin tab
@@ -1428,6 +1490,8 @@ window.submitFeedback = async function() {
 function initAfterAuth() {
     if (window.isAdmin) {
         document.getElementById('tab-admin').classList.remove('hidden');
+        const bell = document.getElementById('roster-admin-feedback-bell');
+        if (bell) bell.classList.remove('hidden');
         window.checkRosterFeedbackSilently();
     }
     switchTab('mine');
@@ -1473,4 +1537,3 @@ window.resetFloatingBackPosition && window.resetFloatingBackPosition();
 </script>
 </body>
 </html>
-
