@@ -1129,38 +1129,28 @@ window.generateRosterPDF = function() {
     });
     entries.sort((a, b) => a.sortProg - b.sortProg);
 
+    // Only show teams that are heading OUT (UP) on the selected date. Rest, halt, LR,
+    // and teams only arriving (DOWN-only / "in") that day are excluded entirely — the
+    // UP team's own return (DOWN) train/program is shown alongside it in the same row.
     let rows = '';
     entries.forEach(({ t, status }) => {
         const team = window.appData.teamMaster[t];
         if (!team) return;
-        let trainCell = '', progCell = '', statusLabel = '', statusColor = '';
-        if (status.type === 'out') {
-            progCell = status.prog;
-            trainCell = status.trip.outTrain;
-            statusLabel = 'UP'; statusColor = '#15803d';
-        } else if (status.type === 'in') {
-            progCell = status.prog || '';
-            trainCell = status.trip.returnTrain;
-            statusLabel = 'DOWN'; statusColor = '#1d4ed8';
-        } else if (status.type === 'halt') {
-            progCell = status.prog;
-            trainCell = '—';
-            statusLabel = 'HALT'; statusColor = '#b45309';
-        } else if (status.type === 'rest') {
-            progCell = status.prog || '';
-            trainCell = '—';
-            statusLabel = 'REST'; statusColor = '#15803d';
-        } else if (status.type === 'lr') {
-            progCell = status.prog || '';
-            trainCell = 'LR';
-            statusLabel = 'LR'; statusColor = '#7e22ce';
-        } else {
-            return; // skip 'none' / unknown
-        }
-        const corLine = `${team.cor || ''}${trainCell ? `<br><span class="sub-line"><span class="train-no">${trainCell}</span>${statusLabel ? ` <span class="status-chip" style="color:${statusColor}">${statusLabel}</span>` : ''}</span>` : ''}`;
+        if (status.type !== 'out') return; // skip rest / halt / lr / in / none
+
+        const trip = status.trip;
+        const outProg = status.prog;
+        const returnProg = trip.returnProg;
+        const progCell = returnProg && returnProg !== outProg ? `${outProg}/${returnProg}` : `${outProg}`;
+
+        const outTrain = trip.outTrain || '';
+        const returnTrain = trip.returnTrain || '';
+        const trainCell = returnTrain && returnTrain !== outTrain ? `${outTrain}/${returnTrain}` : `${outTrain}`;
+
         rows += `<tr>
-            <td class="prog-cell">${progCell}<br><span class="team-tag">TEAM ${t}</span></td>
-            <td class="name-cell cor-cell">${corLine}</td>
+            <td class="prog-cell">${progCell}</td>
+            <td class="train-cell">${trainCell}</td>
+            <td class="name-cell cor-cell">${team.cor || ''}</td>
             <td class="name-cell">${team.tte1 || ''}</td>
             <td class="name-cell">${team.tte2 || ''}</td>
         </tr>`;
@@ -1182,11 +1172,8 @@ window.generateRosterPDF = function() {
     thead th.col-head { background: #ffe066; color: #000; font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 6px 4px; border: 1px solid #000; }
     td { border: 1px solid #000; padding: 6px 6px; text-align: center; vertical-align: middle; }
     td.prog-cell { background: #ffe066; font-weight: 900; color: #7a0000; font-size: 13px; width: 70px; }
-    td.prog-cell .team-tag { display: block; font-size: 9px; font-weight: 700; color: #444; margin-top: 2px; }
+    td.train-cell { font-weight: 800; font-size: 11.5px; color: #333; width: 90px; }
     td.name-cell { font-weight: 700; font-size: 11.5px; }
-    td.name-cell .sub-line { display: inline-block; margin-top: 3px; font-size: 10px; font-weight: 600; color: #333; }
-    td.name-cell .train-no { color: #444; }
-    td.name-cell .status-chip { font-weight: 900; }
 </style></head>
 <body>
     <div class="toolbar">
@@ -1195,9 +1182,10 @@ window.generateRosterPDF = function() {
     </div>
     <table>
         <thead>
-            <tr><th class="main-title" colspan="4">DUTY LIST OF ${dateLabel}</th></tr>
+            <tr><th class="main-title" colspan="5">DUTY LIST OF ${dateLabel}</th></tr>
             <tr>
                 <th class="col-head">PROG NO.</th>
+                <th class="col-head">TRAIN NO.</th>
                 <th class="col-head">COR</th>
                 <th class="col-head">TTE-1</th>
                 <th class="col-head">TTE-2</th>
