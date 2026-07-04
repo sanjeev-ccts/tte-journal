@@ -56,6 +56,32 @@
     select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 36px; }
     button.action { width: 100%; padding: 13px; border: none; border-radius: 30px; font-weight: 700; font-size: 15px; color: white; background: var(--blue); cursor: pointer; box-shadow: 0 3px 8px rgba(59,130,246,0.35); font-family: 'Roboto', sans-serif; }
     .hidden { display: none !important; }
+
+    /* ===== Roster print-preview overlay (styled to match the TTE LOGS app's preview screen) ===== */
+    body.roster-preview-open { overflow: hidden; }
+    #roster-preview-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: #cbd5e1; overflow: auto; padding-top: 60px; padding-bottom: 100px; }
+    #roster-preview-controls { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; gap: 10px; padding: 10px 15px; background: #1e293b; box-shadow: var(--shadow); z-index: 10002; box-sizing: border-box; }
+    #roster-preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; box-sizing: border-box; }
+    #roster-preview-floating-btns { position: fixed; right: -5px; top: 83%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px; }
+    .roster-float-btn { background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+    #roster-print-doc { font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; }
+    #roster-print-doc table { width: 100%; border-collapse: collapse; font-size: 12px; border: 2px solid #000; }
+    #roster-print-doc thead th.main-title { background: #ffd400; color: #000; font-size: 16px; font-weight: 900; text-transform: uppercase; padding: 8px; border: 1px solid #000; letter-spacing: 0.5px; }
+    #roster-print-doc thead th.col-head { background: #ffe066; color: #000; font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 6px 4px; border: 1px solid #000; }
+    #roster-print-doc td { border: 1px solid #000; padding: 6px 6px; text-align: center; vertical-align: middle; }
+    #roster-print-doc td.prog-cell { background: #ffe066; font-weight: 900; color: #7a0000; font-size: 13px; width: 70px; }
+    #roster-print-doc td.train-cell { font-weight: 800; font-size: 11.5px; color: #333; width: 80px; }
+    #roster-print-doc td.rest-cell { font-weight: 900; font-size: 12px; color: #15803d; background: #dcfce7; letter-spacing: 0.5px; }
+    #roster-print-doc td.name-cell { font-weight: 700; font-size: 11.5px; }
+    #roster-print-doc tr.rest-row td.prog-cell { color: #15803d; }
+
+    @media print {
+        #roster-preview-controls, #roster-preview-floating-btns { display: none !important; }
+        #roster-preview-wrapper { position: static !important; overflow: visible !important; background: white !important; padding: 0 !important; }
+        #roster-preview-content-scale { transform: scale(1) !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; }
+        body > *:not(#roster-preview-wrapper) { display: none !important; }
+    }
     h3.section-title { font-size: 14px; font-weight: 900; color: var(--blue); text-transform: uppercase; margin: 18px 0 10px 0; }
     .section-title-box { text-align: center; background: rgba(59,130,246,0.22); border: 1px solid rgba(59,130,246,0.35); border-radius: 30px; padding: 8px 16px; margin: 18px 0 12px 0; font-size: 13px; font-weight: 900; color: var(--blue); text-transform: uppercase; letter-spacing: 0.5px; box-shadow: var(--shadow); }
     .save-team-row { display: flex; gap: 8px; margin-bottom: 10px; }
@@ -262,7 +288,7 @@ if (window.parent !== window) {
         </div>
 
         <div class="card search-card">
-            <label>Roster PDF</label>
+            <label>Ideal Roster - PDF</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
                     <input type="date" id="roster-pdf-date">
@@ -1110,8 +1136,9 @@ window.toggleDateSort = function(field) {
     buildDateOnlyResults(window._lastDateOnlySearch);
 };
 
-// Point 4: Build a program-wise (1–42) printable roster for a selected date and open it for
-// the user to save/print as PDF via the browser's native print dialog (no external library needed).
+// Point 4: Build a program-wise (1–42) printable roster for a selected date and show it in
+// an in-page print preview (styled to match the TTE LOGS app's preview screen) that the user
+// can print / save as PDF via the browser's native print dialog.
 window.generateRosterPDF = function() {
     const dateStr = document.getElementById('roster-pdf-date').value;
     if (!dateStr) return showToast('❌ Select a date first', true);
@@ -1129,76 +1156,99 @@ window.generateRosterPDF = function() {
     });
     entries.sort((a, b) => a.sortProg - b.sortProg);
 
-    // Only show teams that are heading OUT (UP) on the selected date. Rest, halt, LR,
-    // and teams only arriving (DOWN-only / "in") that day are excluded entirely — the
-    // UP team's own return (DOWN) train/program is shown alongside it in the same row.
+    // Only two kinds of rows are shown:
+    //  - OUT (UP) teams for the day, with their own UP train and the matching DOWN (return) train
+    //    shown in separate columns right next to Prog No.
+    //  - REST rows only (halt / LR / arriving-only "in" teams are excluded entirely).
     let rows = '';
     entries.forEach(({ t, status }) => {
         const team = window.appData.teamMaster[t];
         if (!team) return;
-        if (status.type !== 'out') return; // skip rest / halt / lr / in / none
 
-        const trip = status.trip;
-        const outProg = status.prog;
-        const returnProg = trip.returnProg;
-        const progCell = returnProg && returnProg !== outProg ? `${outProg}/${returnProg}` : `${outProg}`;
+        if (status.type === 'out') {
+            const trip = status.trip;
+            const outProg = status.prog;
+            const returnProg = trip.returnProg;
+            const progCell = returnProg && returnProg !== outProg ? `${outProg}/${returnProg}` : `${outProg}`;
+            const upTrain = trip.outTrain || '—';
+            const downTrain = trip.returnTrain || '—';
 
-        const outTrain = trip.outTrain || '';
-        const returnTrain = trip.returnTrain || '';
-        const trainCell = returnTrain && returnTrain !== outTrain ? `${outTrain}/${returnTrain}` : `${outTrain}`;
-
-        rows += `<tr>
-            <td class="prog-cell">${progCell}</td>
-            <td class="train-cell">${trainCell}</td>
-            <td class="name-cell cor-cell">${team.cor || ''}</td>
-            <td class="name-cell">${team.tte1 || ''}</td>
-            <td class="name-cell">${team.tte2 || ''}</td>
-        </tr>`;
+            rows += `<tr>
+                <td class="prog-cell">${progCell}</td>
+                <td class="train-cell up-train">${upTrain}</td>
+                <td class="train-cell down-train">${downTrain}</td>
+                <td class="name-cell cor-cell">${team.cor || ''}</td>
+                <td class="name-cell">${team.tte1 || ''}</td>
+                <td class="name-cell">${team.tte2 || ''}</td>
+            </tr>`;
+        } else if (status.type === 'rest') {
+            const progCell = status.prog || '—';
+            rows += `<tr class="rest-row">
+                <td class="prog-cell">${progCell}</td>
+                <td class="rest-cell" colspan="2">REST</td>
+                <td class="name-cell cor-cell">${team.cor || ''}</td>
+                <td class="name-cell">${team.tte1 || ''}</td>
+                <td class="name-cell">${team.tte2 || ''}</td>
+            </tr>`;
+        }
+        // halt / lr / in / none: skipped entirely
     });
 
     const dateLabel = fmtDateLabel(dateStr) + ' (' + dayAbbrev(dateStr) + ')';
-    const printHtml = `<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><title>Duty Roster - ${dateLabel}</title>
-<style>
-    * { box-sizing: border-box; }
-    body { font-family: Arial, Helvetica, sans-serif; padding: 16px; color: #000; background: #fff; }
-    .toolbar { display: flex; justify-content: center; gap: 10px; margin-bottom: 16px; }
-    .toolbar button { padding: 10px 22px; border: none; border-radius: 30px; font-size: 14px; font-weight: bold; cursor: pointer; font-family: inherit; }
-    .print-btn { background: #3b82f6; color: white; }
-    .close-btn { background: #64748b; color: white; }
-    @media print { .toolbar { display: none; } body { padding: 0; } }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; border: 2px solid #000; }
-    thead th.main-title { background: #ffd400; color: #000; font-size: 16px; font-weight: 900; text-transform: uppercase; padding: 8px; border: 1px solid #000; letter-spacing: 0.5px; }
-    thead th.col-head { background: #ffe066; color: #000; font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 6px 4px; border: 1px solid #000; }
-    td { border: 1px solid #000; padding: 6px 6px; text-align: center; vertical-align: middle; }
-    td.prog-cell { background: #ffe066; font-weight: 900; color: #7a0000; font-size: 13px; width: 70px; }
-    td.train-cell { font-weight: 800; font-size: 11.5px; color: #333; width: 90px; }
-    td.name-cell { font-weight: 700; font-size: 11.5px; }
-</style></head>
-<body>
-    <div class="toolbar">
-        <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
-        <button class="close-btn" onclick="window.close()">⬅️ Back / Close</button>
-    </div>
-    <table>
-        <thead>
-            <tr><th class="main-title" colspan="5">DUTY LIST OF ${dateLabel}</th></tr>
-            <tr>
-                <th class="col-head">PROG NO.</th>
-                <th class="col-head">TRAIN NO.</th>
-                <th class="col-head">COR</th>
-                <th class="col-head">TTE-1</th>
-                <th class="col-head">TTE-2</th>
-            </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-    </table>
-</body></html>`;
 
-    const win = window.open('', '_blank');
-    if (!win) return showToast('❌ Please allow pop-ups to generate the PDF', true);
-    win.document.write(printHtml);
-    win.document.close();
+    const tableHtml = `<div id="roster-print-doc">
+        <table>
+            <thead>
+                <tr><th class="main-title" colspan="6">DUTY LIST OF ${dateLabel}</th></tr>
+                <tr>
+                    <th class="col-head">PROG NO.</th>
+                    <th class="col-head">UP TRAIN</th>
+                    <th class="col-head">DOWN TRAIN</th>
+                    <th class="col-head">COR</th>
+                    <th class="col-head">TTE-1</th>
+                    <th class="col-head">TTE-2</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>
+    </div>`;
+
+    showRosterPreview(tableHtml);
+};
+
+// Renders the roster table inside an in-page preview overlay that mirrors the TTE LOGS app's
+// own print-preview screen (top toolbar with Back/Print, scaled content, floating pill buttons).
+function showRosterPreview(contentHtml) {
+    let wrapper = document.getElementById('roster-preview-wrapper');
+    if (!wrapper) {
+        wrapper = document.createElement('div');
+        wrapper.id = 'roster-preview-wrapper';
+        wrapper.innerHTML = `
+            <div id="roster-preview-controls">
+                <button onclick="window.closeRosterPreview()" style="margin:0; width:auto; padding:8px 15px; border-radius:30px; background:#64748b; color:#fff; border:none; font-weight:bold; cursor:pointer;">← Back</button>
+                <button onclick="window.print()" style="margin:0; width:auto; padding:8px 15px; border-radius:30px; background:var(--green); color:#fff; border:none; font-weight:bold; cursor:pointer;">🖨️ Print</button>
+            </div>
+            <div id="roster-preview-content-scale">
+                <div id="roster-preview-content"></div>
+            </div>
+            <div id="roster-preview-floating-btns">
+                <div class="roster-float-btn" onclick="window.print()">🖨️ Print</div>
+                <div class="roster-float-btn" onclick="window.closeRosterPreview()">❌ Close</div>
+            </div>`;
+        document.body.appendChild(wrapper);
+    }
+    document.getElementById('roster-preview-content').innerHTML = contentHtml;
+    wrapper.classList.remove('hidden');
+    document.body.classList.add('roster-preview-open');
+}
+
+window.closeRosterPreview = function() {
+    const wrapper = document.getElementById('roster-preview-wrapper');
+    if (wrapper) {
+        wrapper.classList.add('hidden');
+        document.getElementById('roster-preview-content').innerHTML = '';
+    }
+    document.body.classList.remove('roster-preview-open');
 };
 
 window.clearDateOnlySearch = function() {
