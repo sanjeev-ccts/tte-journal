@@ -121,6 +121,9 @@
     table.admin-table th { background: var(--top-bar-bg); color: #fde047; padding: 7px 8px; font-size: 10.5px; text-transform: uppercase; position: sticky; top: 0; border: 1px solid #334155; }
     table.admin-table td { padding: 7px 8px; border: 1px solid var(--border); text-align: center; }
     table.admin-table { border-collapse: collapse; }
+    td.editable-cell { background: rgba(59,130,246,0.06); cursor: text; min-width: 60px; }
+    td.editable-cell:focus { outline: 2px solid var(--blue); background: rgba(59,130,246,0.15); white-space: normal; }
+    .inline-save-btn { background: var(--green); color: white; border: none; border-radius: 8px; padding: 4px 8px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(34,197,94,0.3); }
     table.prog-table-bordered th, table.prog-table-bordered td { border: 1px solid var(--border); }
     table.admin-table tbody tr { cursor: pointer; }
     table.admin-table tbody tr:active { background: rgba(59,130,246,0.15); }
@@ -182,7 +185,7 @@ if (window.parent !== window) {
             <label style="background:rgba(168,85,247,0.15); color:var(--purple);">Search by Team No + Date</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
-                    <input type="number" id="search-team">
+                    <input type="number" id="search-team" inputmode="numeric" maxlength="2" oninput="if(this.value.length>2) this.value=this.value.slice(0,2);">
                     <p class="search-field-caption">Team no</p>
                 </div>
                 <div class="search-field-wrap">
@@ -197,7 +200,7 @@ if (window.parent !== window) {
             <label style="background:rgba(249,115,22,0.15); color:var(--orange);">Search by Train No + Date</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
-                    <input type="text" id="search-train">
+                    <input type="text" id="search-train" inputmode="numeric" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5);">
                     <p class="search-field-caption">Train no</p>
                 </div>
                 <div class="search-field-wrap">
@@ -267,6 +270,16 @@ if (window.parent !== window) {
                 <button class="action" style="background:var(--green); margin-top:10px;" onclick="window.saveProgEdit()">Save Program</button>
             </div>
         </div>
+        <div class="card">
+            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--red); display:flex; align-items:center; gap:8px;">
+                📬 Feedback Inbox
+                <span id="admin-feedback-count-badge" class="hidden" style="background:var(--red); color:white; font-size:11px; font-weight:900; border-radius:10px; padding:1px 8px;">0</span>
+            </h3>
+            <button class="action" style="background:var(--purple);" onclick="window.loadRosterFeedback()">🔄 Refresh Inbox</button>
+            <div id="admin-feedback-list" style="margin-top:10px;">
+                <p style="font-size:13px; color:var(--text-muted); text-align:center;">Tap Refresh to load submissions</p>
+            </div>
+        </div>
     </div>
 </div>
 <div class="bottom-bar">
@@ -306,7 +319,7 @@ if (window.parent !== window) {
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyClDJ3enyipS3sHJujYJTkxdunvvVgju64",
@@ -815,6 +828,7 @@ window.renderTrainSearch = function() {
     const trainNo = document.getElementById('search-train').value.trim();
     const dateStr = document.getElementById('search-train-date').value;
     if (!trainNo) return showToast('❌ Enter a train number', true);
+    if (!/^\d{5}$/.test(trainNo)) return showToast('❌ Train No. must be exactly 5 digits', true);
 
     let rows = '';
     let found = false;
@@ -1020,6 +1034,13 @@ window.switchTab = function(tab) {
     if (!btn) return;
     let isDragging = false, startY = 0, startTop = 0;
 
+    // Point 2: reset to exactly 75% down the screen, overriding any prior drag position
+    window.resetFloatingBackPosition = function() {
+        const resetTop = window.innerHeight * 0.75;
+        const maxTop = window.innerHeight - btn.offsetHeight - 10;
+        btn.style.top = Math.min(resetTop, maxTop) + 'px';
+    };
+
     btn.addEventListener('touchstart', (e) => {
         isDragging = false;
         startY = e.touches[0].clientY;
@@ -1116,13 +1137,41 @@ window.toggleTeamTable = function() {
     let rows = '';
     Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
         const team = window.appData.teamMaster[t];
-        rows += `<tr onclick="window.jumpToTeamEdit('${t}')">
-            <td>${t}</td><td>${team.cor}</td><td>${team.tte1||'-'}</td><td>${team.tte2||'-'}</td><td>${team.baseProg}</td><td>✏️</td>
+        rows += `<tr data-team="${t}">
+            <td>${t}</td>
+            <td contenteditable="true" class="editable-cell" data-field="baseProg">${team.baseProg}</td>
+            <td contenteditable="true" class="editable-cell" data-field="cor">${team.cor}</td>
+            <td contenteditable="true" class="editable-cell" data-field="tte1">${team.tte1||''}</td>
+            <td contenteditable="true" class="editable-cell" data-field="tte2">${team.tte2||''}</td>
+            <td><button class="inline-save-btn" onclick="window.saveTeamRowInline('${t}', this)">💾</button></td>
         </tr>`;
     });
-    const hint = `<p class="team-click-hint">👆 Tap any row to edit that team</p>`;
-    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th>Prog</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
-    showResultModal('👥 All Teams', html);
+    const hint = `<p class="team-click-hint">✏️ Tap any cell to edit, then tap 💾 to save that row</p>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>Prog</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    showResultModal('👥 All Teams — Inline Edit', html);
+};
+
+// Point 4: Excel-style inline save — reads the edited cell values directly from the row's DOM
+window.saveTeamRowInline = async function(t, btnEl) {
+    const row = btnEl.closest('tr');
+    const cells = row.querySelectorAll('.editable-cell');
+    const updated = {};
+    cells.forEach(cell => {
+        const field = cell.dataset.field;
+        const val = cell.innerText.trim();
+        updated[field] = field === 'baseProg' ? parseInt(val) : val;
+    });
+    if (!updated.baseProg || updated.baseProg < 1 || updated.baseProg > 43) {
+        return showToast('❌ Base Program must be between 1 and 43', true);
+    }
+    try {
+        window.appData.teamMaster[t] = updated;
+        await set(ref(db, `roster/BSB/teamMaster/${t}`), updated);
+        showToast('✅ Team ' + t + ' saved!');
+        populateTeamSelectors();
+    } catch (e) {
+        showToast('❌ Save failed: ' + e.message, true);
+    }
 };
 
 window.jumpToTeamEdit = function(t) {
@@ -1165,15 +1214,96 @@ window.saveProgEdit = async function() {
     }
 };
 
+// ========== Point 1: Feedback Inbox (admin) ==========
+window.loadRosterFeedback = async function() {
+    const listEl = document.getElementById('admin-feedback-list');
+    if (!listEl) return;
+    listEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">Loading...</p>';
+    try {
+        const snap = await get(ref(db, 'roster_feedback'));
+        const items = snap.val() || {};
+        const keys = Object.keys(items).sort().reverse();
+        window.updateRosterFeedbackBadge(keys.length);
+        if (keys.length === 0) {
+            listEl.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center;">No feedback yet.</p>';
+            return;
+        }
+        listEl.innerHTML = keys.map(k => {
+            const f = items[k];
+            return `<div style="background:var(--input-bg); border-radius:10px; padding:10px; margin-bottom:8px; border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <span style="font-size:12px; font-weight:900; color:var(--text);">${f.name || '?'}</span>
+                    <span style="font-size:10px; color:var(--text-muted);">${f.date || ''}</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Old Team: <b>${f.oldTeam||'-'}</b> → New Team: <b>${f.newTeam||'-'}</b></div>
+                <div style="font-size:12px; color:var(--text); line-height:1.5;">${f.message || ''}</div>
+                <button onclick="window.dismissRosterFeedback('${k}')" style="margin-top:6px; padding:4px 12px; width:auto; font-size:11px; background:var(--card); color:var(--red); border:1px solid var(--red); border-radius:20px; box-shadow:none;">✕ Dismiss</button>
+            </div>`;
+        }).join('');
+    } catch (e) {
+        listEl.innerHTML = `<p style="color:var(--red); font-size:12px; text-align:center;">${e.message}</p>`;
+    }
+};
+
+window.dismissRosterFeedback = async function(key) {
+    try {
+        await remove(ref(db, `roster_feedback/${key}`));
+        window.loadRosterFeedback();
+    } catch (e) {
+        showToast('❌ Failed to dismiss: ' + e.message, true);
+    }
+};
+
+window.updateRosterFeedbackBadge = function(count) {
+    const badge = document.getElementById('admin-feedback-count-badge');
+    if (!badge) return;
+    if (count > 0) {
+        badge.innerText = count > 9 ? '9+' : count;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+};
+
+// Silent background check for admins, runs on load so the badge is populated even before opening Admin tab
+window.checkRosterFeedbackSilently = async function() {
+    if (!window.isAdmin) return;
+    try {
+        const snap = await get(ref(db, 'roster_feedback'));
+        const items = snap.val() || {};
+        window.updateRosterFeedbackBadge(Object.keys(items).length);
+    } catch (e) {}
+};
+
 window.toggleProgTable = function() {
     let rows = '';
     for (let p = 1; p <= 43; p++) {
         const pd = window.appData.linkProgramme[p] || {};
-        rows += `<tr onclick="window.jumpToProgEdit(${p})"><td>${p}</td>` + SLOT_ORDER.map(s => `<td>${pd[s] || '-'}</td>`).join('') + `</tr>`;
+        const cells = SLOT_ORDER.map(s => `<td contenteditable="true" class="editable-cell" data-slot="${s}">${pd[s] || ''}</td>`).join('');
+        rows += `<tr data-prog="${p}"><td>${p}</td>${cells}<td><button class="inline-save-btn" onclick="window.saveProgRowInline(${p}, this)">💾</button></td></tr>`;
     }
-    const hint = `<p class="team-click-hint">👆 Tap any row to edit that program</p>`;
-    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table prog-table-bordered"><thead><tr><th>Prog</th>${SLOT_ORDER.map(s => `<th>${SLOT_LABELS[s]}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div>`;
-    showResultModal('🚂 Full Link Programme', html);
+    const hint = `<p class="team-click-hint">✏️ Tap any cell to edit, then tap 💾 to save that row. Leave a cell blank for no duty that slot.</p>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table prog-table-bordered"><thead><tr><th>Prog</th>${SLOT_ORDER.map(s => `<th>${SLOT_LABELS[s]}</th>`).join('')}<th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    showResultModal('🚂 Full Link Programme — Inline Edit', html);
+};
+
+// Point 4: Excel-style inline save for a single program row — reads all 14 slot cells directly from the DOM
+window.saveProgRowInline = async function(p, btnEl) {
+    const row = btnEl.closest('tr');
+    const cells = row.querySelectorAll('.editable-cell');
+    const newData = {};
+    cells.forEach(cell => {
+        const slot = cell.dataset.slot;
+        const val = cell.innerText.trim();
+        if (val) newData[slot] = val;
+    });
+    try {
+        window.appData.linkProgramme[p] = newData;
+        await set(ref(db, `roster/BSB/linkProgramme/${p}`), newData);
+        showToast('✅ Program ' + p + ' saved!');
+    } catch (e) {
+        showToast('❌ Save failed: ' + e.message, true);
+    }
 };
 
 window.jumpToProgEdit = function(p) {
@@ -1239,7 +1369,10 @@ window.submitFeedback = async function() {
 };
 
 function initAfterAuth() {
-    if (window.isAdmin) document.getElementById('tab-admin').classList.remove('hidden');
+    if (window.isAdmin) {
+        document.getElementById('tab-admin').classList.remove('hidden');
+        window.checkRosterFeedbackSilently();
+    }
     switchTab('mine');
     if (localStorage.getItem('roster_dark_mode') === '1') {
         document.body.classList.add('dark-mode');
@@ -1266,11 +1399,17 @@ window.addEventListener('message', function(event) {
         window.isAdmin = event.data.isAdmin;
         initAfterAuth();
     }
+    // Point 2: TTE LOGS sends this every time the Roster modal is reopened (even if the iframe was already loaded)
+    if (event.data && event.data.type === 'ROSTER_SHOWN') {
+        window.resetFloatingBackPosition && window.resetFloatingBackPosition();
+    }
 });
 
 if (window.parent !== window) {
     window.parent.postMessage({ type: 'ROSTER_READY' }, '*');
 }
+// Set initial position on first load too
+window.resetFloatingBackPosition && window.resetFloatingBackPosition();
 
 document.getElementById('admin-anchor-date').value = DEFAULT_ANCHOR_DATE;
 
