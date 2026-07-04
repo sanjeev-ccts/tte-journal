@@ -260,6 +260,17 @@ if (window.parent !== window) {
                 <button class="clear-btn" onclick="window.clearDateOnlySearch()">✕</button>
             </div>
         </div>
+
+        <div class="card search-card">
+            <label>Roster PDF</label>
+            <div class="search-row-3">
+                <div class="search-field-wrap">
+                    <input type="date" id="roster-pdf-date">
+                    <p class="search-field-caption">Select Date</p>
+                </div>
+                <button class="icon-search-btn" onclick="window.generateRosterPDF()">⬇️</button>
+            </div>
+        </div>
     </div>
     <div id="view-admin" class="hidden">
         <div class="card">
@@ -513,7 +524,7 @@ function getTripStartingOn(teamNo, dateStr) {
     const prog1 = nextProgNo(prog);
     const prog1Data = window.appData.linkProgramme[prog1];
 
-    let returnTrain = null, returnDate = null, dayCount = 2, returnProg = null;
+    let returnTrain = null, returnDate = null, dayCount = 2, returnProg = null, haltProg = null;
 
     if (prog1Data && prog1Data[inSlot] !== undefined) {
         returnTrain = prog1Data[inSlot];
@@ -528,9 +539,10 @@ function getTripStartingOn(teamNo, dateStr) {
             returnDate = addDays(dateStr, 2);
             dayCount = 3;
             returnProg = prog2;
+            haltProg = prog1; // the skipped/middle program number for the halt day
         }
     }
-    return { prog, dateStr, status: 'duty', outTrain: outVal, returnTrain, returnDate, returnProg, dayCount };
+    return { prog, dateStr, status: 'duty', outTrain: outVal, returnTrain, returnDate, returnProg, dayCount, haltProg };
 }
 window.getTripStartingOn = getTripStartingOn;
 window.getProgramForTeamOnDate = getProgramForTeamOnDate;
@@ -542,17 +554,20 @@ function getDutyStatusOnDate(teamNo, dateStr) {
         if (trip.status === 'rest') return { type: 'rest', prog: trip.prog };
         if (trip.status === 'lr') return { type: 'lr', prog: trip.prog };
         if (trip.status === 'spare') return { type: 'spare', prog: trip.prog };
-        return { type: 'out', trip };
+        return { type: 'out', trip, prog: trip.prog };
     }
 
     for (let back = 1; back <= 2; back++) {
         const startDate = addDays(dateStr, -back);
         const t = getTripStartingOn(teamNo, startDate);
         if (t && t.status === 'duty' && t.returnDate === dateStr) {
-            return { type: 'in', trip: t };
+            return { type: 'in', trip: t, prog: t.returnProg };
         }
         if (t && t.status === 'duty' && t.dayCount === 3 && back === 1 && addDays(startDate,1) === dateStr) {
-            return { type: 'halt', trip: t };
+            // Fix: halt day must carry its own skipped/middle program number (t.haltProg = t.prog + 1),
+            // never the outbound day's program number — that's what made halt rows show the same
+            // prog no as another team's fresh "Up" trip instead of the correct mid-cycle number.
+            return { type: 'halt', trip: t, prog: t.haltProg };
         }
     }
     const prog = getProgramForTeamOnDate(teamNo, dateStr);
@@ -624,14 +639,14 @@ window.showAllTeamsModal = function() {
         const team = window.appData.teamMaster[t];
         rows += `<tr>
             <td>${t}</td>
+            <td><button class="inline-save-btn" style="background:var(--orange);" onclick="window.requestTeamChange('${t}')">✏️</button></td>
             <td>${team.cor}</td>
             <td>${team.tte1||'-'}</td>
             <td>${team.tte2||'-'}</td>
-            <td><button class="inline-save-btn" style="background:var(--orange);" onclick="window.requestTeamChange('${t}')">✏️</button></td>
         </tr>`;
     });
     const hint = `<p class="team-click-hint">✏️ Tap Edit to request a change for that team</p>`;
-    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th></th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     showResultModal('👥 All Teams', html);
 };
 
@@ -906,7 +921,7 @@ window.renderTeamSearch = function() {
         </tbody></table></div>`;
     } else if (status.type === 'halt') {
         // Fix 6: show BOTH the up and down train of that trip during a halt day. Fix 3: yellow halt-day styling, Fix 12-ii: no Prog No
-        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-halt trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : Halt Day — Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'}</td></tr></tbody></table></div>`;
+        html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-halt trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : Halt Day (Prog ${status.prog}) — Up: ${status.trip.outTrain}, Down: ${status.trip.returnTrain||'pending'}</td></tr></tbody></table></div>`;
     } else if (status.type === 'rest') {
         html += `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-rest trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : REST</td></tr></tbody></table></div>`;
     } else if (status.type === 'lr') {
@@ -973,7 +988,7 @@ window.clearTrainSearch = function() {
     document.getElementById('search-train-date').value = '';
 };
 
-window._dateSearchSort = { field: 'team', dir: 1 };
+window._dateSearchSort = { field: 'prog', dir: 1 };
 
 window.renderDateOnlySearch = function() {
     const dateStr = document.getElementById('search-date-only').value;
@@ -1018,8 +1033,8 @@ function buildDateOnlyResults(dateStr) {
         let av, bv;
         if (field === 'team') { av = a.t; bv = b.t; }
         else { // prog
-            av = a.status.trip ? a.status.trip.prog : (a.status.prog || 0);
-            bv = b.status.trip ? b.status.trip.prog : (b.status.prog || 0);
+            av = a.status.prog || 0;
+            bv = b.status.prog || 0;
         }
         return (av - bv) * dir;
     });
@@ -1033,7 +1048,7 @@ function buildDateOnlyResults(dateStr) {
             rows += `<tr class="trip-divider">
                 <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
                 <td>${status.trip.outTrain}</td>
-                <td>${status.trip.prog}</td>
+                <td>${status.prog}</td>
                 <td><span class="ud-badge ud-depart">Up</span></td>
             </tr>`;
         } else if (status.type === 'in') {
@@ -1042,7 +1057,7 @@ function buildDateOnlyResults(dateStr) {
             rows += `<tr class="trip-divider">
                 <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
                 <td>${status.trip.returnTrain}</td>
-                <td>${status.trip.returnProg||''}</td>
+                <td>${status.prog||''}</td>
                 <td><span class="ud-badge ud-arrive">Down</span></td>
             </tr>`;
         } else if (status.type === 'halt') {
@@ -1050,7 +1065,7 @@ function buildDateOnlyResults(dateStr) {
             const info = dutyInfoAttr({outTrain: status.trip.outTrain, outDate: status.trip.dateStr, returnTrain: status.trip.returnTrain, returnDate: status.trip.returnDate});
             rows += `<tr class="trip-row-halt trip-divider">
                 <td class="team-col"><span class="team-chip chip-halt" onclick="window.showTeamInfo('${t}', '${info}')">Team ${t}</span></td>
-                <td style="width:130px;">HALT</td><td>${status.trip.prog}</td><td></td>
+                <td style="width:130px;">HALT</td><td>${status.prog}</td><td></td>
             </tr>`;
         } else if (status.type === 'rest') {
             // Fix 12-i: REST now correctly detected (bug fixed in getDutyStatusOnDate)
@@ -1093,6 +1108,95 @@ window.toggleDateSort = function(field) {
         window._dateSearchSort.dir = 1;
     }
     buildDateOnlyResults(window._lastDateOnlySearch);
+};
+
+// Point 4: Build a program-wise (1–42) printable roster for a selected date and open it for
+// the user to save/print as PDF via the browser's native print dialog (no external library needed).
+window.generateRosterPDF = function() {
+    const dateStr = document.getElementById('roster-pdf-date').value;
+    if (!dateStr) return showToast('❌ Select a date first', true);
+
+    // Build team-by-team status for the date, then group/sort by program number (1–42, skip 43/rest team)
+    const entries = [];
+    Object.keys(window.appData.teamMaster).forEach(t => {
+        const status = getDutyStatusOnDate(t, dateStr);
+        entries.push({ t: parseInt(t), status });
+    });
+
+    // Determine each entry's primary program number for sorting purposes (same logic as Search by Date)
+    entries.forEach(e => {
+        e.sortProg = e.status.prog || 0;
+    });
+    entries.sort((a, b) => a.sortProg - b.sortProg);
+
+    let rows = '';
+    entries.forEach(({ t, status }) => {
+        const team = window.appData.teamMaster[t];
+        if (!team) return;
+        let trainCell = '', progCell = '', statusLabel = '';
+        if (status.type === 'out') {
+            progCell = status.prog;
+            trainCell = status.trip.outTrain;
+            statusLabel = 'UP';
+        } else if (status.type === 'in') {
+            progCell = status.prog || '';
+            trainCell = status.trip.returnTrain;
+            statusLabel = 'DOWN';
+        } else if (status.type === 'halt') {
+            progCell = status.prog;
+            trainCell = '—';
+            statusLabel = 'HALT';
+        } else if (status.type === 'rest') {
+            progCell = status.prog || '';
+            trainCell = '—';
+            statusLabel = 'REST';
+        } else if (status.type === 'lr') {
+            progCell = status.prog || '';
+            trainCell = 'LR';
+            statusLabel = 'LR';
+        } else {
+            return; // skip 'none' / unknown
+        }
+        // Skip team acting as the designated rest team (typically Team 43 in a 43-rotation) if it's a REST entry
+        // Still include it if it happens to have actual duty, since rotation can vary by anchor date
+        rows += `<tr>
+            <td>${progCell}</td>
+            <td>${t}</td>
+            <td>${trainCell}</td>
+            <td>${statusLabel}</td>
+            <td>${team.cor || ''}</td>
+            <td>${team.tte1 || ''}</td>
+            <td>${team.tte2 || ''}</td>
+        </tr>`;
+    });
+
+    const dateLabel = fmtDateLabel(dateStr) + ' (' + dayAbbrev(dateStr) + ')';
+    const printHtml = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Duty Roster - ${dateLabel}</title>
+<style>
+    body { font-family: Arial, sans-serif; padding: 20px; color: #000; }
+    h1 { text-align: center; font-size: 18px; margin-bottom: 4px; }
+    h2 { text-align: center; font-size: 14px; margin-top: 0; color: #444; font-weight: normal; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+    th, td { border: 1px solid #333; padding: 6px 8px; text-align: center; }
+    th { background: #e5e5e5; font-weight: bold; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .print-btn { display: block; margin: 15px auto; padding: 10px 24px; background: #3b82f6; color: white; border: none; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; }
+    @media print { .print-btn { display: none; } }
+</style></head>
+<body>
+    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+    <h1>BSB Duty Roster</h1>
+    <h2>${dateLabel}</h2>
+    <table>
+        <thead><tr><th>Prog No</th><th>Team</th><th>Train No</th><th>Up/Down</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead>
+        <tbody>${rows}</tbody>
+    </table>
+</body></html>`;
+
+    const win = window.open('', '_blank');
+    if (!win) return showToast('❌ Please allow pop-ups to generate the PDF', true);
+    win.document.write(printHtml);
+    win.document.close();
 };
 
 window.clearDateOnlySearch = function() {
@@ -1244,15 +1348,15 @@ window.toggleTeamTable = function() {
         const team = window.appData.teamMaster[t];
         rows += `<tr data-team="${t}">
             <td>${t}</td>
+            <td><button class="inline-save-btn" onclick="window.saveTeamRowInline('${t}', this)">💾</button></td>
             <td contenteditable="true" class="editable-cell" data-field="baseProg">${team.baseProg}</td>
             <td contenteditable="true" class="editable-cell" data-field="cor">${team.cor}</td>
             <td contenteditable="true" class="editable-cell" data-field="tte1">${team.tte1||''}</td>
             <td contenteditable="true" class="editable-cell" data-field="tte2">${team.tte2||''}</td>
-            <td><button class="inline-save-btn" onclick="window.saveTeamRowInline('${t}', this)">💾</button></td>
         </tr>`;
     });
     const hint = `<p class="team-click-hint">✏️ Tap any cell to edit, then tap 💾 to save that row</p>`;
-    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>Prog</th><th>COR</th><th>TTE-1</th><th>TTE-2</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th></th><th>Prog</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead><tbody>${rows}</tbody></table></div>`;
     showResultModal('👥 All Teams — Inline Edit', html);
 };
 
