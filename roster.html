@@ -1133,40 +1133,36 @@ window.generateRosterPDF = function() {
     entries.forEach(({ t, status }) => {
         const team = window.appData.teamMaster[t];
         if (!team) return;
-        let trainCell = '', progCell = '', statusLabel = '';
+        let trainCell = '', progCell = '', statusLabel = '', statusColor = '';
         if (status.type === 'out') {
             progCell = status.prog;
             trainCell = status.trip.outTrain;
-            statusLabel = 'UP';
+            statusLabel = 'UP'; statusColor = '#15803d';
         } else if (status.type === 'in') {
             progCell = status.prog || '';
             trainCell = status.trip.returnTrain;
-            statusLabel = 'DOWN';
+            statusLabel = 'DOWN'; statusColor = '#1d4ed8';
         } else if (status.type === 'halt') {
             progCell = status.prog;
             trainCell = '—';
-            statusLabel = 'HALT';
+            statusLabel = 'HALT'; statusColor = '#b45309';
         } else if (status.type === 'rest') {
             progCell = status.prog || '';
             trainCell = '—';
-            statusLabel = 'REST';
+            statusLabel = 'REST'; statusColor = '#15803d';
         } else if (status.type === 'lr') {
             progCell = status.prog || '';
             trainCell = 'LR';
-            statusLabel = 'LR';
+            statusLabel = 'LR'; statusColor = '#7e22ce';
         } else {
             return; // skip 'none' / unknown
         }
-        // Skip team acting as the designated rest team (typically Team 43 in a 43-rotation) if it's a REST entry
-        // Still include it if it happens to have actual duty, since rotation can vary by anchor date
+        const corLine = `${team.cor || ''}${trainCell ? `<br><span class="sub-line"><span class="train-no">${trainCell}</span>${statusLabel ? ` <span class="status-chip" style="color:${statusColor}">${statusLabel}</span>` : ''}</span>` : ''}`;
         rows += `<tr>
-            <td>${progCell}</td>
-            <td>${t}</td>
-            <td>${trainCell}</td>
-            <td>${statusLabel}</td>
-            <td>${team.cor || ''}</td>
-            <td>${team.tte1 || ''}</td>
-            <td>${team.tte2 || ''}</td>
+            <td class="prog-cell">${progCell}<br><span class="team-tag">TEAM ${t}</span></td>
+            <td class="name-cell cor-cell">${corLine}</td>
+            <td class="name-cell">${team.tte1 || ''}</td>
+            <td class="name-cell">${team.tte2 || ''}</td>
         </tr>`;
     });
 
@@ -1174,21 +1170,39 @@ window.generateRosterPDF = function() {
     const printHtml = `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><title>Duty Roster - ${dateLabel}</title>
 <style>
-    body { font-family: Arial, sans-serif; padding: 20px; color: #000; }
-    h1 { text-align: center; font-size: 18px; margin-bottom: 4px; }
-    h2 { text-align: center; font-size: 14px; margin-top: 0; color: #444; font-weight: normal; }
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
-    th, td { border: 1px solid #333; padding: 6px 8px; text-align: center; }
-    th { background: #e5e5e5; font-weight: bold; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .print-btn { display: block; margin: 15px auto; padding: 10px 24px; background: #3b82f6; color: white; border: none; border-radius: 30px; font-size: 15px; font-weight: bold; cursor: pointer; }
-    @media print { .print-btn { display: none; } }
+    * { box-sizing: border-box; }
+    body { font-family: Arial, Helvetica, sans-serif; padding: 16px; color: #000; background: #fff; }
+    .toolbar { display: flex; justify-content: center; gap: 10px; margin-bottom: 16px; }
+    .toolbar button { padding: 10px 22px; border: none; border-radius: 30px; font-size: 14px; font-weight: bold; cursor: pointer; font-family: inherit; }
+    .print-btn { background: #3b82f6; color: white; }
+    .close-btn { background: #64748b; color: white; }
+    @media print { .toolbar { display: none; } body { padding: 0; } }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; border: 2px solid #000; }
+    thead th.main-title { background: #ffd400; color: #000; font-size: 16px; font-weight: 900; text-transform: uppercase; padding: 8px; border: 1px solid #000; letter-spacing: 0.5px; }
+    thead th.col-head { background: #ffe066; color: #000; font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 6px 4px; border: 1px solid #000; }
+    td { border: 1px solid #000; padding: 6px 6px; text-align: center; vertical-align: middle; }
+    td.prog-cell { background: #ffe066; font-weight: 900; color: #7a0000; font-size: 13px; width: 70px; }
+    td.prog-cell .team-tag { display: block; font-size: 9px; font-weight: 700; color: #444; margin-top: 2px; }
+    td.name-cell { font-weight: 700; font-size: 11.5px; }
+    td.name-cell .sub-line { display: inline-block; margin-top: 3px; font-size: 10px; font-weight: 600; color: #333; }
+    td.name-cell .train-no { color: #444; }
+    td.name-cell .status-chip { font-weight: 900; }
 </style></head>
 <body>
-    <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
-    <h1>BSB Duty Roster</h1>
-    <h2>${dateLabel}</h2>
+    <div class="toolbar">
+        <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+        <button class="close-btn" onclick="window.close()">⬅️ Back / Close</button>
+    </div>
     <table>
-        <thead><tr><th>Prog No</th><th>Team</th><th>Train No</th><th>Up/Down</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead>
+        <thead>
+            <tr><th class="main-title" colspan="4">DUTY LIST OF ${dateLabel}</th></tr>
+            <tr>
+                <th class="col-head">PROG NO.</th>
+                <th class="col-head">COR</th>
+                <th class="col-head">TTE-1</th>
+                <th class="col-head">TTE-2</th>
+            </tr>
+        </thead>
         <tbody>${rows}</tbody>
     </table>
 </body></html>`;
@@ -1679,4 +1693,3 @@ window.resetFloatingBackPosition && window.resetFloatingBackPosition();
 </script>
 </body>
 </html>
-
