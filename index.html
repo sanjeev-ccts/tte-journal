@@ -183,6 +183,8 @@
         
         .floating-back { position: fixed; right: -5px; top: 70%; background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); z-index: 5000; cursor: grab; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; touch-action: none; }
         .floating-back:active { cursor: grabbing; }
+        .floating-edit { position: fixed; right: -5px; top: 15%; background: var(--blue); color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); z-index: 5000; cursor: grab; border: 2px solid rgba(255,255,255,0.2); border-right: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 5px; touch-action: none; }
+        .floating-edit:active { cursor: grabbing; }
         
         .tab-container { display: flex; background: var(--card); border: 1px solid var(--border); border-radius: 30px; overflow: hidden; margin-bottom: 15px; box-shadow: var(--shadow); transition: background 0.3s, border 0.3s; height: 46px; }
         .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; display: flex; align-items: center; justify-content: center; font-size: 14px; }
@@ -198,7 +200,7 @@
         .duty-cal-day { font-size: 11px; font-weight: 700; text-align: center; padding: 5px 2px; border-radius: 6px; min-height: 26px; display: flex; align-items: center; justify-content: center; }
         .duty-cal-day.today { outline: 2px solid var(--blue); outline-offset: 1px; }
         
-        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal, #calendar-modal, #feedback-modal, #complete-arrival-modal, #complete-departure-modal, #cal-day-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        #custom-modal, #manage-modal, #help-modal, #trend-modal, #roster-modal, #calendar-modal, #feedback-modal, #complete-arrival-modal, #complete-departure-modal, #cal-day-modal, #dest-diversion-modal, #pay-rate-modal, #hra-rate-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         #modal-box { background: var(--modal-bg); padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; }
         
         .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); transition: background 0.3s; padding: 0 15px; }
@@ -231,6 +233,12 @@
             .page-break::before { display: none !important; }
             @page { margin: 0.3cm; size: A4; }
         }
+        td.editable-cell { background: rgba(59,130,246,0.06); cursor: text; min-width: 50px; padding: 6px 4px !important; text-align: center; }
+        td.editable-cell:focus { outline: 2px solid var(--blue); background: rgba(59,130,246,0.15); }
+        .inline-save-btn { background: var(--green); color: white; border: none; border-radius: 8px; padding: 4px 8px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(34,197,94,0.3); }
+        .station-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(59,130,246,0.12); border: 1px solid var(--blue); color: var(--blue); font-weight: 800; font-size: 11px; padding: 3px 6px 3px 10px; border-radius: 16px; }
+        .station-chip .chip-remove { cursor: pointer; font-weight: 900; background: var(--blue); color: white; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 10px; line-height: 1; }
+        body.dark-mode .station-chip { background: rgba(88,166,255,0.15); }
     </style>
 
     <script type="module">
@@ -255,7 +263,29 @@
         window.ADMIN_UID = 'xehTNj2b0qbFfBTADLppuZ9cYti1';
         window.ADMIN_EMAILS = ["ksanjeev.nit@gmail.com"]; 
         window.ADMIN_PIN = '2580'; // Change this to your preferred PIN
-        window.APP_VERSION = '5.5';
+        window.APP_VERSION = '1.0';
+
+        // Point 2: Default Pay Level -> Grade Pay + TA Rate mapping (from 7th CPC Pay Matrix + revised TA/DA circular).
+        // Admin can override any of these values live via Admin panel; overrides are stored in Firebase
+        // at admin_config/payRateTable and take priority over these defaults.
+        window.DEFAULT_PAY_RATE_TABLE = {
+            'LEVEL-1': { gradepay: 1800, tarate: 625 },
+            'LEVEL-2': { gradepay: 1900, tarate: 625 },
+            'LEVEL-3': { gradepay: 2000, tarate: 625 },
+            'LEVEL-4': { gradepay: 2400, tarate: 625 },
+            'LEVEL-5': { gradepay: 2800, tarate: 625 },
+            'LEVEL-6': { gradepay: 4200, tarate: 1000 },
+            'LEVEL-7': { gradepay: 4600, tarate: 1000 },
+            'LEVEL-8 (MACP)': { gradepay: 4800, tarate: 1000 }
+        };
+        window.payRateTable = JSON.parse(JSON.stringify(window.DEFAULT_PAY_RATE_TABLE)); // live copy, may be overwritten by Firebase admin_config
+
+        // Point 8-i: Default HQ -> HRA % mapping. BSB = 20% as specified. Admin can add/edit
+        // entries for other HQs via Admin panel; overrides stored in Firebase at admin_config/hraRateTable.
+        window.DEFAULT_HRA_RATE_TABLE = {
+            'BSB': 20
+        };
+        window.hraRateTable = JSON.parse(JSON.stringify(window.DEFAULT_HRA_RATE_TABLE));
 
         window.login = () => signInWithPopup(window.auth, window.provider).catch(err => { if(err.code !== 'auth/popup-closed-by-user') showModal("Login Error", err.message, "error", false); });
         window.logout = () => signOut(window.auth).then(() => window.location.reload());
@@ -283,6 +313,15 @@
                     window.lastSyncTime = new Date().toLocaleTimeString();
                     const syncLbl = document.getElementById('sync-time-lbl');
                     if(syncLbl) syncLbl.innerText = "Last Synced: " + window.lastSyncTime;
+
+                    // Point 2: Apply admin's pay rate table override if present, else keep defaults
+                    if (adminConfig.payRateTable) {
+                        window.payRateTable = adminConfig.payRateTable;
+                    }
+                    // Point 8-i: Apply admin's HRA rate table override if present, else keep defaults
+                    if (adminConfig.hraRateTable) {
+                        window.hraRateTable = adminConfig.hraRateTable;
+                    }
 
                     // Maintenance Protocol (bypass for admin)
                     if(adminConfig.maintenance && !isAdmin) {
@@ -379,6 +418,7 @@
 
 <div id="ui-wrapper">
     <div id="global-back-btn" class="floating-back hidden">← Back</div>
+    <div id="floating-edit-profile-btn" class="floating-edit hidden">✏️ Edit</div>
 
     <div class="bottom-bar hidden" id="main-bottom-bar">
         <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()">🌙</div>
@@ -397,13 +437,109 @@
 
     <div id="trend-modal" class="hidden">
         <div style="background: var(--modal-bg); padding: 20px; border-radius: 16px; width: 93%; max-width: 400px; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--text);" id="trend-modal-title">6-Month TA Trend</h3>
-                <button onclick="document.getElementById('trend-modal').classList.add('hidden')" style="width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
+            <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 15px; position: relative;">
+                <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--blue); background: rgba(59,130,246,0.12); border: 1.5px solid var(--blue); border-radius: 20px; padding: 6px 18px; display: inline-block; text-align: center;" id="trend-modal-title">6-Month TA Trend</h3>
+                <button onclick="document.getElementById('trend-modal').classList.add('hidden')" style="position: absolute; right: 0; width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
             </div>
             <div id="trend-chart-area" style="width: 100%; overflow-x: auto;"></div>
         </div>
     </div>
+
+    <!-- DESTINATION & DIVERSION STATIONS MODAL (Point 8, v5.6) -->
+    <div id="dest-diversion-modal" class="hidden">
+        <div style="background: var(--modal-bg); padding: 18px; border-radius: 16px; width: 95%; max-width: 460px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0;">
+                <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--blue);">📍 Destination &amp; Diversion Stations</h3>
+                <button onclick="window.closeDestDiversionModal()" style="width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
+            </div>
+            <div style="overflow-y: auto; flex: 1;">
+                <div class="card" style="margin-bottom: 12px;">
+                    <label class="profile-lbl">Outward Destinations <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
+                    <div style="display:flex; gap:8px; margin-top:4px;">
+                        <input type="text" id="reg-dest-input" placeholder="e.g. LKO PRYJ" style="text-transform: uppercase; margin:0; flex:1;">
+                        <button type="button" onclick="window.addDestStation()" style="width:auto; margin:0; padding:0 16px; background:var(--green); flex-shrink:0;">Add</button>
+                    </div>
+                    <div id="reg-dest-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
+                </div>
+
+                <div class="card">
+                    <label class="profile-lbl">Diversion Stations <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
+                    <p style="font-size:11px; color:var(--text-muted); margin:2px 0 8px 0;">For trains that sometimes divert away from a major destination station to a nearby one (e.g. LKO trains diverting via AMG). Optional — only add if you know of specific diversions on your usual routes.</p>
+                    <div style="display:flex; gap:8px; margin-bottom:8px;">
+                        <select id="reg-diversion-major" style="margin:0; flex:1;">
+                            <option value="">-- Select major station --</option>
+                        </select>
+                    </div>
+                    <div id="reg-diversion-major-custom-wrap" class="hidden" style="display:flex; gap:8px; margin-bottom:8px;">
+                        <input type="text" id="reg-diversion-major-custom" placeholder="Type major station code" style="text-transform: uppercase; margin:0; flex:1;">
+                        <button type="button" onclick="window.confirmCustomMajorStation()" style="width:auto; margin:0; padding:0 16px; background:var(--blue); flex-shrink:0;">Use</button>
+                    </div>
+                    <div id="reg-diversion-editor" class="hidden">
+                        <div style="font-size:12px; font-weight:800; color:var(--blue); margin-bottom:6px;" id="reg-diversion-editor-title"></div>
+                        <div style="display:flex; gap:8px; margin-bottom:8px;">
+                            <input type="text" id="reg-diversion-sub-input" placeholder="e.g. AMG UTR" style="text-transform: uppercase; margin:0; flex:1;">
+                            <button type="button" onclick="window.addDiversionSubStation()" style="width:auto; margin:0; padding:0 16px; background:var(--green); flex-shrink:0;">Add</button>
+                        </div>
+                        <div id="reg-diversion-sub-chips" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
+                    </div>
+                    <div id="reg-diversion-summary" style="margin-top:10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PAY RATE TABLE MODAL (Point 4, v5.6) -->
+    <div id="pay-rate-modal" class="hidden">
+        <div style="background: var(--modal-bg); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
+                <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--green);">💰 Pay Rate Table</h3>
+                <button onclick="document.getElementById('pay-rate-modal').classList.add('hidden')" style="width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
+            </div>
+            <p style="font-size:11px; color:var(--text-muted); margin:0 0 10px 0; flex-shrink:0;">✏️ Tap any Grade Pay / TA Rate cell to edit, then tap 💾 to save that row.</p>
+            <div style="overflow-y:auto; flex:1;">
+                <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border);">
+                    <table style="min-width:340px; width:100%; border-collapse:collapse; font-size:12px;">
+                        <thead><tr style="background:var(--all-header-bg);">
+                            <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">Level</th>
+                            <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">Grade Pay</th>
+                            <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">TA Rate (₹)</th>
+                            <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);"></th>
+                        </tr></thead>
+                        <tbody id="admin-pay-rate-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HRA RATE TABLE MODAL (Point 8-i) -->
+    <div id="hra-rate-modal" class="hidden">
+        <div style="background: var(--modal-bg); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
+                <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--orange);">🏠 HRA Rate Table</h3>
+                <button onclick="document.getElementById('hra-rate-modal').classList.add('hidden')" style="width: auto; padding: 5px 14px; font-size: 13px; margin: 0; background: #64748b; border-radius: 20px;">✕</button>
+            </div>
+            <p style="font-size:11px; color:var(--text-muted); margin:0 0 10px 0; flex-shrink:0;">✏️ Tap any % cell to edit, then tap 💾 to save that row.</p>
+            <div style="display:flex; gap:8px; margin-bottom:10px; flex-shrink:0;">
+                <input type="text" id="hra-new-hq" placeholder="e.g. NDLS" style="text-transform:uppercase; margin:0; flex:1;">
+                <input type="number" id="hra-new-pct" placeholder="%" style="margin:0; width:70px;">
+                <button onclick="window.addHraRateRow()" style="width:auto; margin:0; padding:0 16px; background:var(--green); flex-shrink:0;">Add</button>
+            </div>
+            <div style="overflow-y:auto; flex:1;">
+                <div style="overflow-x:auto; border-radius:10px; border:1px solid var(--border);">
+                    <table style="min-width:260px; width:100%; border-collapse:collapse; font-size:12px;">
+                        <thead><tr style="background:var(--all-header-bg);">
+                            <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">HQ</th>
+                            <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);">HRA %</th>
+                            <th style="padding:6px 4px; font-size:10px; color:var(--all-header-text);"></th>
+                        </tr></thead>
+                        <tbody id="admin-hra-rate-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div id="roster-modal" class="hidden">
         <div style="background: var(--modal-bg); padding: 18px; border-radius: 16px; width: 95%; max-width: 480px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow); transition: background 0.3s; display: flex; flex-direction: column;">
@@ -558,7 +694,7 @@
                         </select>
                     </div>
                     <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Pay Scale</label>
-                        <select id="reg-payscale-dropdown">
+                        <select id="reg-payscale-dropdown" onchange="window.applyPayRateAutofill(this.value)">
                             <option value="" disabled selected>Select</option>
                             <option value="LEVEL-1">LEVEL-1</option>
                             <option value="LEVEL-2">LEVEL-2</option>
@@ -593,16 +729,25 @@
 
             <div class="card">
                 <div style="margin-bottom: 10px;"><label class="profile-lbl">Main HQ Station</label><input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;"></div>
-                <div style="margin-bottom: 10px;"><label class="profile-lbl">Nearby HQs <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="text" id="reg-nearby" placeholder="e.g. BCY, BSBS" style="text-transform: uppercase;"></div>
-                <div><label class="profile-lbl">Outward Destinations <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="text" id="reg-dest" placeholder="e.g. LKO, PRYJ, DDU" style="text-transform: uppercase;"></div>
+                <div>
+                    <label class="profile-lbl">Nearby HQs <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
+                    <div style="display:flex; gap:8px; margin-top:4px;">
+                        <input type="text" id="reg-nearby-input" placeholder="e.g. BCY ASH" style="text-transform: uppercase; margin:0; flex:1;">
+                        <button type="button" onclick="window.addNearbyHQ()" style="width:auto; margin:0; padding:0 16px; background:var(--green); flex-shrink:0;">Add</button>
+                    </div>
+                    <div id="reg-nearby-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
+                </div>
             </div>
+
+            <button type="button" onclick="window.openDestDiversionModal()" style="background: rgba(59,130,246,0.12); color: var(--blue); border: 1px solid var(--blue); box-shadow: none; margin-bottom: 6px;">📍 Destination &amp; Diversion Stations</button>
+            <p style="font-size:11px; color:var(--text-muted); text-align:center; margin:0 0 15px 0;">Set your usual outward destination stations and any known diversion routes (e.g. LKO trains sometimes diverting via AMG) — helps the app auto-recognize your journeys correctly.</p>
 
             <div style="display: flex; gap: 10px; margin-top: 20px;">
                 <button id="btn-edit-profile" type="button" onclick="window.unlockProfile()" style="flex: 1; background: var(--blue);">Edit Profile</button>
                 <button id="btn-save-profile" type="button" onclick="window.saveProfile()" style="flex: 1; background: var(--green); display: none;">💾 Save & Lock</button>
             </div>
             <button style="margin-top: 10px; background: var(--red);" onclick="window.logout()">Sign Out</button>
-            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v5.5</div>
+            <div style="text-align: center; margin-top: 15px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v1.0</div>
         </div>
     </div>
 
@@ -637,7 +782,7 @@
                     <div style="font-size:11px; color:var(--text-muted); line-height:1.6;">
                         Only set this to a version that is <strong style="color:var(--text);">already deployed and working</strong>. 
                         Setting a version number higher than what's live will lock ALL users out.<br>
-                        <span style="color:var(--orange); font-weight:700;" id="admin-current-ver-label">Current live app: v5.5</span>
+                        <span style="color:var(--orange); font-weight:700;" id="admin-current-ver-label">Current live app: v1.0</span>
                     </div>
                 </div>
 
@@ -650,6 +795,20 @@
                 </div>
                 <button onclick="window.clearVersionGate()" style="background:var(--card); color:var(--green); border:1px solid var(--green); box-shadow:none;">🔓 Clear Gate (Let Everyone In)</button>
                 <div id="admin-version-active" style="font-size:11px; color:var(--text-muted); margin-top:8px; text-align:center; font-weight:bold;"></div>
+            </div>
+
+            <!-- PAY RATE TABLE (Point 2, popup per Point 4) -->
+            <div class="card" style="border-left: 4px solid var(--green);">
+                <h3 style="color:var(--green); margin:0 0 6px 0; font-size:15px;">💰 Pay Rate Table</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">View or edit Grade Pay / TA Rate values used for every user's Level dropdown auto-fill.</p>
+                <button onclick="window.openPayRateModal()" style="background:var(--green);">📋 View Pay Rate Table</button>
+            </div>
+
+            <!-- HRA RATE TABLE (Point 8-i) -->
+            <div class="card" style="border-left: 4px solid var(--orange);">
+                <h3 style="color:var(--orange); margin:0 0 6px 0; font-size:15px;">🏠 HRA Rate Table</h3>
+                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">HQ-wise HRA % used in every user's Expected Salary calculation. Add a new HQ or edit an existing one's %.</p>
+                <button onclick="window.openHraRateModal()" style="background:var(--orange);">📋 View HRA Rate Table</button>
             </div>
 
             <!-- GLOBAL ANNOUNCEMENT -->
@@ -706,17 +865,6 @@
                 <div id="admin-sessions-area"><p style="font-size:13px; color:var(--text-muted); text-align:center; margin:5px 0;">Tap Refresh to check</p></div>
             </div>
 
-            <!-- USER TROUBLESHOOTING BY PF -->
-            <div class="card" style="border-left: 4px solid var(--purple);">
-                <h3 style="color:var(--purple); margin:0 0 6px 0; font-size:15px;">🔍 User Lookup by PF</h3>
-                <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Enter PF Number to inspect any user's profile and current month log in read-only mode.</p>
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="admin-lookup-pf" placeholder="Enter PF Number" style="flex:2; margin:0; text-transform:uppercase;">
-                    <button onclick="window.lookupUserByPF()" style="flex:1; margin:0; background:var(--purple);">🔎 Lookup</button>
-                </div>
-                <div id="admin-lookup-result" style="margin-top:10px;"></div>
-            </div>
-
             <!-- DATABASE ARCHIVE -->
             <div class="card" style="border-left: 4px solid var(--orange);">
                 <h3 style="color:var(--orange); margin:0 0 6px 0; font-size:15px;">🗃️ Archive Old Data</h3>
@@ -756,17 +904,16 @@
                     <div class="status-badge" id="duty-status-badge"><div class="status-dot" id="duty-status-dot"></div><span id="duty-status-text">At HQ</span></div>
                 </div>
                 <hr style="border: 0; border-top: 1px dashed var(--border); margin: 10px 0 8px 0;">
-                <h4 style="margin: 0 0 10px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;">Recent Entries</h4>
                 <div id="recent-logs-dash" style="border: 1px solid var(--border); border-radius: 12px; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);"></div>
             </div>
             
             <div style="margin-bottom: 10px;">
                 <div class="grid-2">
-                    <div class="nav-card" onclick="window.switchTab('ta'); window.navTo('screen-reports');">
+                    <div class="nav-card" onclick="window.switchTab('ta'); window.showYearlyTrendOnly();">
                         <div class="nav-main-text" id="dash-ta-val" style="color: var(--green);">₹0</div>
                         <div class="nav-sub-text" id="dash-ta-lbl">TA this month</div>
                     </div>
-                    <div class="nav-card" onclick="window.switchTab('nda'); window.navTo('screen-reports');">
+                    <div class="nav-card" onclick="window.switchTab('nda'); window.showYearlyTrendOnly();">
                         <div class="nav-main-text" id="dash-nda-val" style="color: var(--purple);">0:00 Hrs</div>
                         <div class="nav-sub-text" id="dash-nda-lbl">NDA</div>
                     </div>
@@ -790,11 +937,15 @@
                         <div class="nav-main-text" style="color: var(--red);">Backup</div>
                         <div class="nav-sub-text">Save your data</div>
                     </div>
-                </div>
-                <div class="nav-card" id="roster-nav-card" onclick="window.openRosterModal()" style="width: 100%; margin-top: 11px;">
-                    <div class="nav-icon">🗓️</div>
-                    <div class="nav-main-text" style="color: var(--purple);">Roster</div>
-                    <div class="nav-sub-text">Roster For BSB Only</div>
+                    <div class="nav-card" id="roster-nav-card" onclick="window.openRosterModal()">
+                        <div class="nav-icon">🗓️</div>
+                        <div class="nav-main-text" style="color: var(--purple);">Roster</div>
+                        <div class="nav-sub-text">Roster For BSB Only</div>
+                    </div>
+                    <div class="nav-card" id="expected-salary-box" onclick="window.showSalaryBreakdown()">
+                        <div class="nav-main-text" id="expected-salary-value" style="color: var(--green);">₹0</div>
+                        <div class="nav-sub-text" id="expected-salary-month-label">Expected Salary - This Month</div>
+                    </div>
                 </div>
                 <div id="your-duty-row" class="hidden" style="width: 100%; margin-top: 11px; background: rgba(59,130,246,0.15); border: none; border-radius: 30px; padding: 8px 18px; font-size: 12px; color: var(--text); text-align: center; box-shadow: var(--shadow); line-height: 1.4;"></div>
                 <div id="next-duty-row" class="hidden" style="width: 100%; margin-top: 8px; background: rgba(59,130,246,0.15); border: none; border-radius: 30px; padding: 8px 18px; font-size: 12px; color: var(--text); text-align: center; box-shadow: var(--shadow); line-height: 1.4;"></div>
@@ -832,7 +983,7 @@
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Departure Time <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
+                            <label style="font-size: 12px; font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px;">Departure Time</label>
                             <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" onblur="window.formatTimeInput(this)" maxlength="4" style="margin: 0; width: 100%;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
@@ -1000,20 +1151,7 @@
         </div>
     </div>
 
-    <div id="complete-departure-modal" class="hidden">
-        <div style="background:var(--modal-bg); padding:20px; border-radius:16px; width:88%; max-width:320px; border:1px solid var(--border); box-shadow:var(--shadow); transition:background 0.3s;">
-            <h3 style="color:var(--blue); margin:0 0 5px 0; font-size:15px; font-weight:900;">✅ Complete Departure</h3>
-            <p id="complete-departure-desc" style="font-size:12px; color:var(--text-muted); margin:0 0 14px 0;"></p>
-            <div style="margin-bottom:12px;">
-                <label style="font-size:12px; font-weight:700; color:var(--blue); display:block; margin-bottom:4px;">Departure Time</label>
-                <input type="text" inputmode="numeric" id="complete-dep-time" placeholder="HHMM" maxlength="4" onblur="window.formatTimeInput(this)" style="margin:0; width:100%;">
-            </div>
-            <div style="display:flex; gap:8px;">
-                <button onclick="window.saveCompleteDeparture()" style="flex:1; margin:0; background:var(--blue);">Save Departure</button>
-                <button onclick="document.getElementById('complete-departure-modal').classList.add('hidden')" style="flex:1; margin:0; background:var(--card); color:var(--text); border:1px solid var(--border); box-shadow:none;">Cancel</button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- CALENDAR DAY DETAIL MODAL -->
     <div id="cal-day-modal" class="hidden">
@@ -1030,7 +1168,7 @@
     <div id="roster-iframe-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:9500; display:flex; flex-direction:column;">
         <div class="top-bar" style="position:relative;">
             <button class="back-btn" style="position:relative; top:0; left:0;" onclick="window.closeRosterModal()">← Back</button>
-            <h1 style="color:#fde047;">📅 DUTY ROSTER</h1>
+            <h1 style="color:#fde047;">DUTY ROSTER</h1>
         </div>
         <iframe id="roster-iframe" src="" style="flex:1; width:100%; border:none; background:var(--bg);"></iframe>
     </div>
@@ -1100,7 +1238,7 @@
             <input type="hidden" id="report-month-hidden"> 
             
             <div class="card" id="report-summary-card">
-                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center; cursor: pointer;" onclick="window.showTrendChart()"><span class="summary-pill" style="background: rgba(59, 130, 246, 0.1); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block;">📊 Summary</span></h3>
+                <h3 style="font-size: 15px; margin-top: 0; margin-bottom: 12px; text-align: center; cursor: pointer;" onclick="window.showSixMonthBarsOnly()"><span class="summary-pill" style="background: rgba(59, 130, 246, 0.1); color: var(--blue); border: 1px solid rgba(59, 130, 246, 0.4); border-radius: 30px; padding: 6px 20px; display: inline-block;">📊 Summary</span></h3>
                 
                 <!-- TA SUMMARY ROWS -->
                 <div id="ta-summary-rows">
@@ -1118,7 +1256,7 @@
                     <div class="summary-row" id="rep-nda-row" style="border-bottom: none; margin-bottom: 0; color: var(--text);"><span style="font-weight:800;">Total NDA</span><span id="rep-nda-amt" style="font-weight: bold; color: var(--purple);">₹0</span></div>
                 </div>
 
-                <p style="font-size: 13px; color: var(--blue); text-align: center; margin: 10px 0 0 0; font-weight: 500; cursor:pointer;" onclick="window.showTrendChart()">👆 Tap Summary to view 6-month trend →</p>
+                <p style="font-size: 13px; color: var(--blue); text-align: center; margin: 10px 0 0 0; font-weight: 500; cursor:pointer;" onclick="window.showSixMonthBarsOnly()">👆 Tap Summary to view 6-month trend →</p>
                 
                 <div id="ta-extras" style="display: flex; gap: 15px; margin-top: 15px; border-top: 1px dashed var(--border); padding-top: 15px; justify-content: center;">
                     <div style="flex: 1; min-width: 0; text-align: center; background: rgba(59, 130, 246, 0.05); padding: 12px; border-radius: 16px; border: 1.5px solid rgba(59, 130, 246, 0.3); box-shadow: 0 2px 5px rgba(0,0,0,0.02); display: flex; flex-direction: column; align-items: center;">
@@ -1380,33 +1518,6 @@
         });
     };
 
-    // ========== USER LOOKUP BY PF (Batch 3) ==========
-    window.lookupUserByPF = () => {
-        const pf = document.getElementById('admin-lookup-pf').value.trim().toUpperCase();
-        if (!pf) return;
-        const el = document.getElementById('admin-lookup-result');
-        el.innerHTML = '<p style="font-size:12px; color:var(--text-muted);">Searching...</p>';
-        import("https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js").then(({ ref: r, get }) => {
-            get(r(window.db, 'users')).then(snap => {
-                const users = snap.val() || {};
-                const found = Object.entries(users).find(([uid, u]) => u.profile && String(u.profile.pf || '').toUpperCase() === pf);
-                if (!found) { el.innerHTML = '<p style="font-size:12px; color:var(--red); font-weight:bold;">No user found with that PF Number.</p>'; return; }
-                const [uid, userData] = found;
-                const p = userData.profile || {};
-                const legs = Object.values(userData.legs || {});
-                const now = new Date();
-                const mo = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-                const thisMonthLegs = legs.filter(l => (l.depDate || '').startsWith(mo));
-                el.innerHTML = `
-                    <div style="background:var(--input-bg); border-radius:10px; padding:10px; border:1px solid var(--border);">
-                        <div style="font-size:13px; font-weight:900; color:var(--text); margin-bottom:4px;">${p.name || '—'} · ${p.desig || '—'}</div>
-                        <div style="font-size:12px; color:var(--text-muted);">HQ: ${p.hq || '—'} · DA: ${p.da || '—'}% · TA Rate: ₹${p.tarate || '—'}</div>
-                        <div style="font-size:12px; color:var(--blue); margin-top:4px;">Total Logs: ${legs.length} · This Month: ${thisMonthLegs.length} entries</div>
-                        <button onclick="window._pfLookupData='${uid}'; window._rosterDataMap = window._rosterDataMap||{}; window._rosterDataMap['${uid}'] = ${JSON.stringify(userData).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/`/g,'\\`')}; window.viewUserAuditById('${uid}','${(p.name||'').replace(/'/g,"\\'")}')" style="margin-top:8px; padding:6px 14px; width:auto; font-size:12px; background:var(--purple); border-radius:20px;">👁 View This Month</button>
-                    </div>`;
-            }).catch(err => { el.innerHTML = `<p style="color:var(--red); font-size:12px;">${err.message}</p>`; });
-        });
-    };
 
     // Wrapper that reads userData from the stored map (avoids inline JSON in onclick)
     window.viewUserAuditById = (uid, name) => {
@@ -1445,7 +1556,7 @@
             <button onclick="window.loadUserRoster()" style="width:auto; margin:0 0 12px 0; padding:6px 14px; font-size:12px; background:var(--card); color:var(--blue); border:1px solid var(--blue); border-radius:20px; box-shadow:none;">← Back to Roster</button>
             <div style="background:var(--input-bg); border-radius:12px; padding:12px; margin-bottom:12px; border:1px solid var(--border);">
                 <div style="font-size:14px; font-weight:900; color:var(--text);">${name}</div>
-                <div style="font-size:12px; color:var(--text-muted);">${profile.desig || '—'} · HQ: ${profile.hq || '—'} · PF: ${profile.pf || '—'}</div>
+                <div style="font-size:12px; color:var(--text-muted);">${profile.desig || '—'} · HQ: ${profile.hq || '—'}</div>
                 <div style="font-size:11px; color:var(--blue); margin-top:4px;">DA: ${profile.da || '—'}% · Basic Pay: ₹${profile.basicpay || '—'} · TA Rate: ₹${profile.tarate || '—'}</div>
             </div>
             <div style="font-size:12px; font-weight:800; color:var(--text-muted); margin-bottom:6px;">DUTY — ${moLabel} (${dutyLegs.length} entries)</div>
@@ -1842,6 +1953,53 @@
                 if (!isDragging) window.navTo('screen-dashboard');
             });
         }
+
+        // DRAGGABLE FLOATING EDIT PROFILE BUTTON (Point 2)
+        const floatEdit = document.getElementById('floating-edit-profile-btn');
+        if (floatEdit) {
+            let isDraggingEdit = false;
+            let startYEdit = 0;
+            let startTopEdit = 0;
+
+            floatEdit.addEventListener('touchstart', (e) => {
+                isDraggingEdit = false;
+                startYEdit = e.touches[0].clientY;
+                startTopEdit = floatEdit.getBoundingClientRect().top;
+                e.stopPropagation();
+            }, { passive: true });
+
+            floatEdit.addEventListener('touchmove', (e) => {
+                const dy = e.touches[0].clientY - startYEdit;
+                if (Math.abs(dy) > 8) isDraggingEdit = true;
+                if (isDraggingEdit) {
+                    let newTop = startTopEdit + dy;
+                    const maxTop = window.innerHeight - floatEdit.offsetHeight - 10;
+                    newTop = Math.max(10, Math.min(maxTop, newTop));
+                    floatEdit.style.top = newTop + 'px';
+                    floatEdit.style.transform = 'none';
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }, { passive: false });
+
+            floatEdit.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!isDraggingEdit) {
+                    window.unlockProfile();
+                    floatEdit.classList.add('hidden');
+                }
+                isDraggingEdit = false;
+            }, { passive: false });
+
+            floatEdit.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (!isDraggingEdit) {
+                    window.unlockProfile();
+                    floatEdit.classList.add('hidden');
+                }
+            });
+        }
         
         // FIXED SWIPE ENGINE
         let startX = 0;
@@ -1991,7 +2149,7 @@
             if(dutyOnly.length === 0) {
                 rcHTMLAdd = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No Duty entries found.</p>';
             } else {
-                let sortedDuty = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+                let sortedDuty = [...dutyOnly].sort((a, b) => new Date(`${b.depDate}T${b.depTime || '00:00'}`) - new Date(`${a.depDate}T${a.depTime || '00:00'}`));
                 let recentAddArr = sortedDuty.slice(0, 5); 
                 let theadDuty = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border);"><tr><th style="padding: 8px 2px;">Tr</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
                 rcHTMLAdd = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0; border: none;">${theadDuty}<tbody>`;
@@ -2023,7 +2181,7 @@
             if (!window.editModeId) {
                 const dutyLegs = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
                 if (dutyLegs.length > 0) {
-                    const sorted = [...dutyLegs].sort((a,b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
+                    const sorted = [...dutyLegs].sort((a,b) => new Date(`${b.depDate}T${b.depTime || '00:00'}`) - new Date(`${a.depDate}T${a.depTime || '00:00'}`));
                     const lastLeg = sorted[0];
                     const depStnEl = document.getElementById('trip-dep-stn');
                     if (depStnEl && !depStnEl.value) depStnEl.value = lastLeg.arrStn;
@@ -2070,6 +2228,16 @@
         if(gBack) {
             if(screenId === 'screen-dashboard' || screenId === 'screen-login') { gBack.classList.add('hidden'); } else { gBack.classList.remove('hidden'); } 
         }
+
+        // Point 2: Floating Edit Profile button — only on Profile screen, only while locked
+        const floatEditBtn = document.getElementById('floating-edit-profile-btn');
+        if (floatEditBtn) {
+            if (screenId === 'screen-register' && isProfileLocked()) {
+                floatEditBtn.classList.remove('hidden');
+            } else {
+                floatEditBtn.classList.add('hidden');
+            }
+        }
         
         // Setup Admin Screen data
         if(screenId === 'screen-admin') {
@@ -2085,8 +2253,15 @@
             if (window.db && window.firebaseRef && window.lastAdminConfig) {
                 updateAdminUI(window.lastAdminConfig);
             }
+            window.renderPayRateTable();
         }
     }
+
+    // Point 4: Open the Pay Rate Table as a popup modal
+    window.openPayRateModal = function() {
+        window.renderPayRateTable();
+        document.getElementById('pay-rate-modal').classList.remove('hidden');
+    };
 
     function saveData() { 
         if(window.currentUid && window.firebaseSet && window.firebaseRef) {
@@ -2119,6 +2294,8 @@
         if(saveBtn) saveBtn.style.display = 'none';
         const pbb = document.getElementById('profile-back-btn');
         if(pbb) pbb.classList.remove('hidden');
+        const floatEditBtn = document.getElementById('floating-edit-profile-btn');
+        if (floatEditBtn) floatEditBtn.classList.remove('hidden');
     }
 
     function unlockProfile() {
@@ -2127,7 +2304,358 @@
         });
         document.getElementById('btn-edit-profile').style.display = 'none';
         document.getElementById('btn-save-profile').style.display = 'block';
+        const floatEditBtn = document.getElementById('floating-edit-profile-btn');
+        if (floatEditBtn) floatEditBtn.classList.add('hidden');
     }
+
+    // Point 2: Auto-fill Grade Pay and TA Rate when a Pay Level is selected.
+    // Uses window.payRateTable, which reflects any admin-set overrides from Firebase,
+    // falling back to the built-in default table if no override exists for that level.
+    window.applyPayRateAutofill = function(level) {
+        const rate = window.payRateTable && window.payRateTable[level];
+        if (!rate) return;
+        const gradePayEl = document.getElementById('reg-gradepay');
+        const taRateEl = document.getElementById('reg-tarate');
+        if (gradePayEl) gradePayEl.value = rate.gradepay;
+        if (taRateEl) taRateEl.value = rate.tarate;
+    };
+
+    // ========== Point 1 (v5.6): Outward Destinations as add-as-chips ==========
+    window._destStations = window._destStations || [];
+
+    // Point 1: Splits a raw input string into multiple station codes, handling comma-separated,
+    // space-separated, or a mix of both — so users can type "LKO PRYJ, DDU" and get 3 stations at once.
+    function parseMultiStationInput(raw) {
+        return raw.toUpperCase().split(/[,\s]+/).map(s => s.trim()).filter(s => s);
+    }
+    window.parseMultiStationInput = parseMultiStationInput;
+
+    // Point 6: Save a station as Nearby HQ directly from the Add Journey chain-error prompt
+    window.saveNearbyHQFromMismatch = async function(stn) {
+        if (!window.appState.profile) return;
+        const nearby = window.appState.profile.nearby || [];
+        if (!nearby.includes(stn)) nearby.push(stn);
+        window.appState.profile.nearby = nearby;
+        window._nearbyStations = nearby.slice();
+        try {
+            await window.firebaseSet(window.firebaseRef(window.db, `users/${window.currentUid}/profile/nearby`), nearby);
+        } catch (e) { /* non-fatal, will retry on next profile save */ }
+    };
+
+    // ========== Point 1 (v5.6): Nearby HQs as add-as-chips ==========
+    window._nearbyStations = window._nearbyStations || [];
+
+    window.addNearbyHQ = function() {
+        if (isProfileLocked()) return showModal("Profile Locked", "Tap 'Edit Profile' first to make changes.", "warning", false);
+        const input = document.getElementById('reg-nearby-input');
+        const codes = parseMultiStationInput(input.value);
+        if (codes.length === 0) return;
+        codes.forEach(val => { if (!window._nearbyStations.includes(val)) window._nearbyStations.push(val); });
+        input.value = '';
+        window.renderNearbyChips();
+    };
+
+    window.removeNearbyHQ = function(stn) {
+        if (isProfileLocked()) return showModal("Profile Locked", "Tap 'Edit Profile' first to make changes.", "warning", false);
+        window._nearbyStations = window._nearbyStations.filter(s => s !== stn);
+        window.renderNearbyChips();
+    };
+
+    window.renderNearbyChips = function() {
+        const wrap = document.getElementById('reg-nearby-chips');
+        if (!wrap) return;
+        wrap.innerHTML = (window._nearbyStations || []).map(stn =>
+            `<span class="station-chip">${stn}<span class="chip-remove" onclick="window.removeNearbyHQ('${stn}')">✕</span></span>`
+        ).join('');
+    };
+
+    // Point 8 (v5.6): Destination & Diversion Stations popup
+    window.openDestDiversionModal = function() {
+        document.getElementById('dest-diversion-modal').classList.remove('hidden');
+    };
+    window.closeDestDiversionModal = function() {
+        document.getElementById('dest-diversion-modal').classList.add('hidden');
+    };
+
+    window.addDestStation = function() {
+        if (isProfileLocked()) return showModal("Profile Locked", "Tap 'Edit Profile' first to make changes.", "warning", false);
+        const input = document.getElementById('reg-dest-input');
+        const codes = parseMultiStationInput(input.value);
+        if (codes.length === 0) return;
+        codes.forEach(val => { if (!window._destStations.includes(val)) window._destStations.push(val); });
+        input.value = '';
+        window.renderDestChips();
+        window.populateDiversionMajorDropdown();
+    };
+
+    window.removeDestStation = function(stn) {
+        if (isProfileLocked()) return showModal("Profile Locked", "Tap 'Edit Profile' first to make changes.", "warning", false);
+        window._destStations = window._destStations.filter(s => s !== stn);
+        window.renderDestChips();
+        window.populateDiversionMajorDropdown();
+    };
+
+    window.renderDestChips = function() {
+        const wrap = document.getElementById('reg-dest-chips');
+        if (!wrap) return;
+        wrap.innerHTML = (window._destStations || []).map(stn =>
+            `<span class="station-chip">${stn}<span class="chip-remove" onclick="window.removeDestStation('${stn}')">✕</span></span>`
+        ).join('');
+    };
+
+    // ========== Point 1 (v5.6): Diversion Stations map (major station -> list of diversion stations) ==========
+    window._diversionMap = window._diversionMap || {};
+    window._currentDiversionMajor = null;
+
+    window.populateDiversionMajorDropdown = function() {
+        const sel = document.getElementById('reg-diversion-major');
+        if (!sel) return;
+        const currentVal = sel.value;
+        sel.innerHTML = '<option value="">-- Select major station --</option>';
+        (window._destStations || []).forEach(stn => {
+            sel.innerHTML += `<option value="${stn}">${stn}</option>`;
+        });
+        sel.innerHTML += '<option value="__custom__">+ Type a different station...</option>';
+        if (currentVal && [...(window._destStations||[]), '__custom__'].includes(currentVal)) sel.value = currentVal;
+    };
+
+    // Point 3: Warn immediately if the user taps the major-station dropdown while profile is locked,
+    // since some browsers still show the native option list briefly on a disabled <select> before
+    // the change is rejected — this gives clear feedback instead of a silent no-op.
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'reg-diversion-major' && isProfileLocked()) {
+            showModal("Profile Locked", "Tap 'Edit Profile' first to make changes.", "warning", false);
+        }
+    });
+
+    // When the major-station dropdown changes: either open the editor for that station,
+    // or reveal a free-text box if the user picked "type a different station"
+    document.addEventListener('change', function(e) {
+        if (e.target && e.target.id === 'reg-diversion-major') {
+            if (isProfileLocked()) { e.target.value = ''; return; }
+            const val = e.target.value;
+            const customWrap = document.getElementById('reg-diversion-major-custom-wrap');
+            if (val === '__custom__') {
+                customWrap.classList.remove('hidden');
+                document.getElementById('reg-diversion-editor').classList.add('hidden');
+            } else if (val) {
+                customWrap.classList.add('hidden');
+                window.openDiversionEditor(val);
+            } else {
+                customWrap.classList.add('hidden');
+                document.getElementById('reg-diversion-editor').classList.add('hidden');
+            }
+        }
+    });
+
+    window.confirmCustomMajorStation = function() {
+        if (isProfileLocked()) return showModal("Profile Locked", "Tap 'Edit Profile' first to make changes.", "warning", false);
+        const input = document.getElementById('reg-diversion-major-custom');
+        const val = input.value.trim().toUpperCase();
+        if (!val) return;
+        input.value = '';
+        document.getElementById('reg-diversion-major-custom-wrap').classList.add('hidden');
+        window.openDiversionEditor(val);
+    };
+
+    window.openDiversionEditor = function(majorStn) {
+        window._currentDiversionMajor = majorStn;
+        document.getElementById('reg-diversion-editor').classList.remove('hidden');
+        document.getElementById('reg-diversion-editor-title').innerText = `Diversion stations for ${majorStn}:`;
+        window.renderDiversionSubChips();
+    };
+
+    window.addDiversionSubStation = function() {
+        if (isProfileLocked()) return showModal("Profile Locked", "Tap 'Edit Profile' first to make changes.", "warning", false);
+        const input = document.getElementById('reg-diversion-sub-input');
+        const codes = parseMultiStationInput(input.value);
+        const major = window._currentDiversionMajor;
+        if (codes.length === 0 || !major) return;
+        codes.forEach(val => window.addDiversionPairBothWays(major, val));
+        input.value = '';
+        window.renderDiversionSubChips();
+        window.renderDiversionSummary();
+    };
+
+    // Point 3: A diversion is inherently mutual — if AMG can substitute for LKO, then LKO can
+    // equally substitute for AMG (whichever direction a return train actually took). Storing
+    // both directions means a lookup from either station finds the pair, and prevents the
+    // duplicate-looking "AMG ↔ LKO" / "LKO ↔ AMG, ..." rows from appearing separately.
+    window.addDiversionPairBothWays = function(stationA, stationB) {
+        if (!stationA || !stationB || stationA === stationB) return;
+        window._diversionMap[stationA] = window._diversionMap[stationA] || [];
+        if (!window._diversionMap[stationA].includes(stationB)) window._diversionMap[stationA].push(stationB);
+        window._diversionMap[stationB] = window._diversionMap[stationB] || [];
+        if (!window._diversionMap[stationB].includes(stationA)) window._diversionMap[stationB].push(stationA);
+    };
+
+    window.removeDiversionSubStation = function(major, stn) {
+        if (isProfileLocked()) return showModal("Profile Locked", "Tap 'Edit Profile' first to make changes.", "warning", false);
+        if (!window._diversionMap[major]) return;
+        window._diversionMap[major] = window._diversionMap[major].filter(s => s !== stn);
+        if (window._diversionMap[major].length === 0) delete window._diversionMap[major];
+        // Point 3: also remove the reverse-direction entry so the pair is fully cleared both ways
+        if (window._diversionMap[stn]) {
+            window._diversionMap[stn] = window._diversionMap[stn].filter(s => s !== major);
+            if (window._diversionMap[stn].length === 0) delete window._diversionMap[stn];
+        }
+        window.renderDiversionSubChips();
+        window.renderDiversionSummary();
+    };
+
+    window.renderDiversionSubChips = function() {
+        const wrap = document.getElementById('reg-diversion-sub-chips');
+        if (!wrap) return;
+        const major = window._currentDiversionMajor;
+        const list = (major && window._diversionMap[major]) || [];
+        wrap.innerHTML = list.map(stn =>
+            `<span class="station-chip">${stn}<span class="chip-remove" onclick="window.removeDiversionSubStation('${major}','${stn}')">✕</span></span>`
+        ).join('');
+    };
+
+    window.renderDiversionSummary = function() {
+        const el = document.getElementById('reg-diversion-summary');
+        if (!el) return;
+        const map = window._diversionMap || {};
+        const stations = Object.keys(map);
+        if (stations.length === 0) { el.innerHTML = ''; return; }
+        // Group stations into connected components so "LKO -> AMG" and "AMG -> LKO" (mutual by
+        // design) render as a single row, not two separate near-duplicate rows.
+        const visited = new Set();
+        const groups = [];
+        stations.forEach(stn => {
+            if (visited.has(stn)) return;
+            const group = new Set([stn]);
+            (map[stn] || []).forEach(s => group.add(s));
+            group.forEach(s => visited.add(s));
+            groups.push([...group]);
+        });
+        el.innerHTML = `<div style="font-size:11px; font-weight:800; color:var(--text-muted); margin-bottom:6px;">SAVED DIVERSIONS</div>` +
+            groups.map(group => {
+                const [first, ...rest] = group;
+                return `<div style="font-size:12px; padding:6px 0; border-bottom:1px dashed var(--border);"><b style="color:var(--blue);">${first}</b> ↔ ${rest.join(', ')}</div>`;
+            }).join('');
+    };
+
+    // Point 1 (v5.6): Save a newly-confirmed diversion pair from the Add Journey mismatch prompt
+    // directly into the user's profile diversion map, so it's remembered for future trips.
+    window.saveDiversionFromMismatch = async function(majorStn, diversionStn) {
+        window._diversionMap = window._diversionMap || {};
+        window.addDiversionPairBothWays(majorStn, diversionStn);
+        if (window.appState.profile) {
+            window.appState.profile.diversionMap = window._diversionMap;
+            try {
+                await window.firebaseSet(window.firebaseRef(window.db, `users/${window.currentUid}/profile/diversionMap`), window._diversionMap);
+            } catch (e) { /* non-fatal, will retry on next profile save */ }
+        }
+    };
+
+    // Point 3: With bidirectional storage, a direct lookup from either station finds the pair —
+    // no need to scan every group's contents.
+    window.isKnownDiversionPair = function(stnA, stnB) {
+        const map = window._diversionMap || {};
+        return !!(map[stnA] && map[stnA].includes(stnB));
+    };
+
+    // Point 2: Render the Admin's inline-editable Pay Rate Table
+    window.renderPayRateTable = function() {
+        const body = document.getElementById('admin-pay-rate-body');
+        if (!body) return;
+        const table = window.payRateTable || window.DEFAULT_PAY_RATE_TABLE;
+        let rows = '';
+        Object.keys(window.DEFAULT_PAY_RATE_TABLE).forEach(level => {
+            const rate = table[level] || window.DEFAULT_PAY_RATE_TABLE[level];
+            rows += `<tr data-level="${level}">
+                <td style="padding:6px 4px; font-weight:700; color:var(--text);">${level}</td>
+                <td contenteditable="true" class="editable-cell" data-field="gradepay">${rate.gradepay}</td>
+                <td contenteditable="true" class="editable-cell" data-field="tarate">${rate.tarate}</td>
+                <td style="text-align:center;"><button class="inline-save-btn" onclick="window.savePayRateRow('${level}', this)">💾</button></td>
+            </tr>`;
+        });
+        body.innerHTML = rows;
+    };
+
+    // Point 2: Save a single Pay Rate Table row to Firebase (admin_config/payRateTable)
+    window.savePayRateRow = async function(level, btnEl) {
+        const row = btnEl.closest('tr');
+        const cells = row.querySelectorAll('.editable-cell');
+        const updated = {};
+        cells.forEach(cell => {
+            const field = cell.dataset.field;
+            const val = parseInt(cell.innerText.trim());
+            updated[field] = isNaN(val) ? 0 : val;
+        });
+        try {
+            window.payRateTable = window.payRateTable || {};
+            window.payRateTable[level] = updated;
+            await window.firebaseSet(window.firebaseRef(window.db, `admin_config/payRateTable/${level}`), updated);
+            showModal("Saved!", `${level} rate updated: Grade Pay ₹${updated.gradepay}, TA Rate ₹${updated.tarate}`, "success", false);
+        } catch (e) {
+            showModal("ERROR", "Save failed: " + e.message, "error", false);
+        }
+    };
+
+    // Point 8-i: HRA Rate Table (HQ-wise) — same tap-cell-to-edit pattern as Pay Rate Table
+    window.openHraRateModal = function() {
+        window.renderHraRateTable();
+        document.getElementById('hra-rate-modal').classList.remove('hidden');
+    };
+
+    window.renderHraRateTable = function() {
+        const body = document.getElementById('admin-hra-rate-body');
+        if (!body) return;
+        const table = window.hraRateTable || window.DEFAULT_HRA_RATE_TABLE;
+        let rows = '';
+        Object.keys(table).sort().forEach(hq => {
+            rows += `<tr data-hq="${hq}">
+                <td style="padding:6px 4px; font-weight:700; color:var(--text);">${hq}</td>
+                <td contenteditable="true" class="editable-cell" data-field="pct">${table[hq]}</td>
+                <td style="text-align:center;"><button class="inline-save-btn" onclick="window.saveHraRateRow('${hq}', this)">💾</button></td>
+            </tr>`;
+        });
+        body.innerHTML = rows || '<tr><td colspan="3" style="padding:10px; text-align:center; color:var(--text-muted);">No HQs added yet.</td></tr>';
+    };
+
+    window.addHraRateRow = function() {
+        const hqInput = document.getElementById('hra-new-hq');
+        const pctInput = document.getElementById('hra-new-pct');
+        const hq = hqInput.value.trim().toUpperCase();
+        const pct = parseFloat(pctInput.value);
+        if (!hq || isNaN(pct)) return showModal("ERROR", "Enter both HQ code and HRA %.", "error", false);
+        window.hraRateTable = window.hraRateTable || {};
+        window.hraRateTable[hq] = pct;
+        hqInput.value = '';
+        pctInput.value = '';
+        window.renderHraRateTable();
+        window.saveHraRateToFirebase(hq, pct);
+    };
+
+    window.saveHraRateRow = function(hq, btnEl) {
+        const row = btnEl.closest('tr');
+        const cell = row.querySelector('.editable-cell');
+        const val = parseFloat(cell.innerText.trim());
+        if (isNaN(val)) return showModal("ERROR", "Enter a valid HRA %.", "error", false);
+        window.hraRateTable[hq] = val;
+        window.saveHraRateToFirebase(hq, val);
+    };
+
+    window.saveHraRateToFirebase = async function(hq, pct) {
+        try {
+            await window.firebaseSet(window.firebaseRef(window.db, `admin_config/hraRateTable/${hq}`), pct);
+            showModal("Saved!", `${hq} HRA rate updated: ${pct}%`, "success", false);
+        } catch (e) {
+            showModal("ERROR", "Save failed: " + e.message, "error", false);
+        }
+    };
+
+    // Point 3: Reliable lock-state check — chip remove/add buttons aren't native inputs, so they
+    // don't automatically respect the disabled state set by lockProfile()/unlockProfile(). This
+    // guard prevents editing chips unless "Edit Profile" has actually been tapped first.
+    function isProfileLocked() {
+        const saveBtn = document.getElementById('btn-save-profile');
+        return !saveBtn || saveBtn.style.display === 'none' || saveBtn.style.display === '';
+    }
+    window.isProfileLocked = isProfileLocked;
 
     function checkGazetted(isManualClick) {
         const isGaz = document.getElementById('reg-emp-type').value === 'Gazetted';
@@ -2176,8 +2704,13 @@
         document.getElementById('reg-auth').value = p.auth || ''; 
         document.getElementById('reg-authval').value = p.authval || ''; 
         document.getElementById('reg-hq').value = p.hq || ''; 
-        document.getElementById('reg-nearby').value = (p.nearby || []).join(', '); 
-        document.getElementById('reg-dest').value = (p.dest || []).join(', '); 
+        window._nearbyStations = (p.nearby || []).slice();
+        window.renderNearbyChips();
+        window._destStations = (p.dest || []).slice();
+        window.renderDestChips();
+        window._diversionMap = p.diversionMap ? JSON.parse(JSON.stringify(p.diversionMap)) : {};
+        window.populateDiversionMajorDropdown();
+        window.renderDiversionSummary();
         
         if (!p.name) {
             unlockProfile();
@@ -2243,7 +2776,7 @@
             if(window.appState.legs && window.appState.legs.length > 0) {
                 const hqGroup = [p.hq, ...(p.nearby || [])]; 
                 const dutyOnlyAll = window.appState.legs.filter(l => !l.isNonDuty);
-                let sortedDuty = [...dutyOnlyAll].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
+                let sortedDuty = [...dutyOnlyAll].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
                 
                 for(let i = 0; i < sortedDuty.length - 1; i++) {
                     let leg = sortedDuty[i]; let next = sortedDuty[i+1];
@@ -2259,7 +2792,7 @@
                     let cur = allLegsForOverlap[i]; let nxt = allLegsForOverlap[i+1];
                     let curEnd = new Date(`${cur.arrDate}T${cur.arrTime||'23:59'}`);
                     let nxtStart = new Date(`${nxt.depDate}T${nxt.depTime||'00:00'}`);
-                    if(nxtStart < curEnd) { window.globalNotifications.push(`Overlapping Dates: Check entries around ${cur.arrDate}`); }
+                    if(nxtStart < curEnd) { window.globalNotifications.push(`CHAIN BREAK: Dates Overlapping, Recheck (around ${cur.arrDate})`); }
                 }
             }
         }
@@ -2336,7 +2869,7 @@
             if(!getVal('reg-name') || !getVal('reg-pf') || !getVal('reg-bu') || !getVal('reg-desig') || !payScaleVal || !document.getElementById('reg-gradepay').value || !document.getElementById('reg-da').value || !document.getElementById('reg-basicpay').value || !getVal('reg-appt') || !document.getElementById('reg-tarate').value || !getVal('reg-hq')) return showModal("ERROR", "Name, PF, BU No, Designation, Pay Scale, Grade Pay, DA, Basic Pay, Date of Appointment, TA Rate and HQ are mandatory.\n\nPass details, Checking Authority, Nearby HQs and Outward Destinations are optional and can be added later.", "error", false);
             
             window.appState.profile = { 
-                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), empType: empTypeVal, payscale: payScaleVal, gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, basicpay: document.getElementById('reg-basicpay').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: getVal('reg-nearby').split(',').map(s=>s.trim()).filter(s=>s), dest: getVal('reg-dest').split(',').map(s=>s.trim()).filter(s=>s) 
+                name: getVal('reg-name'), pf: getVal('reg-pf'), bu: getVal('reg-bu'), desig: getVal('reg-desig'), empType: empTypeVal, payscale: payScaleVal, gradepay: document.getElementById('reg-gradepay').value, da: document.getElementById('reg-da').value, basicpay: document.getElementById('reg-basicpay').value, appt: getVal('reg-appt'), tarate: getVal('reg-tarate'), pass: getVal('reg-pass'), passval: getVal('reg-passval'), auth: getVal('reg-auth'), authval: getVal('reg-authval'), hq: getVal('reg-hq'), nearby: (window._nearbyStations || []).slice(), dest: (window._destStations || []).slice(), diversionMap: window._diversionMap || {} 
             }; 
             
             if(!window.appState.legs) window.appState.legs = []; 
@@ -2459,14 +2992,16 @@
         const rawArrDate = document.getElementById('trip-arr-date').value;
         const rawArrTime = document.getElementById('trip-arr-time').value;
         
-        // Arrival AND Departure time optional for TODAY and FUTURE departures (live/planned duty entry)
-        // Mandatory only for PAST departures (already completed journeys)
+        // Point 1 (v5.6-3): Departure time restored to mandatory for all entries. Only Arrival time
+        // stays optional for TODAY/FUTURE departures (live/planned duty entry still in progress).
+        // Making departure time optional previously broke reliable same-day chronological sorting
+        // on the Dashboard's Recent Entries (which sorts by date+time), since a blank depTime
+        // couldn't be used as a meaningful sort key.
         const depD = new Date(rawDepDate + 'T00:00:00');
         const todayD = new Date(todayStr + 'T00:00:00');
         const isPastDuty = depD < todayD;
         const isTodayDuty = rawDepDate === todayStr;
         const isInProgress = !isPastDuty && (!rawArrTime);
-        const isDepPending = !isPastDuty && (!rawDepTime);
         
         const leg = { 
             id: window.editModeId ? window.editModeId : Date.now(), 
@@ -2474,16 +3009,15 @@
             depDate: rawDepDate, 
             train: document.getElementById('trip-train').value.toUpperCase().trim(), 
             depStn: document.getElementById('trip-dep-stn').value.toUpperCase().trim(), 
-            depTime: rawDepTime || '',
+            depTime: rawDepTime, 
             arrDate: rawArrDate || (!isPastDuty ? todayStr : ''),
             arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), 
             arrTime: rawArrTime || '',
-            inProgress: isInProgress,
-            depPending: isDepPending
+            inProgress: isInProgress
         }; 
         
-        if(!leg.depDate || !leg.train || !leg.depStn || !leg.arrStn) {
-            return showModal("ERROR", "Train No., Departure Date, Station From and Station To are mandatory.", "error", false);
+        if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrStn) {
+            return showModal("ERROR", "Train No., Departure Date, Departure Time, Station From and Station To are mandatory.", "error", false);
         }
         if(!/^\d{5}$/.test(leg.train)) {
             return showModal("ERROR", "Train No. must be exactly 5 digits.\n\nYou entered: " + leg.train, "error", false);
@@ -2498,13 +3032,13 @@
             return showModal("ERROR", "Arrival Time is mandatory for past journeys.\n\nOnly today's or future duty entries can have arrival time filled later.", "error", false);
         }
         if(leg.depStn === leg.arrStn) return showModal("ERROR", "From and To stations cannot be same.", "error", false); 
-        if(!leg.inProgress && !leg.depPending && new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR", "Arrival must be after Departure.", "error", false); 
+        if(!leg.inProgress && new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR", "Arrival must be after Departure.", "error", false); 
         
         if(!window.appState.legs) window.appState.legs = []; 
         let testLegs = [...window.appState.legs]; 
         if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
         testLegs.push(leg);
-        testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+        testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`)); 
         
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
         let dutyOnly = testLegs.filter(l => !l.isNonDuty);
@@ -2512,30 +3046,81 @@
         
         if(prev) {
             let prevArrDt = new Date(`${prev.arrDate}T${prev.arrTime}`);
-            let currDepDt = new Date(`${leg.depDate}T${leg.depTime}`);
+            let currDepDt = new Date(`${leg.depDate}T${leg.depTime || '00:00'}`);
             if(currDepDt < prevArrDt) { return showModal("TIME ERROR", `Departure time cannot be before previous arrival time (${formatDate(prev.arrDate)} ${prev.arrTime}).`, "error", false); }
 
             if(hqGroup.includes(prev.arrStn)) {
-                if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", `Previous journey ended at HQ. New journey must start from HQ.`, "error", false);
+                if(!hqGroup.includes(leg.depStn)) {
+                    showModal("CHAIN ERROR", `Previous journey ended at HQ. New journey must start from HQ.\n\nThis journey starts from ${leg.depStn} — is that your Nearby HQ (a satellite/adjacent station you also work from)?`, "warning", true, (proceed) => {
+                        if (proceed) {
+                            window.saveNearbyHQFromMismatch(leg.depStn);
+                            finalizeLegSave(leg, testLegs);
+                        }
+                    });
+                    return;
+                }
                 finalizeLegSave(leg, testLegs);
             } else if(leg.depStn !== prev.arrStn) {
-                // Option B: don't hard-block — this may be a legitimate diversion (e.g. return train stops at
-                // a nearby station like AMG instead of LKO). Warn and let the user confirm before saving.
-                showModal("⚠️ Station Mismatch", `Previous journey ended at ${prev.arrStn}, but this new journey starts from ${leg.depStn}.\n\nIf this is due to a train diversion (e.g. your return train stopped at a nearby station instead of the original destination), tap Confirm to save anyway.\n\nOtherwise, cancel and check your entry.`, "warning", true, (proceed) => {
-                    if (proceed) finalizeLegSave(leg, testLegs);
+                // Point 1 (v5.6): if this exact station pair is already a known/confirmed diversion,
+                // show a lightweight one-tap confirmation instead of the full generic warning.
+                if (window.isKnownDiversionPair && window.isKnownDiversionPair(prev.arrStn, leg.depStn)) {
+                    showModal("Known Diversion", `This looks like your saved ${prev.arrStn} ↔ ${leg.depStn} diversion. Confirm to save this journey?`, "warning", true, (proceed) => {
+                        if (proceed) finalizeLegSave(leg, testLegs);
+                    });
+                    return;
+                }
+                // Not a known pair yet — full warning, with an option to save it for next time.
+                showModal("⚠️ Station Mismatch", `Previous journey ended at ${prev.arrStn}, but this new journey starts from ${leg.depStn}.\n\nIs this due to a train diversion (e.g. your return train stopped at a nearby station instead of the original destination)?\n\nTap Confirm if yes — you'll then be asked if you want to remember this for future trips.`, "warning", true, (proceed) => {
+                    if (proceed) {
+                        showModal("Remember this diversion?", `Save ${prev.arrStn} ↔ ${leg.depStn} as a known diversion pair, so future entries like this won't need this warning?`, "warning", true, (shouldSave) => {
+                            if (shouldSave && window.saveDiversionFromMismatch) {
+                                window.saveDiversionFromMismatch(prev.arrStn, leg.depStn);
+                            }
+                            finalizeLegSave(leg, testLegs);
+                        });
+                    }
                 });
                 return;
             } else {
                 finalizeLegSave(leg, testLegs);
             }
         } else {
-            if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", `Your very first duty journey must start from HQ.`, "error", false);
+            if(!hqGroup.includes(leg.depStn)) {
+                showModal("CHAIN ERROR", `Your very first duty journey must start from HQ.\n\nThis journey starts from ${leg.depStn} — is that your Nearby HQ (a satellite/adjacent station you also work from)?`, "warning", true, (proceed) => {
+                    if (proceed) {
+                        window.saveNearbyHQFromMismatch(leg.depStn);
+                        finalizeLegSave(leg, testLegs);
+                    }
+                });
+                return;
+            }
             finalizeLegSave(leg, testLegs);
         }
     }
 
     function finalizeLegSave(leg, testLegs) {
         window.appState.legs = testLegs; 
+        
+        // Point 5: If Outward Destinations hasn't been filled by the user yet, auto-populate it
+        // from real journey stations as they're saved — skipping HQ and Nearby HQ stations, since
+        // those already belong to a different list.
+        if (window.appState.profile) {
+            const hqGroupForDest = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])].filter(Boolean);
+            const existingDest = window.appState.profile.dest || [];
+            let destChanged = false;
+            [leg.depStn, leg.arrStn].forEach(stn => {
+                if (stn && !hqGroupForDest.includes(stn) && !existingDest.includes(stn)) {
+                    existingDest.push(stn);
+                    destChanged = true;
+                }
+            });
+            if (destChanged) {
+                window.appState.profile.dest = existingDest;
+                if (window.firebaseSet && window.firebaseRef && window.db && window.currentUid) {
+                    window.firebaseSet(window.firebaseRef(window.db, `users/${window.currentUid}/profile/dest`), existingDest).catch(() => {});
+                }
+            }
+        }
         
         document.getElementById('trip-train').value = ''; 
         document.getElementById('trip-dep-date').value = ''; 
@@ -2652,7 +3237,7 @@
             let testLegs = [...window.appState.legs]; 
             if(window.editModeId) { testLegs = testLegs.filter(l => l.id !== window.editModeId); }
             testLegs.push(leg);
-            testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`)); 
+            testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`)); 
             
             window.appState.legs = testLegs;
             document.getElementById('nonduty-from').value = '';
@@ -2699,7 +3284,7 @@
             <div style="text-align: left; padding-left: 5px;">TRAIN</div><div>Dep Dt</div><div>From</div><div>Dep</div><div>Arr Dt</div><div>To</div><div>Arr</div>
         </div>`;
         
-        let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
+        let sortedLegs = [...window.appState.legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
         let filteredLegs = sortedLegs;
         
         if (trainSearch) {
@@ -2785,7 +3370,7 @@
                     let curEnd = new Date(`${leg.arrDate}T${leg.arrTime || '23:59'}`);
                     let nextStart = new Date(`${next.depDate}T${next.depTime || '00:00'}`);
                     if (nextStart < curEnd) {
-                        htmlElements.push(`<div style="background: var(--danger-bg); border: 1px dashed var(--danger-border); color: var(--danger-text); padding: 10px; text-align: center; font-size: 12px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s;">⚠️ OVERLAPPING DATES: Please check the above and below entries.</div>`);
+                        htmlElements.push(`<div style="background: var(--danger-bg); border: 1px dashed var(--danger-border); color: var(--danger-text); padding: 10px; text-align: center; font-size: 12px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s;">⚠️ CHAIN BREAK: Dates Overlapping, Recheck</div>`);
                     }
                 }
             }
@@ -2850,7 +3435,6 @@
                         <div><span style="color:var(--text-muted);">Dep Date: </span>${formatDateShort(leg.depDate)}</div>
                         <div><span style="color:var(--text-muted);">Arr Date: </span>${formatDateShort(leg.arrDate)}</div>
                     </div>
-                    ${leg.depPending ? '<div style="font-size:11px; color:var(--blue); font-weight:700; margin-top:5px;">⏳ Departure time not yet filled</div>' : ''}
                     ${leg.inProgress ? '<div style="font-size:11px; color:var(--orange); font-weight:700; margin-top:5px;">⏳ Arrival time not yet filled</div>' : ''}
                 </div>`;
             });
@@ -2900,32 +3484,6 @@
         document.getElementById('complete-arrival-modal').classList.add('hidden');
         updateDashboardUI();
         showModal("Saved!", `Arrival updated: ${arrDate} at ${arrTime}`, "success", false);
-    };
-
-    window.openCompleteDeparture = function(legId) {
-        const leg = (window.appState.legs || []).find(l => String(l.id) === String(legId));
-        if (!leg) return;
-        window._completingDepartureId = legId;
-        document.getElementById('complete-departure-desc').innerText = `Train ${leg.train} · ${leg.depStn} → ${leg.arrStn} · ${formatDateShort(leg.depDate)}`;
-        document.getElementById('complete-dep-time').value = leg.depTime || '';
-        document.getElementById('complete-departure-modal').classList.remove('hidden');
-    };
-
-    window.saveCompleteDeparture = function() {
-        const legId = window._completingDepartureId;
-        const depTime = document.getElementById('complete-dep-time').value;
-        if (!depTime) return showModal("ERROR", "Please fill Departure Time.", "error", false);
-        
-        const legIdx = (window.appState.legs || []).findIndex(l => String(l.id) === String(legId));
-        if (legIdx === -1) return;
-        
-        window.appState.legs[legIdx].depTime = depTime;
-        window.appState.legs[legIdx].depPending = false;
-        
-        saveData();
-        document.getElementById('complete-departure-modal').classList.add('hidden');
-        updateDashboardUI();
-        showModal("Saved!", `Departure updated: ${depTime}`, "success", false);
     };
 
     // ========== YOUR DUTY (mini roster calc, mirrors roster.html logic) ==========
@@ -3307,7 +3865,7 @@
         let results = []; for(let date in dailyTA) { let pct = getTAPercentage(dailyTA[date]); results.push({date, pct, rate: Math.min(pct * (window.appState.profile.tarate/100), window.appState.profile.tarate) }); } return results; 
     }
     
-    function getSplitLegs(cycle) { let printLegs = []; const pad = n => String(n).padStart(2,'0'); cycle.forEach(leg => { if (leg.depDate === leg.arrDate) { printLegs.push({ id: leg.id, date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: leg.arrTime, depStn: leg.depStn, arrStn: leg.arrStn, originalLeg: leg }); } else { printLegs.push({ id: leg.id + '_1', date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: '-', depStn: leg.depStn, arrStn: '-', originalLeg: leg }); let start = new Date(`${leg.depDate}T${leg.depTime}`); let gap = new Date(start); gap.setDate(gap.getDate() + 1); let gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; while(gapStr < leg.arrDate) { printLegs.push({ id: leg.id + '_' + gap.getTime(), date: gapStr, train: leg.train, depTime: '-', arrTime: '-', depStn: '-', arrStn: '-', originalLeg: leg }); gap.setDate(gap.getDate() + 1); gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; } printLegs.push({ id: leg.id + '_2', date: leg.arrDate, train: leg.train, depTime: '-', arrTime: leg.arrTime, depStn: '-', arrStn: leg.arrStn, originalLeg: leg }); } }); printLegs.sort((a, b) => { let tA = a.depTime !== '-' ? a.depTime : (a.arrTime !== '-' ? a.arrTime : '00:00'); let tB = b.depTime !== '-' ? b.depTime : (b.arrTime !== '-' ? b.arrTime : '00:00'); return new Date(`${a.date}T${tA}`) - new Date(`${b.date}T${tB}`); }); return printLegs; }
+    function getSplitLegs(cycle) { let printLegs = []; const pad = n => String(n).padStart(2,'0'); cycle.forEach(leg => { if (leg.depDate === leg.arrDate) { printLegs.push({ id: leg.id, date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: leg.arrTime, depStn: leg.depStn, arrStn: leg.arrStn, originalLeg: leg }); } else { printLegs.push({ id: leg.id + '_1', date: leg.depDate, train: leg.train, depTime: leg.depTime, arrTime: '-', depStn: leg.depStn, arrStn: '-', originalLeg: leg }); let start = new Date(`${leg.depDate}T${leg.depTime || '00:00'}`); let gap = new Date(start); gap.setDate(gap.getDate() + 1); let gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; while(gapStr < leg.arrDate) { printLegs.push({ id: leg.id + '_' + gap.getTime(), date: gapStr, train: leg.train, depTime: '-', arrTime: '-', depStn: '-', arrStn: '-', originalLeg: leg }); gap.setDate(gap.getDate() + 1); gapStr = `${gap.getFullYear()}-${pad(gap.getMonth()+1)}-${pad(gap.getDate())}`; } printLegs.push({ id: leg.id + '_2', date: leg.arrDate, train: leg.train, depTime: '-', arrTime: leg.arrTime, depStn: '-', arrStn: leg.arrStn, originalLeg: leg }); } }); printLegs.sort((a, b) => { let tA = a.depTime !== '-' ? a.depTime : (a.arrTime !== '-' ? a.arrTime : '00:00'); let tB = b.depTime !== '-' ? b.depTime : (b.arrTime !== '-' ? b.arrTime : '00:00'); return new Date(`${a.date}T${tA}`) - new Date(`${b.date}T${tB}`); }); return printLegs; }
     
     // Calculate night-duty minutes for a single shift window (handles overnight shifts crossing midnight)
     function calcShiftNightMinutes(shiftFromStr, shiftToStr, dateStr) {
@@ -3489,85 +4047,292 @@
     
     function changeMonth(delta) { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); window.updateDashboardUI(); }
 
-    function showTrendChart() {
+    function showTrendChart(includeBars, includeYearlyTable) {
         if (!window.appState.legs || !window.appState.profile) return;
+        includeBars = includeBars !== false; // default true
+        includeYearlyTable = includeYearlyTable !== false; // default true
         const isNDA = currentTab === 'nda';
         const now = new Date();
-        let months = [];
-        for (let i = 5; i >= 0; i--) {
-            let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-            months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+
+        document.getElementById('trend-modal-title').innerText = isNDA ? 'NDA Trend' : 'TA Trend';
+
+        let barsHTML = '';
+        if (includeBars) {
+            let months = [];
+            for (let i = 5; i >= 0; i--) {
+                let d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`);
+            }
+
+            const dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
+            const cycles = buildCycles(dutyOnly);
+
+            let values = months.map(mo => {
+                if (isNDA) {
+                    const { totalNdaMinutes } = extractNDALegs(mo);
+                    const stationMins = extractStationDutyNDA(mo).totalMins;
+                    return parseFloat(((totalNdaMinutes + stationMins) / 60).toFixed(1));
+                } else {
+                    let taResultsAll = [];
+                    cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
+                    const moResults = taResultsAll.filter(r => r.date.startsWith(mo));
+                    return moResults.reduce((s, r) => s + (r.rate || 0), 0);
+                }
+            });
+
+            const labels = months.map(mo => {
+                const [y, m] = mo.split('-').map(Number);
+                const d = new Date(y, m - 1);
+                if (isNDA) {
+                    const prevD = new Date(y, m - 2);
+                    return `${prevD.toLocaleString('default',{month:'short'})}-${d.toLocaleString('default',{month:'short', year:'2-digit'})}`;
+                }
+                return d.toLocaleString('default',{month:'short', year:'2-digit'});
+            });
+
+            const maxVal = Math.max(...values, 1);
+            const color = isNDA ? 'var(--purple)' : 'var(--green)';
+
+            barsHTML = values.map((v, i) => {
+                const pct = Math.round((v / maxVal) * 100);
+                let topText = isNDA ? '' : `₹${v}`;
+                let ndaMoney = 0;
+                if (isNDA && v > 0) {
+                    const p = window.appState.profile;
+                    if (p && p.empType !== 'Gazetted') {
+                        const bp = parseFloat(p.basicpay) || 0;
+                        const cappedBp = bp > 43600 ? 43600 : bp;
+                        const da = parseFloat(p.da) || 0;
+                        const rate = (cappedBp + (cappedBp * da / 100)) / 200;
+                        ndaMoney = Math.round((v / 6) * rate);
+                    }
+                    topText = ndaMoney > 0 ? `₹${ndaMoney}` : `${v}h`;
+                }
+                const barContainer = isNDA
+                    ? `<div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:visible; position:relative;">
+                        <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px;"></div>
+                        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); writing-mode:vertical-rl; transform:rotate(180deg) translateX(50%) translateY(50%); color:var(--text); font-size:10px; font-weight:800; white-space:nowrap; pointer-events:none;">${v > 0 ? v + ' h' : ''}</div>
+                       </div>`
+                    : `<div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:hidden;">
+                        <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px;"></div>
+                       </div>`;
+                return `<div style="display:flex; flex-direction:column; align-items:center; flex:1; gap:4px;">
+                    <div style="font-size:11px; font-weight:700; color:${color}; min-height:16px;">${topText}</div>
+                    ${barContainer}
+                    <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-align:center; white-space:nowrap;">${labels[i]}</div>
+                </div>`;
+            }).join('');
+            barsHTML = `<div style="font-size:12px; font-weight:800; color:var(--text-muted); text-align:center; margin-bottom:4px;">${isNDA ? '6-Month NDA Trend' : '6-Month TA Trend (₹)'}</div><div style="display:flex; gap:6px; align-items:flex-end; padding:10px 0 4px 0;">${barsHTML}</div>`;
         }
-        
+
+        document.getElementById('trend-chart-area').innerHTML = includeYearlyTable
+            ? `<div id="trend-bars-wrap">${barsHTML}</div><div id="trend-yearly-wrap"></div>`
+            : `<div id="trend-bars-wrap">${barsHTML}</div>`;
+
+        if (includeYearlyTable) {
+            window._trendCurrentYear = now.getFullYear();
+            window.renderYearlyTrendTable();
+        }
+
+        document.getElementById('trend-modal').classList.remove('hidden');
+    }
+
+    // Point 1: Dashboard TA/NDA cards open the trend modal WITHOUT the 6-month bar chart — clean table only
+    window.showYearlyTrendOnly = function() {
+        showTrendChart(false, true);
+    };
+
+    // Point 7: Summary button under Reports/PDF shows ONLY the 6-month bar chart, no yearly table
+    window.showSixMonthBarsOnly = function() {
+        showTrendChart(true, false);
+    };
+
+    // Point 1 + 7: Builds a Jan-Dec table for a selected year, showing TA money or NDA hours+money per month.
+    // Redesigned for proper column alignment, light-shaded alternating rows, and a year dropdown selector.
+    window.renderYearlyTrendTable = function() {
+        if (!window.appState.legs || !window.appState.profile) return;
+        const isNDA = currentTab === 'nda';
+        const year = window._trendCurrentYear;
         const dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
         const cycles = buildCycles(dutyOnly);
-        
-        let values = months.map(mo => {
+        let taResultsAll = [];
+        if (!isNDA) cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
+
+        let rows = '';
+        for (let m = 1; m <= 12; m++) {
+            const mo = `${year}-${String(m).padStart(2,'0')}`;
+            const monthName = new Date(year, m - 1).toLocaleString('default', { month: 'short' });
+            const rowBg = (m % 2 === 0) ? 'var(--bg)' : 'var(--card)';
             if (isNDA) {
                 const { totalNdaMinutes } = extractNDALegs(mo);
                 const stationMins = extractStationDutyNDA(mo).totalMins;
-                return parseFloat(((totalNdaMinutes + stationMins) / 60).toFixed(1));
-            } else {
-                let taResultsAll = [];
-                cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
-                const moResults = taResultsAll.filter(r => r.date.startsWith(mo));
-                return moResults.reduce((s, r) => s + (r.rate || 0), 0);
-            }
-        });
-
-        const labels = months.map(mo => {
-            const [y, m] = mo.split('-').map(Number);
-            const d = new Date(y, m - 1);
-            if (isNDA) {
-                const prevD = new Date(y, m - 2);
-                return `${prevD.toLocaleString('default',{month:'short'})}-${d.toLocaleString('default',{month:'short', year:'2-digit'})}`;
-            }
-            return d.toLocaleString('default',{month:'short', year:'2-digit'});
-        });
-
-        const maxVal = Math.max(...values, 1);
-        const color = isNDA ? 'var(--purple)' : 'var(--green)';
-
-        let barsHTML = values.map((v, i) => {
-            const pct = Math.round((v / maxVal) * 100);
-            
-            let topText = isNDA ? '' : `₹${v}`;
-            let ndaMoney = 0;
-            
-            if (isNDA && v > 0) {
+                const totalMins = totalNdaMinutes + stationMins;
+                const hrs = Math.floor(totalMins / 60);
+                const mins = Math.round(totalMins % 60);
+                let ndaMoney = 0;
                 const p = window.appState.profile;
-                if (p && p.empType !== 'Gazetted') {
+                if (p && p.empType !== 'Gazetted' && totalMins > 0) {
                     const bp = parseFloat(p.basicpay) || 0;
                     const cappedBp = bp > 43600 ? 43600 : bp;
                     const da = parseFloat(p.da) || 0;
                     const rate = (cappedBp + (cappedBp * da / 100)) / 200;
-                    ndaMoney = Math.round((v / 6) * rate);
+                    const unitHours = (hrs / 6);
+                    ndaMoney = Math.round(unitHours * rate);
                 }
-                topText = ndaMoney > 0 ? `₹${ndaMoney}` : `${v}h`;
+                rows += `<tr style="background:${rowBg};"><td style="padding:9px 8px; font-weight:700; text-align:center; border-bottom:1px solid var(--border);">${monthName}</td><td style="padding:9px 8px; text-align:center; border-bottom:1px solid var(--border); font-weight:700;">${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')} Hrs</td><td style="padding:9px 8px; text-align:center; border-bottom:1px solid var(--border); font-weight:800; color:var(--purple);">₹${ndaMoney}</td></tr>`;
+            } else {
+                const moResults = taResultsAll.filter(r => r.date.startsWith(mo));
+                const total = moResults.reduce((s, r) => s + (r.rate || 0), 0);
+                rows += `<tr style="background:${rowBg};"><td style="padding:9px 8px; font-weight:700; text-align:center; border-bottom:1px solid var(--border);">${monthName}</td><td colspan="2" style="padding:9px 8px; text-align:center; border-bottom:1px solid var(--border); font-weight:800; color:var(--green);">₹${total}</td></tr>`;
             }
+        }
 
-            // For NDA: money on top label, hours label centered in bar container
-            // For TA: money on top, bar fills normally
-            const barContainer = isNDA
-                ? `<div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:visible; position:relative;">
-                    <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px;"></div>
-                    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); writing-mode:vertical-rl; transform:rotate(180deg) translateX(50%) translateY(50%); color:var(--text); font-size:10px; font-weight:800; white-space:nowrap; pointer-events:none;">${v > 0 ? v + ' h' : ''}</div>
-                   </div>`
-                : `<div style="width:100%; background:var(--border); border-radius:6px; height:130px; display:flex; align-items:flex-end; overflow:hidden;">
-                    <div style="width:100%; height:${pct}%; background:${color}; border-radius:6px 6px 0 0; transition:height 0.5s; min-height:4px;"></div>
-                   </div>`;
+        const headerCols = isNDA
+            ? `<th style="padding:8px; font-size:11px; text-align:center;">Month</th><th style="padding:8px; font-size:11px; text-align:center;">Hours</th><th style="padding:8px; font-size:11px; text-align:center;">₹ NDA</th>`
+            : `<th style="padding:8px; font-size:11px; text-align:center;">Month</th><th colspan="2" style="padding:8px; font-size:11px; text-align:center;">₹ TA</th>`;
 
-            return `<div style="display:flex; flex-direction:column; align-items:center; flex:1; gap:4px;">
-                <div style="font-size:11px; font-weight:700; color:${color}; min-height:16px;">${topText}</div>
-                ${barContainer}
-                <div style="font-size:10px; color:var(--text-muted); font-weight:600; text-align:center; white-space:nowrap;">${labels[i]}</div>
+        const html = `
+            <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin:10px 0 12px 0;">
+                <button onclick="window.changeTrendYearBy(-1)" style="width:auto; margin:0; padding:6px 14px; font-size:15px; background:var(--card); color:var(--blue); border:1px solid var(--blue); box-shadow:none;">◀</button>
+                <input type="number" id="trend-year-input" value="${year}" onchange="window.changeTrendYearTo(this.value)" style="margin:0; width:90px; padding:6px 8px; font-size:15px; font-weight:900; text-align:center;">
+                <button onclick="window.changeTrendYearBy(1)" style="width:auto; margin:0; padding:6px 14px; font-size:15px; background:var(--card); color:var(--blue); border:1px solid var(--blue); box-shadow:none;">▶</button>
+            </div>
+            <div style="overflow-x:auto; border-radius:12px; border:1px solid var(--border); box-shadow: var(--shadow);">
+                <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                    <thead><tr style="background:var(--all-header-bg); color:var(--all-header-text);">${headerCols}</tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>
             </div>`;
-        }).join('');
 
-        document.getElementById('trend-modal-title').innerText = isNDA ? '6-Month NDA Trend' : '6-Month TA Trend (₹)';
-        document.getElementById('trend-chart-area').innerHTML = `<div style="display:flex; gap:6px; align-items:flex-end; padding:10px 0;">${barsHTML}</div>`;
-        document.getElementById('trend-modal').classList.remove('hidden');
+        const yearlyWrap = document.getElementById('trend-yearly-wrap');
+        if (yearlyWrap) yearlyWrap.innerHTML = html;
+    };
+
+    window.changeTrendYearBy = function(delta) {
+        window._trendCurrentYear = (window._trendCurrentYear || new Date().getFullYear()) + delta;
+        window.renderYearlyTrendTable();
+    };
+
+    window.changeTrendYearTo = function(year) {
+        window._trendCurrentYear = parseInt(year);
+        window.renderYearlyTrendTable();
+    };
+
+    // Point 8: Expected Salary (Current Month) calculation.
+    // Formula: Basic Pay + DA% of Basic + HRA (HQ-wise %) + TPT (city/level-based) + TA (this month) +
+    //          NDA (this month, money value) - Railway Employee Insurance Scheme (fixed ₹30) - NPS (10% of Basic+DA)
+    function calculateExpectedSalary() {
+        const p = window.appState.profile;
+        if (!p) return null;
+
+        const basicPay = parseFloat(p.basicpay) || 0;
+        const daPct = parseFloat(p.da) || 0;
+        const daAmount = basicPay * (daPct / 100);
+
+        // HRA: HQ-wise %, from admin-configurable table. BSB defaults to 20%.
+        const userHq = (p.hq || '').trim().toUpperCase();
+        // Point 1: Until an admin adds a specific rate for this HQ, default to 20% (same as BSB) rather than 0%
+        const hraPct = (window.hraRateTable && window.hraRateTable[userHq] !== undefined) ? window.hraRateTable[userHq] : 20;
+        const hraAmount = basicPay * (hraPct / 100);
+
+        // Point 8-ii: TPT (Transport Allowance) — "Other Cities (B/C/Y/Z)" formula tiers.
+        // Level 9 and above: ₹3600 + DA on that amount
+        // Level 3 to 8: ₹1800 + DA on that amount
+        // Level 1-2 with Basic Pay >= 24200: ₹1800 + DA; below that: ₹900 + DA
+        const levelStr = (p.payscale || '').toUpperCase();
+        const levelMatch = levelStr.match(/LEVEL-(\d+)/);
+        const levelNum = levelMatch ? parseInt(levelMatch[1]) : 0;
+        let tptBase = 0;
+        if (levelNum >= 9) {
+            tptBase = 3600;
+        } else if (levelNum >= 3) {
+            tptBase = 1800;
+        } else if (levelNum >= 1) {
+            tptBase = basicPay >= 24200 ? 1800 : 900;
+        }
+        const tptAmount = tptBase + (tptBase * daPct / 100);
+
+        // TA this month (reuses the same cycle-based calculation used everywhere else)
+        const now = new Date();
+        const mo = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+        const dutyOnly = (window.appState.legs || []).filter(l => !l.isNonDuty);
+        const cycles = buildCycles(dutyOnly);
+        let taResultsAll = [];
+        cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
+        const taThisMonth = taResultsAll.filter(r => r.date.startsWith(mo)).reduce((s, r) => s + (r.rate || 0), 0);
+
+        // NDA this month (money value), only for non-Gazetted staff — same logic as the trend table
+        let ndaMoney = 0;
+        if (p.empType !== 'Gazetted') {
+            const { totalNdaMinutes } = extractNDALegs(mo);
+            const stationMins = extractStationDutyNDA(mo).totalMins;
+            const totalMins = totalNdaMinutes + stationMins;
+            if (totalMins > 0) {
+                const cappedBp = basicPay > 43600 ? 43600 : basicPay;
+                const rate = (cappedBp + (cappedBp * daPct / 100)) / 200;
+                const hrs = Math.floor(totalMins / 60);
+                const unitHours = (hrs / 6);
+                ndaMoney = Math.round(unitHours * rate);
+            }
+        }
+
+        // Point 8-iii: NPS = 10% of (Basic Pay + DA)
+        const npsAmount = (basicPay + daAmount) * 0.10;
+
+        const relsAmount = 30; // fixed, per specification
+
+        const total = basicPay + daAmount + hraAmount + tptAmount + taThisMonth + ndaMoney - relsAmount - npsAmount;
+
+        const monthName = now.toLocaleString('default', { month: 'short' });
+        const prevMonthD = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const ndaRangeLabel = `${prevMonthD.toLocaleString('default', { month: 'short' })}-${monthName}`;
+
+        return {
+            basicPay, daAmount, hraAmount, hraPct, tptAmount, taThisMonth, ndaMoney, relsAmount, npsAmount, monthName, ndaRangeLabel,
+            total: Math.round(total)
+        };
     }
+    window.calculateExpectedSalary = calculateExpectedSalary;
+
+    window.updateExpectedSalaryBox = function() {
+        const el = document.getElementById('expected-salary-value');
+        const labelEl = document.getElementById('expected-salary-month-label');
+        if (!el) return;
+        const result = calculateExpectedSalary();
+        if (!result) { el.innerText = '₹0'; return; }
+        el.innerText = `₹${result.total.toLocaleString('en-IN')}`;
+        if (labelEl) labelEl.innerText = `Expected Salary - ${result.monthName}`;
+    };
+
+    // Tapping the Expected Salary box shows a full breakdown of every component
+    window.showSalaryBreakdown = function() {
+        const result = calculateExpectedSalary();
+        if (!result) return;
+        const rows = [
+            ['Basic Pay', result.basicPay],
+            ['DA', result.daAmount],
+            [`HRA (${result.hraPct}%)`, result.hraAmount],
+            ['Transport Allowance (TPT)', result.tptAmount],
+            [`TA (${result.monthName})`, result.taThisMonth],
+            [`NDA (${result.ndaRangeLabel})`, result.ndaMoney],
+            ['Railway Employee Insurance Scheme', -result.relsAmount],
+            ['NPS (10% of Basic+DA)', -result.npsAmount]
+        ];
+        const rowsHtml = rows.map(([label, val]) =>
+            `<div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px dashed var(--border); font-size:13px;">
+                <span style="color:var(--text-muted);">${label}</span>
+                <span style="font-weight:800; color:${val < 0 ? 'var(--red)' : 'var(--text)'};">${val < 0 ? '-' : ''}₹${Math.abs(Math.round(val)).toLocaleString('en-IN')}</span>
+            </div>`
+        ).join('');
+        const html = `<div style="padding:4px 0;">${rowsHtml}
+            <div style="display:flex; justify-content:space-between; padding:10px 0 0 0; margin-top:6px; border-top:2px solid var(--border);">
+                <span style="font-weight:900; font-size:14px;">Total Expected Salary</span>
+                <span style="font-weight:900; font-size:15px; color:var(--green);">₹${result.total.toLocaleString('en-IN')}</span>
+            </div>
+        </div>`;
+        showModal(`💰 Salary Breakdown (${result.monthName})`, html, "info", false);
+    };
+
 
     function updateDashboardUI() { 
         let firstName = window.appState.profile && window.appState.profile.name ? window.appState.profile.name.split(' ')[0] : 'User'; 
@@ -3586,6 +4351,7 @@
         }
         window.renderYourDutyBox && window.renderYourDutyBox();
         window.renderNextDutyBox && window.renderNextDutyBox();
+        window.updateExpectedSalaryBox && window.updateExpectedSalaryBox();
 
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
         
@@ -3670,29 +4436,25 @@
         if(dutyOnlyDash.length === 0) { 
             rcHTMLDash = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 15px;">No duty entries yet.</p>'; 
         } else { 
-            let sortedDuty = [...dutyOnlyDash].sort((a, b) => b.depDate.localeCompare(a.depDate));
+            // Point 1: Sort by full date+time, not just date — this was the actual bug causing
+            // same-day entries to appear in an unreliable order on the Dashboard.
+            let sortedDuty = [...dutyOnlyDash].sort((a, b) => new Date(`${b.depDate}T${b.depTime}`) - new Date(`${a.depDate}T${a.depTime}`));
             let recentDashArr = sortedDuty.slice(0, 3); 
-            let hasPending = recentDashArr.some(l => l.inProgress || l.depPending);
-            // Header WITHOUT "Tr/Type" and WITHOUT extra blank column — Dep/Arr columns hold either time or +Add button
+            let hasPending = recentDashArr.some(l => l.inProgress);
             let theadCommon = `<thead style="background: var(--table-header-bg); color: var(--table-header-text); position: sticky; top: 0; border-bottom: 2px solid var(--table-border); transition: background 0.3s, color 0.3s, border 0.3s;"><tr><th style="padding: 8px 2px;">Train</th><th style="padding: 8px 2px;">Dep Dt</th><th style="padding: 8px 2px;">From</th><th style="padding: 8px 2px;">Dep</th><th style="padding: 8px 2px;">Arr Dt</th><th style="padding: 8px 2px;">To</th><th style="padding: 8px 2px;">Arr</th></tr></thead>`;
             rcHTMLDash = `<table style="width: 100%; border-collapse: collapse; font-size: 11px; text-align: center; margin: 0;">${theadCommon}<tbody>`;
             recentDashArr.forEach((leg, i) => { 
                 let rowColor = (i % 2 === 0) ? 'var(--bg)' : 'var(--card)';
                 let shortDep = formatDateShort(leg.depDate); 
                 let shortArr = formatDateShort(leg.arrDate);
-                // Point 5: Dep column shows +Add button when departure time pending
-                const depCell = leg.depPending
-                    ? `<button onclick="window.openCompleteDeparture('${leg.id}')" style="background:var(--blue);color:white;border:none;border-radius:10px;padding:3px 8px;font-size:10px;font-weight:bold;cursor:pointer;margin:0;box-shadow:none;width:auto;">+ Add</button>`
-                    : leg.depTime;
-                // Fix 3: Arr column shows ONLY the +Arr button when pending — no "pending" text, no extra column
                 const arrCell = leg.inProgress 
                     ? `<button onclick="window.openCompleteArrival('${leg.id}')" style="background:var(--green);color:white;border:none;border-radius:10px;padding:3px 8px;font-size:10px;font-weight:bold;cursor:pointer;margin:0;box-shadow:none;width:auto;">+ Add</button>`
                     : leg.arrTime;
-                rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.train}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.depStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${depCell}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.arrStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${arrCell}</td></tr>`; 
+                rcHTMLDash += `<tr style="background: ${rowColor}; border-bottom: 1px solid var(--border); transition: background 0.3s, border 0.3s;"><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.train}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortDep}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.depStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${leg.depTime}</td><td style="padding: 8px 2px; color: var(--row-blue-text); font-weight: bold;">${shortArr}</td><td style="padding: 8px 2px; font-weight: bold; color: var(--row-text);">${leg.arrStn}</td><td style="padding: 8px 2px; color: var(--row-muted-text); font-weight: bold;">${arrCell}</td></tr>`; 
             });
             rcHTMLDash += `</tbody></table>`;
             if (hasPending) {
-                rcHTMLDash += `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 0 0 0; font-weight:600;">⏳ Departure/Arrival time pending, Tap (+add) to complete</p>`;
+                rcHTMLDash += `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 0 0 0; font-weight:600;">⏳ Arrival time pending, Tap (+add) to complete</p>`;
             }
         } 
         if(rcDash) rcDash.innerHTML = rcHTMLDash;
@@ -3717,9 +4479,8 @@
                         const lbl = leg.dutyType === 'Leave' && leg.leaveType ? leg.leaveType : leg.dutyType;
                         addBody += `<tr style="background:${rc}; border-bottom:1px solid var(--border);"><td colspan="7" style="padding:7px 4px; font-weight:bold; color:var(--orange); font-size:11px; text-align:center;">${icon} ${lbl}${leg.melaStn ? ' at '+leg.melaStn : ''}: ${formatDateShort(leg.fromDate)}${leg.toDate !== leg.fromDate ? ' – '+formatDateShort(leg.toDate) : ''}</td></tr>`;
                     } else {
-                        const depT = leg.depPending ? `<button onclick="window.openCompleteDeparture('${leg.id}')" style="background:var(--blue);color:white;border:none;border-radius:8px;padding:2px 6px;font-size:9px;font-weight:bold;cursor:pointer;margin:0;box-shadow:none;width:auto;">+ Add</button>` : leg.depTime;
                         const arrT = leg.inProgress ? `<button onclick="window.openCompleteArrival('${leg.id}')" style="background:var(--green);color:white;border:none;border-radius:8px;padding:2px 6px;font-size:9px;font-weight:bold;cursor:pointer;margin:0;box-shadow:none;width:auto;">+ Add</button>` : leg.arrTime;
-                        addBody += `<tr style="background:${rc}; border-bottom:1px solid var(--border);"><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.train}</td><td style="padding:7px 2px;color:var(--row-blue-text);font-weight:bold;font-size:11px;">${formatDateShort(leg.depDate)}</td><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.depStn}</td><td style="padding:7px 2px;color:var(--row-muted-text);font-weight:bold;font-size:11px;">${depT}</td><td style="padding:7px 2px;color:var(--row-blue-text);font-weight:bold;font-size:11px;">${formatDateShort(leg.arrDate)}</td><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.arrStn}</td><td style="padding:7px 2px;color:var(--row-muted-text);font-weight:bold;font-size:11px;">${arrT}</td></tr>`;
+                        addBody += `<tr style="background:${rc}; border-bottom:1px solid var(--border);"><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.train}</td><td style="padding:7px 2px;color:var(--row-blue-text);font-weight:bold;font-size:11px;">${formatDateShort(leg.depDate)}</td><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.depStn}</td><td style="padding:7px 2px;color:var(--row-muted-text);font-weight:bold;font-size:11px;">${leg.depTime}</td><td style="padding:7px 2px;color:var(--row-blue-text);font-weight:bold;font-size:11px;">${formatDateShort(leg.arrDate)}</td><td style="padding:7px 2px;font-weight:bold;color:var(--row-text);font-size:11px;">${leg.arrStn}</td><td style="padding:7px 2px;color:var(--row-muted-text);font-weight:bold;font-size:11px;">${arrT}</td></tr>`;
                     }
                 });
                 rcAdd.innerHTML = `<table style="width:100%; border-collapse:collapse; font-size:11px; text-align:center;">${addThead}<tbody>${addBody}</tbody></table>`;
@@ -3836,15 +4597,15 @@
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
         if(dutyOnly.length === 0) return showModal("Empty", "No entries to generate.", "warning", false);
 
-        // Point 1: Block generation entirely if any duty leg has pending departure or arrival time
-        const pendingLegs = dutyOnly.filter(l => l.depPending || l.inProgress);
+        // Block generation entirely if any duty leg has pending arrival time
+        const pendingLegs = dutyOnly.filter(l => l.inProgress);
         if (pendingLegs.length > 0) {
-            const pendingList = pendingLegs.slice(0, 5).map(l => `• Train ${l.train} (${formatDateShort(l.depDate)}) — ${l.depPending ? 'Departure' : ''}${l.depPending && l.inProgress ? ' & ' : ''}${l.inProgress ? 'Arrival' : ''} time missing`).join('\n');
+            const pendingList = pendingLegs.slice(0, 5).map(l => `• Train ${l.train} (${formatDateShort(l.depDate)}) — Arrival time missing`).join('\n');
             const moreCount = pendingLegs.length > 5 ? `\n...and ${pendingLegs.length - 5} more` : '';
-            return showModal("⏳ Pending Entries", `Cannot generate PDF — some journeys have missing departure or arrival time.\n\n${pendingList}${moreCount}\n\nGo to Dashboard's Recent Entries and tap (+ Add) to complete them first.`, "error", false);
+            return showModal("⏳ Pending Entries", `Cannot generate PDF — some journeys have missing arrival time.\n\n${pendingList}${moreCount}\n\nGo to Dashboard's recent entries and tap (+ Add) to complete them first.`, "error", false);
         }
 
-        let sortedLegs = [...dutyOnly].sort((a, b) => new Date(`${a.depDate}T${a.depTime}`) - new Date(`${b.depDate}T${b.depTime}`));
+        let sortedLegs = [...dutyOnly].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
         const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])];
         let hasBreak = false; let breakMsg = "";
         
