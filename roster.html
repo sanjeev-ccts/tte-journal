@@ -47,12 +47,14 @@
     body.in-iframe .floating-back { display: flex; }
     .screen-content { padding: 15px; max-width: 600px; margin: 0 auto; }
     .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .tab-bar { display: flex; background: var(--card); border-radius: 30px; padding: 4px; margin-bottom: 15px; box-shadow: var(--shadow); border: 1.5px solid var(--blue); }
+    .tab-bar { display: flex; background: var(--card); border-radius: 30px; padding: 4px; margin-bottom: 12px; box-shadow: var(--shadow); border: 1.5px solid var(--blue); }
     .tab-btn { flex: 1; padding: 11px; text-align: center; border-radius: 30px; font-size: 14px; font-weight: 700; color: var(--text-muted); cursor: pointer; }
     .tab-btn.active { color: white; }
     #tab-mine.active, #tab-search.active, #tab-admin.active { background: var(--blue); box-shadow: 0 2px 6px rgba(59,130,246,0.4); }
     .swipe-hint { text-align: center; font-size: 12px; font-weight: 700; color: var(--red); margin: 0 0 12px 0; }
-    input, select { width: 100%; padding: 11px 14px; border-radius: 30px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 15px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; }
+    input, select { width: 100%; padding: 11px 14px; border-radius: 30px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 15px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; -webkit-appearance: none; appearance: none; min-width: 0; }
+    input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; padding: 0; margin: 0; border-radius: 4px; -webkit-appearance: checkbox; appearance: checkbox; box-shadow: none; flex-shrink: 0; }
+    input[type="date"], input[type="number"] { -webkit-appearance: none; appearance: none; min-height: 40px; }
     select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 36px; }
     button.action { width: 100%; padding: 13px; border: none; border-radius: 30px; font-weight: 700; font-size: 15px; color: white; background: var(--blue); cursor: pointer; box-shadow: 0 3px 8px rgba(59,130,246,0.35); font-family: 'Roboto', sans-serif; }
     .hidden { display: none !important; }
@@ -65,7 +67,8 @@
     #roster-preview-floating-btns { position: fixed; right: -5px; top: 83%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px; }
     .roster-float-btn { background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
 
-    #roster-print-doc { font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; }
+    #roster-print-doc { font-family: Arial, Helvetica, sans-serif; color: #000; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; color-adjust: exact; }
+    #roster-print-doc * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; }
     #roster-print-doc table { width: 100%; border-collapse: collapse; font-size: 12px; border: 2px solid #000; }
     #roster-print-doc thead th.main-title { background: #ffd400; color: #000; font-size: 16px; font-weight: 900; text-transform: uppercase; padding: 8px; border: 1px solid #000; letter-spacing: 0.5px; }
     #roster-print-doc thead th.col-head { background: #ffe066; color: #000; font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 6px 4px; border: 1px solid #000; }
@@ -104,6 +107,15 @@
     #view-admin button.action { padding: 9px; font-size: 13.5px; margin-top: 4px; margin-bottom: 6px; }
     #view-admin label { font-size: 12px !important; }
     #view-admin input, #view-admin select { padding: 7px 12px; height: 36px; margin-bottom: 6px; }
+    .admin-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .admin-quick-card { background: var(--card); border-radius: 16px; padding: 16px 10px; box-shadow: var(--shadow); border: 1px solid var(--border); text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 78px; }
+    .admin-quick-card .aq-icon { font-size: 22px; }
+    .admin-quick-card .aq-label { font-size: 13px; font-weight: 800; text-align: center; }
+    .admin-quick-card.aq-save .aq-label { color: var(--green); }
+    .admin-quick-card.aq-teams .aq-label { color: var(--blue); }
+    .admin-quick-card.aq-validate .aq-label { color: var(--orange); }
+    .admin-quick-card.aq-feedback .aq-label { color: var(--red); }
+    .admin-quick-card.aq-progs .aq-label { color: var(--purple); }
     .team-info-card { background: rgba(59,130,246,0.26); padding: 14px; text-align: center; }
     .team-info-card .team-title-box { display: inline-block; background: var(--blue); color: white; font-size: 12.5px; font-weight: 900; padding: 4px 16px; border-radius: 18px; margin: 0 auto 10px auto; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     .team-info-card .team-members { font-size: 13px; line-height: 1.6; text-align: center; }
@@ -122,9 +134,15 @@
     .duty-box.rest-box .db-up { color: #15803d; font-weight: 900; }
     .duty-box.lr-box { background: rgba(168,85,247,0.25); }
     .duty-box .db-badge { font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 10px; display: inline-block; margin-top: 8px; background: rgba(59,130,246,0.18); color: var(--blue); }
-    .trip-table-wrap { border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); margin-bottom: 14px; border: 1px solid rgba(59,130,246,0.25); }
-    table.trip-table { width: 100%; border-collapse: collapse; font-size: 12.5px; background: var(--card); }
-    table.trip-table th { background: var(--blue); color: white; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; }
+    /* overflow:hidden removed for the same reason as .admin-table-wrap above — it created a dead
+       inner scroll box that trapped position:sticky. Full-bleed margins let this table's own
+       header row (added below) stick correctly under the dialog title too. */
+    .trip-table-wrap { margin: 0 -18px 14px -18px; box-shadow: var(--shadow); border-top: 1px solid rgba(59,130,246,0.25); border-bottom: 1px solid rgba(59,130,246,0.25); }
+    table.trip-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12.5px; background: var(--card); }
+    table.trip-table th { background: var(--blue); color: white; font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; position: sticky; top: var(--sticky-header-h, 54px); z-index: 15; }
+    /* This wrapper has its own bounded height + real overflow-y:auto, so it IS its own scroll
+       box — its sticky header should pin to its own top edge (0), not the dialog-title offset. */
+    .trip-table-wrap-scroll table.trip-table th { top: 0; }
     table.trip-table td { padding: 9px 3px; text-align: center; font-weight: 700; color: var(--text); }
     .team-col { width: 92px; min-width: 92px; }
     table.trip-table td.td-date { text-align: center; color: var(--blue); font-weight: 800; }
@@ -160,7 +178,7 @@
     .team-click-hint.hint-red { font-size: 13px; color: var(--red); }
     .select-clear-row { display: flex; gap: 8px; align-items: center; }
     .select-clear-row select { flex: 1; margin-bottom: 10px; }
-    .search-card { border-radius: 16px; padding: 14px 16px; margin-bottom: 22px; }
+    .search-card { border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; }
     .search-card label { display: block; text-align: center; font-size: 13.5px; font-weight: 900; margin-bottom: 10px; padding: 5px 12px; color: var(--blue); }
     .search-row-3 { display: flex; gap: 6px; align-items: flex-start; }
     .search-row-3 input { flex: 1; margin-bottom: 0; padding: 8px 10px; font-size: 13px; height: 40px; border-radius: 30px; }
@@ -168,16 +186,48 @@
     .search-field-caption { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-align: center; margin: 4px 0 0 0; }
     .icon-search-btn, .clear-btn { width: 40px; height: 40px; flex-shrink: 0; padding: 0; border: none; border-radius: 30px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
     .icon-search-btn { background: var(--blue); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
+    .name-search-results { margin-top: 8px; max-height: 260px; overflow-y: auto; }
+    .name-search-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 6px; cursor: pointer; }
+    .name-search-row:active { background: rgba(59,130,246,0.15); }
+    .name-search-row .nsr-name { font-weight: 800; font-size: 13.5px; color: var(--text); }
+    .name-search-row .nsr-role { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+    .name-search-row .nsr-team { font-size: 12.5px; font-weight: 900; color: var(--blue); background: rgba(59,130,246,0.14); padding: 3px 10px; border-radius: 20px; }
+    .name-search-empty { text-align: center; font-size: 12.5px; color: var(--text-muted); padding: 8px; }
+    .lobby-dest-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+    .lobby-dest-title { font-size: 13.5px; font-weight: 900; color: var(--blue); text-transform: uppercase; text-align: center; margin-bottom: 8px; letter-spacing: 0.5px; }
+    .lobby-team-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); border-radius: 20px; padding: 6px 12px; margin: 4px; font-size: 12.5px; font-weight: 800; color: var(--blue); cursor: pointer; }
+    .lobby-team-chip .ltc-train { font-size: 10.5px; font-weight: 700; color: var(--text-muted); }
+    .lobby-empty { text-align: center; font-size: 12.5px; color: var(--text-muted); padding: 6px; }
     .clear-btn { background: rgba(239,68,68,0.5); color: white; font-weight: 900; }
     .result-modal-box { background: var(--card); border-radius: 18px; padding: 18px; width: 92%; max-width: 460px; max-height: 82vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
-    .result-modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    /* Full-bleed to match the black table header below it (no more left/right gap), and
+       sticky on BOTH top and left so it stays put whether the user scrolls the list down
+       OR scrolls a wide table sideways. IMPORTANT: since this element is pulled outward by
+       a -18px margin on all sides, the sticky offsets must ALSO be -18px (not 0) — otherwise
+       the "stuck" position doesn't match the "resting" (bled) position, and a gap opens up
+       exactly at the point the header transitions into its stuck state. */
+    .result-modal-header { display: flex; align-items: center; justify-content: space-between; margin: -18px -18px 12px -18px; padding: 18px 18px 8px 18px; position: sticky; top: -18px; left: -18px; background: var(--card); z-index: 25; box-shadow: 0 4px 6px -4px rgba(0,0,0,0.15); }
+    /* Same full-bleed + matching-sticky-offset treatment as the header above, so the footer's
+       background also lines up flush left/right instead of staying inset while everything
+       else bleeds to the edge. Padding (not margin) keeps the actual buttons visually inset. */
+    .admin-bottom-actions { display: flex; gap: 8px; margin: 10px -18px -18px -18px; padding: 8px 18px 18px 18px; position: sticky; bottom: -18px; left: -18px; background: var(--card); z-index: 20; box-shadow: 0 -4px 6px -4px rgba(0,0,0,0.15); }
+    .admin-bottom-actions button { margin: 0; flex: 1; width: auto; }
+    .aq-badge { position: absolute; top: -6px; right: -6px; background: var(--red); color: white; font-size: 10px; font-weight: 900; border-radius: 10px; padding: 1px 7px; }
+    .admin-quick-card { position: relative; }
     .result-modal-header h3 { margin: 0; font-size: 16px; font-weight: 900; color: var(--text); }
     .result-modal-close { width: auto; padding: 6px 14px; font-size: 13px; margin: 0; background: var(--text-muted); border-radius: 20px; border: none; color: white; cursor: pointer; font-family: 'Roboto', sans-serif; }
-    .admin-table-wrap { overflow-x: auto; margin-bottom: 14px; border-radius: 12px; border: 1px solid var(--border); }
-    table.admin-table { border-collapse: collapse; width: 100%; font-size: 12px; white-space: nowrap; }
-    table.admin-table th { background: var(--top-bar-bg); color: #fde047; padding: 7px 8px; font-size: 10.5px; text-transform: uppercase; position: sticky; top: 0; border: 1px solid #334155; }
+    /* Point (vi) fix: no overflow-x on this wrapper anymore — an element with overflow-x:auto
+       silently gets overflow-y:auto too (CSS spec), which makes it its OWN scroll box even though
+       it never actually scrolls. That trapped the sticky black header (it stuck to this dead box
+       instead of the real scrolling dialog), which is also what caused the blank "extra row" —
+       it was just the header's reserved flow space peeking out above its mis-stuck position.
+       Now horizontal overflow (if any) bubbles up to .result-modal-box, the single true scroller,
+       so the sticky header and the dialog title share one scroll context and stack correctly.
+       Full-bleed margins (per your suggestion) also give the table the whole dialog width. */
+    .admin-table-wrap { margin: 0 -18px 14px -18px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    table.admin-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 12px; white-space: nowrap; }
+    table.admin-table th { background: var(--top-bar-bg); color: #fde047; padding: 7px 8px; font-size: 10.5px; text-transform: uppercase; position: sticky; top: var(--sticky-header-h, 54px); z-index: 15; border: 1px solid #334155; }
     table.admin-table td { padding: 7px 8px; border: 1px solid var(--border); text-align: center; }
-    table.admin-table { border-collapse: collapse; }
     td.editable-cell { background: rgba(59,130,246,0.06); cursor: text; min-width: 60px; }
     td.editable-cell:focus { outline: 2px solid var(--blue); background: rgba(59,130,246,0.15); white-space: normal; }
     .inline-save-btn { background: var(--green); color: white; border: none; border-radius: 8px; padding: 4px 8px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(34,197,94,0.3); }
@@ -240,6 +290,18 @@ if (window.parent !== window) {
         <div id="my-duty-week"></div>
     </div>
     <div id="view-search" class="hidden">
+        <div class="card view-edit-team-btn" id="bsb-lobby-row" style="margin-bottom:14px;" onclick="window.openLobbyModal()">🚉 BSB Lobby</div>
+        <div class="card search-card">
+            <label>Search by Name</label>
+            <div class="search-row-3">
+                <div class="search-field-wrap" style="flex:1;">
+                    <input type="text" id="search-name-input" placeholder="Type a name..." oninput="window.onSearchNameInput()" autocomplete="off">
+                    <p class="search-field-caption">Name</p>
+                </div>
+                <button class="clear-btn" onclick="window.clearNameSearch()">✕</button>
+            </div>
+            <div id="search-name-results" class="name-search-results"></div>
+        </div>
         <div class="card search-card">
             <label>Search by Team No + Date</label>
             <div class="search-row-3">
@@ -300,15 +362,31 @@ if (window.parent !== window) {
     </div>
     <div id="view-admin" class="hidden">
         <div class="card">
-            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--red);">⚙️ Roster Admin</h3>
-            <label style="font-size:13px; font-weight:700;">Rotation Anchor Date</label>
-            <input type="date" id="admin-anchor-date">
-            <button class="action" style="background:var(--green); margin-top:5px;" onclick="saveAnchorDate()">Save Anchor Date</button>
+            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--red); text-align:center;">⚙️ Roster Admin</h3>
         </div>
+
+        <div class="admin-quick-grid">
+            <div class="admin-quick-card aq-save" onclick="window.openAnchorDateModal()">
+                <div class="aq-icon">💾</div>
+                <div class="aq-label">Anchor Date</div>
+            </div>
+            <div class="admin-quick-card aq-teams" onclick="window.toggleTeamTable()">
+                <div class="aq-icon">👥</div>
+                <div class="aq-label">Edit Teams</div>
+            </div>
+            <div class="admin-quick-card aq-feedback" onclick="window.openFeedbackInboxModal()">
+                <div class="aq-icon">📬</div>
+                <div class="aq-label">Feedback</div>
+                <span id="admin-feedback-count-badge" class="hidden aq-badge">0</span>
+            </div>
+            <div class="admin-quick-card aq-progs" onclick="window.toggleProgTable()">
+                <div class="aq-icon">🚂</div>
+                <div class="aq-label">Edit Programs</div>
+            </div>
+        </div>
+
         <div class="card">
-            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--blue);">👥 Edit Team Master</h3>
-            <button class="action table-toggle-btn" onclick="window.toggleTeamTable()">📋 View All Teams (Table)</button>
-            <button class="action" style="background:var(--orange); margin-top:8px;" onclick="window.validateBaseProgramNumbers()">🔍 Validate Base Program Numbers</button>
+            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--blue); text-align:center;">👥 Edit Team Master</h3>
             <div class="select-clear-row">
                 <select id="admin-team-select" onchange="loadTeamForEdit()">
                     <option value="">-- Select team to edit --</option>
@@ -328,8 +406,7 @@ if (window.parent !== window) {
             </div>
         </div>
         <div class="card">
-            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--purple);">🚂 Edit Link Programme</h3>
-            <button class="action table-toggle-btn" onclick="window.toggleProgTable()">📋 View Full Link Programme (Table)</button>
+            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--purple); text-align:center;">🚂 Edit Link Programme</h3>
             <div class="select-clear-row">
                 <select id="admin-prog-select">
                     <option value="">-- Select program to edit --</option>
@@ -338,17 +415,30 @@ if (window.parent !== window) {
             </div>
             <div id="admin-prog-edit-form" class="hidden" style="margin-top:10px;">
                 <div id="admin-prog-slots"></div>
+                <label style="font-size:12px; color:var(--text-muted);">Destination (for BSB Lobby — optional)</label>
+                <select id="prog-destination">
+                    <option value="">-- None --</option>
+                    <option value="LKO">LKO</option>
+                    <option value="PRYJ">PRYJ</option>
+                    <option value="CNB">CNB</option>
+                </select>
+                <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-muted); margin:10px 0 6px; cursor:pointer;">
+                    <input type="checkbox" id="prog-same-day-return" onchange="document.getElementById('prog-same-day-fields').classList.toggle('hidden', !this.checked)">
+                    Has a Same-Day Round Trip (departs & returns HQ same day)
+                </label>
+                <div id="prog-same-day-fields" class="hidden" style="background:rgba(59,130,246,0.06); border-radius:10px; padding:8px 10px; margin-bottom:6px;">
+                    <p style="font-size:11.5px; color:var(--text-muted); margin:0 0 8px;">Enter the exact same-day train no.s directly — independent of whatever is in the slots above (works with or without a "/", either side).</p>
+                    <div id="prog-same-day-slots"></div>
+                </div>
+                <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-muted); margin:10px 0 6px; cursor:pointer;">
+                    <input type="checkbox" id="prog-special-trains" onchange="document.getElementById('prog-special-fields').classList.toggle('hidden', !this.checked)">
+                    Has Special Train(s) (Summer Sp, Holi Sp, Festival Sp etc.)
+                </label>
+                <div id="prog-special-fields" class="hidden" style="background:rgba(249,115,22,0.06); border-radius:10px; padding:8px 10px; margin-bottom:6px;">
+                    <p style="font-size:11.5px; color:var(--text-muted); margin:0 0 8px;">Add up to 3 special-train entries. Each runs only between its Start and End date.</p>
+                    <div id="prog-special-slots"></div>
+                </div>
                 <button class="action" style="background:var(--green); margin-top:10px;" onclick="window.saveProgEdit()">Save Program</button>
-            </div>
-        </div>
-        <div class="card">
-            <h3 style="margin:0 0 10px 0; font-size:15px; color:var(--red); display:flex; align-items:center; gap:8px;">
-                📬 Feedback Inbox
-                <span id="admin-feedback-count-badge" class="hidden" style="background:var(--red); color:white; font-size:11px; font-weight:900; border-radius:10px; padding:1px 8px;">0</span>
-            </h3>
-            <button class="action" style="background:var(--purple);" onclick="window.loadRosterFeedback()">🔄 Refresh Inbox</button>
-            <div id="admin-feedback-list" style="margin-top:10px;">
-                <p style="font-size:13px; color:var(--text-muted); text-align:center;">Tap Refresh to load submissions</p>
             </div>
         </div>
     </div>
@@ -361,8 +451,8 @@ if (window.parent !== window) {
     <div class="bottom-icon" onclick="window.goHome()">🏠</div>
 </div>
 <div id="result-modal-overlay" class="modal-overlay hidden">
-    <div class="result-modal-box">
-        <div class="result-modal-header">
+    <div class="result-modal-box" id="result-modal-box">
+        <div class="result-modal-header" id="result-modal-header">
             <h3 id="result-modal-title">Result</h3>
             <button class="result-modal-close" onclick="document.getElementById('result-modal-overlay').classList.add('hidden')">✕ Close</button>
         </div>
@@ -376,6 +466,19 @@ if (window.parent !== window) {
             <button class="result-modal-close" onclick="document.getElementById('team-info-modal-overlay').classList.add('hidden')">✕ Close</button>
         </div>
         <div id="team-info-modal-body"></div>
+    </div>
+</div>
+<div id="lobby-modal-overlay" class="modal-overlay hidden">
+    <div class="result-modal-box">
+        <div class="result-modal-header">
+            <h3>🚉 BSB Lobby</h3>
+            <button class="result-modal-close" onclick="document.getElementById('lobby-modal-overlay').classList.add('hidden')">✕ Close</button>
+        </div>
+        <div style="margin-bottom:12px;">
+            <label style="font-size:12.5px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Date</label>
+            <input type="date" id="lobby-date" onchange="window.renderLobbyResults()">
+        </div>
+        <div id="lobby-results"></div>
     </div>
 </div>
 <div id="feedback-modal-overlay" class="modal-overlay hidden">
@@ -466,8 +569,9 @@ const SLOT_LABELS = {MON_OUT:"Mon (Out)",TUE_IN:"Tue (In)",TUE_OUT:"Tue (Out)",W
 const DEFAULT_LINK_PROGRAMME = {
     1:{MON_OUT:"15018", TUE_OUT:"15018", WED_OUT:"15018/15159", THU_OUT:"15018", FRI_OUT:"15018", SAT_OUT:"15018/15159", SUN_OUT:"15018"},
     2:{TUE_IN:"20416", WED_IN:"12669", THU_IN:"15017", FRI_IN:"15017", SAT_IN:"22969", SUN_IN:"15017", MON_IN:"12669"},
-    3:{MON_OUT:"15743/15107", TUE_OUT:"15733/15107", WED_OUT:"15743/15107", THU_OUT:"15743/15107", FRI_OUT:"15733/15107", SAT_OUT:"15743/15107", SUN_OUT:"15733/15107"},
-    4:{TUE_IN:"15734/15108", WED_IN:"15744/15108", THU_IN:"15734/15108", FRI_IN:"15744/15108", SAT_IN:"15744/15108", SUN_IN:"15734/15108", MON_IN:"15744/15108"},
+    3:{MON_OUT:"15743", TUE_OUT:"15733", WED_OUT:"15743", THU_OUT:"15743", FRI_OUT:"15733", SAT_OUT:"15743", SUN_OUT:"15733",
+       sameDay:{MON:{out:"15107",in:"15108"}, TUE:{out:"15107",in:"15108"}, WED:{out:"15107",in:"15108"}, THU:{out:"15107",in:"15108"}, FRI:{out:"15107",in:"15108"}, SAT:{out:"15107",in:"15108"}, SUN:{out:"15107",in:"15108"}}},
+    4:{TUE_IN:"15734", WED_IN:"15744", THU_IN:"15734", FRI_IN:"15744", SAT_IN:"15744", SUN_IN:"15734", MON_IN:"15744"},
     5:{MON_OUT:"14235", TUE_OUT:"14235", WED_OUT:"14235", THU_OUT:"22541", FRI_OUT:"14235", SAT_OUT:"14235", SUN_OUT:"22541"},
     7:{TUE_IN:"14236", WED_IN:"14236", THU_IN:"14236", FRI_IN:"22542", SAT_IN:"14236", SUN_IN:"14236", MON_IN:"22542"},
     8:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"},
@@ -568,7 +672,36 @@ function getTripStartingOn(teamNo, dateStr) {
             haltProg = prog1; // the skipped/middle program number for the halt day
         }
     }
-    return { prog, dateStr, status: 'duty', outTrain: outVal, returnTrain, returnDate, returnProg, dayCount, haltProg };
+
+    const trip = { prog, dateStr, status: 'duty', outTrain: outVal, returnTrain, returnDate, returnProg, dayCount, haltProg };
+
+    // Same-day round-trip fix: some programs also run a quick up-and-back shuttle that departs
+    // and returns HQ on the SAME day (e.g. 15107 up / 15108 down), separate from the regular
+    // multi-day duty. This is stored explicitly per weekday in progData.sameDay[dayPrefix] =
+    // {out, in} — set directly by the admin, independent of whatever is in the normal OUT/IN
+    // slots (no "/" position is assumed, and it works even if the regular slot has no "/" at all).
+    // trip.outTrain / trip.returnTrain above are left completely untouched, so the Roster PDF and
+    // anything else reading them keeps working exactly as before. Programs with no sameDay entry
+    // for that weekday are 100% unaffected.
+    if (progData.sameDay && progData.sameDay[dayPrefix]) {
+        const sd = progData.sameDay[dayPrefix];
+        if (sd.out || sd.in) {
+            trip.sameDayTrip = { outTrain: sd.out || '', returnTrain: sd.in || '', date: dateStr };
+        }
+    }
+
+    // Special trains (Summer Special, Holi Special, Festival Special etc.): admin-entered
+    // one-off services that only run between a Start and an End date, independent of the
+    // regular weekly OUT/IN slots and of the same-day shuttle above. A program can have several
+    // (stored as an array); each active one shows up as its own extra line, same as same-day.
+    if (progData.specialTrains && progData.specialTrains.length) {
+        const active = progData.specialTrains.filter(sp => sp.start && sp.end && dateStr >= sp.start && dateStr <= sp.end && (sp.outTrain || sp.inTrain));
+        if (active.length) {
+            trip.specialTrips = active.map(sp => ({ label: sp.label || 'Special', outTrain: sp.outTrain || '', returnTrain: sp.inTrain || '', date: dateStr }));
+        }
+    }
+
+    return trip;
 }
 window.getTripStartingOn = getTripStartingOn;
 window.getProgramForTeamOnDate = getProgramForTeamOnDate;
@@ -660,20 +793,24 @@ window.loadRosterData = loadRosterData;
 // but read-only with an Edit button that routes to a change-request instead of inline editing.
 window.showAllTeamsModal = function() {
     if (!window.appData.teamMaster) return;
-    let rows = '';
-    Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
-        const team = window.appData.teamMaster[t];
-        rows += `<tr>
-            <td>${t}</td>
-            <td><button class="inline-save-btn" style="background:var(--orange);" onclick="window.requestTeamChange('${t}')">✏️</button></td>
-            <td>${team.cor}</td>
-            <td>${team.tte1||'-'}</td>
-            <td>${team.tte2||'-'}</td>
-        </tr>`;
-    });
-    const hint = `<p class="team-click-hint">✏️ Tap Edit to request a change for that team</p>`;
-    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th></th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-    showResultModal('👥 All Teams', html);
+    const savedTeam = localStorage.getItem('roster_my_team');
+    if (!savedTeam || !window.appData.teamMaster[savedTeam]) {
+        const html = `<p style="text-align:center; color:var(--text-muted); font-size:14px; padding:20px 10px; line-height:1.6;">⚠️ You haven't saved a team number yet.<br>Please select and save your team in <b>My Duty</b> first to view or edit it here.</p>`;
+        showResultModal('👥 View/Edit Team', html);
+        return;
+    }
+    const t = savedTeam;
+    const team = window.appData.teamMaster[t];
+    const rows = `<tr>
+        <td>${t}</td>
+        <td><button class="inline-save-btn" style="background:var(--orange);" onclick="window.requestTeamChange('${t}')">✏️</button></td>
+        <td>${team.cor}</td>
+        <td>${team.tte1||'-'}</td>
+        <td>${team.tte2||'-'}</td>
+    </tr>`;
+    const hint = `<p class="team-click-hint">✏️ Tap Edit to request a change for your team</p>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th>Edit</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    showResultModal('👥 Your Team', html);
 };
 
 // Edit button on a team row opens the existing feedback modal, pre-filled with that team number
@@ -808,6 +945,47 @@ function buildTripTable(trips) {
             ${dayTd(trip.dateStr)}
             <td><span class="ud-badge ud-depart">Departs HQ</span></td>
         </tr>`;
+        // Same-day round-trip fix: an explicit shuttle service that departs and returns HQ the
+        // SAME day, entered separately by the admin (independent of the regular out/in slots).
+        if (trip.sameDayTrip) {
+            if (trip.sameDayTrip.outTrain) {
+                rows += `<tr class="trip-divider">
+                    <td class="td-date">${fmtDateLabel(trip.sameDayTrip.date)}</td>
+                    <td>${trip.sameDayTrip.outTrain}</td>
+                    ${dayTd(trip.sameDayTrip.date)}
+                    <td><span class="ud-badge ud-depart">Departs HQ (Same-Day)</span></td>
+                </tr>`;
+            }
+            if (trip.sameDayTrip.returnTrain) {
+                rows += `<tr class="trip-divider">
+                    <td class="td-date">${fmtDateLabel(trip.sameDayTrip.date)}</td>
+                    <td>${trip.sameDayTrip.returnTrain}</td>
+                    ${dayTd(trip.sameDayTrip.date)}
+                    <td><span class="ud-badge ud-arrive">Arrives HQ (Same-Day)</span></td>
+                </tr>`;
+            }
+        }
+        // Special trains (Summer Sp / Holi Sp / Festival Sp etc.) — shown as their own extra lines.
+        if (trip.specialTrips && trip.specialTrips.length) {
+            trip.specialTrips.forEach(sp => {
+                if (sp.outTrain) {
+                    rows += `<tr class="trip-divider">
+                        <td class="td-date">${fmtDateLabel(sp.date)}</td>
+                        <td>${sp.outTrain}</td>
+                        ${dayTd(sp.date)}
+                        <td><span class="ud-badge ud-depart">Departs HQ (${sp.label})</span></td>
+                    </tr>`;
+                }
+                if (sp.returnTrain) {
+                    rows += `<tr class="trip-divider">
+                        <td class="td-date">${fmtDateLabel(sp.date)}</td>
+                        <td>${sp.returnTrain}</td>
+                        ${dayTd(sp.date)}
+                        <td><span class="ud-badge ud-arrive">Arrives HQ (${sp.label})</span></td>
+                    </tr>`;
+                }
+            });
+        }
         if (trip.returnTrain) {
             rows += `<tr class="trip-divider">
                 <td class="td-date">${fmtDateLabel(trip.returnDate)}</td>
@@ -825,6 +1003,45 @@ function buildTripTable(trips) {
     return `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Up/Down</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 window.buildTripTable = buildTripTable;
+
+// Point (ii) + follow-up: flattens a trip's outTrain/returnTrain (which may contain a
+// "/"-joined pair), its same-day shuttle, and any active special trains into a row list for
+// the PDF. When one side has multiple trains and the other has just one, the single-train
+// side's cell is merged (rowspan) across all those rows instead of repeating/blanking it —
+// and this applies symmetrically whichever side (up or down) is the single one.
+function getAllTrainRowsForTrip(trip) {
+    const outParts = (trip.outTrain || '').split('/').map(s => s.trim()).filter(Boolean);
+    const inParts = (trip.returnTrain || '').split('/').map(s => s.trim()).filter(Boolean);
+    const rowsArr = [];
+
+    if (outParts.length <= 1 && inParts.length > 1) {
+        const upVal = outParts[0] || '—';
+        inParts.forEach((downVal, i) => {
+            rowsArr.push({ up: i === 0 ? upVal : null, upSpan: i === 0 ? inParts.length : 0, down: downVal, downSpan: 1 });
+        });
+    } else if (inParts.length <= 1 && outParts.length > 1) {
+        const downVal = inParts[0] || '—';
+        outParts.forEach((upVal, i) => {
+            rowsArr.push({ up: upVal, upSpan: 1, down: i === 0 ? downVal : null, downSpan: i === 0 ? outParts.length : 0 });
+        });
+    } else {
+        const maxLen = Math.max(outParts.length, inParts.length, 1);
+        for (let i = 0; i < maxLen; i++) {
+            rowsArr.push({ up: outParts[i] || '—', upSpan: 1, down: inParts[i] || '—', downSpan: 1 });
+        }
+    }
+
+    if (trip.sameDayTrip && (trip.sameDayTrip.outTrain || trip.sameDayTrip.returnTrain)) {
+        rowsArr.push({ up: trip.sameDayTrip.outTrain || '—', upSpan: 1, down: trip.sameDayTrip.returnTrain || '—', downSpan: 1 });
+    }
+    if (trip.specialTrips && trip.specialTrips.length) {
+        trip.specialTrips.forEach(sp => {
+            if (sp.outTrain || sp.returnTrain) rowsArr.push({ up: sp.outTrain || '—', upSpan: 1, down: sp.returnTrain || '—', downSpan: 1 });
+        });
+    }
+    return rowsArr;
+}
+window.getAllTrainRowsForTrip = getAllTrainRowsForTrip;
 
 function renderTripBox(trip, kind) {
     const boxClass = kind === 'next' ? 'trip-next' : 'trip-prev';
@@ -857,9 +1074,29 @@ function renderTripBox(trip, kind) {
         const downLabel = downTrains.length === 2 ? `⬇ ${downTrains[0]} <span style="font-size:12px;">+${downTrains[1]}</span>` : `⬇ ${trip.returnTrain}`;
         downHtml = `<div class="db-down">${downLabel}</div><div class="db-arr-date">Arrival Date: ${fmtDateLabel(trip.returnDate)}</div>`;
     }
+    // Same-day round-trip fix: an explicit shuttle service (independent of the regular out/in
+    // slots) that departs AND returns HQ the same day — shown as its own line(s).
+    let sameDayHtml = '';
+    if (trip.sameDayTrip) {
+        if (trip.sameDayTrip.outTrain) {
+            sameDayHtml += `<div class="db-up" style="color:var(--teal, #0d9488); margin-top:6px;">⬆ ${trip.sameDayTrip.outTrain} <span style="font-size:11px; font-weight:700;">(Same-Day)</span></div>`;
+        }
+        if (trip.sameDayTrip.returnTrain) {
+            sameDayHtml += `<div class="db-down" style="color:var(--teal, #0d9488);">⬇ ${trip.sameDayTrip.returnTrain} <span style="font-size:11px; font-weight:700;">(Same-Day Return)</span></div><div class="db-arr-date">Arrival Date: ${fmtDateLabel(trip.sameDayTrip.date)}</div>`;
+        }
+    }
+    let specialHtml = '';
+    if (trip.specialTrips && trip.specialTrips.length) {
+        trip.specialTrips.forEach(sp => {
+            if (sp.outTrain) specialHtml += `<div class="db-up" style="color:var(--orange); margin-top:6px;">⬆ ${sp.outTrain} <span style="font-size:11px; font-weight:700;">(${sp.label})</span></div>`;
+            if (sp.returnTrain) specialHtml += `<div class="db-down" style="color:var(--orange);">⬇ ${sp.returnTrain} <span style="font-size:11px; font-weight:700;">(${sp.label})</span></div>`;
+        });
+    }
     return `<div class="duty-box ${boxClass}">
         <div class="db-date">Departure Date: ${fmtDateLabel(trip.dateStr)}</div>
         <div class="db-up">${upLabel}</div>
+        ${sameDayHtml}
+        ${specialHtml}
         ${downHtml}
         <div class="db-badge">Prog ${trip.prog} · ${trip.dayCount||2}-day</div>
     </div>`;
@@ -870,6 +1107,14 @@ function showResultModal(title, bodyHtml) {
     document.getElementById('result-modal-title').innerText = title;
     document.getElementById('result-modal-body').innerHTML = bodyHtml;
     document.getElementById('result-modal-overlay').classList.remove('hidden');
+    // Point (vi): so table.admin-table's sticky black header row sticks directly beneath
+    // the dialog's own title/close row instead of overlapping it — measured live since the
+    // header's height can vary (long titles wrap to 2 lines etc).
+    requestAnimationFrame(() => {
+        const headerEl = document.getElementById('result-modal-header');
+        const boxEl = document.getElementById('result-modal-box');
+        if (headerEl && boxEl) boxEl.style.setProperty('--sticky-header-h', headerEl.offsetHeight + 'px');
+    });
 }
 window.showResultModal = showResultModal;
 window.closeResultModal = function() {
@@ -933,7 +1178,7 @@ window.renderTeamSearch = function() {
     if (!dateStr) {
         // Date optional — show up to 50 upcoming trips, scrollable
         const trips = collectTrips(teamNo, 'future', 50);
-        html += `<div class="trip-table-wrap" style="max-height:420px; overflow-y:auto;">${buildTripTable(trips)}</div>`;
+        html += `<div class="trip-table-wrap trip-table-wrap-scroll" style="max-height:420px; overflow-y:auto;">${buildTripTable(trips)}</div>`;
         showResultModal(`Team ${teamNo} — Next 50 Trips`, html);
         return;
     }
@@ -1077,6 +1322,51 @@ function buildDateOnlyResults(dateStr) {
                 <td>${status.prog}</td>
                 <td><span class="ud-badge ud-depart">Up</span></td>
             </tr>`;
+            // Same-day round-trip fix: an explicit shuttle service that departs and returns HQ the
+            // same day — surfaced as its own Up/Down rows on this same date.
+            if (status.trip.sameDayTrip) {
+                const sdt = status.trip.sameDayTrip;
+                if (sdt.outTrain) {
+                    const sdOutInfo = dutyInfoAttr({outTrain: sdt.outTrain, outDate: dateStr, returnTrain: sdt.returnTrain, returnDate: sdt.date});
+                    rows += `<tr class="trip-divider">
+                        <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${sdOutInfo}')">Team ${t}</span></td>
+                        <td>${sdt.outTrain}</td>
+                        <td>${status.prog}</td>
+                        <td><span class="ud-badge ud-depart">Up (Same-Day)</span></td>
+                    </tr>`;
+                }
+                if (sdt.returnTrain) {
+                    const sdInInfo = dutyInfoAttr({outTrain: sdt.outTrain, outDate: dateStr, returnTrain: sdt.returnTrain, returnDate: sdt.date});
+                    rows += `<tr class="trip-divider">
+                        <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${sdInInfo}')">Team ${t}</span></td>
+                        <td>${sdt.returnTrain}</td>
+                        <td>${status.prog}</td>
+                        <td><span class="ud-badge ud-arrive">Down (Same-Day)</span></td>
+                    </tr>`;
+                }
+            }
+            if (status.trip.specialTrips && status.trip.specialTrips.length) {
+                status.trip.specialTrips.forEach(sp => {
+                    if (sp.outTrain) {
+                        const spOutInfo = dutyInfoAttr({outTrain: sp.outTrain, outDate: dateStr, returnTrain: sp.returnTrain, returnDate: sp.date});
+                        rows += `<tr class="trip-divider">
+                            <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${spOutInfo}')">Team ${t}</span></td>
+                            <td>${sp.outTrain}</td>
+                            <td>${status.prog}</td>
+                            <td><span class="ud-badge ud-depart">Up (${sp.label})</span></td>
+                        </tr>`;
+                    }
+                    if (sp.returnTrain) {
+                        const spInInfo = dutyInfoAttr({outTrain: sp.outTrain, outDate: dateStr, returnTrain: sp.returnTrain, returnDate: sp.date});
+                        rows += `<tr class="trip-divider">
+                            <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${spInInfo}')">Team ${t}</span></td>
+                            <td>${sp.returnTrain}</td>
+                            <td>${status.prog}</td>
+                            <td><span class="ud-badge ud-arrive">Down (${sp.label})</span></td>
+                        </tr>`;
+                    }
+                });
+            }
         } else if (status.type === 'in') {
             count++;
             const info = dutyInfoAttr({outTrain: status.trip.outTrain, outDate: status.trip.dateStr, returnTrain: status.trip.returnTrain, returnDate: dateStr});
@@ -1170,17 +1460,27 @@ window.generateRosterPDF = function() {
             const outProg = status.prog;
             const returnProg = trip.returnProg;
             const progCell = returnProg && returnProg !== outProg ? `${outProg}/${returnProg}` : `${outProg}`;
-            const upTrain = trip.outTrain || '—';
-            const downTrain = trip.returnTrain || '—';
 
-            rows += `<tr>
-                <td class="prog-cell">${progCell}</td>
-                <td class="train-cell up-train">${upTrain}</td>
-                <td class="train-cell down-train">${downTrain}</td>
-                <td class="name-cell cor-cell">${team.cor || ''}</td>
-                <td class="name-cell">${team.tte1 || ''}</td>
-                <td class="name-cell">${team.tte2 || ''}</td>
-            </tr>`;
+            // Point (ii): when a team runs more than one train (whether from a "/" in the raw
+            // slot, a same-day shuttle, or a special train), do NOT squeeze them together with a
+            // "/" in one cell. Instead build one extra row per additional train, with the Prog
+            // No / COR / TTE-1 / TTE-2 cells merged (rowspan) across all of that team's rows —
+            // never repeated or split.
+            const trainRows = getAllTrainRowsForTrip(trip);
+            trainRows.forEach((tr, idx) => {
+                let cells = '';
+                if (idx === 0) {
+                    cells += `<td class="prog-cell" rowspan="${trainRows.length}">${progCell}</td>`;
+                }
+                if (tr.up !== null) cells += `<td class="train-cell up-train" rowspan="${tr.upSpan}">${tr.up}</td>`;
+                if (tr.down !== null) cells += `<td class="train-cell down-train" rowspan="${tr.downSpan}">${tr.down}</td>`;
+                if (idx === 0) {
+                    cells += `<td class="name-cell cor-cell" rowspan="${trainRows.length}">${team.cor || ''}</td>
+                        <td class="name-cell" rowspan="${trainRows.length}">${team.tte1 || ''}</td>
+                        <td class="name-cell" rowspan="${trainRows.length}">${team.tte2 || ''}</td>`;
+                }
+                rows += `<tr>${cells}</tr>`;
+            });
         } else if (status.type === 'rest') {
             const progCell = status.prog || '—';
             rows += `<tr class="rest-row">
@@ -1240,6 +1540,9 @@ function showRosterPreview(contentHtml) {
     document.getElementById('roster-preview-content').innerHTML = contentHtml;
     wrapper.classList.remove('hidden');
     document.body.classList.add('roster-preview-open');
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'ROSTER_PREVIEW_TOGGLE', open: true }, '*');
+    }
 }
 
 window.closeRosterPreview = function() {
@@ -1249,12 +1552,137 @@ window.closeRosterPreview = function() {
         document.getElementById('roster-preview-content').innerHTML = '';
     }
     document.body.classList.remove('roster-preview-open');
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'ROSTER_PREVIEW_TOGGLE', open: false }, '*');
+    }
 };
 
 window.clearDateOnlySearch = function() {
     document.getElementById('search-date-only').value = '';
     const extraEl = document.getElementById('search-date-extra');
     if (extraEl) extraEl.value = '';
+};
+
+// ===== Search by Name (live typeahead across COR / TTE-1 / TTE-2 of all teams) =====
+window.onSearchNameInput = function() {
+    const q = (document.getElementById('search-name-input').value || '').trim().toLowerCase();
+    const resultsEl = document.getElementById('search-name-results');
+    if (!q || q.length < 2) { resultsEl.innerHTML = ''; return; }
+    if (!window.appData || !window.appData.teamMaster) { resultsEl.innerHTML = ''; return; }
+
+    const matches = [];
+    Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
+        const team = window.appData.teamMaster[t];
+        [['cor','COR'], ['tte1','TTE-1'], ['tte2','TTE-2']].forEach(([field, roleLabel]) => {
+            const name = team[field];
+            if (name && name.toLowerCase().includes(q)) {
+                matches.push({ t, name, role: roleLabel });
+            }
+        });
+    });
+
+    if (matches.length === 0) {
+        resultsEl.innerHTML = '<p class="name-search-empty">No matching names found</p>';
+        return;
+    }
+    resultsEl.innerHTML = matches.slice(0, 30).map(m => `
+        <div class="name-search-row" onclick="window.selectNameSearchResult('${m.t}', '${m.name.replace(/'/g,"\\'")}')">
+            <div>
+                <div class="nsr-name">${m.name}</div>
+                <div class="nsr-role">${m.role}</div>
+            </div>
+            <div class="nsr-team">Team ${m.t}</div>
+        </div>
+    `).join('');
+};
+
+window.clearNameSearch = function() {
+    document.getElementById('search-name-input').value = '';
+    document.getElementById('search-name-results').innerHTML = '';
+};
+
+// ===== BSB Lobby: teams departing HQ on a given date, grouped by destination =====
+const LOBBY_DESTINATIONS = ['LKO', 'PRYJ', 'CNB'];
+
+window.openLobbyModal = function() {
+    const dateInput = document.getElementById('lobby-date');
+    if (!dateInput.value) {
+        const today = new Date();
+        dateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    }
+    document.getElementById('lobby-modal-overlay').classList.remove('hidden');
+    window.renderLobbyResults();
+};
+
+window.renderLobbyResults = function() {
+    const dateStr = document.getElementById('lobby-date').value;
+    const resultsEl = document.getElementById('lobby-results');
+    if (!dateStr || !window.appData || !window.appData.teamMaster) { resultsEl.innerHTML = ''; return; }
+
+    // Group outbound (UP) teams that day by their program's configured destination
+    const grouped = { LKO: [], PRYJ: [], CNB: [] };
+    Object.keys(window.appData.teamMaster).forEach(t => {
+        const status = getDutyStatusOnDate(t, dateStr);
+        if (status.type !== 'out') return;
+        const progData = window.appData.linkProgramme[status.prog];
+        const dest = progData && progData.destination;
+        if (dest && grouped[dest]) {
+            grouped[dest].push({ t, train: status.trip.outTrain });
+        }
+    });
+
+    resultsEl.innerHTML = LOBBY_DESTINATIONS.map(dest => {
+        const teams = grouped[dest];
+        const chips = teams.length
+            ? teams.map(x => `<span class="lobby-team-chip" onclick="window.showTeamInfo('${x.t}')">Team ${x.t} <span class="ltc-train">(${x.train})</span></span>`).join('')
+            : `<p class="lobby-empty">No teams heading to ${dest} this day</p>`;
+        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${dest}</div>${chips}</div>`;
+    }).join('');
+};
+
+// Point (iii): Shows a single "Your Trips" list of 6 trips total — the last two, today, and
+// the next three — for the selected team/name.
+window.selectNameSearchResult = function(teamNo, personName) {
+    const team = window.appData.teamMaster[teamNo];
+    if (!team) return;
+
+    const today = new Date(); today.setHours(0,0,0,0);
+    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    // Last two duty entries (going backward from yesterday)
+    const pastTrips = collectTrips(teamNo, 'past', 2);
+
+    // Today's entry, if any (trip start, or rest/lr/spare)
+    const todayTrips = [];
+    const todayTrip = getTripStartingOn(teamNo, todayStr);
+    if (todayTrip) {
+        todayTrips.push(todayTrip);
+    } else {
+        const status = getDutyStatusOnDate(teamNo, todayStr);
+        if (status.type === 'rest' || status.type === 'lr' || status.type === 'spare') {
+            todayTrips.push({ status: status.type, dateStr: todayStr, prog: status.prog });
+        }
+    }
+
+    // Next 3 upcoming duty starts, beginning tomorrow
+    const upcoming = [];
+    let d = new Date(today); d.setDate(d.getDate() + 1);
+    let iterations = 0;
+    while (upcoming.length < 3 && iterations < 60) {
+        iterations++;
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        const trip = getTripStartingOn(teamNo, dateStr);
+        if (trip) upcoming.push(trip);
+        d.setDate(d.getDate() + 1);
+    }
+
+    const allTrips = [...pastTrips, ...todayTrips, ...upcoming];
+
+    let html = `<div style="font-size:13px; color:var(--text-muted); margin-bottom:10px; text-align:center;">${teamLine(team)}</div>`;
+    html += `<div class="trip-table-wrap">${buildTripTable(allTrips)}</div>`;
+
+    showResultModal(`Your Trips — ${personName} (Team ${teamNo})`, html);
+    window.clearNameSearch();
 };
 
 const TAB_ORDER = ['mine', 'search', 'admin'];
@@ -1340,17 +1768,41 @@ window.addEventListener('unhandledrejection', function(e) {
     showToast('❌ Save failed: ' + msg, true);
 });
 
+// Point (vii-b): the "Save" quick card is now "Anchor Date" — clicking it opens this dialogue
+// (instead of the old standalone card sitting directly on the Admin page).
+window.openAnchorDateModal = function() {
+    const html = `<div>
+        <label style="font-size:13px; font-weight:700; display:block; margin-bottom:6px;">Rotation Anchor Date</label>
+        <input type="date" id="admin-anchor-date-modal" value="${window.appData.anchorDate || ''}">
+        <button class="action" style="background:var(--green); margin-top:10px;" onclick="window.saveAnchorDate()">Save</button>
+    </div>`;
+    showResultModal('💾 Rotation Anchor Date', html);
+};
+
 window.saveAnchorDate = async function() {
-    const date = document.getElementById('admin-anchor-date').value;
+    const input = document.getElementById('admin-anchor-date-modal');
+    const date = input ? input.value : '';
     if (!date) return showToast('❌ Select a date', true);
     try {
         window.appData.anchorDate = date;
         await set(ref(db, 'roster/BSB/anchorDate'), date);
         showToast('✅ Anchor date saved: ' + date);
         renderMyDutyWeek();
+        document.getElementById('result-modal-overlay').classList.add('hidden');
     } catch (e) {
         showToast('❌ Save failed: ' + e.message, true);
     }
+};
+
+// Point (vii-c): the "Feedback" quick card (replacing the old "Validate" card) opens the
+// Feedback Inbox in a dialogue instead of it sitting as a standalone card at page bottom.
+window.openFeedbackInboxModal = function() {
+    const html = `<button class="action" style="background:var(--purple);" onclick="window.loadRosterFeedback()">🔄 Refresh Inbox</button>
+        <div id="admin-feedback-list" style="margin-top:10px;">
+            <p style="font-size:13px; color:var(--text-muted); text-align:center;">Tap Refresh to load submissions</p>
+        </div>`;
+    showResultModal('📬 Feedback Inbox', html);
+    window.loadRosterFeedback();
 };
 
 window.loadTeamForEdit = function() {
@@ -1407,9 +1859,40 @@ window.toggleTeamTable = function() {
             <td contenteditable="true" class="editable-cell" data-field="tte2">${team.tte2||''}</td>
         </tr>`;
     });
-    const hint = `<p class="team-click-hint">✏️ Tap any cell to edit, then tap 💾 to save that row</p>`;
-    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Team</th><th></th><th>Prog</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    const hint = `<p class="team-click-hint">✏️ Tap any cell to edit, then tap 💾 to save that row (or use Save All below)</p>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table" id="all-teams-edit-table"><thead><tr><th>Team</th><th>Save</th><th>Prog</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead><tbody>${rows}</tbody></table></div>
+        <div class="admin-bottom-actions">
+            <button class="action" style="background:var(--green);" onclick="window.saveAllTeamRows()">💾 Save All</button>
+            <button class="action" style="background:var(--orange);" onclick="window.validateBaseProgramNumbers()">🔍 Validate</button>
+        </div>`;
     showResultModal('👥 All Teams — Inline Edit', html);
+};
+
+// Point (v): saves every row of the currently open Edit Teams table in one go.
+window.saveAllTeamRows = async function() {
+    const table = document.getElementById('all-teams-edit-table');
+    if (!table) return;
+    const trs = table.querySelectorAll('tbody tr');
+    let okCount = 0, failCount = 0;
+    for (const row of trs) {
+        const t = row.dataset.team;
+        const cells = row.querySelectorAll('.editable-cell');
+        const updated = {};
+        cells.forEach(cell => {
+            const field = cell.dataset.field;
+            const val = cell.innerText.trim();
+            updated[field] = field === 'baseProg' ? parseInt(val) : val;
+        });
+        if (!updated.baseProg || updated.baseProg < 1 || updated.baseProg > 43) { failCount++; continue; }
+        try {
+            window.appData.teamMaster[t] = updated;
+            await set(ref(db, `roster/BSB/teamMaster/${t}`), updated);
+            okCount++;
+        } catch (e) { failCount++; }
+    }
+    populateTeamSelectors();
+    if (failCount === 0) showToast(`✅ All ${okCount} teams saved!`);
+    else showToast(`⚠️ Saved ${okCount}, failed ${failCount}`, failCount > 0 && okCount === 0);
 };
 
 // Checks that every Base Program number 1–43 appears exactly once across all 43 teams.
@@ -1487,6 +1970,8 @@ window.jumpToTeamEdit = function(t) {
     sel.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
+const SAME_DAY_WEEKDAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+
 document.getElementById('admin-prog-select').addEventListener('change', function() {
     const p = this.value;
     const form = document.getElementById('admin-prog-edit-form');
@@ -1499,6 +1984,43 @@ document.getElementById('admin-prog-select').addEventListener('change', function
             <input type="text" id="prog-slot-${slot}" value="${progData[slot] || ''}" placeholder="Train no / REST / LR / SPARE / blank">
         </div>
     `).join('');
+    document.getElementById('prog-destination').value = progData.destination || '';
+
+    const hasSameDay = !!(progData.sameDay && Object.keys(progData.sameDay).length);
+    document.getElementById('prog-same-day-return').checked = hasSameDay;
+    document.getElementById('prog-same-day-fields').classList.toggle('hidden', !hasSameDay);
+    const sdSlotsDiv = document.getElementById('prog-same-day-slots');
+    sdSlotsDiv.innerHTML = SAME_DAY_WEEKDAYS.map(day => {
+        const sd = (progData.sameDay && progData.sameDay[day]) || {};
+        return `<div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+            <span style="font-size:11.5px; font-weight:800; width:32px; color:var(--text-muted);">${day}</span>
+            <input type="text" id="prog-sd-out-${day}" value="${sd.out || ''}" placeholder="Out train" style="margin:0; padding:7px 10px;">
+            <input type="text" id="prog-sd-in-${day}" value="${sd.in || ''}" placeholder="Return train" style="margin:0; padding:7px 10px;">
+        </div>`;
+    }).join('');
+
+    // Point (i): Special Trains (Summer Sp, Holi Sp, Festival Sp etc.) — up to 3 date-ranged entries.
+    const hasSpecial = !!(progData.specialTrains && progData.specialTrains.length);
+    document.getElementById('prog-special-trains').checked = hasSpecial;
+    document.getElementById('prog-special-fields').classList.toggle('hidden', !hasSpecial);
+    const spSlotsDiv = document.getElementById('prog-special-slots');
+    const specials = progData.specialTrains || [];
+    spSlotsDiv.innerHTML = [0, 1, 2].map(i => {
+        const sp = specials[i] || {};
+        return `<div style="border-top:1px dashed rgba(249,115,22,0.3); padding-top:8px; margin-top:8px;">
+            <span style="font-size:11px; font-weight:800; color:var(--orange);">Special ${i+1}</span>
+            <input type="text" id="prog-sp-label-${i}" value="${sp.label || ''}" placeholder="Label e.g. Summer Special" style="margin:6px 0;">
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="prog-sp-out-${i}" value="${sp.outTrain || ''}" placeholder="Out train" style="margin:0;">
+                <input type="text" id="prog-sp-in-${i}" value="${sp.inTrain || ''}" placeholder="Return train" style="margin:0;">
+            </div>
+            <div style="display:flex; gap:8px; margin-top:6px;">
+                <input type="date" id="prog-sp-start-${i}" value="${sp.start || ''}" style="margin:0;">
+                <input type="date" id="prog-sp-end-${i}" value="${sp.end || ''}" style="margin:0;">
+            </div>
+        </div>`;
+    }).join('');
+
     form.classList.remove('hidden');
 });
 
@@ -1511,6 +2033,32 @@ window.saveProgEdit = async function() {
             const val = document.getElementById('prog-slot-'+slot).value.trim();
             if (val) newData[slot] = val;
         });
+        const dest = document.getElementById('prog-destination').value.trim();
+        if (dest) newData.destination = dest;
+
+        if (document.getElementById('prog-same-day-return').checked) {
+            const sameDay = {};
+            SAME_DAY_WEEKDAYS.forEach(day => {
+                const out = document.getElementById('prog-sd-out-'+day).value.trim();
+                const inn = document.getElementById('prog-sd-in-'+day).value.trim();
+                if (out || inn) sameDay[day] = { out, in: inn };
+            });
+            if (Object.keys(sameDay).length) newData.sameDay = sameDay;
+        }
+
+        if (document.getElementById('prog-special-trains').checked) {
+            const specialTrains = [];
+            [0, 1, 2].forEach(i => {
+                const label = document.getElementById('prog-sp-label-'+i).value.trim();
+                const out = document.getElementById('prog-sp-out-'+i).value.trim();
+                const inn = document.getElementById('prog-sp-in-'+i).value.trim();
+                const start = document.getElementById('prog-sp-start-'+i).value;
+                const end = document.getElementById('prog-sp-end-'+i).value;
+                if ((out || inn) && start && end) specialTrains.push({ label: label || 'Special', outTrain: out, inTrain: inn, start, end });
+            });
+            if (specialTrains.length) newData.specialTrains = specialTrains;
+        }
+
         window.appData.linkProgramme[p] = newData;
         await set(ref(db, `roster/BSB/linkProgramme/${p}`), newData);
         showToast('✅ Program ' + p + ' updated successfully!');
@@ -1598,20 +2146,52 @@ window.toggleProgTable = function() {
         rows += `<tr data-prog="${p}"><td>${p}</td>${cells}<td><button class="inline-save-btn" onclick="window.saveProgRowInline(${p}, this)">💾</button></td></tr>`;
     }
     const hint = `<p class="team-click-hint">✏️ Tap any cell to edit, then tap 💾 to save that row. Leave a cell blank for no duty that slot.</p>`;
-    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table prog-table-bordered"><thead><tr><th>Prog</th>${SLOT_ORDER.map(s => `<th>${SLOT_LABELS[s]}</th>`).join('')}<th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table prog-table-bordered" id="all-progs-edit-table"><thead><tr><th>Prog</th>${SLOT_ORDER.map(s => `<th>${SLOT_LABELS[s]}</th>`).join('')}<th>Save</th></tr></thead><tbody>${rows}</tbody></table></div>
+        <div class="admin-bottom-actions">
+            <button class="action" style="background:var(--green);" onclick="window.saveAllProgRows()">💾 Save All</button>
+        </div>`;
     showResultModal('🚂 Full Link Programme — Inline Edit', html);
+};
+
+// Point (v): saves every row of the currently open Edit Programs table in one go.
+window.saveAllProgRows = async function() {
+    const table = document.getElementById('all-progs-edit-table');
+    if (!table) return;
+    const trs = table.querySelectorAll('tbody tr');
+    let okCount = 0, failCount = 0;
+    for (const row of trs) {
+        const p = row.dataset.prog;
+        const cells = row.querySelectorAll('.editable-cell');
+        const existing = window.appData.linkProgramme[p] || {};
+        const newData = { destination: existing.destination, sameDay: existing.sameDay, specialTrains: existing.specialTrains };
+        cells.forEach(cell => {
+            const slot = cell.dataset.slot;
+            const val = cell.innerText.trim();
+            if (val) newData[slot] = val;
+        });
+        Object.keys(newData).forEach(k => { if (newData[k] === undefined) delete newData[k]; });
+        try {
+            window.appData.linkProgramme[p] = newData;
+            await set(ref(db, `roster/BSB/linkProgramme/${p}`), newData);
+            okCount++;
+        } catch (e) { failCount++; }
+    }
+    if (failCount === 0) showToast(`✅ All ${okCount} programs saved!`);
+    else showToast(`⚠️ Saved ${okCount}, failed ${failCount}`, failCount > 0 && okCount === 0);
 };
 
 // Point 4: Excel-style inline save for a single program row — reads all 14 slot cells directly from the DOM
 window.saveProgRowInline = async function(p, btnEl) {
     const row = btnEl.closest('tr');
     const cells = row.querySelectorAll('.editable-cell');
-    const newData = {};
+    const existing = window.appData.linkProgramme[p] || {};
+    const newData = { destination: existing.destination, sameDay: existing.sameDay, specialTrains: existing.specialTrains };
     cells.forEach(cell => {
         const slot = cell.dataset.slot;
         const val = cell.innerText.trim();
         if (val) newData[slot] = val;
     });
+    Object.keys(newData).forEach(k => { if (newData[k] === undefined) delete newData[k]; });
     try {
         window.appData.linkProgramme[p] = newData;
         await set(ref(db, `roster/BSB/linkProgramme/${p}`), newData);
@@ -1712,6 +2292,9 @@ window.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'TTE_LOGS_USER') {
         window.currentUid = event.data.uid;
         window.isAdmin = event.data.isAdmin;
+        window.userHQ = (event.data.hq || '').trim().toUpperCase();
+        const lobbyRow = document.getElementById('bsb-lobby-row');
+        if (lobbyRow) lobbyRow.classList.toggle('hidden', !!window.userHQ && window.userHQ !== 'BSB');
         initAfterAuth();
     }
     // Point 2: TTE LOGS sends this every time the Roster modal is reopened (even if the iframe was already loaded)
