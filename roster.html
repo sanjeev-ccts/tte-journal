@@ -61,8 +61,7 @@
 
     /* ===== Roster print-preview overlay (styled to match the TTE LOGS app's preview screen) ===== */
     body.roster-preview-open { overflow: hidden; }
-    #roster-preview-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: #cbd5e1; overflow: auto; padding-top: 60px; padding-bottom: 100px; }
-    #roster-preview-controls { position: fixed; top: 0; left: 0; width: 100%; display: flex; justify-content: space-between; gap: 10px; padding: 10px 15px; background: #1e293b; box-shadow: var(--shadow); z-index: 10002; box-sizing: border-box; }
+    #roster-preview-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: #cbd5e1; overflow: auto; padding-top: 15px; padding-bottom: 100px; }
     #roster-preview-content-scale { transform-origin: top center; transform: scale(0.85); width: 800px; margin: 0 auto; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 10px; box-sizing: border-box; }
     #roster-preview-floating-btns { position: fixed; right: -5px; top: 83%; transform: translateY(-50%); z-index: 10001; display: flex; flex-direction: column; gap: 8px; }
     .roster-float-btn { background: #334155; color: white; padding: 12px 15px 12px 20px; border-radius: 30px 0 0 30px; box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.2); border-right: none; cursor: pointer; font-weight: bold; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -80,7 +79,7 @@
     #roster-print-doc tr.rest-row td.prog-cell { color: #15803d; }
 
     @media print {
-        #roster-preview-controls, #roster-preview-floating-btns { display: none !important; }
+        #roster-preview-floating-btns { display: none !important; }
         #roster-preview-wrapper { position: static !important; overflow: visible !important; background: white !important; padding: 0 !important; }
         #roster-preview-content-scale { transform: scale(1) !important; width: 100% !important; max-width: 100% !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; }
         body > *:not(#roster-preview-wrapper) { display: none !important; }
@@ -206,24 +205,23 @@
        a -18px margin on all sides, the sticky offsets must ALSO be -18px (not 0) — otherwise
        the "stuck" position doesn't match the "resting" (bled) position, and a gap opens up
        exactly at the point the header transitions into its stuck state. */
-    .result-modal-header { display: flex; align-items: center; justify-content: space-between; margin: -18px -18px 12px -18px; padding: 18px 18px 8px 18px; position: sticky; top: -18px; left: -18px; background: var(--card); z-index: 25; box-shadow: 0 4px 6px -4px rgba(0,0,0,0.15); }
+    .result-modal-header { display: flex; align-items: center; justify-content: space-between; margin: -18px -18px 12px -18px; padding: 18px 18px 8px 18px; position: sticky; top: -18px; left: -18px; right: -18px; background: var(--card); z-index: 25; box-shadow: 0 4px 6px -4px rgba(0,0,0,0.15); }
     /* Same full-bleed + matching-sticky-offset treatment as the header above, so the footer's
        background also lines up flush left/right instead of staying inset while everything
        else bleeds to the edge. Padding (not margin) keeps the actual buttons visually inset. */
-    .admin-bottom-actions { display: flex; gap: 8px; margin: 10px -18px -18px -18px; padding: 8px 18px 18px 18px; position: sticky; bottom: -18px; left: -18px; background: var(--card); z-index: 20; box-shadow: 0 -4px 6px -4px rgba(0,0,0,0.15); }
+    .admin-bottom-actions { display: flex; gap: 8px; margin: 10px -18px -18px -18px; padding: 8px 18px 18px 18px; position: sticky; bottom: -18px; left: -18px; right: -18px; background: var(--card); z-index: 20; box-shadow: 0 -4px 6px -4px rgba(0,0,0,0.15); }
     .admin-bottom-actions button { margin: 0; flex: 1; width: auto; }
     .aq-badge { position: absolute; top: -6px; right: -6px; background: var(--red); color: white; font-size: 10px; font-weight: 900; border-radius: 10px; padding: 1px 7px; }
     .admin-quick-card { position: relative; }
     .result-modal-header h3 { margin: 0; font-size: 16px; font-weight: 900; color: var(--text); }
     .result-modal-close { width: auto; padding: 6px 14px; font-size: 13px; margin: 0; background: var(--text-muted); border-radius: 20px; border: none; color: white; cursor: pointer; font-family: 'Roboto', sans-serif; }
-    /* Point (vi) fix: no overflow-x on this wrapper anymore — an element with overflow-x:auto
-       silently gets overflow-y:auto too (CSS spec), which makes it its OWN scroll box even though
-       it never actually scrolls. That trapped the sticky black header (it stuck to this dead box
-       instead of the real scrolling dialog), which is also what caused the blank "extra row" —
-       it was just the header's reserved flow space peeking out above its mis-stuck position.
-       Now horizontal overflow (if any) bubbles up to .result-modal-box, the single true scroller,
-       so the sticky header and the dialog title share one scroll context and stack correctly.
-       Full-bleed margins (per your suggestion) also give the table the whole dialog width. */
+    /* Fix: the table wrapper now scrolls horizontally on its OWN, isolated from the dialog's
+       vertical scroll. Explicitly setting overflow-y: visible (not leaving it to default/auto)
+       avoids the earlier bug where overflow-x:auto silently created a second, dead vertical
+       scrollbox that trapped the sticky header. This also fixes Save/Validate footer buttons
+       disappearing off-screen during horizontal scroll — since the whole dialog no longer
+       moves sideways, only the table itself does, the footer (and header) stay fixed in place
+       relative to the visible dialog width regardless of how far right the table is scrolled. */
     .admin-table-wrap { margin: 0 -18px 14px -18px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
     table.admin-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 12px; white-space: nowrap; }
     table.admin-table th { background: var(--top-bar-bg); color: #fde047; padding: 7px 8px; font-size: 10.5px; text-transform: uppercase; position: sticky; top: var(--sticky-header-h, 54px); z-index: 15; border: 1px solid #334155; }
@@ -691,13 +689,13 @@ function getTripStartingOn(teamNo, dateStr) {
     }
 
     // Special trains (Summer Special, Holi Special, Festival Special etc.): admin-entered
-    // one-off services that only run between a Start and an End date, independent of the
-    // regular weekly OUT/IN slots and of the same-day shuttle above. A program can have several
-    // (stored as an array); each active one shows up as its own extra line, same as same-day.
-    if (progData.specialTrains && progData.specialTrains.length) {
-        const active = progData.specialTrains.filter(sp => sp.start && sp.end && dateStr >= sp.start && dateStr <= sp.end && (sp.outTrain || sp.inTrain));
-        if (active.length) {
-            trip.specialTrips = active.map(sp => ({ label: sp.label || 'Special', outTrain: sp.outTrain || '', returnTrain: sp.inTrain || '', date: dateStr }));
+    // day-wise Out/Return trains, in the exact same shape as the Same-Day shuttle above —
+    // independent of the regular weekly OUT/IN slots. No date range: admin manually clears the
+    // fields once the special train's run ends, same as managing regular weekly slots.
+    if (progData.specialTrain && progData.specialTrain[dayPrefix]) {
+        const spDay = progData.specialTrain[dayPrefix];
+        if (spDay.out || spDay.in) {
+            trip.specialTrips = [{ label: 'Special', outTrain: spDay.out || '', returnTrain: spDay.in || '', date: dateStr }];
         }
     }
 
@@ -1113,8 +1111,27 @@ function showResultModal(title, bodyHtml) {
     requestAnimationFrame(() => {
         const headerEl = document.getElementById('result-modal-header');
         const boxEl = document.getElementById('result-modal-box');
-        if (headerEl && boxEl) boxEl.style.setProperty('--sticky-header-h', headerEl.offsetHeight + 'px');
+        // Fix: the header sticks at top:-18px (cancelling its own negative margin), so the table
+        // header underneath it must stick at (header's rendered height - 18px), not the raw
+        // height — otherwise an 18px gap opens up between the two once both become "stuck".
+        if (headerEl && boxEl) boxEl.style.setProperty('--sticky-header-h', (headerEl.offsetHeight - 18) + 'px');
     });
+
+    // Fix: horizontal scroll of a wide table bubbles up to .result-modal-box (needed so the
+    // table header's vertical sticky positioning keeps working against the dialog, not a dead
+    // inner scrollbox). But that means .admin-bottom-actions (Save/Validate/Save All), which is
+    // sticky on left/right, gets dragged sideways too, since sticky offsets can't override the
+    // box's actual horizontal scroll position. This listener counter-shifts the footer by
+    // exactly the box's current scrollLeft, keeping it visually pinned to the dialog's edges
+    // regardless of how far the table is scrolled horizontally.
+    const boxEl = document.getElementById('result-modal-box');
+    if (boxEl && !boxEl._hscrollFixBound) {
+        boxEl._hscrollFixBound = true;
+        boxEl.addEventListener('scroll', () => {
+            const footer = boxEl.querySelector('.admin-bottom-actions');
+            if (footer) footer.style.transform = `translateX(${boxEl.scrollLeft}px)`;
+        });
+    }
 }
 window.showResultModal = showResultModal;
 window.closeResultModal = function() {
@@ -1494,7 +1511,7 @@ window.generateRosterPDF = function() {
         // halt / lr / in / none: skipped entirely
     });
 
-    const dateLabel = fmtDateLabel(dateStr) + ' (' + dayAbbrev(dateStr) + ')';
+    const dateLabel = fmtDateLabel(dateStr) + '-' + dateStr.slice(0,4) + ' (' + dayAbbrev(dateStr) + ')';
 
     const tableHtml = `<div id="roster-print-doc">
         <table>
@@ -1524,10 +1541,6 @@ function showRosterPreview(contentHtml) {
         wrapper = document.createElement('div');
         wrapper.id = 'roster-preview-wrapper';
         wrapper.innerHTML = `
-            <div id="roster-preview-controls">
-                <button onclick="window.closeRosterPreview()" style="margin:0; width:auto; padding:8px 15px; border-radius:30px; background:#64748b; color:#fff; border:none; font-weight:bold; cursor:pointer;">← Back</button>
-                <button onclick="window.print()" style="margin:0; width:auto; padding:8px 15px; border-radius:30px; background:var(--green); color:#fff; border:none; font-weight:bold; cursor:pointer;">🖨️ Print</button>
-            </div>
             <div id="roster-preview-content-scale">
                 <div id="roster-preview-content"></div>
             </div>
@@ -1999,25 +2012,20 @@ document.getElementById('admin-prog-select').addEventListener('change', function
         </div>`;
     }).join('');
 
-    // Point (i): Special Trains (Summer Sp, Holi Sp, Festival Sp etc.) — up to 3 date-ranged entries.
-    const hasSpecial = !!(progData.specialTrains && progData.specialTrains.length);
+    // Point 2: Special Trains now uses the exact same day-wise Out/Return layout as Same-Day
+    // Round Trip — no date range, no label. Admin manually clears the fields when the special
+    // train's run ends, exactly like managing the regular weekly slots.
+    const hasSpecial = !!(progData.specialTrain && Object.keys(progData.specialTrain).length);
     document.getElementById('prog-special-trains').checked = hasSpecial;
     document.getElementById('prog-special-fields').classList.toggle('hidden', !hasSpecial);
     const spSlotsDiv = document.getElementById('prog-special-slots');
-    const specials = progData.specialTrains || [];
-    spSlotsDiv.innerHTML = [0, 1, 2].map(i => {
-        const sp = specials[i] || {};
-        return `<div style="border-top:1px dashed rgba(249,115,22,0.3); padding-top:8px; margin-top:8px;">
-            <span style="font-size:11px; font-weight:800; color:var(--orange);">Special ${i+1}</span>
-            <input type="text" id="prog-sp-label-${i}" value="${sp.label || ''}" placeholder="Label e.g. Summer Special" style="margin:6px 0;">
-            <div style="display:flex; gap:8px;">
-                <input type="text" id="prog-sp-out-${i}" value="${sp.outTrain || ''}" placeholder="Out train" style="margin:0;">
-                <input type="text" id="prog-sp-in-${i}" value="${sp.inTrain || ''}" placeholder="Return train" style="margin:0;">
-            </div>
-            <div style="display:flex; gap:8px; margin-top:6px;">
-                <input type="date" id="prog-sp-start-${i}" value="${sp.start || ''}" style="margin:0;">
-                <input type="date" id="prog-sp-end-${i}" value="${sp.end || ''}" style="margin:0;">
-            </div>
+    const specialData = progData.specialTrain || {};
+    spSlotsDiv.innerHTML = SAME_DAY_WEEKDAYS.map(day => {
+        const sd = specialData[day] || {};
+        return `<div style="display:flex; gap:8px; align-items:center; margin-bottom:6px;">
+            <span style="font-size:11.5px; font-weight:800; width:32px; color:var(--text-muted);">${day}</span>
+            <input type="text" id="prog-special-out-${day}" value="${sd.out || ''}" placeholder="Out train" style="margin:0; padding:7px 10px;">
+            <input type="text" id="prog-special-in-${day}" value="${sd.in || ''}" placeholder="Return train" style="margin:0; padding:7px 10px;">
         </div>`;
     }).join('');
 
@@ -2046,17 +2054,17 @@ window.saveProgEdit = async function() {
             if (Object.keys(sameDay).length) newData.sameDay = sameDay;
         }
 
+        // Point 2: Special Trains saved in the exact same day-wise shape as Same-Day Round Trip —
+        // no date range, no label. Fixed the bug where a missing Start/End silently dropped the
+        // entire block from being saved at all.
         if (document.getElementById('prog-special-trains').checked) {
-            const specialTrains = [];
-            [0, 1, 2].forEach(i => {
-                const label = document.getElementById('prog-sp-label-'+i).value.trim();
-                const out = document.getElementById('prog-sp-out-'+i).value.trim();
-                const inn = document.getElementById('prog-sp-in-'+i).value.trim();
-                const start = document.getElementById('prog-sp-start-'+i).value;
-                const end = document.getElementById('prog-sp-end-'+i).value;
-                if ((out || inn) && start && end) specialTrains.push({ label: label || 'Special', outTrain: out, inTrain: inn, start, end });
+            const specialTrain = {};
+            SAME_DAY_WEEKDAYS.forEach(day => {
+                const out = document.getElementById('prog-special-out-'+day).value.trim();
+                const inn = document.getElementById('prog-special-in-'+day).value.trim();
+                if (out || inn) specialTrain[day] = { out, in: inn };
             });
-            if (specialTrains.length) newData.specialTrains = specialTrains;
+            if (Object.keys(specialTrain).length) newData.specialTrain = specialTrain;
         }
 
         window.appData.linkProgramme[p] = newData;
@@ -2163,7 +2171,7 @@ window.saveAllProgRows = async function() {
         const p = row.dataset.prog;
         const cells = row.querySelectorAll('.editable-cell');
         const existing = window.appData.linkProgramme[p] || {};
-        const newData = { destination: existing.destination, sameDay: existing.sameDay, specialTrains: existing.specialTrains };
+        const newData = { destination: existing.destination, sameDay: existing.sameDay, specialTrain: existing.specialTrain };
         cells.forEach(cell => {
             const slot = cell.dataset.slot;
             const val = cell.innerText.trim();
@@ -2185,7 +2193,7 @@ window.saveProgRowInline = async function(p, btnEl) {
     const row = btnEl.closest('tr');
     const cells = row.querySelectorAll('.editable-cell');
     const existing = window.appData.linkProgramme[p] || {};
-    const newData = { destination: existing.destination, sameDay: existing.sameDay, specialTrains: existing.specialTrains };
+    const newData = { destination: existing.destination, sameDay: existing.sameDay, specialTrain: existing.specialTrain };
     cells.forEach(cell => {
         const slot = cell.dataset.slot;
         const val = cell.innerText.trim();
