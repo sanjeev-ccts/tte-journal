@@ -100,6 +100,8 @@
     .two-col-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: stretch; }
     .two-col-row .card { flex: 1; margin-bottom: 0; }
     .view-edit-team-btn { border: none; border-radius: 30px !important; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--blue); font-weight: 900; font-size: 14px; font-family: 'Roboto', sans-serif; background: var(--card); padding: 10px 8px; }
+    #bsb-lobby-row { border-radius: 999px !important; background: linear-gradient(135deg, rgba(56,189,248,0.22), rgba(59,130,246,0.22)); border: 2px solid rgba(59,130,246,0.4) !important; color: var(--blue); font-size: 17px; font-weight: 900; padding: 16px 10px; box-shadow: 0 4px 14px rgba(59,130,246,0.28); letter-spacing: 0.3px; }
+    body.dark-mode #bsb-lobby-row { background: linear-gradient(135deg, rgba(56,189,248,0.28), rgba(59,130,246,0.28)); }
     .cor-name, .tte-name { color: #1d4ed8; font-weight: 800; }
     #view-admin .card { padding: 10px 14px; margin-bottom: 10px; }
     #view-admin .card h3 { margin-bottom: 6px !important; font-size: 13.5px !important; }
@@ -115,6 +117,8 @@
     .admin-quick-card.aq-validate .aq-label { color: var(--orange); }
     .admin-quick-card.aq-feedback .aq-label { color: var(--red); }
     .admin-quick-card.aq-progs .aq-label { color: var(--purple); }
+    .admin-quick-card.aq-schedule .aq-label { color: #0891b2; }
+    .admin-quick-card.aq-export .aq-label { color: var(--orange); }
     .team-info-card { background: rgba(59,130,246,0.26); padding: 14px; text-align: center; }
     .team-info-card .team-title-box { display: inline-block; background: var(--blue); color: white; font-size: 12.5px; font-weight: 900; padding: 4px 16px; border-radius: 18px; margin: 0 auto 10px auto; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     .team-info-card .team-members { font-size: 13px; line-height: 1.6; text-align: center; }
@@ -177,13 +181,13 @@
     .team-click-hint.hint-red { font-size: 13px; color: var(--red); }
     .select-clear-row { display: flex; gap: 8px; align-items: center; }
     .select-clear-row select { flex: 1; margin-bottom: 10px; }
-    .search-card { border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; }
-    .search-card label { display: block; text-align: center; font-size: 13.5px; font-weight: 900; margin-bottom: 10px; padding: 5px 12px; color: var(--blue); }
+    .search-card { border-radius: 16px; padding: 8px 14px; margin-bottom: 8px; }
+    .search-card label { display: block; text-align: center; font-size: 12.5px; font-weight: 900; margin-bottom: 5px; padding: 2px 12px; color: var(--blue); }
     .search-row-3 { display: flex; gap: 6px; align-items: flex-start; }
-    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 8px 10px; font-size: 13px; height: 40px; border-radius: 30px; }
+    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 6px 10px; font-size: 12.5px; height: 34px; border-radius: 30px; }
     .search-field-wrap { flex: 1; min-width: 0; }
-    .search-field-caption { font-size: 10.5px; font-weight: 600; color: var(--text-muted); text-align: center; margin: 4px 0 0 0; }
-    .icon-search-btn, .clear-btn { width: 40px; height: 40px; flex-shrink: 0; padding: 0; border: none; border-radius: 30px; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+    .search-field-caption { font-size: 9.5px; font-weight: 600; color: var(--text-muted); text-align: center; margin: 2px 0 0 0; }
+    .icon-search-btn, .clear-btn { width: 34px; height: 34px; flex-shrink: 0; padding: 0; border: none; border-radius: 30px; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
     .icon-search-btn { background: var(--blue); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     .name-search-results { margin-top: 8px; max-height: 260px; overflow-y: auto; }
     .name-search-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 6px; cursor: pointer; }
@@ -192,12 +196,45 @@
     .name-search-row .nsr-role { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
     .name-search-row .nsr-team { font-size: 12.5px; font-weight: 900; color: var(--blue); background: rgba(59,130,246,0.14); padding: 3px 10px; border-radius: 20px; }
     .name-search-empty { text-align: center; font-size: 12.5px; color: var(--text-muted); padding: 8px; }
-    .lobby-dest-box { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+    .lobby-dest-box { background: rgba(59,130,246,0.10); border: 1px solid rgba(59,130,246,0.3); border-radius: 14px; padding: 8px 10px; margin-bottom: 8px; }
+    body.dark-mode .lobby-dest-box { background: rgba(59,130,246,0.16); }
     .lobby-dest-title { font-size: 13.5px; font-weight: 900; color: var(--blue); text-transform: uppercase; text-align: center; margin-bottom: 8px; letter-spacing: 0.5px; }
-    .lobby-team-chip { display: inline-flex; align-items: center; gap: 6px; background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3); border-radius: 20px; padding: 6px 12px; margin: 4px; font-size: 12.5px; font-weight: 800; color: var(--blue); cursor: pointer; }
-    .lobby-team-chip .ltc-train { font-size: 10.5px; font-weight: 700; color: var(--text-muted); }
+    .lobby-team-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; background: rgba(59,130,246,0.14); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 6px 12px; margin: 4px auto; font-size: 12.5px; font-weight: 800; color: var(--blue); cursor: pointer; width: fit-content; max-width: 100%; box-sizing: border-box; }
+    .lobby-team-chip .ltc-name { font-size: 12.5px; text-align: center; }
+    .lobby-team-chip .ltc-train { font-size: 10px; font-weight: 700; color: var(--text-muted); text-align: center; }
     .lobby-empty { text-align: center; font-size: 12.5px; color: var(--text-muted); padding: 6px; }
     .clear-btn { background: rgba(239,68,68,0.5); color: white; font-weight: 900; }
+
+    /* ---- My Duty: compact monthly calendar ---- */
+    .duty-cal-card { padding: 10px 8px; }
+    .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; gap: 6px; }
+    .cal-nav-btn { width: 30px; height: 30px; flex-shrink: 0; border: none; border-radius: 50%; background: var(--blue); color: white; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
+    .cal-nav-center { display: flex; gap: 6px; flex: 1; }
+    .cal-nav-center select { flex: 1 1 0; margin: 0; padding: 5px 22px 5px 8px; font-size: 12.5px; height: 30px; border-radius: 20px; width: 0; min-width: 0; text-align: center; box-sizing: border-box; border: 1px solid var(--border); background-color: var(--card); color: var(--text); -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%); background-position: calc(100% - 14px) center, calc(100% - 9px) center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 10px; font-weight: 800; color: var(--text-muted); margin-bottom: 3px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; height: 40vh; min-height: 260px; }
+    .cal-day { border-radius: 8px; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; overflow: hidden; }
+    .cal-day.cal-empty { visibility: hidden; cursor: default; }
+    .cal-day .cal-daynum { font-weight: 800; font-size: 12px; margin-top: -6px; }
+    .cal-day .cal-tag { font-size: 7.5px; font-weight: 900; padding: 1px 4px; border-radius: 6px; letter-spacing: 0.3px; }
+    .cal-day .cal-trainno { font-size: 9px; font-weight: 800; color: #111827; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 92%; }
+    body.dark-mode .cal-day .cal-trainno { color: #f1f5f9; }
+    .cal-day.cal-today { border: 2px solid var(--blue); }
+    .cal-day.cal-out { background: rgba(59,130,246,0.10); }
+    .cal-day.cal-out .cal-tag { background: rgba(59,130,246,0.25); color: var(--blue); }
+    .cal-day.cal-in { background: rgba(20,184,166,0.12); }
+    .cal-day.cal-in .cal-tag { background: rgba(20,184,166,0.28); color: #0d9488; }
+    .cal-day.cal-halt { background: rgba(239,68,68,0.12); }
+    .cal-day.cal-halt .cal-tag { background: rgba(239,68,68,0.28); color: var(--red); }
+    .cal-day.cal-rest { background: rgba(249,115,22,0.10); }
+    .cal-day.cal-rest .cal-tag { background: rgba(249,115,22,0.25); color: var(--orange); }
+    .cal-day.cal-lr { background: rgba(147,51,234,0.10); }
+    .cal-day.cal-lr .cal-tag { background: rgba(147,51,234,0.25); color: var(--purple); }
+    .cal-day.cal-spare { background: rgba(234,179,8,0.12); }
+    .cal-day.cal-spare .cal-tag { background: rgba(234,179,8,0.3); color: #a16207; }
+    .daycard-status { text-align: center; font-size: 14px; font-weight: 800; margin: 0 0 10px; }
+    .daycard-train { background: rgba(59,130,246,0.06); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; font-size: 13px; }
+    .tt-timing { font-size: 9.5px; font-weight: 600; color: var(--text-muted); }
     .result-modal-box { background: var(--card); border-radius: 18px; padding: 18px; width: 92%; max-width: 460px; max-height: 82vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.35); }
     /* Full-bleed to match the black table header below it (no more left/right gap), and
        sticky on BOTH top and left so it stays put whether the user scrolls the list down
@@ -261,7 +298,6 @@ if (window.parent !== window) {
 <div class="top-bar"><span>BSB Duty Roster</span></div>
 <div id="save-toast">✅ Saved successfully!</div>
 <div class="screen-content" id="swipe-area">
-    <p class="swipe-hint">↔️ Swipe left or right to switch tabs</p>
     <div class="tab-bar">
         <div class="tab-btn active" id="tab-mine" onclick="switchTab('mine')">My Duty</div>
         <div class="tab-btn" id="tab-search" onclick="switchTab('search')">Search</div>
@@ -288,7 +324,7 @@ if (window.parent !== window) {
         <div id="my-duty-week"></div>
     </div>
     <div id="view-search" class="hidden">
-        <div class="card view-edit-team-btn" id="bsb-lobby-row" style="margin-bottom:14px;" onclick="window.openLobbyModal()">🚉 BSB Lobby</div>
+        <div class="card view-edit-team-btn" id="bsb-lobby-row" style="margin-bottom:8px;" onclick="window.openLobbyModal()">🚉 Mandali</div>
         <div class="card search-card">
             <label>Search by Name</label>
             <div class="search-row-3">
@@ -381,6 +417,14 @@ if (window.parent !== window) {
                 <div class="aq-icon">🚂</div>
                 <div class="aq-label">Edit Programs</div>
             </div>
+            <div class="admin-quick-card aq-schedule" onclick="window.toggleScheduleTable()">
+                <div class="aq-icon">🕒</div>
+                <div class="aq-label">Edit Schedule</div>
+            </div>
+            <div class="admin-quick-card aq-export" onclick="window.exportCurrentData()">
+                <div class="aq-icon">📤</div>
+                <div class="aq-label">Export Data</div>
+            </div>
         </div>
 
         <div class="card">
@@ -413,13 +457,6 @@ if (window.parent !== window) {
             </div>
             <div id="admin-prog-edit-form" class="hidden" style="margin-top:10px;">
                 <div id="admin-prog-slots"></div>
-                <label style="font-size:12px; color:var(--text-muted);">Destination (for BSB Lobby — optional)</label>
-                <select id="prog-destination">
-                    <option value="">-- None --</option>
-                    <option value="LKO">LKO</option>
-                    <option value="PRYJ">PRYJ</option>
-                    <option value="CNB">CNB</option>
-                </select>
                 <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--text-muted); margin:10px 0 6px; cursor:pointer;">
                     <input type="checkbox" id="prog-same-day-return" onchange="document.getElementById('prog-same-day-fields').classList.toggle('hidden', !this.checked)">
                     Has a Same-Day Round Trip (departs & returns HQ same day)
@@ -448,7 +485,7 @@ if (window.parent !== window) {
     <div class="bottom-icon" onclick="window.showDonate()">☕</div>
     <div class="bottom-icon" onclick="window.goHome()">🏠</div>
 </div>
-<div id="result-modal-overlay" class="modal-overlay hidden">
+<div id="result-modal-overlay" class="modal-overlay hidden" style="z-index:9600;">
     <div class="result-modal-box" id="result-modal-box">
         <div class="result-modal-header" id="result-modal-header">
             <h3 id="result-modal-title">Result</h3>
@@ -469,13 +506,14 @@ if (window.parent !== window) {
 <div id="lobby-modal-overlay" class="modal-overlay hidden">
     <div class="result-modal-box">
         <div class="result-modal-header">
-            <h3>🚉 BSB Lobby</h3>
+            <h3>🚉 Mandali</h3>
             <button class="result-modal-close" onclick="document.getElementById('lobby-modal-overlay').classList.add('hidden')">✕ Close</button>
         </div>
-        <div style="margin-bottom:12px;">
+        <div style="margin-bottom:8px;">
             <label style="font-size:12.5px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Date</label>
             <input type="date" id="lobby-date" onchange="window.renderLobbyResults()">
         </div>
+        <p id="lobby-live-clock" style="text-align:center; font-size:11.5px; font-weight:800; color:var(--red); margin:0 0 12px;"></p>
         <div id="lobby-results"></div>
     </div>
 </div>
@@ -608,9 +646,111 @@ const DEFAULT_LINK_PROGRAMME = {
     43:{MON_OUT:"REST", TUE_OUT:"REST", WED_OUT:"REST", THU_OUT:"REST", FRI_OUT:"REST", SAT_OUT:"REST", SUN_OUT:"REST"}
 };
 
+// Manned timing (Station From/To + Dep/Arr) for every train worked by BSB HQ TTEs.
+// Keyed by train number. arrNextDay:true means the Arr Time falls on the day AFTER Dep Time.
+// This is the single source of truth for train timings, used across scenarios (Lobby, PDF,
+// search, duty cards etc.) via window.getTrainSchedule(trainNo). It is kept in sync with the
+// Link Programme by the Admin > Edit Schedule box, which always re-scans linkProgramme live
+// for train numbers so any new train added to a program shows up here for timing entry.
+const DEFAULT_TRAIN_SCHEDULE = {
+    "11071":{from:"PRYJ",to:"BSB",dep:"16:00",arr:"19:45",arrNextDay:false},
+    "11072":{from:"BSB",to:"PRYJ",dep:"16:00",arr:"19:05",arrNextDay:false},
+    "12237":{from:"BSB",to:"LKO",dep:"12:40",arr:"17:30",arrNextDay:false},
+    "12238":{from:"LKO",to:"BSB",dep:"07:20",arr:"12:30",arrNextDay:false},
+    "12317":{from:"DDU",to:"LKO",dep:"19:35",arr:"02:30",arrNextDay:true},
+    "12318":{from:"LKO",to:"DDU",dep:"20:15",arr:"02:10",arrNextDay:true},
+    "12325":{from:"DDU",to:"LKO",dep:"19:35",arr:"02:30",arrNextDay:true},
+    "12326":{from:"LKO",to:"DDU",dep:"20:15",arr:"02:10",arrNextDay:true},
+    "12353":{from:"DDU",to:"LKO",dep:"17:55",arr:"00:55",arrNextDay:true},
+    "12354":{from:"LKO",to:"DDU",dep:"01:20",arr:"08:15",arrNextDay:false},
+    "12357":{from:"DDU",to:"LKO",dep:"21:05",arr:"02:30",arrNextDay:true},
+    "12358":{from:"LKO",to:"DDU",dep:"20:15",arr:"02:10",arrNextDay:true},
+    "12371":{from:"DDU",to:"LKO",dep:"17:55",arr:"00:55",arrNextDay:true},
+    "12372":{from:"LKO",to:"DDU",dep:"23:45",arr:"06:20",arrNextDay:true},
+    "12391":{from:"DDU",to:"LKO",dep:"14:20",arr:"19:55",arrNextDay:false},
+    "12669":{from:"PRYJ",to:"BSB",dep:"02:10",arr:"05:10",arrNextDay:false},
+    "12670":{from:"BSB",to:"PRYJ",dep:"01:20",arr:"04:05",arrNextDay:false},
+    "12875":{from:"DDU",to:"CNB",dep:"06:15",arr:"15:15",arrNextDay:false},
+    "12876":{from:"CNB",to:"DDU",dep:"13:25",arr:"22:40",arrNextDay:false},
+    "13035":{from:"DDU",to:"LKO",dep:"00:30",arr:"07:20",arrNextDay:false},
+    "13036":{from:"LKO",to:"DDU",dep:"08:10",arr:"14:05",arrNextDay:false},
+    "13037":{from:"DDU",to:"LKO",dep:"00:30",arr:"07:20",arrNextDay:false},
+    "13038":{from:"LKO",to:"DDU",dep:"08:10",arr:"14:05",arrNextDay:false},
+    "13041":{from:"DDU",to:"LKO",dep:"13:50",arr:"19:20",arrNextDay:false},
+    "13042":{from:"LKO",to:"DDU",dep:"15:30",arr:"22:13",arrNextDay:false},
+    "13237":{from:"DDU",to:"LKO",dep:"15:35",arr:"23:10",arrNextDay:false},
+    "13238":{from:"LKO",to:"DDU",dep:"07:05",arr:"15:35",arrNextDay:false},
+    "13239":{from:"DDU",to:"LKO",dep:"15:35",arr:"23:10",arrNextDay:false},
+    "13240":{from:"LKO",to:"DDU",dep:"07:05",arr:"15:35",arrNextDay:false},
+    "13429":{from:"DDU",to:"LKO",dep:"23:00",arr:"06:05",arrNextDay:true},
+    "13430":{from:"LKO",to:"DDU",dep:"02:50",arr:"10:20",arrNextDay:false},
+    "14003":{from:"DDU",to:"LKO",dep:"23:00",arr:"06:05",arrNextDay:true},
+    "14004":{from:"LKO",to:"DDU",dep:"02:35",arr:"09:10",arrNextDay:false},
+    "14007":{from:"BSB",to:"LKO",dep:"11:45",arr:"18:05",arrNextDay:false},
+    "14008":{from:"LKO",to:"BSB",dep:"02:25",arr:"09:00",arrNextDay:false},
+    "14015":{from:"BSB",to:"LKO",dep:"11:45",arr:"18:05",arrNextDay:false},
+    "14016":{from:"LKO",to:"BSB",dep:"02:25",arr:"09:00",arrNextDay:false},
+    "14017":{from:"BSB",to:"LKO",dep:"11:45",arr:"18:05",arrNextDay:false},
+    "14018":{from:"LKO",to:"BSB",dep:"02:25",arr:"09:00",arrNextDay:false},
+    "14213":{from:"BSB",to:"BRK",dep:"14:00",arr:"21:50",arrNextDay:false},
+    "14214":{from:"BRK",to:"BSB",dep:"05:25",arr:"13:40",arrNextDay:false},
+    "14235":{from:"BSB",to:"LKO",dep:"23:10",arr:"06:40",arrNextDay:true},
+    "14236":{from:"LKO",to:"BSB",dep:"23:55",arr:"07:00",arrNextDay:true},
+    "14523":{from:"BSB",to:"LKO",dep:"15:40",arr:"20:30",arrNextDay:false},
+    "14524":{from:"LKO",to:"BSB",dep:"05:55",arr:"10:40",arrNextDay:false},
+    "14853":{from:"BCY",to:"CNB",dep:"16:40",arr:"02:00",arrNextDay:true},
+    "14854":{from:"CNB",to:"BCY",dep:"23:45",arr:"10:00",arrNextDay:true},
+    "14863":{from:"BCY",to:"CNB",dep:"16:40",arr:"02:00",arrNextDay:true},
+    "14864":{from:"CNB",to:"BCY",dep:"23:45",arr:"10:00",arrNextDay:true},
+    "14865":{from:"BCY",to:"CNB",dep:"16:40",arr:"02:00",arrNextDay:true},
+    "14866":{from:"CNB",to:"BCY",dep:"23:45",arr:"07:40",arrNextDay:true},
+    "15017":{from:"PRYJ",to:"BSB",dep:"08:10",arr:"13:00",arrNextDay:false},
+    "15018":{from:"BSB",to:"PRYJ",dep:"11:20",arr:"15:45",arrNextDay:false},
+    "15107":{from:"BNRS",to:"LKO",dep:"04:55",arr:"11:05",arrNextDay:false},
+    "15108":{from:"LKO",to:"BNRS",dep:"13:10",arr:"20:15",arrNextDay:false},
+    "15127":{from:"BNRS",to:"LKO",dep:"13:30",arr:"21:05",arrNextDay:false},
+    "15128":{from:"LKO",to:"BNRS",dep:"21:15",arr:"04:40",arrNextDay:true},
+    "15159":{from:"BSB",to:"PRYJ",dep:"12:30",arr:"15:10",arrNextDay:false},
+    "15160":{from:"PRYJ",to:"BSB",dep:"12:35",arr:"16:15",arrNextDay:false},
+    "15635":{from:"CNB",to:"BSB",dep:"19:10",arr:"05:30",arrNextDay:true},
+    "15667":{from:"CNB",to:"DDU",dep:"19:10",arr:"07:10",arrNextDay:true},
+    "15668":{from:"DDU",to:"CNB",dep:"09:10",arr:"19:20",arrNextDay:false},
+    "15733":{from:"DDU",to:"LKO",dep:"10:15",arr:"18:45",arrNextDay:false},
+    "15734":{from:"LKO",to:"DDU",dep:"08:25",arr:"18:00",arrNextDay:false},
+    "15743":{from:"DDU",to:"LKO",dep:"10:15",arr:"18:45",arrNextDay:false},
+    "15744":{from:"LKO",to:"DDU",dep:"08:25",arr:"17:55",arrNextDay:false},
+    "15933":{from:"BSB",to:"LKO",dep:"22:20",arr:"05:55",arrNextDay:true},
+    "15934":{from:"LKO",to:"BSB",dep:"06:40",arr:"15:15",arrNextDay:false},
+    "18103":{from:"DDU",to:"LKO",dep:"07:05",arr:"15:00",arrNextDay:false},
+    "18104":{from:"LKO",to:"DDU",dep:"03:00",arr:"10:35",arrNextDay:false},
+    "19305":{from:"LKO",to:"BSB",dep:"05:35",arr:"11:15",arrNextDay:false},
+    "19306":{from:"BSB",to:"LKO",dep:"05:10",arr:"12:00",arrNextDay:false},
+    "19313":{from:"CNB",to:"DDU",dep:"03:55",arr:"11:30",arrNextDay:false},
+    "19314":{from:"DDU",to:"CNB",dep:"15:05",arr:"00:30",arrNextDay:true},
+    "19321":{from:"CNB",to:"DDU",dep:"03:55",arr:"12:25",arrNextDay:false},
+    "19322":{from:"DDU",to:"CNB",dep:"15:05",arr:"00:30",arrNextDay:true},
+    "20401":{from:"BSB",to:"LKO",dep:"05:40",arr:"10:10",arrNextDay:false},
+    "20402":{from:"LKO",to:"BSB",dep:"18:00",arr:"22:40",arrNextDay:false},
+    "20413":{from:"BSB",to:"CNB",dep:"14:00",arr:"20:45",arrNextDay:false},
+    "20414":{from:"LKO",to:"BSB",dep:"00:35",arr:"05:45",arrNextDay:false},
+    "20415":{from:"BSB",to:"PRYJ",dep:"15:15",arr:"17:20",arrNextDay:false},
+    "20416":{from:"PRYJ",to:"BSB",dep:"00:50",arr:"03:40",arrNextDay:false},
+    "20963":{from:"LKO",to:"BSB",dep:"23:45",arr:"05:30",arrNextDay:true},
+    "20964":{from:"BSB",to:"LKO",dep:"15:35",arr:"21:00",arrNextDay:false},
+    "22355":{from:"DDU",to:"LKO",dep:"00:15",arr:"06:05",arrNextDay:false},
+    "22356":{from:"LKO",to:"DDU",dep:"09:05",arr:"15:10",arrNextDay:false},
+    "22417":{from:"BSB",to:"NDLS",dep:"18:55",arr:"08:05",arrNextDay:true},
+    "22418":{from:"NDLS",to:"BSB",dep:"18:40",arr:"08:25",arrNextDay:true},
+    "22541":{from:"BNRS",to:"ANVT",dep:"19:20",arr:"09:30",arrNextDay:true},
+    "22542":{from:"ANVT",to:"BNRS",dep:"18:15",arr:"08:10",arrNextDay:true},
+    "22585":{from:"BNRS",to:"PRYJ",dep:"15:10",arr:"17:20",arrNextDay:false},
+    "22586":{from:"PRYJ",to:"BNRS",dep:"20:25",arr:"23:30",arrNextDay:false},
+    "22969":{from:"PRYJ",to:"BNRS",dep:"22:55",arr:"02:00",arrNextDay:true}
+};
+
 const DEFAULT_ANCHOR_DATE = "2026-06-20";
 
-window.appData = { teamMaster: {}, linkProgramme: {}, anchorDate: DEFAULT_ANCHOR_DATE };
+window.appData = { teamMaster: {}, linkProgramme: {}, trainSchedule: {}, anchorDate: DEFAULT_ANCHOR_DATE };
 window.currentUid = null;
 window.isAdmin = false;
 
@@ -741,6 +881,34 @@ function getDutyStatusOnDate(teamNo, dateStr) {
 }
 window.getDutyStatusOnDate = getDutyStatusOnDate;
 
+// Scans the LIVE linkProgramme (all 43 programs, every slot, plus sameDay & specialTrain
+// sub-entries) and returns every distinct train number currently in use. This is what keeps
+// "Edit Schedule" in sync — any train number added anywhere in the Link Programme will surface
+// here automatically, even before it has timing data entered.
+function getAllProgrammeTrainNumbers() {
+    const nums = new Set();
+    const addFromVal = (val) => {
+        if (!val || typeof val !== 'string') return;
+        if (val === 'REST' || val === 'LR' || val === 'SPARE') return;
+        val.split('/').forEach(n => { n = n.trim(); if (/^\d{4,5}$/.test(n)) nums.add(n); });
+    };
+    Object.values(window.appData.linkProgramme || {}).forEach(pd => {
+        if (!pd) return;
+        SLOT_ORDER.forEach(s => addFromVal(pd[s]));
+        if (pd.sameDay) Object.values(pd.sameDay).forEach(sd => { addFromVal(sd.out); addFromVal(sd.in); });
+        if (pd.specialTrain) Object.values(pd.specialTrain).forEach(sp => { addFromVal(sp.out); addFromVal(sp.in); });
+    });
+    return Array.from(nums).sort((a,b) => a - b);
+}
+window.getAllProgrammeTrainNumbers = getAllProgrammeTrainNumbers;
+
+// Recall point for any scenario (Lobby, PDF, search, duty cards, etc.) that needs a train's
+// manned From/To station and Dep/Arr time. Returns null if no timing has been entered yet.
+window.getTrainSchedule = function(trainNo) {
+    if (!trainNo) return null;
+    return (window.appData.trainSchedule && window.appData.trainSchedule[String(trainNo).trim()]) || null;
+};
+
 function collectTrips(teamNo, direction, count) {
     const trips = [];
     const today = new Date(); today.setHours(0,0,0,0);
@@ -768,15 +936,24 @@ async function loadRosterData() {
             window.appData.teamMaster = data.teamMaster;
             window.appData.linkProgramme = data.linkProgramme;
             window.appData.anchorDate = data.anchorDate || DEFAULT_ANCHOR_DATE;
+            if (data.trainSchedule) {
+                window.appData.trainSchedule = data.trainSchedule;
+            } else {
+                // Existing installs won't have this node yet — seed it once from the defaults.
+                window.appData.trainSchedule = DEFAULT_TRAIN_SCHEDULE;
+                if (window.isAdmin) await set(ref(db, 'roster/BSB/trainSchedule'), DEFAULT_TRAIN_SCHEDULE);
+            }
         } else {
             window.appData.teamMaster = DEFAULT_TEAM_MASTER;
             window.appData.linkProgramme = DEFAULT_LINK_PROGRAMME;
+            window.appData.trainSchedule = DEFAULT_TRAIN_SCHEDULE;
             window.appData.anchorDate = DEFAULT_ANCHOR_DATE;
             if (window.isAdmin) await set(ref(db, 'roster/BSB'), window.appData);
         }
     } catch(e) {
         window.appData.teamMaster = DEFAULT_TEAM_MASTER;
         window.appData.linkProgramme = DEFAULT_LINK_PROGRAMME;
+        window.appData.trainSchedule = DEFAULT_TRAIN_SCHEDULE;
         window.appData.anchorDate = DEFAULT_ANCHOR_DATE;
     }
     populateTeamSelectors();
@@ -891,21 +1068,136 @@ function fmtDateLabel(dateStr) {
     return `${String(d.getDate()).padStart(2,'0')}-${months[d.getMonth()]}`;
 }
 
+// ---- My Duty: compact monthly calendar (replaces the old Upcoming/Last Trips lists) ----
+window.calState = { year: null, month: null }; // month is 0-indexed (0=Jan)
+
+function initCalStateIfNeeded() {
+    if (window.calState.year === null) {
+        const now = new Date();
+        window.calState.year = now.getFullYear();
+        window.calState.month = now.getMonth();
+    }
+}
+
+const CAL_MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
 function renderMyDutyWeek() {
     const container = document.getElementById('my-duty-week');
     const teamNo = document.getElementById('my-team-select').value;
     if (!teamNo) { container.innerHTML = ''; return; }
+    initCalStateIfNeeded();
 
-    const futureTrips = collectTrips(teamNo, 'future', 7);
-    let html = '<div class="section-title-box">Upcoming Trips</div>';
-    html += `<div class="trip-table-wrap">${buildTripTable(futureTrips)}</div>`;
+    const { year, month } = window.calState;
+    const firstDay = new Date(year, month, 1);
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const startOffset = firstDay.getDay(); // 0=Sun
+    const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
+    const rows = totalCells / 7;
 
-    const pastTrips = collectTrips(teamNo, 'past', 2);
-    html += '<div class="section-title-box">Last Trips</div>';
-    html += `<div class="trip-table-wrap">${buildTripTable(pastTrips)}</div>`;
+    const todayD = new Date();
+    const todayStr = `${todayD.getFullYear()}-${String(todayD.getMonth()+1).padStart(2,'0')}-${String(todayD.getDate()).padStart(2,'0')}`;
 
-    container.innerHTML = html;
+    const STATUS_META = {
+        out:   { cls: 'cal-out',   tag: 'OUT'   },
+        in:    { cls: 'cal-in',    tag: 'IN'    },
+        halt:  { cls: 'cal-halt',  tag: 'HALT'  },
+        rest:  { cls: 'cal-rest',  tag: 'REST'  },
+        lr:    { cls: 'cal-lr',    tag: 'LR'    },
+        spare: { cls: 'cal-spare',tag: 'SPARE' }
+    };
+
+    // Which train no. (if any) belongs on this cell: outTrain for OUT/HALT days, returnTrain for IN days.
+    function cellTrainNo(status) {
+        if (status.type === 'out' || status.type === 'halt') return (status.trip.outTrain || '').split('/')[0];
+        if (status.type === 'in') return (status.trip.returnTrain || '').split('/')[0];
+        return '';
+    }
+
+    let cellsHtml = '';
+    for (let i = 0; i < totalCells; i++) {
+        const dayNum = i - startOffset + 1;
+        if (dayNum < 1 || dayNum > daysInMonth) {
+            cellsHtml += `<div class="cal-day cal-empty"></div>`;
+            continue;
+        }
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+        const status = getDutyStatusOnDate(teamNo, dateStr);
+        const meta = STATUS_META[status.type];
+        const isToday = dateStr === todayStr;
+        const trainNo = cellTrainNo(status);
+        cellsHtml += `<div class="cal-day${meta ? ' ' + meta.cls : ''}${isToday ? ' cal-today' : ''}" onclick="window.openDayDetail('${teamNo}','${dateStr}')">
+            <div class="cal-daynum">${dayNum}</div>
+            ${meta ? `<span class="cal-tag">${meta.tag}</span>` : ''}
+            ${trainNo ? `<span class="cal-trainno">${trainNo}</span>` : ''}
+        </div>`;
+    }
+
+    const monthOptions = CAL_MONTH_NAMES.map((m, idx) => `<option value="${idx}" ${idx===month?'selected':''}>${m}</option>`).join('');
+    const yearOptions = Array.from({length: 61}, (_, k) => year - 30 + k).map(y => `<option value="${y}" ${y===year?'selected':''}>${y}</option>`).join('');
+    const weekdayHtml = ['S','M','T','W','T','F','S'].map(w => `<div>${w}</div>`).join('');
+
+    container.innerHTML = `
+        <div class="card duty-cal-card">
+            <div class="cal-nav">
+                <button class="cal-nav-btn" onclick="window.calChangeMonth(-1)">◀</button>
+                <div class="cal-nav-center">
+                    <select onchange="window.calSetMonth(this.value)">${monthOptions}</select>
+                    <select onchange="window.calSetYear(this.value)">${yearOptions}</select>
+                </div>
+                <button class="cal-nav-btn" onclick="window.calChangeMonth(1)">▶</button>
+            </div>
+            <div class="cal-weekdays">${weekdayHtml}</div>
+            <div class="cal-grid" style="grid-template-rows:repeat(${rows},1fr);">${cellsHtml}</div>
+        </div>`;
 }
+
+window.calChangeMonth = function(delta) {
+    initCalStateIfNeeded();
+    let m = window.calState.month + delta;
+    let y = window.calState.year;
+    if (m < 0) { m = 11; y--; }
+    if (m > 11) { m = 0; y++; }
+    window.calState.month = m;
+    window.calState.year = y;
+    renderMyDutyWeek();
+};
+window.calSetMonth = function(val) {
+    window.calState.month = parseInt(val, 10);
+    renderMyDutyWeek();
+};
+window.calSetYear = function(val) {
+    const y = parseInt(val, 10);
+    if (isNaN(y) || y < 1) return; // ignore incomplete/invalid typing — no other limit
+    window.calState.year = y;
+    renderMyDutyWeek();
+};
+
+// Builds the SAME trip-table look used everywhere else in the app (Date | Train No | Day |
+// Up/Down), just with a small Dep/Arr timing line added under each train number. Shared by both
+// the calendar's date-tap popup and the Mandali row-tap popup so both look identical.
+function buildDayDetailHtml(teamNo, dateStr) {
+    const status = getDutyStatusOnDate(teamNo, dateStr);
+    if (status.type === 'out' || status.type === 'halt' || status.type === 'in') {
+        return `<div class="trip-table-wrap">${buildTripTable([status.trip], true)}</div>`;
+    }
+    if (status.type === 'rest') {
+        return `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-rest trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : REST</td></tr></tbody></table></div>`;
+    }
+    if (status.type === 'lr') {
+        return `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-lr trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : LR DUTY</td></tr></tbody></table></div>`;
+    }
+    if (status.type === 'spare') {
+        return `<div class="trip-table-wrap"><table class="trip-table"><tbody><tr class="trip-row-spare trip-divider"><td colspan="4">${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)}) : SPARE</td></tr></tbody></table></div>`;
+    }
+    return `<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:14px;">No duty data for this date.</p>`;
+}
+window.buildDayDetailHtml = buildDayDetailHtml;
+
+// Tapping any date on the calendar opens this.
+window.openDayDetail = function(teamNo, dateStr) {
+    const html = buildDayDetailHtml(teamNo, dateStr);
+    showResultModal(`Team ${teamNo} — ${fmtDateLabel(dateStr)} (${dayAbbrev(dateStr)})`, html);
+};
 
 function dayAbbrev(dateStr) {
     const d = new Date(dateStr + 'T00:00:00');
@@ -919,7 +1211,21 @@ function dayTd(dateStr) {
 }
 
 // Builds the Date / Train No / Day / Up-Down table for a list of trips (Point 1: Prog No removed).
-function buildTripTable(trips) {
+// Formats a train-slot value (single train, or two joined by "/") for a table cell — optionally
+// with a small Dep/Arr timing line underneath, pulled live from Train Schedule.
+function trainCellHtml(trainStr, withTiming) {
+    if (!trainStr) return '';
+    if (!withTiming) return trainStr;
+    const legs = trainStr.split('/').map(s => s.trim()).filter(Boolean);
+    const timingLines = legs.map(tn => {
+        const sched = window.getTrainSchedule(tn);
+        if (!sched) return `<span class="tt-timing">(timing not set)</span>`;
+        return `<span class="tt-timing">${sched.from}→${sched.to} · ${sched.dep}-${sched.arr}${sched.arrNextDay ? ' +1' : ''}</span>`;
+    }).join('<br>');
+    return `${trainStr}<br>${timingLines}`;
+}
+
+function buildTripTable(trips, withTiming) {
     if (!trips || trips.length === 0) {
         return '<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:14px;">No trips found</p>';
     }
@@ -939,7 +1245,7 @@ function buildTripTable(trips) {
         }
         rows += `<tr>
             <td class="td-date">${fmtDateLabel(trip.dateStr)}</td>
-            <td>${trip.outTrain}</td>
+            <td>${trainCellHtml(trip.outTrain, withTiming)}</td>
             ${dayTd(trip.dateStr)}
             <td><span class="ud-badge ud-depart">Departs HQ</span></td>
         </tr>`;
@@ -949,7 +1255,7 @@ function buildTripTable(trips) {
             if (trip.sameDayTrip.outTrain) {
                 rows += `<tr class="trip-divider">
                     <td class="td-date">${fmtDateLabel(trip.sameDayTrip.date)}</td>
-                    <td>${trip.sameDayTrip.outTrain}</td>
+                    <td>${trainCellHtml(trip.sameDayTrip.outTrain, withTiming)}</td>
                     ${dayTd(trip.sameDayTrip.date)}
                     <td><span class="ud-badge ud-depart">Departs HQ (Same-Day)</span></td>
                 </tr>`;
@@ -957,7 +1263,7 @@ function buildTripTable(trips) {
             if (trip.sameDayTrip.returnTrain) {
                 rows += `<tr class="trip-divider">
                     <td class="td-date">${fmtDateLabel(trip.sameDayTrip.date)}</td>
-                    <td>${trip.sameDayTrip.returnTrain}</td>
+                    <td>${trainCellHtml(trip.sameDayTrip.returnTrain, withTiming)}</td>
                     ${dayTd(trip.sameDayTrip.date)}
                     <td><span class="ud-badge ud-arrive">Arrives HQ (Same-Day)</span></td>
                 </tr>`;
@@ -969,7 +1275,7 @@ function buildTripTable(trips) {
                 if (sp.outTrain) {
                     rows += `<tr class="trip-divider">
                         <td class="td-date">${fmtDateLabel(sp.date)}</td>
-                        <td>${sp.outTrain}</td>
+                        <td>${trainCellHtml(sp.outTrain, withTiming)}</td>
                         ${dayTd(sp.date)}
                         <td><span class="ud-badge ud-depart">Departs HQ (${sp.label})</span></td>
                     </tr>`;
@@ -977,7 +1283,7 @@ function buildTripTable(trips) {
                 if (sp.returnTrain) {
                     rows += `<tr class="trip-divider">
                         <td class="td-date">${fmtDateLabel(sp.date)}</td>
-                        <td>${sp.returnTrain}</td>
+                        <td>${trainCellHtml(sp.returnTrain, withTiming)}</td>
                         ${dayTd(sp.date)}
                         <td><span class="ud-badge ud-arrive">Arrives HQ (${sp.label})</span></td>
                     </tr>`;
@@ -987,7 +1293,7 @@ function buildTripTable(trips) {
         if (trip.returnTrain) {
             rows += `<tr class="trip-divider">
                 <td class="td-date">${fmtDateLabel(trip.returnDate)}</td>
-                <td>${trip.returnTrain}</td>
+                <td>${trainCellHtml(trip.returnTrain, withTiming)}</td>
                 ${dayTd(trip.returnDate)}
                 <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
@@ -1614,8 +1920,94 @@ window.clearNameSearch = function() {
     document.getElementById('search-name-results').innerHTML = '';
 };
 
-// ===== BSB Lobby: teams departing HQ on a given date, grouped by destination =====
-const LOBBY_DESTINATIONS = ['LKO', 'PRYJ', 'CNB'];
+// ===== Mandali (formerly "BSB Lobby"): LIVE "who is at which station right now" board =====
+// Four boxes — LKO / PRYJ / CNB / BSB Mandali. For each team, we find the UP train that carried
+// them TO a station and the DOWN train that will carry them back, then the team is shown as
+// present at that station for the whole window between [UP train's arrival] and [DOWN train's
+// departure] — exactly like "12237 reaches LKO 17:30, 12238 departs LKO 07:20 → present in that
+// gap". BSB Mandali mirrors this for HOME: present from [DOWN train's arrival back] until
+// [next UP train's departure]. DDU/BCY/BNRS all count as home too, since several return trains
+// terminate there rather than at BSB itself — that's the real duty boundary for BSB HQ TTEs.
+// IMPORTANT date convention: trip.returnDate is the day a team ARRIVES back at HQ (matches the
+// "Arrives HQ" row elsewhere in the app) — NOT the day the return train departs. So for a return
+// train whose own schedule crosses midnight (arrNextDay), its departure actually happened the day
+// BEFORE returnDate, while its arrival stays on returnDate itself (no extra shift needed there).
+// A "/" in a slot (e.g. "13239/14213") means the SAME team split into two groups, each escorting
+// a separate train, both traveling the same direction that day (both UP or both DOWN) — so every
+// leg is used independently: the window's start = earliest arrival among UP legs, its end =
+// latest departure among DOWN legs, keeping the full team's presence window.
+const MANDALI_STATIONS = ['LKO', 'PRYJ', 'CNB', 'BSB'];
+const BSB_HOME_STATIONS = ['BSB', 'DDU', 'BCY', 'BNRS'];
+let mandaliRefreshTimer = null;
+window._mandaliRows = {};
+
+function splitTrainSlot(val) {
+    return (val || '').split('/').map(s => s.trim()).filter(Boolean);
+}
+
+function combineDateTime(dateStr, timeStr) {
+    if (!dateStr || !timeStr) return null;
+    const [h, m] = timeStr.split(':').map(Number);
+    const d = new Date(dateStr + 'T00:00:00');
+    d.setHours(h, m, 0, 0);
+    return d;
+}
+
+// First-name-only, comma separated, for a team's members (COR + TTE1 + TTE2) — fits in one row.
+function teamFirstNames(team) {
+    if (!team) return '';
+    return [team.cor, team.tte1, team.tte2]
+        .filter(Boolean)
+        .map(n => n.trim().split(' ')[0])
+        .join(', ');
+}
+
+function fmtHM(d) {
+    return d ? `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}` : '--:--';
+}
+function fmtDayMonth(d) {
+    if (!d) return '-';
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+// Builds the full "UP train(s) → away station → DOWN train(s)" window for a trip that STARTS
+// (departs BSB) on outDateStr. Returns null if there's no duty, or the out train(s) have no
+// timing entered yet in Train Schedule.
+function getTripWindow(teamNo, outDateStr) {
+    const trip = getTripStartingOn(teamNo, outDateStr);
+    if (!trip || trip.status !== 'duty') return null;
+
+    const outLegs = splitTrainSlot(trip.outTrain);
+    const outInfo = outLegs.map(tn => ({ tn, sched: window.getTrainSchedule(tn) })).filter(x => x.sched);
+    if (!outInfo.length) return null;
+
+    const awayStation = outInfo[0].sched.to;
+    const arrivalMoments = outInfo.map(x => combineDateTime(x.sched.arrNextDay ? addDays(outDateStr, 1) : outDateStr, x.sched.arr));
+    const arrivalMoment = new Date(Math.min(...arrivalMoments.map(d => +d)));
+    const depFromHomeMoments = outInfo.map(x => combineDateTime(outDateStr, x.sched.dep));
+    const outDepartureMoment = new Date(Math.min(...depFromHomeMoments.map(d => +d)));
+
+    let inLegs = [], inInfo = [], departureMoment = null, homeArrivalMoment = null, homeStation = null;
+    if (trip.returnTrain) {
+        inLegs = splitTrainSlot(trip.returnTrain);
+        inInfo = inLegs.map(tn => ({ tn, sched: window.getTrainSchedule(tn) })).filter(x => x.sched);
+        if (inInfo.length) {
+            // trip.returnDate is the day they ARRIVE back at HQ (matches how it's labelled
+            // everywhere else in the app, e.g. the trip table's "Arrives HQ" row). So a return
+            // train that crosses midnight (arrNextDay) must have DEPARTED the day BEFORE
+            // returnDate — not on returnDate itself.
+            const depMoments = inInfo.map(x => combineDateTime(x.sched.arrNextDay ? addDays(trip.returnDate, -1) : trip.returnDate, x.sched.dep));
+            departureMoment = new Date(Math.max(...depMoments.map(d => +d)));
+            const homeArrMoments = inInfo.map(x => combineDateTime(trip.returnDate, x.sched.arr));
+            homeArrivalMoment = new Date(Math.max(...homeArrMoments.map(d => +d)));
+            homeStation = inInfo[0].sched.to;
+        }
+    }
+
+    return { teamNo, trip, outLegs, outInfo, awayStation, arrivalMoment, outDepartureMoment,
+             inLegs, inInfo, departureMoment, homeArrivalMoment, homeStation };
+}
 
 window.openLobbyModal = function() {
     const dateInput = document.getElementById('lobby-date');
@@ -1625,32 +2017,133 @@ window.openLobbyModal = function() {
     }
     document.getElementById('lobby-modal-overlay').classList.remove('hidden');
     window.renderLobbyResults();
+    if (mandaliRefreshTimer) clearInterval(mandaliRefreshTimer);
+    mandaliRefreshTimer = setInterval(() => {
+        const overlay = document.getElementById('lobby-modal-overlay');
+        if (!overlay || overlay.classList.contains('hidden')) {
+            clearInterval(mandaliRefreshTimer);
+            mandaliRefreshTimer = null;
+        } else {
+            window.renderLobbyResults();
+        }
+    }, 60000); // keep it "live" — refresh every minute while the box is open
 };
 
 window.renderLobbyResults = function() {
     const dateStr = document.getElementById('lobby-date').value;
     const resultsEl = document.getElementById('lobby-results');
+    const clockEl = document.getElementById('lobby-live-clock');
     if (!dateStr || !window.appData || !window.appData.teamMaster) { resultsEl.innerHTML = ''; return; }
 
-    // Group outbound (UP) teams that day by their program's configured destination
-    const grouped = { LKO: [], PRYJ: [], CNB: [] };
-    Object.keys(window.appData.teamMaster).forEach(t => {
-        const status = getDutyStatusOnDate(t, dateStr);
-        if (status.type !== 'out') return;
-        const progData = window.appData.linkProgramme[status.prog];
-        const dest = progData && progData.destination;
-        if (dest && grouped[dest]) {
-            grouped[dest].push({ t, train: status.trip.outTrain });
+    const now = new Date();
+    const nowMoment = combineDateTime(dateStr, `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`);
+    if (clockEl) clockEl.textContent = `🔴 Live — ${now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`;
+
+    const buckets = { LKO: [], PRYJ: [], CNB: [], BSB: [] };
+    window._mandaliRows = {};
+    let rowSeq = 0;
+
+    Object.keys(window.appData.teamMaster).sort((a, b) => a - b).forEach(t => {
+        // ---- AWAY: scan trips starting in the last few days (dayCount can be up to 3) ----
+        for (let back = 0; back <= 3; back++) {
+            const candidate = addDays(dateStr, -back);
+            const w = getTripWindow(t, candidate);
+            if (!w) continue;
+            const inTransitOut = nowMoment >= w.outDepartureMoment && nowMoment < w.arrivalMoment;
+            if (inTransitOut) break; // currently traveling — not shown anywhere, stop checking this team's away slot
+            const stillAway = nowMoment >= w.arrivalMoment && (!w.departureMoment || nowMoment < w.departureMoment);
+            if (stillAway && buckets[w.awayStation]) {
+                const key = 'row' + (rowSeq++);
+                window._mandaliRows[key] = w;
+                buckets[w.awayStation].push({ t, key, w });
+            }
+            break; // only one active trip window possible per team
+        }
+
+        // ---- HOME (BSB Mandali): most recent completed return + next upcoming departure ----
+        let prevWindow = null;
+        for (let back = 0; back <= 6; back++) {
+            const candidate = addDays(dateStr, -back);
+            const w = getTripWindow(t, candidate);
+            if (w && w.homeArrivalMoment && w.homeArrivalMoment <= nowMoment) { prevWindow = w; break; }
+        }
+        let nextWindow = null;
+        for (let fwd = 0; fwd <= 10; fwd++) {
+            const candidate = addDays(dateStr, fwd);
+            const w = getTripWindow(t, candidate);
+            if (w && w.outDepartureMoment > nowMoment) { nextWindow = w; break; }
+        }
+        const homeStart = prevWindow ? prevWindow.homeArrivalMoment : null;
+        const homeEnd = nextWindow ? nextWindow.outDepartureMoment : null;
+        const isHomeNow = homeStart ? (nowMoment >= homeStart && (!homeEnd || nowMoment < homeEnd))
+                                     : (!nextWindow || nowMoment < homeEnd); // no return on record yet — assume home until next known departure
+        // Skip if this team is currently accounted for as AWAY (avoid double-listing)
+        const alreadyAway = MANDALI_STATIONS.some(st => st !== 'BSB' && buckets[st].some(x => x.t === t));
+        if (isHomeNow && !alreadyAway) {
+            const key = 'row' + (rowSeq++);
+            const homeWindow = { teamNo: t, prevWindow, nextWindow, isHomeFallback: !prevWindow };
+            window._mandaliRows[key] = homeWindow;
+            buckets.BSB.push({ t, key, homeWindow });
         }
     });
 
-    resultsEl.innerHTML = LOBBY_DESTINATIONS.map(dest => {
-        const teams = grouped[dest];
-        const chips = teams.length
-            ? teams.map(x => `<span class="lobby-team-chip" onclick="window.showTeamInfo('${x.t}')">Team ${x.t} <span class="ltc-train">(${x.train})</span></span>`).join('')
-            : `<p class="lobby-empty">No teams heading to ${dest} this day</p>`;
-        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${dest}</div>${chips}</div>`;
+    const teamMaster = window.appData.teamMaster;
+    resultsEl.innerHTML = MANDALI_STATIONS.map(st => {
+        const list = buckets[st];
+        const chips = list.length
+            ? list.map(x => {
+                const team = teamMaster[x.t] || {};
+                const names = teamFirstNames(team);
+                let detailLine;
+                if (x.w) {
+                    const w = x.w;
+                    const upLabel = w.outLegs.join('/');
+                    const downLabel = w.inLegs.length ? w.inLegs.join('/') : 'TBD';
+                    const dayLabel = w.departureMoment
+                        ? `${w.arrivalMoment.getDate()}-${w.departureMoment.getDate()} ${fmtDayMonth(w.arrivalMoment).split(' ')[1]}`
+                        : fmtDayMonth(w.arrivalMoment);
+                    detailLine = `${upLabel}-${downLabel} (${dayLabel}) ${fmtHM(w.arrivalMoment)} - ${fmtHM(w.departureMoment)}`;
+                } else {
+                    const hw = x.homeWindow;
+                    const upLabel = hw.prevWindow ? hw.prevWindow.inLegs.join('/') : '-';
+                    const downLabel = hw.nextWindow ? hw.nextWindow.outLegs.join('/') : 'TBD';
+                    const startD = hw.prevWindow ? hw.prevWindow.homeArrivalMoment : null;
+                    const endD = hw.nextWindow ? hw.nextWindow.outDepartureMoment : null;
+                    const dayLabel = startD && endD
+                        ? `${startD.getDate()}-${endD.getDate()} ${fmtDayMonth(startD).split(' ')[1]}`
+                        : (startD ? fmtDayMonth(startD) : 'Home');
+                    detailLine = `${upLabel}-${downLabel} (${dayLabel}) ${fmtHM(startD)} - ${fmtHM(endD)}`;
+                }
+                return `<span class="lobby-team-chip" onclick="window.showMandaliDetail('${x.key}')"><span class="ltc-name">Team ${x.t} — ${names}</span><span class="ltc-train">${detailLine}</span></span>`;
+            }).join('')
+            : `<p class="lobby-empty">No teams currently at ${st}</p>`;
+        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${st} Mandali</div>${chips}</div>`;
     }).join('');
+};
+
+// Tapping a Mandali row — full Up/Down train detail, stations, timings and members.
+window.showMandaliDetail = function(key) {
+    const data = window._mandaliRows[key];
+    if (!data) return;
+    const teamMaster = window.appData.teamMaster;
+    let teamNo, title, tripsForTable;
+
+    if (data.trip) { // away-window row
+        teamNo = data.teamNo;
+        title = `Team ${teamNo} — ${data.awayStation} Mandali`;
+        tripsForTable = [data.trip];
+    } else { // home-window row — show the just-completed return AND the next upcoming trip together
+        teamNo = data.teamNo;
+        title = `Team ${teamNo} — BSB Mandali`;
+        tripsForTable = [data.prevWindow && data.prevWindow.trip, data.nextWindow && data.nextWindow.trip].filter(Boolean);
+    }
+
+    const team = teamMaster[teamNo] || {};
+    let html = `<div class="trip-table-wrap">${buildTripTable(tripsForTable, true)}</div>`;
+    html += `<p style="font-size:12.5px; font-weight:800; color:var(--text-muted); margin:10px 0 4px;">👥 Members</p>
+        <p style="font-size:13px;">COR: ${team.cor || '-'}<br>TTE-1: ${team.tte1 || '-'}<br>TTE-2: ${team.tte2 || '-'}</p>`;
+
+    showResultModal(title, html);
 };
 
 // Point (iii): Shows a single "Your Trips" list of 6 trips total — the last two, today, and
@@ -1997,7 +2490,6 @@ document.getElementById('admin-prog-select').addEventListener('change', function
             <input type="text" id="prog-slot-${slot}" value="${progData[slot] || ''}" placeholder="Train no / REST / LR / SPARE / blank">
         </div>
     `).join('');
-    document.getElementById('prog-destination').value = progData.destination || '';
 
     const hasSameDay = !!(progData.sameDay && Object.keys(progData.sameDay).length);
     document.getElementById('prog-same-day-return').checked = hasSameDay;
@@ -2041,8 +2533,6 @@ window.saveProgEdit = async function() {
             const val = document.getElementById('prog-slot-'+slot).value.trim();
             if (val) newData[slot] = val;
         });
-        const dest = document.getElementById('prog-destination').value.trim();
-        if (dest) newData.destination = dest;
 
         if (document.getElementById('prog-same-day-return').checked) {
             const sameDay = {};
@@ -2171,7 +2661,7 @@ window.saveAllProgRows = async function() {
         const p = row.dataset.prog;
         const cells = row.querySelectorAll('.editable-cell');
         const existing = window.appData.linkProgramme[p] || {};
-        const newData = { destination: existing.destination, sameDay: existing.sameDay, specialTrain: existing.specialTrain };
+        const newData = { sameDay: existing.sameDay, specialTrain: existing.specialTrain };
         cells.forEach(cell => {
             const slot = cell.dataset.slot;
             const val = cell.innerText.trim();
@@ -2193,7 +2683,7 @@ window.saveProgRowInline = async function(p, btnEl) {
     const row = btnEl.closest('tr');
     const cells = row.querySelectorAll('.editable-cell');
     const existing = window.appData.linkProgramme[p] || {};
-    const newData = { destination: existing.destination, sameDay: existing.sameDay, specialTrain: existing.specialTrain };
+    const newData = { sameDay: existing.sameDay, specialTrain: existing.specialTrain };
     cells.forEach(cell => {
         const slot = cell.dataset.slot;
         const val = cell.innerText.trim();
@@ -2215,6 +2705,177 @@ window.jumpToProgEdit = function(p) {
     sel.value = p;
     sel.dispatchEvent(new Event('change'));
     sel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
+// ---- Edit Schedule (Train Timings) ----
+// Builds the list of rows to show: every train currently used anywhere in the Link Programme
+// (live scan, so it's always in sync) UNION every train already saved in trainSchedule (so a
+// train removed from this cycle's programme doesn't lose its saved timing — useful since this
+// data gets reused "in different scenarios" beyond just the active programme).
+function getScheduleRowTrainNumbers() {
+    const inProg = new Set(getAllProgrammeTrainNumbers());
+    const saved = Object.keys(window.appData.trainSchedule || {});
+    const all = new Set([...inProg, ...saved]);
+    return { all: Array.from(all).sort((a,b) => a - b), inProg };
+}
+
+window.toggleScheduleTable = function() {
+    const { all, inProg } = getScheduleRowTrainNumbers();
+    let rows = '';
+    all.forEach(trainNo => {
+        const s = window.appData.trainSchedule[trainNo] || {};
+        const linked = inProg.has(trainNo);
+        rows += `<tr data-train="${trainNo}">
+            <td>${trainNo}${linked ? ' <span title="In current Link Programme" style="color:var(--green);">🔗</span>' : ''}</td>
+            <td><button class="inline-save-btn" onclick="window.saveScheduleRowInline('${trainNo}', this)">💾</button></td>
+            <td contenteditable="true" class="editable-cell" data-field="from">${s.from || ''}</td>
+            <td contenteditable="true" class="editable-cell" data-field="to">${s.to || ''}</td>
+            <td contenteditable="true" class="editable-cell" data-field="dep">${s.dep || ''}</td>
+            <td contenteditable="true" class="editable-cell" data-field="arr">${s.arr || ''}</td>
+            <td><input type="checkbox" class="sched-nextday-cb" ${s.arrNextDay ? 'checked' : ''}></td>
+            <td><button class="inline-save-btn" style="background:var(--red);" onclick="window.deleteScheduleRowInline('${trainNo}', this)">✕</button></td>
+        </tr>`;
+    });
+    const hint = `<p class="team-click-hint">✏️ Tap any cell to edit, then 💾 to save that row. 🔗 = currently in the Link Programme. Add a new train number below.</p>`;
+    const addRow = `<tr id="sched-add-row">
+        <td contenteditable="true" class="editable-cell" id="sched-new-trainno" placeholder="e.g. 12345"></td>
+        <td><button class="inline-save-btn" style="background:var(--blue);" onclick="window.addNewScheduleRow()">➕</button></td>
+        <td contenteditable="true" class="editable-cell" id="sched-new-from"></td>
+        <td contenteditable="true" class="editable-cell" id="sched-new-to"></td>
+        <td contenteditable="true" class="editable-cell" id="sched-new-dep"></td>
+        <td contenteditable="true" class="editable-cell" id="sched-new-arr"></td>
+        <td><input type="checkbox" id="sched-new-nextday"></td>
+        <td></td>
+    </tr>`;
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table prog-table-bordered" id="all-schedule-edit-table"><thead><tr><th>Train</th><th>Save</th><th>From</th><th>To</th><th>Dep</th><th>Arr</th><th>+1 Day</th><th>Del</th></tr></thead><tbody>${rows}${addRow}</tbody></table></div>
+        <div class="admin-bottom-actions">
+            <button class="action" style="background:var(--green);" onclick="window.saveAllScheduleRows()">💾 Save All</button>
+        </div>`;
+    showResultModal('🕒 Train Schedule — Inline Edit', html);
+};
+
+function readScheduleRowFromDOM(row) {
+    const cells = row.querySelectorAll('.editable-cell');
+    const updated = {};
+    cells.forEach(cell => { updated[cell.dataset.field] = cell.innerText.trim(); });
+    updated.arrNextDay = row.querySelector('.sched-nextday-cb').checked;
+    return updated;
+}
+
+window.saveScheduleRowInline = async function(trainNo, btnEl) {
+    const row = btnEl.closest('tr');
+    const updated = readScheduleRowFromDOM(row);
+    if (!updated.from || !updated.to || !updated.dep || !updated.arr) {
+        return showToast('❌ From, To, Dep and Arr are all required', true);
+    }
+    try {
+        window.appData.trainSchedule[trainNo] = updated;
+        await set(ref(db, `roster/BSB/trainSchedule/${trainNo}`), updated);
+        showToast('✅ Train ' + trainNo + ' saved!');
+    } catch (e) {
+        showToast('❌ Save failed: ' + e.message, true);
+    }
+};
+
+window.saveAllScheduleRows = async function() {
+    const table = document.getElementById('all-schedule-edit-table');
+    if (!table) return;
+    let okCount = 0, failCount = 0;
+    for (const row of table.querySelectorAll('tbody tr[data-train]')) {
+        const trainNo = row.dataset.train;
+        const updated = readScheduleRowFromDOM(row);
+        if (!updated.from || !updated.to || !updated.dep || !updated.arr) { failCount++; continue; }
+        try {
+            window.appData.trainSchedule[trainNo] = updated;
+            await set(ref(db, `roster/BSB/trainSchedule/${trainNo}`), updated);
+            okCount++;
+        } catch (e) { failCount++; }
+    }
+    if (failCount === 0) showToast(`✅ All ${okCount} trains saved!`);
+    else showToast(`⚠️ Saved ${okCount}, failed ${failCount}`, failCount > 0 && okCount === 0);
+};
+
+window.addNewScheduleRow = async function() {
+    const trainNo = document.getElementById('sched-new-trainno').innerText.trim();
+    const from = document.getElementById('sched-new-from').innerText.trim();
+    const to = document.getElementById('sched-new-to').innerText.trim();
+    const dep = document.getElementById('sched-new-dep').innerText.trim();
+    const arr = document.getElementById('sched-new-arr').innerText.trim();
+    const arrNextDay = document.getElementById('sched-new-nextday').checked;
+    if (!/^\d{4,5}$/.test(trainNo)) return showToast('❌ Enter a valid train number', true);
+    if (!from || !to || !dep || !arr) return showToast('❌ From, To, Dep and Arr are all required', true);
+    try {
+        const updated = { from, to, dep, arr, arrNextDay };
+        window.appData.trainSchedule[trainNo] = updated;
+        await set(ref(db, `roster/BSB/trainSchedule/${trainNo}`), updated);
+        showToast('✅ Train ' + trainNo + ' added!');
+        window.toggleScheduleTable();
+    } catch (e) {
+        showToast('❌ Save failed: ' + e.message, true);
+    }
+};
+
+window.deleteScheduleRowInline = async function(trainNo, btnEl) {
+    if (!confirm(`Remove saved timing for train ${trainNo}?`)) return;
+    try {
+        delete window.appData.trainSchedule[trainNo];
+        await set(ref(db, `roster/BSB/trainSchedule/${trainNo}`), null);
+        showToast('✅ Train ' + trainNo + ' removed!');
+        btnEl.closest('tr').remove();
+    } catch (e) {
+        showToast('❌ Delete failed: ' + e.message, true);
+    }
+};
+
+// ---- Export Current Data ----
+// Snapshots the LIVE Firebase data (teamMaster, linkProgramme, trainSchedule, anchorDate) as
+// ready-to-paste JS "const DEFAULT_..." blocks. Firebase always stays the real source of truth
+// for the running app — this is just a way to pull a copy out, so the hardcoded fallback
+// defaults in the code can be refreshed to match reality, or so the data can be shared/backed up.
+function buildExportText() {
+    const teamMasterStr = JSON.stringify(window.appData.teamMaster, null, 2);
+    const linkProgStr = JSON.stringify(window.appData.linkProgramme, null, 2);
+    const trainSchedStr = JSON.stringify(window.appData.trainSchedule, null, 2);
+    return `// Exported from BSB Duty Roster on ${new Date().toString()}\n// Anchor Date: ${window.appData.anchorDate}\n\nconst DEFAULT_TEAM_MASTER = ${teamMasterStr};\n\nconst DEFAULT_LINK_PROGRAMME = ${linkProgStr};\n\nconst DEFAULT_TRAIN_SCHEDULE = ${trainSchedStr};\n\nconst DEFAULT_ANCHOR_DATE = "${window.appData.anchorDate}";\n`;
+}
+
+window.exportCurrentData = function() {
+    const text = buildExportText();
+    const escaped = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const html = `<p class="team-click-hint">📋 Copy this and save it, or use Share to send it to yourself. This is a live snapshot straight from Firebase.</p>
+        <textarea id="export-data-box" readonly style="width:100%; height:260px; font-family:monospace; font-size:11px; padding:10px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text);">${escaped}</textarea>
+        <div class="admin-bottom-actions">
+            <button class="action" style="background:var(--green);" onclick="window.copyExportData()">📋 Copy</button>
+            <button class="action" style="background:var(--blue);" onclick="window.shareExportData()">🔗 Share</button>
+        </div>`;
+    showResultModal('📤 Export Current Data', html);
+};
+
+window.copyExportData = async function() {
+    const box = document.getElementById('export-data-box');
+    if (!box) return;
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(box.value);
+        } else {
+            box.select();
+            document.execCommand('copy');
+        }
+        showToast('✅ Copied to clipboard!');
+    } catch (e) {
+        box.select();
+        showToast('⚠️ Copy failed — text is selected, copy it manually', true);
+    }
+};
+
+window.shareExportData = function() {
+    const text = buildExportText();
+    if (navigator.share) {
+        navigator.share({ title: 'BSB Duty Roster — Data Export', text }).catch(() => {});
+    } else {
+        window.copyExportData();
+        showToast('ℹ️ Share not supported on this browser — copied instead');
+    }
 };
 
 window.toggleDarkMode = function() {
