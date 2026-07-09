@@ -100,8 +100,6 @@
     .two-col-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: stretch; }
     .two-col-row .card { flex: 1; margin-bottom: 0; }
     .view-edit-team-btn { border: none; border-radius: 30px !important; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; color: var(--blue); font-weight: 900; font-size: 14px; font-family: 'Roboto', sans-serif; background: var(--card); padding: 10px 8px; }
-    #bsb-lobby-row { border-radius: 999px !important; background: linear-gradient(135deg, rgba(56,189,248,0.22), rgba(59,130,246,0.22)); border: 2px solid rgba(59,130,246,0.4) !important; color: var(--blue); font-size: 17px; font-weight: 900; padding: 16px 10px; box-shadow: 0 4px 14px rgba(59,130,246,0.28); letter-spacing: 0.3px; }
-    body.dark-mode #bsb-lobby-row { background: linear-gradient(135deg, rgba(56,189,248,0.28), rgba(59,130,246,0.28)); }
     .cor-name, .tte-name { color: #1d4ed8; font-weight: 800; }
     #view-admin .card { padding: 10px 14px; margin-bottom: 10px; }
     #view-admin .card h3 { margin-bottom: 6px !important; font-size: 13.5px !important; }
@@ -197,6 +195,8 @@
     .name-search-row .nsr-team { font-size: 12.5px; font-weight: 900; color: var(--blue); background: rgba(59,130,246,0.14); padding: 3px 10px; border-radius: 20px; }
     .name-search-empty { text-align: center; font-size: 12.5px; color: var(--text-muted); padding: 8px; }
     .lobby-dest-box { background: rgba(59,130,246,0.10); border: 1px solid rgba(59,130,246,0.3); border-radius: 14px; padding: 8px 10px; margin-bottom: 8px; }
+    .lobby-dest-box .admin-table th { position: static; }
+    .lobby-dest-box .admin-table td, .lobby-dest-box .admin-table th { white-space: nowrap; }
     body.dark-mode .lobby-dest-box { background: rgba(59,130,246,0.16); }
     .lobby-dest-title { font-size: 13.5px; font-weight: 900; color: var(--blue); text-transform: uppercase; text-align: center; margin-bottom: 8px; letter-spacing: 0.5px; }
     .lobby-team-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; background: rgba(59,130,246,0.14); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 6px 12px; margin: 4px auto; font-size: 12.5px; font-weight: 800; color: var(--blue); cursor: pointer; width: fit-content; max-width: 100%; box-sizing: border-box; }
@@ -211,27 +211,33 @@
     .cal-nav-btn { width: 30px; height: 30px; flex-shrink: 0; border: none; border-radius: 50%; background: var(--blue); color: white; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     .cal-nav-center { display: flex; gap: 6px; flex: 1; }
     .cal-nav-center select { flex: 1 1 0; margin: 0; padding: 5px 22px 5px 8px; font-size: 12.5px; height: 30px; border-radius: 20px; width: 0; min-width: 0; text-align: center; box-sizing: border-box; border: 1px solid var(--border); background-color: var(--card); color: var(--text); -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%); background-position: calc(100% - 14px) center, calc(100% - 9px) center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
-    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 10px; font-weight: 800; color: var(--text-muted); margin-bottom: 3px; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; height: 40vh; min-height: 260px; }
-    .cal-day { border-radius: 8px; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer; overflow: hidden; }
+    .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12.5px; font-weight: 800; color: var(--text-muted); margin-bottom: 3px; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .cal-day { border-radius: 8px; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; overflow: hidden; min-height: 74px; padding: 2px; box-sizing: border-box; }
     .cal-day.cal-empty { visibility: hidden; cursor: default; }
-    .cal-day .cal-daynum { font-weight: 800; font-size: 12px; margin-top: -6px; }
-    .cal-day .cal-tag { font-size: 7.5px; font-weight: 900; padding: 1px 4px; border-radius: 6px; letter-spacing: 0.3px; }
-    .cal-day .cal-trainno { font-size: 9px; font-weight: 800; color: #111827; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 92%; }
-    body.dark-mode .cal-day .cal-trainno { color: #f1f5f9; }
-    .cal-day.cal-today { border: 2px solid var(--blue); }
-    .cal-day.cal-out { background: rgba(59,130,246,0.10); }
-    .cal-day.cal-out .cal-tag { background: rgba(59,130,246,0.25); color: var(--blue); }
-    .cal-day.cal-in { background: rgba(20,184,166,0.12); }
-    .cal-day.cal-in .cal-tag { background: rgba(20,184,166,0.28); color: #0d9488; }
-    .cal-day.cal-halt { background: rgba(239,68,68,0.12); }
-    .cal-day.cal-halt .cal-tag { background: rgba(239,68,68,0.28); color: var(--red); }
+    .cal-day .cal-daynum, .cal-subday .cal-daynum { font-weight: 800; font-size: 13px; margin-top: -3px; color: var(--text); }
+    .cal-day .cal-tag, .cal-subday .cal-tag { font-size: 7px; font-weight: 900; }
+    .cal-day .cal-trainno, .cal-subday .cal-trainno { font-size: 9.5px; font-weight: 800; color: #111827; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95%; }
+    body.dark-mode .cal-day .cal-trainno, body.dark-mode .cal-subday .cal-trainno { color: #f1f5f9; }
+    .cal-day.cal-out, .cal-subday.cal-out { background: rgba(59,130,246,0.10); }
+    .cal-day.cal-out .cal-tag, .cal-subday.cal-out .cal-tag { color: var(--blue); }
+    .cal-day.cal-in, .cal-subday.cal-in { background: rgba(20,184,166,0.12); }
+    .cal-day.cal-in .cal-tag, .cal-subday.cal-in .cal-tag { color: #0d9488; }
+    .cal-day.cal-halt, .cal-subday.cal-halt { background: rgba(239,68,68,0.12); }
+    .cal-day.cal-halt .cal-tag, .cal-subday.cal-halt .cal-tag { color: var(--red); }
     .cal-day.cal-rest { background: rgba(249,115,22,0.10); }
-    .cal-day.cal-rest .cal-tag { background: rgba(249,115,22,0.25); color: var(--orange); }
+    .cal-day.cal-rest .cal-tag { color: var(--orange); }
     .cal-day.cal-lr { background: rgba(147,51,234,0.10); }
-    .cal-day.cal-lr .cal-tag { background: rgba(147,51,234,0.25); color: var(--purple); }
+    .cal-day.cal-lr .cal-tag { color: var(--purple); }
     .cal-day.cal-spare { background: rgba(234,179,8,0.12); }
-    .cal-day.cal-spare .cal-tag { background: rgba(234,179,8,0.3); color: #a16207; }
+    .cal-day.cal-spare .cal-tag { color: #a16207; }
+    /* Trip grouping — a WRAPPER div spans all the columns of one trip (within a week row) and
+       carries the single border; the individual days inside are plain unbordered sub-cells side
+       by side, so the border is always one unbroken rectangle with no seam. Green = the trip
+       covering today; light-but-visible blue = every other trip. Today's own cell/wrapper gets a
+       slightly thicker border. */
+    .cal-trip-wrapper { border-radius: 8px; overflow: hidden; box-sizing: border-box; }
+    .cal-subday { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; padding: 2px; box-sizing: border-box; height: 100%; }
     .daycard-status { text-align: center; font-size: 14px; font-weight: 800; margin: 0 0 10px; }
     .daycard-train { background: rgba(59,130,246,0.06); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; font-size: 13px; }
     .tt-timing { font-size: 9.5px; font-weight: 600; color: var(--text-muted); }
@@ -324,7 +330,6 @@ if (window.parent !== window) {
         <div id="my-duty-week"></div>
     </div>
     <div id="view-search" class="hidden">
-        <div class="card view-edit-team-btn" id="bsb-lobby-row" style="margin-bottom:8px;" onclick="window.openLobbyModal()">🚉 Mandali</div>
         <div class="card search-card">
             <label>Search by Name</label>
             <div class="search-row-3">
@@ -392,6 +397,9 @@ if (window.parent !== window) {
                 </div>
                 <button class="icon-search-btn" onclick="window.generateRosterPDF()">⬇️</button>
             </div>
+        </div>
+        <div id="bsb-lobby-row" style="display:flex; justify-content:center; margin:14px 0 4px;">
+            <button onclick="window.openLobbyModal()" style="background: radial-gradient(circle at 35% 30%, #ffe0bd 0%, #f1c27d 45%, #c68642 75%, #8d5524 100%); box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3), inset 4px 4px 8px rgba(255,255,255,0.35), 0 4px 10px rgba(0,0,0,0.3); width:84px; height:84px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#1f2937; border:none; cursor:pointer; gap:3px;">👣 मंडली 👣</button>
         </div>
     </div>
     <div id="view-admin" class="hidden">
@@ -509,6 +517,7 @@ if (window.parent !== window) {
             <h3>🚉 Mandali</h3>
             <button class="result-modal-close" onclick="document.getElementById('lobby-modal-overlay').classList.add('hidden')">✕ Close</button>
         </div>
+        <p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:0 0 10px; line-height:1.4;">📍 A live view of where every team is right now — LKO, PRYJ, CNB or back at BSB — worked out from the Link Programme and Train Schedule timings. Tap any team's row for their full train details.</p>
         <div style="margin-bottom:8px;">
             <label style="font-size:12.5px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">Date</label>
             <input type="date" id="lobby-date" onchange="window.renderLobbyResults()">
@@ -1081,6 +1090,14 @@ function initCalStateIfNeeded() {
 
 const CAL_MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
+// Builds the inner content (day number + tag + train lines) shared by both standalone day
+// cells and grouped sub-cells inside a trip wrapper.
+function calDayInnerHtml(dayNum, meta, trainHtml) {
+    return `<div class="cal-daynum">${dayNum}</div>
+        ${meta ? `<span class="cal-tag">${meta.tag}</span>` : ''}
+        ${trainHtml}`;
+}
+
 function renderMyDutyWeek() {
     const container = document.getElementById('my-duty-week');
     const teamNo = document.getElementById('my-team-select').value;
@@ -1092,44 +1109,84 @@ function renderMyDutyWeek() {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const startOffset = firstDay.getDay(); // 0=Sun
     const totalCells = Math.ceil((startOffset + daysInMonth) / 7) * 7;
-    const rows = totalCells / 7;
 
     const todayD = new Date();
     const todayStr = `${todayD.getFullYear()}-${String(todayD.getMonth()+1).padStart(2,'0')}-${String(todayD.getDate()).padStart(2,'0')}`;
+    // Which trip (if any) covers TODAY — that one gets the green border; every other trip gets blue.
+    const todayStatus = getDutyStatusOnDate(teamNo, todayStr);
+    const todayTripKey = (todayStatus.type === 'out' || todayStatus.type === 'halt' || todayStatus.type === 'in') ? todayStatus.trip.dateStr : null;
 
     const STATUS_META = {
         out:   { cls: 'cal-out',   tag: 'OUT'   },
         in:    { cls: 'cal-in',    tag: 'IN'    },
         halt:  { cls: 'cal-halt',  tag: 'HALT'  },
-        rest:  { cls: 'cal-rest',  tag: 'REST'  },
-        lr:    { cls: 'cal-lr',    tag: 'LR'    },
-        spare: { cls: 'cal-spare',tag: 'SPARE' }
+        rest:  { cls: 'cal-rest',  tag: 'REST',  borderColor: 'rgba(249,115,22,0.4)' },
+        lr:    { cls: 'cal-lr',    tag: 'LR',    borderColor: 'rgba(147,51,234,0.4)' },
+        spare: { cls: 'cal-spare', tag: 'SPARE', borderColor: 'rgba(234,179,8,0.4)' }
     };
+    const BW = '1px';
+    const BW_TODAY = '2px';
 
-    // Which train no. (if any) belongs on this cell: outTrain for OUT/HALT days, returnTrain for IN days.
-    function cellTrainNo(status) {
-        if (status.type === 'out' || status.type === 'halt') return (status.trip.outTrain || '').split('/')[0];
-        if (status.type === 'in') return (status.trip.returnTrain || '').split('/')[0];
-        return '';
+    // Which train no. (if any) belongs on this cell: outTrain for OUT/HALT days, returnTrain for
+    // IN days. Shows the FULL value (e.g. "13239/14213") when it's a split duty, each leg on its
+    // own line, not just the first leg truncated.
+    function cellTrainLines(status) {
+        const raw = (status.type === 'out' || status.type === 'halt') ? (status.trip.outTrain || '')
+                  : (status.type === 'in') ? (status.trip.returnTrain || '') : '';
+        return raw ? raw.split('/').map(t => t.trim()).filter(Boolean) : [];
     }
 
-    let cellsHtml = '';
+    // Pass 1: status + group key (the trip's own out-day dateStr, stable across out/halt/in)
+    const cells = [];
     for (let i = 0; i < totalCells; i++) {
         const dayNum = i - startOffset + 1;
-        if (dayNum < 1 || dayNum > daysInMonth) {
-            cellsHtml += `<div class="cal-day cal-empty"></div>`;
-            continue;
-        }
+        if (dayNum < 1 || dayNum > daysInMonth) { cells.push(null); continue; }
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
         const status = getDutyStatusOnDate(teamNo, dateStr);
-        const meta = STATUS_META[status.type];
-        const isToday = dateStr === todayStr;
-        const trainNo = cellTrainNo(status);
-        cellsHtml += `<div class="cal-day${meta ? ' ' + meta.cls : ''}${isToday ? ' cal-today' : ''}" onclick="window.openDayDetail('${teamNo}','${dateStr}')">
-            <div class="cal-daynum">${dayNum}</div>
-            ${meta ? `<span class="cal-tag">${meta.tag}</span>` : ''}
-            ${trainNo ? `<span class="cal-trainno">${trainNo}</span>` : ''}
-        </div>`;
+        let groupKey = null;
+        if (status.type === 'out' || status.type === 'halt' || status.type === 'in') groupKey = status.trip.dateStr;
+        cells.push({ dayNum, dateStr, status, groupKey, col: i % 7 });
+    }
+
+    // Pass 2: build row by row (7 cells at a time) — a trip that spans a week boundary gets its
+    // own wrapper per row, and each wrapper's border is guaranteed to be one seamless rectangle.
+    let cellsHtml = '';
+    const rows = totalCells / 7;
+    for (let r = 0; r < rows; r++) {
+        const rowCells = cells.slice(r * 7, r * 7 + 7);
+        let col = 0;
+        while (col < 7) {
+            const c = rowCells[col];
+            if (!c) { cellsHtml += `<div class="cal-day cal-empty"></div>`; col++; continue; }
+
+            const meta = STATUS_META[c.status.type];
+            const trainHtml = cellTrainLines(c.status).map(t => `<span class="cal-trainno">${t}</span>`).join('');
+
+            if (c.groupKey) {
+                let runLen = 1;
+                while (col + runLen < 7 && rowCells[col + runLen] && rowCells[col + runLen].groupKey === c.groupKey) runLen++;
+                const runCells = rowCells.slice(col, col + runLen);
+                const color = c.groupKey === todayTripKey ? '#15803d' /* current trip: deep green */ : '#60a5fa' /* other trips: light but visible blue */;
+                const bw = runCells.some(x => x.dateStr === todayStr) ? BW_TODAY : BW;
+
+                const subHtml = runCells.map(cc => {
+                    const ccMeta = STATUS_META[cc.status.type];
+                    const ccTrainHtml = cellTrainLines(cc.status).map(t => `<span class="cal-trainno">${t}</span>`).join('');
+                    return `<div class="cal-subday ${ccMeta ? ccMeta.cls : ''}" onclick="window.openDayDetail('${teamNo}','${cc.dateStr}')">${calDayInnerHtml(cc.dayNum, ccMeta, ccTrainHtml)}</div>`;
+                }).join('');
+
+                cellsHtml += `<div class="cal-trip-wrapper" style="grid-column: span ${runLen}; border:${bw} solid ${color};">
+                    <div style="display:grid; grid-template-columns:repeat(${runLen},1fr); height:100%;">${subHtml}</div>
+                </div>`;
+                col += runLen;
+            } else {
+                let borderStyle = '';
+                const bw = c.dateStr === todayStr ? BW_TODAY : BW;
+                if (meta && meta.borderColor) borderStyle = `border:${bw} solid ${meta.borderColor};`;
+                cellsHtml += `<div class="cal-day ${meta ? meta.cls : ''}" style="${borderStyle}" onclick="window.openDayDetail('${teamNo}','${c.dateStr}')">${calDayInnerHtml(c.dayNum, meta, trainHtml)}</div>`;
+                col++;
+            }
+        }
     }
 
     const monthOptions = CAL_MONTH_NAMES.map((m, idx) => `<option value="${idx}" ${idx===month?'selected':''}>${m}</option>`).join('');
@@ -1147,7 +1204,8 @@ function renderMyDutyWeek() {
                 <button class="cal-nav-btn" onclick="window.calChangeMonth(1)">▶</button>
             </div>
             <div class="cal-weekdays">${weekdayHtml}</div>
-            <div class="cal-grid" style="grid-template-rows:repeat(${rows},1fr);">${cellsHtml}</div>
+            <div class="cal-grid">${cellsHtml}</div>
+            <p style="font-size:11px; color:var(--text-muted); text-align:center; margin:8px 0 0;">👆 Tap any date to see its duty details</p>
         </div>`;
 }
 
@@ -2061,11 +2119,28 @@ window.renderLobbyResults = function() {
         }
 
         // ---- HOME (BSB Mandali): most recent completed return + next upcoming departure ----
+        // BUG FIX: the search must stop at the CLOSEST trip that has actually DEPARTED already —
+        // not just the closest OUT-day found. The old version kept walking further back whenever
+        // the nearest trip hadn't returned yet, and could latch onto an OLDER, already-completed
+        // trip instead — wrongly marking a team "home" while still away or in transit on their
+        // most recent trip. A trip whose departure is still in the FUTURE (e.g. today's OUT is
+        // later this evening) must be skipped too — it isn't "the last trip" yet, so the search
+        // needs to keep going back for the one that actually happened before now.
+        // (Confirmed with Team 9 on 5 Jul 2026 10:00: still at LKO until 18:00 that evening, but
+        // the old logic reported them home based on a stale 30 Jun return.)
         let prevWindow = null;
+        let recentTripNotYetHome = false;
         for (let back = 0; back <= 6; back++) {
             const candidate = addDays(dateStr, -back);
             const w = getTripWindow(t, candidate);
-            if (w && w.homeArrivalMoment && w.homeArrivalMoment <= nowMoment) { prevWindow = w; break; }
+            if (!w) continue; // no duty trip starts that day — keep looking further back
+            if (w.outDepartureMoment > nowMoment) continue; // hasn't departed yet — not the "last" trip
+            if (w.homeArrivalMoment && w.homeArrivalMoment <= nowMoment) {
+                prevWindow = w;
+            } else {
+                recentTripNotYetHome = true; // departed already, but not home yet (away or in transit)
+            }
+            break; // this is the most recent departed trip — stop here either way
         }
         let nextWindow = null;
         for (let fwd = 0; fwd <= 10; fwd++) {
@@ -2075,8 +2150,16 @@ window.renderLobbyResults = function() {
         }
         const homeStart = prevWindow ? prevWindow.homeArrivalMoment : null;
         const homeEnd = nextWindow ? nextWindow.outDepartureMoment : null;
-        const isHomeNow = homeStart ? (nowMoment >= homeStart && (!homeEnd || nowMoment < homeEnd))
-                                     : (!nextWindow || nowMoment < homeEnd); // no return on record yet — assume home until next known departure
+        let isHomeNow;
+        if (recentTripNotYetHome) {
+            isHomeNow = false; // currently away or in transit on the most recent trip
+        } else if (homeStart) {
+            isHomeNow = nowMoment >= homeStart && (!homeEnd || nowMoment < homeEnd);
+        } else {
+            // No trip at all found in the lookback window (e.g. very first-ever duty) — assume
+            // home until whatever next departure is known, same fallback as before.
+            isHomeNow = !nextWindow || nowMoment < homeEnd;
+        }
         // Skip if this team is currently accounted for as AWAY (avoid double-listing)
         const alreadyAway = MANDALI_STATIONS.some(st => st !== 'BSB' && buckets[st].some(x => x.t === t));
         if (isHomeNow && !alreadyAway) {
@@ -2090,34 +2173,23 @@ window.renderLobbyResults = function() {
     const teamMaster = window.appData.teamMaster;
     resultsEl.innerHTML = MANDALI_STATIONS.map(st => {
         const list = buckets[st];
-        const chips = list.length
-            ? list.map(x => {
-                const team = teamMaster[x.t] || {};
-                const names = teamFirstNames(team);
-                let detailLine;
-                if (x.w) {
-                    const w = x.w;
-                    const upLabel = w.outLegs.join('/');
-                    const downLabel = w.inLegs.length ? w.inLegs.join('/') : 'TBD';
-                    const dayLabel = w.departureMoment
-                        ? `${w.arrivalMoment.getDate()}-${w.departureMoment.getDate()} ${fmtDayMonth(w.arrivalMoment).split(' ')[1]}`
-                        : fmtDayMonth(w.arrivalMoment);
-                    detailLine = `${upLabel}-${downLabel} (${dayLabel}) ${fmtHM(w.arrivalMoment)} - ${fmtHM(w.departureMoment)}`;
-                } else {
-                    const hw = x.homeWindow;
-                    const upLabel = hw.prevWindow ? hw.prevWindow.inLegs.join('/') : '-';
-                    const downLabel = hw.nextWindow ? hw.nextWindow.outLegs.join('/') : 'TBD';
-                    const startD = hw.prevWindow ? hw.prevWindow.homeArrivalMoment : null;
-                    const endD = hw.nextWindow ? hw.nextWindow.outDepartureMoment : null;
-                    const dayLabel = startD && endD
-                        ? `${startD.getDate()}-${endD.getDate()} ${fmtDayMonth(startD).split(' ')[1]}`
-                        : (startD ? fmtDayMonth(startD) : 'Home');
-                    detailLine = `${upLabel}-${downLabel} (${dayLabel}) ${fmtHM(startD)} - ${fmtHM(endD)}`;
-                }
-                return `<span class="lobby-team-chip" onclick="window.showMandaliDetail('${x.key}')"><span class="ltc-name">Team ${x.t} — ${names}</span><span class="ltc-train">${detailLine}</span></span>`;
-            }).join('')
+        const body = list.length
+            ? `<div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+                <table class="admin-table" style="min-width:420px;">
+                    <thead><tr><th>Teams</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead>
+                    <tbody>${list.map(x => {
+                        const team = teamMaster[x.t] || {};
+                        return `<tr onclick="window.showMandaliDetail('${x.key}')" style="cursor:pointer;">
+                            <td style="font-weight:800; color:var(--blue);">${x.t}</td>
+                            <td>${team.cor || '-'}</td>
+                            <td>${team.tte1 || '-'}</td>
+                            <td>${team.tte2 || '-'}</td>
+                        </tr>`;
+                    }).join('')}</tbody>
+                </table>
+            </div>`
             : `<p class="lobby-empty">No teams currently at ${st}</p>`;
-        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${st} Mandali</div>${chips}</div>`;
+        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${st} Mandali</div>${body}</div>`;
     }).join('');
 };
 
