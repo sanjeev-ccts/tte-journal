@@ -1,6 +1,6 @@
 {
-  "name": "TA-NDA Tracker",
-  "short_name": "TTE Tracker",
+  "name": "TTE LOGS",
+  "short_name": "TTE LOGS",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
