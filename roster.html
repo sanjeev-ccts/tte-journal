@@ -213,9 +213,9 @@
     .cal-nav-center select { flex: 1 1 0; margin: 0; padding: 5px 22px 5px 8px; font-size: 12.5px; height: 30px; border-radius: 20px; width: 0; min-width: 0; text-align: center; box-sizing: border-box; border: 1px solid var(--border); background-color: var(--card); color: var(--text); -webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%), linear-gradient(135deg, var(--text-muted) 50%, transparent 50%); background-position: calc(100% - 14px) center, calc(100% - 9px) center; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
     .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12.5px; font-weight: 800; color: var(--text-muted); margin-bottom: 3px; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-    .cal-day { border-radius: 8px; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; overflow: hidden; min-height: 74px; padding: 2px; box-sizing: border-box; }
+    .cal-day { border-radius: 8px; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px; cursor: pointer; overflow: hidden; min-height: 92px; padding: 12px 2px 2px; box-sizing: border-box; }
     .cal-day.cal-empty { visibility: hidden; cursor: default; }
-    .cal-day .cal-daynum, .cal-subday .cal-daynum { font-weight: 800; font-size: 13px; margin-top: -3px; color: var(--text); }
+    .cal-day .cal-daynum, .cal-subday .cal-daynum { font-weight: 800; font-size: 15px; color: var(--text); }
     .cal-day .cal-tag, .cal-subday .cal-tag { font-size: 7px; font-weight: 900; }
     .cal-day .cal-trainno, .cal-subday .cal-trainno { font-size: 9.5px; font-weight: 800; color: #111827; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95%; }
     body.dark-mode .cal-day .cal-trainno, body.dark-mode .cal-subday .cal-trainno { color: #f1f5f9; }
@@ -223,21 +223,21 @@
     .cal-day.cal-out .cal-tag, .cal-subday.cal-out .cal-tag { color: var(--blue); }
     .cal-day.cal-in, .cal-subday.cal-in { background: rgba(20,184,166,0.12); }
     .cal-day.cal-in .cal-tag, .cal-subday.cal-in .cal-tag { color: #0d9488; }
-    .cal-day.cal-halt, .cal-subday.cal-halt { background: rgba(239,68,68,0.12); }
-    .cal-day.cal-halt .cal-tag, .cal-subday.cal-halt .cal-tag { color: var(--red); }
+    .cal-day.cal-halt, .cal-subday.cal-halt { background: rgba(148,163,184,0.14); }
+    .cal-day.cal-halt .cal-tag, .cal-subday.cal-halt .cal-tag { color: #64748b; }
     .cal-day.cal-rest { background: rgba(249,115,22,0.10); }
     .cal-day.cal-rest .cal-tag { color: var(--orange); }
     .cal-day.cal-lr { background: rgba(147,51,234,0.10); }
     .cal-day.cal-lr .cal-tag { color: var(--purple); }
     .cal-day.cal-spare { background: rgba(234,179,8,0.12); }
-    .cal-day.cal-spare .cal-tag { color: #a16207; }
+    .cal-day.cal-spare .cal-tag { color: var(--red); }
     /* Trip grouping — a WRAPPER div spans all the columns of one trip (within a week row) and
        carries the single border; the individual days inside are plain unbordered sub-cells side
        by side, so the border is always one unbroken rectangle with no seam. Green = the trip
        covering today; light-but-visible blue = every other trip. Today's own cell/wrapper gets a
        slightly thicker border. */
-    .cal-trip-wrapper { border-radius: 8px; overflow: hidden; box-sizing: border-box; }
-    .cal-subday { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; padding: 2px; box-sizing: border-box; height: 100%; }
+    .cal-trip-wrapper { border-radius: 8px; overflow: hidden; box-sizing: border-box; min-height: 92px; }
+    .cal-subday { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px; cursor: pointer; padding: 12px 2px 2px; box-sizing: border-box; height: 100%; }
     .daycard-status { text-align: center; font-size: 14px; font-weight: 800; margin: 0 0 10px; }
     .daycard-train { background: rgba(59,130,246,0.06); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; font-size: 13px; }
     .tt-timing { font-size: 9.5px; font-weight: 600; color: var(--text-muted); }
@@ -279,7 +279,7 @@
     .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 600px; height: 55px; background: var(--top-bar-bg); display: flex; justify-content: space-around; align-items: center; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid var(--border); padding: 0 15px; }
     .bottom-icon { width: 34px; height: 34px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; font-size: 16px; color: white; cursor: pointer; position: relative; flex-shrink: 0; }
     .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 15px; height: 15px; display: flex; align-items: center; justify-content: center; }
-    #save-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #16a34a; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 9000; transition: transform 0.3s ease; }
+    #save-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #16a34a; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 9999; transition: transform 0.3s ease; }
     #save-toast.show { transform: translateX(-50%) translateY(0); }
     .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index: 8000; display: flex; align-items: center; justify-content: center; }
     .modal-box { background: var(--card); border-radius: 18px; padding: 20px; width: 88%; max-width: 340px; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
@@ -325,7 +325,7 @@ if (window.parent !== window) {
                     <button class="tsc-edit-btn" onclick="window.editMyTeam()">✏️</button>
                 </div>
             </div>
-            <button class="card view-edit-team-btn" onclick="window.showAllTeamsModal()">👥 View/Edit Team</button>
+            <button class="card view-edit-team-btn" onclick="window.showAllTeamsModal()">👥 Change Team</button>
         </div>
         <div id="my-duty-week"></div>
     </div>
@@ -408,18 +408,9 @@ if (window.parent !== window) {
         </div>
 
         <div class="admin-quick-grid">
-            <div class="admin-quick-card aq-save" onclick="window.openAnchorDateModal()">
-                <div class="aq-icon">💾</div>
-                <div class="aq-label">Anchor Date</div>
-            </div>
             <div class="admin-quick-card aq-teams" onclick="window.toggleTeamTable()">
                 <div class="aq-icon">👥</div>
                 <div class="aq-label">Edit Teams</div>
-            </div>
-            <div class="admin-quick-card aq-feedback" onclick="window.openFeedbackInboxModal()">
-                <div class="aq-icon">📬</div>
-                <div class="aq-label">Feedback</div>
-                <span id="admin-feedback-count-badge" class="hidden aq-badge">0</span>
             </div>
             <div class="admin-quick-card aq-progs" onclick="window.toggleProgTable()">
                 <div class="aq-icon">🚂</div>
@@ -428,6 +419,15 @@ if (window.parent !== window) {
             <div class="admin-quick-card aq-schedule" onclick="window.toggleScheduleTable()">
                 <div class="aq-icon">🕒</div>
                 <div class="aq-label">Edit Schedule</div>
+            </div>
+            <div class="admin-quick-card aq-save" onclick="window.openAnchorDateModal()">
+                <div class="aq-icon">💾</div>
+                <div class="aq-label">Anchor Date</div>
+            </div>
+            <div class="admin-quick-card aq-feedback" onclick="window.openFeedbackInboxModal()">
+                <div class="aq-icon">📬</div>
+                <div class="aq-label">Feedback</div>
+                <span id="admin-feedback-count-badge" class="hidden aq-badge">0</span>
             </div>
             <div class="admin-quick-card aq-export" onclick="window.exportCurrentData()">
                 <div class="aq-icon">📤</div>
@@ -502,7 +502,7 @@ if (window.parent !== window) {
         <div id="result-modal-body"></div>
     </div>
 </div>
-<div id="team-info-modal-overlay" class="modal-overlay hidden" style="z-index:9500;">
+<div id="team-info-modal-overlay" class="modal-overlay hidden" style="z-index:9700;">
     <div class="result-modal-box" style="max-width:320px;">
         <div class="result-modal-header">
             <h3 id="team-info-modal-title">Team Info</h3>
@@ -514,7 +514,7 @@ if (window.parent !== window) {
 <div id="lobby-modal-overlay" class="modal-overlay hidden">
     <div class="result-modal-box">
         <div class="result-modal-header">
-            <h3>🚉 Mandali</h3>
+            <h3>🚉 मंडली</h3>
             <button class="result-modal-close" onclick="document.getElementById('lobby-modal-overlay').classList.add('hidden')">✕ Close</button>
         </div>
         <p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:0 0 10px; line-height:1.4;">📍 A live view of where every team is right now — LKO, PRYJ, CNB or back at BSB — worked out from the Link Programme and Train Schedule timings. Tap any team's row for their full train details.</p>
@@ -777,6 +777,15 @@ function addDays(dateStr, n) {
     d.setDate(d.getDate() + n);
     return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
+// Point: a genuine special train (Summer Sp, Holi Sp, Festival Sp) always has a train number
+// starting with "0". Admins sometimes fill a special-train entry's "out train" field with the
+// REGULAR train number instead — purely to pair/identify which duty this special belongs to, not
+// because it's an actual additional train to show. Anywhere specialTrips.outTrain is read, this
+// filter must be applied first, or a regular train ends up displayed twice (once normally, once
+// mislabeled "Special").
+function isGenuineSpecialTrain(trainNo) {
+    return !!(trainNo && String(trainNo).trim().startsWith('0'));
+}
 function nextProgNo(p) { return (p % 43) + 1; }
 
 function getTripStartingOn(teamNo, dateStr) {
@@ -980,7 +989,7 @@ window.showAllTeamsModal = function() {
     const savedTeam = localStorage.getItem('roster_my_team');
     if (!savedTeam || !window.appData.teamMaster[savedTeam]) {
         const html = `<p style="text-align:center; color:var(--text-muted); font-size:14px; padding:20px 10px; line-height:1.6;">⚠️ You haven't saved a team number yet.<br>Please select and save your team in <b>My Duty</b> first to view or edit it here.</p>`;
-        showResultModal('👥 View/Edit Team', html);
+        showResultModal('👥 Change Team', html);
         return;
     }
     const t = savedTeam;
@@ -1127,13 +1136,62 @@ function renderMyDutyWeek() {
     const BW = '1px';
     const BW_TODAY = '2px';
 
-    // Which train no. (if any) belongs on this cell: outTrain for OUT/HALT days, returnTrain for
-    // IN days. Shows the FULL value (e.g. "13239/14213") when it's a split duty, each leg on its
-    // own line, not just the first leg truncated.
+    // Which train no. (if any) belongs on this cell: outTrain for OUT days only (HALT shows
+    // nothing — it's a waiting day, not an active train day), returnTrain for IN days. Shows the
+    // FULL value (e.g. "13239/14213") when it's a split duty, each leg on its own line, not just
+    // the first leg truncated.
     function cellTrainLines(status) {
-        const raw = (status.type === 'out' || status.type === 'halt') ? (status.trip.outTrain || '')
+        const raw = (status.type === 'out') ? (status.trip.outTrain || '')
                   : (status.type === 'in') ? (status.trip.returnTrain || '') : '';
         return raw ? raw.split('/').map(t => t.trim()).filter(Boolean) : [];
+    }
+
+    // Point: same-day-return duty (TTE-2's separate shuttle) happens on the SAME calendar date as
+    // the main trip's outward leg. Its own out+return trains get stacked as extra lines on that
+    // one cell — the return train shown in dark red with a thin down-arrow AFTER the train number
+    // so it reads clearly as "the down/return train, resting inside the up-date's box."
+    //
+    // Special trains (admin-configured, e.g. Holi/Summer Special) are a COMPLETELY different
+    // thing from same-day-return — they are NOT same-day round trips. A special train is paired
+    // with an existing regular multi-day duty (2-day, 3-day, whatever that duty's real span is).
+    // Only ONE side of a special entry is usually the genuine extra train — the other side is
+    // often just the regular train number, filled in purely to identify which duty this pairs
+    // with. A genuine special train ALWAYS has a number starting with "0" — isGenuineSpecialTrain()
+    // checks each side independently, since either the out OR the return (not necessarily both)
+    // can be the real addition.
+    function sameDayExtraLines(status, dateStr) {
+        const extra = [];
+        if ((status.type === 'out' || status.type === 'halt') && status.trip.sameDayTrip && status.trip.sameDayTrip.date === dateStr) {
+            const sdt = status.trip.sameDayTrip;
+            if (sdt.outTrain) extra.push(`<span class="cal-trainno">${sdt.outTrain}</span>`);
+            if (sdt.returnTrain) extra.push(`<span class="cal-trainno" style="color:#dc2626; font-weight:700;">${sdt.returnTrain} ↓</span>`);
+        }
+        if (status.type === 'out' && status.trip.specialTrips && status.trip.specialTrips.length) {
+            status.trip.specialTrips.forEach(sp => {
+                if (sp.date !== dateStr || !isGenuineSpecialTrain(sp.outTrain)) return;
+                extra.push(`<span class="cal-trainno">${sp.outTrain}</span>`);
+            });
+        }
+        if (status.type === 'in' && status.trip.specialTrips && status.trip.specialTrips.length) {
+            status.trip.specialTrips.forEach(sp => {
+                if (!isGenuineSpecialTrain(sp.returnTrain)) return;
+                extra.push(`<span class="cal-trainno">${sp.returnTrain}</span>`);
+            });
+        }
+        return extra;
+    }
+
+    // Point: the day AFTER a same-day-return duty, TTE-2 gets COCL (a rest day) — shown as a red
+    // text marker on that next day's cell, informational only. This does NOT apply to special
+    // trains — those are multi-day duties like any other, not a same-day shuttle.
+    function cocLNextDayLine(teamNo, dateStr) {
+        const y = new Date(`${dateStr}T00:00:00`);
+        y.setDate(y.getDate() - 1);
+        const yStr = `${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,'0')}-${String(y.getDate()).padStart(2,'0')}`;
+        const yStatus = getDutyStatusOnDate(teamNo, yStr);
+        const isRelevantType = (yStatus.type === 'out' || yStatus.type === 'halt' || yStatus.type === 'in');
+        const hasSameDayYesterday = isRelevantType && yStatus.trip.sameDayTrip && yStatus.trip.sameDayTrip.date === yStr;
+        return hasSameDayYesterday ? `<span class="cal-trainno" style="color:#dc2626; font-weight:900;">COCL</span>` : '';
     }
 
     // Pass 1: status + group key (the trip's own out-day dateStr, stable across out/halt/in)
@@ -1160,7 +1218,7 @@ function renderMyDutyWeek() {
             if (!c) { cellsHtml += `<div class="cal-day cal-empty"></div>`; col++; continue; }
 
             const meta = STATUS_META[c.status.type];
-            const trainHtml = cellTrainLines(c.status).map(t => `<span class="cal-trainno">${t}</span>`).join('');
+            const trainHtml = [...cellTrainLines(c.status).map(t => `<span class="cal-trainno">${t}</span>`), ...sameDayExtraLines(c.status, c.dateStr)].join('') + cocLNextDayLine(teamNo, c.dateStr);
 
             if (c.groupKey) {
                 let runLen = 1;
@@ -1171,7 +1229,7 @@ function renderMyDutyWeek() {
 
                 const subHtml = runCells.map(cc => {
                     const ccMeta = STATUS_META[cc.status.type];
-                    const ccTrainHtml = cellTrainLines(cc.status).map(t => `<span class="cal-trainno">${t}</span>`).join('');
+                    const ccTrainHtml = [...cellTrainLines(cc.status).map(t => `<span class="cal-trainno">${t}</span>`), ...sameDayExtraLines(cc.status, cc.dateStr)].join('') + cocLNextDayLine(teamNo, cc.dateStr);
                     return `<div class="cal-subday ${ccMeta ? ccMeta.cls : ''}" onclick="window.openDayDetail('${teamNo}','${cc.dateStr}')">${calDayInnerHtml(cc.dayNum, ccMeta, ccTrainHtml)}</div>`;
                 }).join('');
 
@@ -1327,10 +1385,12 @@ function buildTripTable(trips, withTiming) {
                 </tr>`;
             }
         }
-        // Special trains (Summer Sp / Holi Sp / Festival Sp etc.) — shown as their own extra lines.
+        // Special trains (Summer Sp / Holi Sp / Festival Sp etc.) — shown as their own extra lines,
+        // only for whichever leg is genuinely a special train (number starting with "0"). The
+        // other leg's field is often just a regular-train pairing reference, not a real addition.
         if (trip.specialTrips && trip.specialTrips.length) {
             trip.specialTrips.forEach(sp => {
-                if (sp.outTrain) {
+                if (isGenuineSpecialTrain(sp.outTrain)) {
                     rows += `<tr class="trip-divider">
                         <td class="td-date">${fmtDateLabel(sp.date)}</td>
                         <td>${trainCellHtml(sp.outTrain, withTiming)}</td>
@@ -1338,11 +1398,11 @@ function buildTripTable(trips, withTiming) {
                         <td><span class="ud-badge ud-depart">Departs HQ (${sp.label})</span></td>
                     </tr>`;
                 }
-                if (sp.returnTrain) {
+                if (isGenuineSpecialTrain(sp.returnTrain)) {
                     rows += `<tr class="trip-divider">
-                        <td class="td-date">${fmtDateLabel(sp.date)}</td>
+                        <td class="td-date">${fmtDateLabel(trip.returnDate || sp.date)}</td>
                         <td>${trainCellHtml(sp.returnTrain, withTiming)}</td>
-                        ${dayTd(sp.date)}
+                        ${dayTd(trip.returnDate || sp.date)}
                         <td><span class="ud-badge ud-arrive">Arrives HQ (${sp.label})</span></td>
                     </tr>`;
                 }
@@ -1376,15 +1436,18 @@ function getAllTrainRowsForTrip(trip) {
     const inParts = (trip.returnTrain || '').split('/').map(s => s.trim()).filter(Boolean);
     const rowsArr = [];
 
+    // Point: in the PDF, when only ONE direction is split, the shared/unsplit direction's train
+    // is printed TWICE (once per row) rather than merged into a single rowspan cell — each row
+    // needs to read as a complete, independent duty for whoever is assigned to it.
     if (outParts.length <= 1 && inParts.length > 1) {
         const upVal = outParts[0] || '—';
-        inParts.forEach((downVal, i) => {
-            rowsArr.push({ up: i === 0 ? upVal : null, upSpan: i === 0 ? inParts.length : 0, down: downVal, downSpan: 1 });
+        inParts.forEach((downVal) => {
+            rowsArr.push({ up: upVal, upSpan: 1, down: downVal, downSpan: 1 });
         });
     } else if (inParts.length <= 1 && outParts.length > 1) {
         const downVal = inParts[0] || '—';
-        outParts.forEach((upVal, i) => {
-            rowsArr.push({ up: upVal, upSpan: 1, down: i === 0 ? downVal : null, downSpan: i === 0 ? outParts.length : 0 });
+        outParts.forEach((upVal) => {
+            rowsArr.push({ up: upVal, upSpan: 1, down: downVal, downSpan: 1 });
         });
     } else {
         const maxLen = Math.max(outParts.length, inParts.length, 1);
@@ -1394,11 +1457,20 @@ function getAllTrainRowsForTrip(trip) {
     }
 
     if (trip.sameDayTrip && (trip.sameDayTrip.outTrain || trip.sameDayTrip.returnTrain)) {
-        rowsArr.push({ up: trip.sameDayTrip.outTrain || '—', upSpan: 1, down: trip.sameDayTrip.returnTrain || '—', downSpan: 1 });
+        rowsArr.push({ up: trip.sameDayTrip.outTrain || '—', upSpan: 1, down: trip.sameDayTrip.returnTrain || trip.returnTrain || '—', downSpan: 1 });
     }
     if (trip.specialTrips && trip.specialTrips.length) {
         trip.specialTrips.forEach(sp => {
-            if (sp.outTrain || sp.returnTrain) rowsArr.push({ up: sp.outTrain || '—', upSpan: 1, down: sp.returnTrain || '—', downSpan: 1 });
+            const upGenuine = isGenuineSpecialTrain(sp.outTrain);
+            const downGenuine = isGenuineSpecialTrain(sp.returnTrain);
+            if (upGenuine || downGenuine) {
+                rowsArr.push({
+                    up: upGenuine ? sp.outTrain : '—',
+                    upSpan: 1,
+                    down: downGenuine ? sp.returnTrain : '—',
+                    downSpan: 1
+                });
+            }
         });
     }
     return rowsArr;
@@ -1450,8 +1522,8 @@ function renderTripBox(trip, kind) {
     let specialHtml = '';
     if (trip.specialTrips && trip.specialTrips.length) {
         trip.specialTrips.forEach(sp => {
-            if (sp.outTrain) specialHtml += `<div class="db-up" style="color:var(--orange); margin-top:6px;">⬆ ${sp.outTrain} <span style="font-size:11px; font-weight:700;">(${sp.label})</span></div>`;
-            if (sp.returnTrain) specialHtml += `<div class="db-down" style="color:var(--orange);">⬇ ${sp.returnTrain} <span style="font-size:11px; font-weight:700;">(${sp.label})</span></div>`;
+            if (isGenuineSpecialTrain(sp.outTrain)) specialHtml += `<div class="db-up" style="color:var(--orange); margin-top:6px;">⬆ ${sp.outTrain} <span style="font-size:11px; font-weight:700;">(${sp.label})</span></div>`;
+            if (isGenuineSpecialTrain(sp.returnTrain)) specialHtml += `<div class="db-down" style="color:var(--orange);">⬇ ${sp.returnTrain} <span style="font-size:11px; font-weight:700;">(${sp.label})</span></div>`;
         });
     }
     return `<div class="duty-box ${boxClass}">
@@ -1595,7 +1667,7 @@ window.renderTrainSearch = function() {
     const dateList = dateStr ? [dateStr] : (() => {
         const list = [];
         const today = new Date();
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 30; i++) {
             const d = new Date(today); d.setDate(d.getDate()+i);
             list.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`);
         }
@@ -1628,7 +1700,7 @@ window.renderTrainSearch = function() {
     }
     const hint = `<p class="team-click-hint hint-red">👆 tap any team no to show full details</p>`;
     const html = `<table class="trip-table"><thead><tr><th>Date</th><th>Train No</th><th>Day</th><th>Team</th></tr></thead><tbody>${rows}</tbody></table>`;
-    showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 10 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
+    showResultModal(`Train ${trainNo}${dateStr ? ' — ' + fmtDateLabel(dateStr) : ' — Next 30 Days'}`, `${hint}<div class="trip-table-wrap">${html}</div>`);
 };
 
 window.clearTeamSearch = function() {
@@ -1728,7 +1800,7 @@ function buildDateOnlyResults(dateStr) {
             }
             if (status.trip.specialTrips && status.trip.specialTrips.length) {
                 status.trip.specialTrips.forEach(sp => {
-                    if (sp.outTrain) {
+                    if (isGenuineSpecialTrain(sp.outTrain)) {
                         const spOutInfo = dutyInfoAttr({outTrain: sp.outTrain, outDate: dateStr, returnTrain: sp.returnTrain, returnDate: sp.date});
                         rows += `<tr class="trip-divider">
                             <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${spOutInfo}')">Team ${t}</span></td>
@@ -1737,7 +1809,7 @@ function buildDateOnlyResults(dateStr) {
                             <td><span class="ud-badge ud-depart">Up (${sp.label})</span></td>
                         </tr>`;
                     }
-                    if (sp.returnTrain) {
+                    if (isGenuineSpecialTrain(sp.returnTrain)) {
                         const spInInfo = dutyInfoAttr({outTrain: sp.outTrain, outDate: dateStr, returnTrain: sp.returnTrain, returnDate: sp.date});
                         rows += `<tr class="trip-divider">
                             <td class="team-col"><span class="team-chip" onclick="window.showTeamInfo('${t}', '${spInInfo}')">Team ${t}</span></td>
@@ -1848,6 +1920,7 @@ window.generateRosterPDF = function() {
             // No / COR / TTE-1 / TTE-2 cells merged (rowspan) across all of that team's rows —
             // never repeated or split.
             const trainRows = getAllTrainRowsForTrip(trip);
+            const hasTte2 = !!(team.tte2 && team.tte2.trim());
             trainRows.forEach((tr, idx) => {
                 let cells = '';
                 if (idx === 0) {
@@ -1855,7 +1928,20 @@ window.generateRosterPDF = function() {
                 }
                 if (tr.up !== null) cells += `<td class="train-cell up-train" rowspan="${tr.upSpan}">${tr.up}</td>`;
                 if (tr.down !== null) cells += `<td class="train-cell down-train" rowspan="${tr.downSpan}">${tr.down}</td>`;
-                if (idx === 0) {
+                if (trainRows.length > 1) {
+                    // Primary row (idx 0) = COR + TTE-1 (or just COR if there's no TTE-2).
+                    // Every row after that (idx 1+) = TTE-2 (or TTE-1 if no TTE-2) — the
+                    // train after the "/" is always run by the junior-most member.
+                    if (idx === 0) {
+                        cells += `<td class="name-cell cor-cell">${team.cor || ''}</td>
+                            <td class="name-cell">${hasTte2 ? (team.tte1 || '') : ''}</td>
+                            <td class="name-cell"></td>`;
+                    } else {
+                        cells += `<td class="name-cell cor-cell"></td>
+                            <td class="name-cell">${hasTte2 ? '' : (team.tte1 || '')}</td>
+                            <td class="name-cell">${hasTte2 ? (team.tte2 || '') : ''}</td>`;
+                    }
+                } else {
                     cells += `<td class="name-cell cor-cell" rowspan="${trainRows.length}">${team.cor || ''}</td>
                         <td class="name-cell" rowspan="${trainRows.length}">${team.tte1 || ''}</td>
                         <td class="name-cell" rowspan="${trainRows.length}">${team.tte2 || ''}</td>`;
@@ -2032,39 +2118,130 @@ function fmtDayMonth(d) {
 // Builds the full "UP train(s) → away station → DOWN train(s)" window for a trip that STARTS
 // (departs BSB) on outDateStr. Returns null if there's no duty, or the out train(s) have no
 // timing entered yet in Train Schedule.
+// Point: returns an ARRAY of windows, one per physical journey a team member group is actually
+// on — primary (COR+TTE-1, or just COR for 2-member teams) and secondary (TTE-2, or TTE-1 for
+// 2-member teams), matching the same row-splitting convention used in the Roster PDF. This
+// replaces the old single-window model that blended split legs together with Math.min/Math.max —
+// that blending was the actual bug: if one split leg (a different physical train, different
+// person) arrived home early, it could make the WHOLE team look "home"/"available" even though
+// the other split leg's own train hadn't returned yet, or hadn't even reached its own
+// destination yet if the two legs go to different places entirely.
 function getTripWindow(teamNo, outDateStr) {
     const trip = getTripStartingOn(teamNo, outDateStr);
-    if (!trip || trip.status !== 'duty') return null;
+    if (!trip || trip.status !== 'duty') return [];
 
-    const outLegs = splitTrainSlot(trip.outTrain);
-    const outInfo = outLegs.map(tn => ({ tn, sched: window.getTrainSchedule(tn) })).filter(x => x.sched);
-    if (!outInfo.length) return null;
+    const team = window.appData.teamMaster[teamNo] || {};
+    const hasTte2 = !!(team.tte2 && team.tte2.trim());
 
-    const awayStation = outInfo[0].sched.to;
-    const arrivalMoments = outInfo.map(x => combineDateTime(x.sched.arrNextDay ? addDays(outDateStr, 1) : outDateStr, x.sched.arr));
-    const arrivalMoment = new Date(Math.min(...arrivalMoments.map(d => +d)));
-    const depFromHomeMoments = outInfo.map(x => combineDateTime(outDateStr, x.sched.dep));
-    const outDepartureMoment = new Date(Math.min(...depFromHomeMoments.map(d => +d)));
+    const outParts = splitTrainSlot(trip.outTrain);
+    const inParts = splitTrainSlot(trip.returnTrain);
 
-    let inLegs = [], inInfo = [], departureMoment = null, homeArrivalMoment = null, homeStation = null;
-    if (trip.returnTrain) {
-        inLegs = splitTrainSlot(trip.returnTrain);
-        inInfo = inLegs.map(tn => ({ tn, sched: window.getTrainSchedule(tn) })).filter(x => x.sched);
-        if (inInfo.length) {
-            // trip.returnDate is the day they ARRIVE back at HQ (matches how it's labelled
-            // everywhere else in the app, e.g. the trip table's "Arrives HQ" row). So a return
-            // train that crosses midnight (arrNextDay) must have DEPARTED the day BEFORE
-            // returnDate — not on returnDate itself.
-            const depMoments = inInfo.map(x => combineDateTime(x.sched.arrNextDay ? addDays(trip.returnDate, -1) : trip.returnDate, x.sched.dep));
-            departureMoment = new Date(Math.max(...depMoments.map(d => +d)));
-            const homeArrMoments = inInfo.map(x => combineDateTime(trip.returnDate, x.sched.arr));
-            homeArrivalMoment = new Date(Math.max(...homeArrMoments.map(d => +d)));
-            homeStation = inInfo[0].sched.to;
+    // Build one "row source" per physical journey, keeping explicit date context per source
+    // (sameDay/special rows use their own date, not trip.returnDate).
+    const rowSources = [];
+    if (outParts.length <= 1 && inParts.length > 1) {
+        const upVal = outParts[0] || null;
+        inParts.forEach(downVal => rowSources.push({ up: upVal, down: downVal, outDate: outDateStr, returnDate: trip.returnDate }));
+    } else if (inParts.length <= 1 && outParts.length > 1) {
+        const downVal = inParts[0] || null;
+        outParts.forEach(upVal => rowSources.push({ up: upVal, down: downVal, outDate: outDateStr, returnDate: trip.returnDate }));
+    } else {
+        const maxLen = Math.max(outParts.length, inParts.length, 1);
+        for (let i = 0; i < maxLen; i++) {
+            rowSources.push({ up: outParts[i] || null, down: inParts[i] || null, outDate: outDateStr, returnDate: trip.returnDate });
         }
     }
+    if (trip.sameDayTrip && (trip.sameDayTrip.outTrain || trip.sameDayTrip.returnTrain)) {
+        // Point: if this same-day entry doesn't carry its own return train, it shares the trip's
+        // regular return train/date (same convention as the slash-split "shared direction" case)
+        // — it does NOT mean this leg never comes home.
+        rowSources.push({
+            up: trip.sameDayTrip.outTrain || null,
+            down: trip.sameDayTrip.returnTrain || trip.returnTrain || null,
+            outDate: trip.sameDayTrip.date,
+            returnDate: trip.sameDayTrip.returnTrain ? trip.sameDayTrip.date : trip.returnDate
+        });
+    }
+    if (trip.specialTrips && trip.specialTrips.length) {
+        trip.specialTrips.forEach(sp => {
+            const upGenuine = isGenuineSpecialTrain(sp.outTrain);
+            const downGenuine = isGenuineSpecialTrain(sp.returnTrain);
+            if (!upGenuine && !downGenuine) return; // neither leg is a real special train — just a pairing reference, nothing to add
+            // Point: whichever leg ISN'T genuinely special falls back to the regular paired duty's
+            // own train/date — a special entry can be genuine on either the out OR the return side
+            // independently, not always just the out side.
+            rowSources.push({
+                up: upGenuine ? sp.outTrain : (trip.outTrain || null),
+                down: downGenuine ? sp.returnTrain : (trip.returnTrain || null),
+                outDate: upGenuine ? sp.date : trip.dateStr,
+                returnDate: trip.returnDate
+            });
+        });
+    }
 
-    return { teamNo, trip, outLegs, outInfo, awayStation, arrivalMoment, outDepartureMoment,
-             inLegs, inInfo, departureMoment, homeArrivalMoment, homeStation };
+    const windows = [];
+    const isGenuinelySplit = rowSources.length > 1;
+    rowSources.forEach((rs, idx) => {
+        const role = idx === 0 ? 'primary' : 'secondary';
+        // Point: only exclude TTE-2 from the primary label when the journey is GENUINELY split
+        // (a real second row exists) — a team simply HAVING a TTE-2 member doesn't mean every
+        // duty is split. For a normal, unsplit journey, all existing members travel together.
+        const roleLabel = idx === 0
+            ? (isGenuinelySplit ? (hasTte2 ? 'COR/TTE-1' : 'COR') : (hasTte2 ? 'COR/TTE-1/TTE-2' : 'COR/TTE-1'))
+            : (hasTte2 ? 'TTE-2' : 'TTE-1');
+
+        const outSched = rs.up ? window.getTrainSchedule(rs.up) : null;
+        if (!outSched) return; // can't compute a window without a real outward schedule for this leg
+
+        // Point: DDU margin — the roster's nominal outDate is BSB-referenced (the day duty
+        // starts, i.e. the evening BSB departure), not necessarily the DDU train's own calendar
+        // date. Whether a date shift is needed depends entirely on whether subtracting the 2hr
+        // margin from the DDU departure time would cross backward over midnight:
+        //   - dep 00:30 (before 02:00): 00:30 minus 2h crosses back a day — meaning the DDU
+        //     boarding is genuinely the day AFTER the nominal date, so the train's own calendar
+        //     date is nominal+1 (BSB departure correctly lands back on the nominal date's evening).
+        //   - dep 14:00 (a normal daytime hour): 14:00 minus 2h = 12:00, no crossing at all — the
+        //     train's own calendar date IS the nominal date, no shift needed whatsoever.
+        // A blanket "always +1 day" shift was wrong — it broke every DDU train that ISN'T close
+        // to midnight, incorrectly pushing their whole schedule a day later.
+        let outTrainDate = rs.outDate;
+        if (outSched.from === 'DDU') {
+            const [depH, depM] = outSched.dep.split(':').map(Number);
+            const crossesMidnightWithMargin = (depH * 60 + depM) < 2 * 60; // dep before 02:00
+            if (crossesMidnightWithMargin) outTrainDate = addDays(rs.outDate, 1);
+        }
+        const awayStation = outSched.to;
+        const arrivalMoment = combineDateTime(outSched.arrNextDay ? addDays(outTrainDate, 1) : outTrainDate, outSched.arr);
+        let outDepartureMoment = combineDateTime(outTrainDate, outSched.dep);
+        if (outSched.from === 'DDU') {
+            outDepartureMoment = new Date(outDepartureMoment.getTime() - 2 * 60 * 60 * 1000);
+        }
+
+        let departureMoment = null, homeArrivalMoment = null, homeStation = null;
+        if (rs.down) {
+            const inSched = window.getTrainSchedule(rs.down);
+            if (inSched) {
+                // Same returnDate convention as before: arrival date at HQ, so an overnight
+                // return train departed the day BEFORE returnDate.
+                departureMoment = combineDateTime(inSched.arrNextDay ? addDays(rs.returnDate, -1) : rs.returnDate, inSched.dep);
+                homeArrivalMoment = combineDateTime(rs.returnDate, inSched.arr);
+                homeStation = inSched.to;
+                // Point: DDU margin on return too — if the return train only gets them as far as
+                // DDU, they're not actually back at BSB (their real HQ) until ~2 hours later.
+                if (inSched.to === 'DDU') {
+                    homeArrivalMoment = new Date(homeArrivalMoment.getTime() + 2 * 60 * 60 * 1000);
+                }
+            }
+        }
+
+        windows.push({
+            teamNo, trip, role, roleLabel, upTrain: rs.up, downTrain: rs.down,
+            awayStation, arrivalMoment, outDepartureMoment,
+            departureMoment, homeArrivalMoment, homeStation
+        });
+    });
+
+    return windows;
 }
 
 window.openLobbyModal = function() {
@@ -2102,72 +2279,88 @@ window.renderLobbyResults = function() {
     let rowSeq = 0;
 
     Object.keys(window.appData.teamMaster).sort((a, b) => a - b).forEach(t => {
-        // ---- AWAY: scan trips starting in the last few days (dayCount can be up to 3) ----
-        for (let back = 0; back <= 3; back++) {
-            const candidate = addDays(dateStr, -back);
-            const w = getTripWindow(t, candidate);
-            if (!w) continue;
-            const inTransitOut = nowMoment >= w.outDepartureMoment && nowMoment < w.arrivalMoment;
-            if (inTransitOut) break; // currently traveling — not shown anywhere, stop checking this team's away slot
-            const stillAway = nowMoment >= w.arrivalMoment && (!w.departureMoment || nowMoment < w.departureMoment);
-            if (stillAway && buckets[w.awayStation]) {
-                const key = 'row' + (rowSeq++);
-                window._mandaliRows[key] = w;
-                buckets[w.awayStation].push({ t, key, w });
-            }
-            break; // only one active trip window possible per team
-        }
+        const team = window.appData.teamMaster[t] || {};
+        const hasTte2 = !!(team.tte2 && team.tte2.trim());
+        const awayRoles = new Set(); // roles already accounted for as away/in-transit this pass
 
-        // ---- HOME (BSB Mandali): most recent completed return + next upcoming departure ----
-        // BUG FIX: the search must stop at the CLOSEST trip that has actually DEPARTED already —
-        // not just the closest OUT-day found. The old version kept walking further back whenever
-        // the nearest trip hadn't returned yet, and could latch onto an OLDER, already-completed
-        // trip instead — wrongly marking a team "home" while still away or in transit on their
-        // most recent trip. A trip whose departure is still in the FUTURE (e.g. today's OUT is
-        // later this evening) must be skipped too — it isn't "the last trip" yet, so the search
-        // needs to keep going back for the one that actually happened before now.
-        // (Confirmed with Team 9 on 5 Jul 2026 10:00: still at LKO until 18:00 that evening, but
-        // the old logic reported them home based on a stale 30 Jun return.)
-        let prevWindow = null;
-        let recentTripNotYetHome = false;
-        for (let back = 0; back <= 6; back++) {
-            const candidate = addDays(dateStr, -back);
-            const w = getTripWindow(t, candidate);
-            if (!w) continue; // no duty trip starts that day — keep looking further back
-            if (w.outDepartureMoment > nowMoment) continue; // hasn't departed yet — not the "last" trip
-            if (w.homeArrivalMoment && w.homeArrivalMoment <= nowMoment) {
-                prevWindow = w;
-            } else {
-                recentTripNotYetHome = true; // departed already, but not home yet (away or in transit)
+        ['primary', 'secondary'].forEach(roleWanted => {
+            // ---- AWAY: scan trips starting from TOMORROW back through the last few days.
+            // Starting at back=-1 (tomorrow) matters because of the DDU margin: a trip whose
+            // nominal date is tomorrow can have its REAL departure (2hrs before a DDU-origin
+            // train) pulled back into today or even yesterday. Without checking tomorrow first,
+            // that trip would never be found at all until its nominal date arrived — even though
+            // the team has, in reality, already left.
+            let handledAsAway = false;
+            for (let back = -1; back <= 3; back++) {
+                const candidate = addDays(dateStr, -back);
+                const windows = getTripWindow(t, candidate);
+                const w = windows.find(x => x.role === roleWanted);
+                if (!w) continue;
+                if (w.outDepartureMoment > nowMoment) continue; // hasn't actually left yet (correctly skips tomorrow's trip until its DDU-adjusted departure has really passed)
+                const inTransitOut = nowMoment < w.arrivalMoment;
+                if (inTransitOut) { handledAsAway = true; break; } // currently traveling — not shown anywhere for this role
+                const stillAway = !w.departureMoment || nowMoment < w.departureMoment;
+                if (stillAway && buckets[w.awayStation]) {
+                    const key = 'row' + (rowSeq++);
+                    window._mandaliRows[key] = w;
+                    buckets[w.awayStation].push({ t, key, w, roleLabel: w.roleLabel });
+                    handledAsAway = true;
+                }
+                break; // only one active trip window possible per role
             }
-            break; // this is the most recent departed trip — stop here either way
-        }
-        let nextWindow = null;
-        for (let fwd = 0; fwd <= 10; fwd++) {
-            const candidate = addDays(dateStr, fwd);
-            const w = getTripWindow(t, candidate);
-            if (w && w.outDepartureMoment > nowMoment) { nextWindow = w; break; }
-        }
-        const homeStart = prevWindow ? prevWindow.homeArrivalMoment : null;
-        const homeEnd = nextWindow ? nextWindow.outDepartureMoment : null;
-        let isHomeNow;
-        if (recentTripNotYetHome) {
-            isHomeNow = false; // currently away or in transit on the most recent trip
-        } else if (homeStart) {
-            isHomeNow = nowMoment >= homeStart && (!homeEnd || nowMoment < homeEnd);
-        } else {
-            // No trip at all found in the lookback window (e.g. very first-ever duty) — assume
-            // home until whatever next departure is known, same fallback as before.
-            isHomeNow = !nextWindow || nowMoment < homeEnd;
-        }
-        // Skip if this team is currently accounted for as AWAY (avoid double-listing)
-        const alreadyAway = MANDALI_STATIONS.some(st => st !== 'BSB' && buckets[st].some(x => x.t === t));
-        if (isHomeNow && !alreadyAway) {
-            const key = 'row' + (rowSeq++);
-            const homeWindow = { teamNo: t, prevWindow, nextWindow, isHomeFallback: !prevWindow };
-            window._mandaliRows[key] = homeWindow;
-            buckets.BSB.push({ t, key, homeWindow });
-        }
+            if (handledAsAway) { awayRoles.add(roleWanted); return; }
+
+            // ---- HOME (BSB Mandali): most recent completed return + next upcoming departure,
+            // scoped to THIS role only — a team's primary group can be home while its secondary
+            // group (different train, different person) is still away, or vice versa. Same
+            // tomorrow-first reasoning as above applies here too.
+            let prevWindow = null;
+            let recentTripNotYetHome = false;
+            for (let back = -1; back <= 6; back++) {
+                const candidate = addDays(dateStr, -back);
+                const windows = getTripWindow(t, candidate);
+                const w = windows.find(x => x.role === roleWanted);
+                if (!w) continue;
+                if (w.outDepartureMoment > nowMoment) continue; // hasn't departed yet
+                if (w.homeArrivalMoment && w.homeArrivalMoment <= nowMoment) {
+                    prevWindow = w;
+                } else {
+                    recentTripNotYetHome = true;
+                }
+                break;
+            }
+            let nextWindow = null;
+            for (let fwd = 0; fwd <= 10; fwd++) {
+                const candidate = addDays(dateStr, fwd);
+                const windows = getTripWindow(t, candidate);
+                const w = windows.find(x => x.role === roleWanted);
+                if (w && w.outDepartureMoment > nowMoment) { nextWindow = w; break; }
+            }
+
+            // A "secondary" role that has never actually had a trip in the whole lookback/lookforward
+            // window (i.e. this program never splits) shouldn't produce a duplicate home row for
+            // every ordinary, non-split team — only show it if there's real evidence it exists.
+            if (roleWanted === 'secondary' && !prevWindow && !nextWindow) return;
+
+            const homeStart = prevWindow ? prevWindow.homeArrivalMoment : null;
+            const homeEnd = nextWindow ? nextWindow.outDepartureMoment : null;
+            let isHomeNow;
+            if (recentTripNotYetHome) {
+                isHomeNow = false;
+            } else if (homeStart) {
+                isHomeNow = nowMoment >= homeStart && (!homeEnd || nowMoment < homeEnd);
+            } else {
+                isHomeNow = !nextWindow || nowMoment < homeEnd;
+            }
+
+            if (isHomeNow && !awayRoles.has(roleWanted)) {
+                const key = 'row' + (rowSeq++);
+                const roleLabel = roleWanted === 'primary' ? (hasTte2 ? 'COR/TTE-1' : 'COR') : (hasTte2 ? 'TTE-2' : 'TTE-1');
+                const homeWindow = { teamNo: t, prevWindow, nextWindow, isHomeFallback: !prevWindow, roleLabel };
+                window._mandaliRows[key] = homeWindow;
+                buckets.BSB.push({ t, key, homeWindow, roleLabel });
+            }
+        });
     });
 
     const teamMaster = window.appData.teamMaster;
@@ -2179,17 +2372,21 @@ window.renderLobbyResults = function() {
                     <thead><tr><th>Teams</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead>
                     <tbody>${list.map(x => {
                         const team = teamMaster[x.t] || {};
+                        const rl = x.roleLabel || '';
+                        const showCor = rl.includes('COR');
+                        const showTte1 = rl.includes('TTE-1');
+                        const showTte2 = rl.includes('TTE-2');
                         return `<tr onclick="window.showMandaliDetail('${x.key}')" style="cursor:pointer;">
-                            <td style="font-weight:800; color:var(--blue);">${x.t}</td>
-                            <td>${team.cor || '-'}</td>
-                            <td>${team.tte1 || '-'}</td>
-                            <td>${team.tte2 || '-'}</td>
+                            <td style="font-weight:800; color:var(--blue); text-align:left;">${x.t}${x.roleLabel ? ` <span style="font-size:10px; font-weight:700; color:var(--text-muted);">(${x.roleLabel})</span>` : ''}</td>
+                            <td>${showCor ? (team.cor || '-') : '—'}</td>
+                            <td>${showTte1 ? (team.tte1 || '-') : '—'}</td>
+                            <td>${showTte2 ? (team.tte2 || '-') : '—'}</td>
                         </tr>`;
                     }).join('')}</tbody>
                 </table>
             </div>`
             : `<p class="lobby-empty">No teams currently at ${st}</p>`;
-        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${st} Mandali</div>${body}</div>`;
+        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${st} मंडली</div>${body}</div>`;
     }).join('');
 };
 
@@ -2198,22 +2395,31 @@ window.showMandaliDetail = function(key) {
     const data = window._mandaliRows[key];
     if (!data) return;
     const teamMaster = window.appData.teamMaster;
-    let teamNo, title, tripsForTable;
+    let teamNo, title, tripsForTable, roleLabel;
 
     if (data.trip) { // away-window row
         teamNo = data.teamNo;
-        title = `Team ${teamNo} — ${data.awayStation} Mandali`;
+        roleLabel = data.roleLabel;
+        title = `Team ${teamNo}${roleLabel ? ` (${roleLabel})` : ''} — ${data.awayStation} मंडली`;
         tripsForTable = [data.trip];
     } else { // home-window row — show the just-completed return AND the next upcoming trip together
         teamNo = data.teamNo;
-        title = `Team ${teamNo} — BSB Mandali`;
+        roleLabel = data.roleLabel;
+        title = `Team ${teamNo}${roleLabel ? ` (${roleLabel})` : ''} — BSB मंडली`;
         tripsForTable = [data.prevWindow && data.prevWindow.trip, data.nextWindow && data.nextWindow.trip].filter(Boolean);
     }
 
-    const team = teamMaster[teamNo] || {};
+    const team = teamNo ? (teamMaster[teamNo] || {}) : {};
+    const showCor = !roleLabel || roleLabel.includes('COR');
+    const showTte1 = !roleLabel || roleLabel.includes('TTE-1');
+    const showTte2 = !roleLabel || roleLabel.includes('TTE-2');
     let html = `<div class="trip-table-wrap">${buildTripTable(tripsForTable, true)}</div>`;
     html += `<p style="font-size:12.5px; font-weight:800; color:var(--text-muted); margin:10px 0 4px;">👥 Members</p>
-        <p style="font-size:13px;">COR: ${team.cor || '-'}<br>TTE-1: ${team.tte1 || '-'}<br>TTE-2: ${team.tte2 || '-'}</p>`;
+        <p style="font-size:13px;">
+            <span style="${showCor ? '' : 'opacity:0.35;'}">COR: ${team.cor || '-'}</span><br>
+            <span style="${showTte1 ? '' : 'opacity:0.35;'}">TTE-1: ${team.tte1 || '-'}</span><br>
+            <span style="${showTte2 ? '' : 'opacity:0.35;'}">TTE-2: ${team.tte2 || '-'}</span>
+        </p>`;
 
     showResultModal(title, html);
 };
