@@ -786,6 +786,18 @@ function addDays(dateStr, n) {
 function isGenuineSpecialTrain(trainNo) {
     return !!(trainNo && String(trainNo).trim().startsWith('0'));
 }
+// Point: shared COCL-day detector — the day AFTER a same-day-return duty, whoever ran that
+// same-day shuttle (the secondary/junior role) gets COCL. Used by both the calendar display and
+// Mandali's home-row tracking, so the two stay consistent.
+function isCOCLDayForTeam(teamNo, dateStr) {
+    const y = new Date(`${dateStr}T00:00:00`);
+    y.setDate(y.getDate() - 1);
+    const yStr = `${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,'0')}-${String(y.getDate()).padStart(2,'0')}`;
+    const yStatus = getDutyStatusOnDate(teamNo, yStr);
+    const isRelevantType = (yStatus.type === 'out' || yStatus.type === 'halt' || yStatus.type === 'in');
+    return !!(isRelevantType && yStatus.trip.sameDayTrip && yStatus.trip.sameDayTrip.date === yStr);
+}
+window.isCOCLDayForTeam = isCOCLDayForTeam;
 function nextProgNo(p) { return (p % 43) + 1; }
 
 function getTripStartingOn(teamNo, dateStr) {
@@ -922,9 +934,26 @@ window.getAllProgrammeTrainNumbers = getAllProgrammeTrainNumbers;
 
 // Recall point for any scenario (Lobby, PDF, search, duty cards, etc.) that needs a train's
 // manned From/To station and Dep/Arr time. Returns null if no timing has been entered yet.
-window.getTrainSchedule = function(trainNo) {
+// Optional dateStr: some trains are manned to a different (usually shorter) destination on
+// specific days of the week — e.g. train 22417 runs BSB→NDLS on Tue/Thu but is only manned as
+// far as LKO on Saturdays. When dateStr is given, checks for a day-specific override first
+// (admin-configured in Edit Schedule) and applies it on top of the base schedule; the "from"/
+// "dep" (departure side) stays the same, only "to"/"arr"/"arrNextDay" can be overridden, since
+// the crew still starts the duty the same way regardless of how far they end up manning it.
+window.getTrainSchedule = function(trainNo, dateStr) {
     if (!trainNo) return null;
-    return (window.appData.trainSchedule && window.appData.trainSchedule[String(trainNo).trim()]) || null;
+    const key = String(trainNo).trim();
+    const base = (window.appData.trainSchedule && window.appData.trainSchedule[key]) || null;
+    if (!base) return null;
+    if (dateStr && window.appData.trainScheduleOverrides && window.appData.trainScheduleOverrides[key]) {
+        const weekdays = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+        const wd = weekdays[new Date(`${dateStr}T00:00:00`).getDay()];
+        const override = window.appData.trainScheduleOverrides[key][wd];
+        if (override) {
+            return { ...base, to: override.to || base.to, arr: override.arr || base.arr, arrNextDay: !!override.arrNextDay };
+        }
+    }
+    return base;
 };
 
 function collectTrips(teamNo, direction, count) {
@@ -961,10 +990,12 @@ async function loadRosterData() {
                 window.appData.trainSchedule = DEFAULT_TRAIN_SCHEDULE;
                 if (window.isAdmin) await set(ref(db, 'roster/BSB/trainSchedule'), DEFAULT_TRAIN_SCHEDULE);
             }
+            window.appData.trainScheduleOverrides = data.trainScheduleOverrides || {};
         } else {
             window.appData.teamMaster = DEFAULT_TEAM_MASTER;
             window.appData.linkProgramme = DEFAULT_LINK_PROGRAMME;
             window.appData.trainSchedule = DEFAULT_TRAIN_SCHEDULE;
+            window.appData.trainScheduleOverrides = {};
             window.appData.anchorDate = DEFAULT_ANCHOR_DATE;
             if (window.isAdmin) await set(ref(db, 'roster/BSB'), window.appData);
         }
@@ -972,6 +1003,7 @@ async function loadRosterData() {
         window.appData.teamMaster = DEFAULT_TEAM_MASTER;
         window.appData.linkProgramme = DEFAULT_LINK_PROGRAMME;
         window.appData.trainSchedule = DEFAULT_TRAIN_SCHEDULE;
+        window.appData.trainScheduleOverrides = {};
         window.appData.anchorDate = DEFAULT_ANCHOR_DATE;
     }
     populateTeamSelectors();
@@ -1185,13 +1217,7 @@ function renderMyDutyWeek() {
     // text marker on that next day's cell, informational only. This does NOT apply to special
     // trains — those are multi-day duties like any other, not a same-day shuttle.
     function cocLNextDayLine(teamNo, dateStr) {
-        const y = new Date(`${dateStr}T00:00:00`);
-        y.setDate(y.getDate() - 1);
-        const yStr = `${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,'0')}-${String(y.getDate()).padStart(2,'0')}`;
-        const yStatus = getDutyStatusOnDate(teamNo, yStr);
-        const isRelevantType = (yStatus.type === 'out' || yStatus.type === 'halt' || yStatus.type === 'in');
-        const hasSameDayYesterday = isRelevantType && yStatus.trip.sameDayTrip && yStatus.trip.sameDayTrip.date === yStr;
-        return hasSameDayYesterday ? `<span class="cal-trainno" style="color:#dc2626; font-weight:900;">COCL</span>` : '';
+        return isCOCLDayForTeam(teamNo, dateStr) ? `<span class="cal-trainno" style="color:#dc2626; font-weight:900;">COCL</span>` : '';
     }
 
     // Pass 1: status + group key (the trip's own out-day dateStr, stable across out/halt/in)
@@ -1329,12 +1355,12 @@ function dayTd(dateStr) {
 // Builds the Date / Train No / Day / Up-Down table for a list of trips (Point 1: Prog No removed).
 // Formats a train-slot value (single train, or two joined by "/") for a table cell — optionally
 // with a small Dep/Arr timing line underneath, pulled live from Train Schedule.
-function trainCellHtml(trainStr, withTiming) {
+function trainCellHtml(trainStr, withTiming, dateStr) {
     if (!trainStr) return '';
     if (!withTiming) return trainStr;
     const legs = trainStr.split('/').map(s => s.trim()).filter(Boolean);
     const timingLines = legs.map(tn => {
-        const sched = window.getTrainSchedule(tn);
+        const sched = window.getTrainSchedule(tn, dateStr);
         if (!sched) return `<span class="tt-timing">(timing not set)</span>`;
         return `<span class="tt-timing">${sched.from}→${sched.to} · ${sched.dep}-${sched.arr}${sched.arrNextDay ? ' +1' : ''}</span>`;
     }).join('<br>');
@@ -1361,7 +1387,7 @@ function buildTripTable(trips, withTiming) {
         }
         rows += `<tr>
             <td class="td-date">${fmtDateLabel(trip.dateStr)}</td>
-            <td>${trainCellHtml(trip.outTrain, withTiming)}</td>
+            <td>${trainCellHtml(trip.outTrain, withTiming, trip.dateStr)}</td>
             ${dayTd(trip.dateStr)}
             <td><span class="ud-badge ud-depart">Departs HQ</span></td>
         </tr>`;
@@ -1371,7 +1397,7 @@ function buildTripTable(trips, withTiming) {
             if (trip.sameDayTrip.outTrain) {
                 rows += `<tr class="trip-divider">
                     <td class="td-date">${fmtDateLabel(trip.sameDayTrip.date)}</td>
-                    <td>${trainCellHtml(trip.sameDayTrip.outTrain, withTiming)}</td>
+                    <td>${trainCellHtml(trip.sameDayTrip.outTrain, withTiming, trip.sameDayTrip.date)}</td>
                     ${dayTd(trip.sameDayTrip.date)}
                     <td><span class="ud-badge ud-depart">Departs HQ (Same-Day)</span></td>
                 </tr>`;
@@ -1379,7 +1405,7 @@ function buildTripTable(trips, withTiming) {
             if (trip.sameDayTrip.returnTrain) {
                 rows += `<tr class="trip-divider">
                     <td class="td-date">${fmtDateLabel(trip.sameDayTrip.date)}</td>
-                    <td>${trainCellHtml(trip.sameDayTrip.returnTrain, withTiming)}</td>
+                    <td>${trainCellHtml(trip.sameDayTrip.returnTrain, withTiming, trip.sameDayTrip.date)}</td>
                     ${dayTd(trip.sameDayTrip.date)}
                     <td><span class="ud-badge ud-arrive">Arrives HQ (Same-Day)</span></td>
                 </tr>`;
@@ -1393,7 +1419,7 @@ function buildTripTable(trips, withTiming) {
                 if (isGenuineSpecialTrain(sp.outTrain)) {
                     rows += `<tr class="trip-divider">
                         <td class="td-date">${fmtDateLabel(sp.date)}</td>
-                        <td>${trainCellHtml(sp.outTrain, withTiming)}</td>
+                        <td>${trainCellHtml(sp.outTrain, withTiming, sp.date)}</td>
                         ${dayTd(sp.date)}
                         <td><span class="ud-badge ud-depart">Departs HQ (${sp.label})</span></td>
                     </tr>`;
@@ -1401,7 +1427,7 @@ function buildTripTable(trips, withTiming) {
                 if (isGenuineSpecialTrain(sp.returnTrain)) {
                     rows += `<tr class="trip-divider">
                         <td class="td-date">${fmtDateLabel(trip.returnDate || sp.date)}</td>
-                        <td>${trainCellHtml(sp.returnTrain, withTiming)}</td>
+                        <td>${trainCellHtml(sp.returnTrain, withTiming, trip.returnDate || sp.date)}</td>
                         ${dayTd(trip.returnDate || sp.date)}
                         <td><span class="ud-badge ud-arrive">Arrives HQ (${sp.label})</span></td>
                     </tr>`;
@@ -1411,7 +1437,7 @@ function buildTripTable(trips, withTiming) {
         if (trip.returnTrain) {
             rows += `<tr class="trip-divider">
                 <td class="td-date">${fmtDateLabel(trip.returnDate)}</td>
-                <td>${trainCellHtml(trip.returnTrain, withTiming)}</td>
+                <td>${trainCellHtml(trip.returnTrain, withTiming, trip.returnDate)}</td>
                 ${dayTd(trip.returnDate)}
                 <td><span class="ud-badge ud-arrive">Arrives HQ</span></td>
             </tr>`;
@@ -2080,7 +2106,7 @@ window.clearNameSearch = function() {
 // a separate train, both traveling the same direction that day (both UP or both DOWN) — so every
 // leg is used independently: the window's start = earliest arrival among UP legs, its end =
 // latest departure among DOWN legs, keeping the full team's presence window.
-const MANDALI_STATIONS = ['LKO', 'PRYJ', 'CNB', 'BSB'];
+const MANDALI_STATIONS = ['LKO', 'PRYJ', 'CNB'];
 const BSB_HOME_STATIONS = ['BSB', 'DDU', 'BCY', 'BNRS'];
 let mandaliRefreshTimer = null;
 window._mandaliRows = {};
@@ -2190,7 +2216,7 @@ function getTripWindow(teamNo, outDateStr) {
             ? (isGenuinelySplit ? (hasTte2 ? 'COR/TTE-1' : 'COR') : (hasTte2 ? 'COR/TTE-1/TTE-2' : 'COR/TTE-1'))
             : (hasTte2 ? 'TTE-2' : 'TTE-1');
 
-        const outSched = rs.up ? window.getTrainSchedule(rs.up) : null;
+        const outSched = rs.up ? window.getTrainSchedule(rs.up, rs.outDate) : null;
         if (!outSched) return; // can't compute a window without a real outward schedule for this leg
 
         // Point: DDU margin — the roster's nominal outDate is BSB-referenced (the day duty
@@ -2219,7 +2245,7 @@ function getTripWindow(teamNo, outDateStr) {
 
         let departureMoment = null, homeArrivalMoment = null, homeStation = null;
         if (rs.down) {
-            const inSched = window.getTrainSchedule(rs.down);
+            const inSched = window.getTrainSchedule(rs.down, rs.returnDate);
             if (inSched) {
                 // Same returnDate convention as before: arrival date at HQ, so an overnight
                 // return train departed the day BEFORE returnDate.
@@ -2274,23 +2300,16 @@ window.renderLobbyResults = function() {
     const nowMoment = combineDateTime(dateStr, `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`);
     if (clockEl) clockEl.textContent = `🔴 Live — ${now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}`;
 
-    const buckets = { LKO: [], PRYJ: [], CNB: [], BSB: [] };
+    const buckets = { LKO: [], PRYJ: [], CNB: [] };
     window._mandaliRows = {};
     let rowSeq = 0;
 
     Object.keys(window.appData.teamMaster).sort((a, b) => a - b).forEach(t => {
-        const team = window.appData.teamMaster[t] || {};
-        const hasTte2 = !!(team.tte2 && team.tte2.trim());
-        const awayRoles = new Set(); // roles already accounted for as away/in-transit this pass
-
+        // Point: BSB Mandali (home tracking) removed entirely — only away-station presence
+        // (LKO/PRYJ/CNB) is tracked now. Scans both primary and secondary roles independently so
+        // split trains/same-day-return/special trains still correctly show whichever member is
+        // actually away, without any of the "home" bookkeeping that was never getting right.
         ['primary', 'secondary'].forEach(roleWanted => {
-            // ---- AWAY: scan trips starting from TOMORROW back through the last few days.
-            // Starting at back=-1 (tomorrow) matters because of the DDU margin: a trip whose
-            // nominal date is tomorrow can have its REAL departure (2hrs before a DDU-origin
-            // train) pulled back into today or even yesterday. Without checking tomorrow first,
-            // that trip would never be found at all until its nominal date arrived — even though
-            // the team has, in reality, already left.
-            let handledAsAway = false;
             for (let back = -1; back <= 3; back++) {
                 const candidate = addDays(dateStr, -back);
                 const windows = getTripWindow(t, candidate);
@@ -2298,67 +2317,14 @@ window.renderLobbyResults = function() {
                 if (!w) continue;
                 if (w.outDepartureMoment > nowMoment) continue; // hasn't actually left yet (correctly skips tomorrow's trip until its DDU-adjusted departure has really passed)
                 const inTransitOut = nowMoment < w.arrivalMoment;
-                if (inTransitOut) { handledAsAway = true; break; } // currently traveling — not shown anywhere for this role
+                if (inTransitOut) break; // currently traveling — not shown anywhere for this role
                 const stillAway = !w.departureMoment || nowMoment < w.departureMoment;
                 if (stillAway && buckets[w.awayStation]) {
                     const key = 'row' + (rowSeq++);
                     window._mandaliRows[key] = w;
                     buckets[w.awayStation].push({ t, key, w, roleLabel: w.roleLabel });
-                    handledAsAway = true;
                 }
                 break; // only one active trip window possible per role
-            }
-            if (handledAsAway) { awayRoles.add(roleWanted); return; }
-
-            // ---- HOME (BSB Mandali): most recent completed return + next upcoming departure,
-            // scoped to THIS role only — a team's primary group can be home while its secondary
-            // group (different train, different person) is still away, or vice versa. Same
-            // tomorrow-first reasoning as above applies here too.
-            let prevWindow = null;
-            let recentTripNotYetHome = false;
-            for (let back = -1; back <= 6; back++) {
-                const candidate = addDays(dateStr, -back);
-                const windows = getTripWindow(t, candidate);
-                const w = windows.find(x => x.role === roleWanted);
-                if (!w) continue;
-                if (w.outDepartureMoment > nowMoment) continue; // hasn't departed yet
-                if (w.homeArrivalMoment && w.homeArrivalMoment <= nowMoment) {
-                    prevWindow = w;
-                } else {
-                    recentTripNotYetHome = true;
-                }
-                break;
-            }
-            let nextWindow = null;
-            for (let fwd = 0; fwd <= 10; fwd++) {
-                const candidate = addDays(dateStr, fwd);
-                const windows = getTripWindow(t, candidate);
-                const w = windows.find(x => x.role === roleWanted);
-                if (w && w.outDepartureMoment > nowMoment) { nextWindow = w; break; }
-            }
-
-            // A "secondary" role that has never actually had a trip in the whole lookback/lookforward
-            // window (i.e. this program never splits) shouldn't produce a duplicate home row for
-            // every ordinary, non-split team — only show it if there's real evidence it exists.
-            if (roleWanted === 'secondary' && !prevWindow && !nextWindow) return;
-
-            const homeStart = prevWindow ? prevWindow.homeArrivalMoment : null;
-            const homeEnd = nextWindow ? nextWindow.outDepartureMoment : null;
-            let isHomeNow;
-            if (recentTripNotYetHome) {
-                isHomeNow = false;
-            } else if (homeStart) {
-                isHomeNow = nowMoment >= homeStart && (!homeEnd || nowMoment < homeEnd);
-            } else {
-                isHomeNow = !nextWindow || nowMoment < homeEnd;
-            }
-
-            if (isHomeNow && !awayRoles.has(roleWanted)) {
-                const key = 'row' + (rowSeq++);
-                const roleLabel = roleWanted === 'primary' ? (hasTte2 ? 'COR/TTE-1' : 'COR') : (hasTte2 ? 'TTE-2' : 'TTE-1');
-                const homeWindow = { teamNo: t, prevWindow, nextWindow, isHomeFallback: !prevWindow, roleLabel };
-                window._mandaliRows[key] = homeWindow;
-                buckets.BSB.push({ t, key, homeWindow, roleLabel });
             }
         });
     });
@@ -2376,8 +2342,10 @@ window.renderLobbyResults = function() {
                         const showCor = rl.includes('COR');
                         const showTte1 = rl.includes('TTE-1');
                         const showTte2 = rl.includes('TTE-2');
-                        return `<tr onclick="window.showMandaliDetail('${x.key}')" style="cursor:pointer;">
-                            <td style="font-weight:800; color:var(--blue); text-align:left;">${x.t}${x.roleLabel ? ` <span style="font-size:10px; font-weight:700; color:var(--text-muted);">(${x.roleLabel})</span>` : ''}</td>
+                        const rowStyle = x.isCoclToday ? 'background:rgba(147,51,234,0.15);' : x.isRestToday ? 'background:rgba(249,115,22,0.15);' : '';
+                        const statusTag = x.isCoclToday ? ' <span style="font-size:10px; font-weight:800; color:var(--purple);">🛌 COCL</span>' : x.isRestToday ? ' <span style="font-size:10px; font-weight:800; color:var(--orange);">🌴 REST</span>' : '';
+                        return `<tr onclick="window.showMandaliDetail('${x.key}')" style="cursor:pointer; ${rowStyle}">
+                            <td style="font-weight:800; color:var(--blue); text-align:left;">${x.t}${x.roleLabel ? ` <span style="font-size:10px; font-weight:700; color:var(--text-muted);">(${x.roleLabel})</span>` : ''}${statusTag}</td>
                             <td>${showCor ? (team.cor || '-') : '—'}</td>
                             <td>${showTte1 ? (team.tte1 || '-') : '—'}</td>
                             <td>${showTte2 ? (team.tte2 || '-') : '—'}</td>
@@ -2391,6 +2359,31 @@ window.renderLobbyResults = function() {
 };
 
 // Tapping a Mandali row — full Up/Down train detail, stations, timings and members.
+// Point: for a combined/unsplit row ("COR/TTE-1/TTE-2"), the junior member might STILL have
+// their own separate split/special/same-day history somewhere in the past or future, even though
+// right now they're folded into the primary row (traveling together). This computes that context
+// on demand for the detail popup, without adding a second permanent row to the main Mandali list.
+function computeSecondaryOwnContext(teamNo, dateStr, nowMoment) {
+    let prevWindow = null;
+    for (let back = -1; back <= 45; back++) {
+        const candidate = addDays(dateStr, -back);
+        const windows = getTripWindow(teamNo, candidate);
+        const w = windows.find(x => x.role === 'secondary');
+        if (!w) continue;
+        if (w.outDepartureMoment > nowMoment) continue;
+        if (w.homeArrivalMoment && w.homeArrivalMoment <= nowMoment) prevWindow = w;
+        break;
+    }
+    let nextWindow = null;
+    for (let fwd = 0; fwd <= 45; fwd++) {
+        const candidate = addDays(dateStr, fwd);
+        const windows = getTripWindow(teamNo, candidate);
+        const w = windows.find(x => x.role === 'secondary');
+        if (w && w.outDepartureMoment > nowMoment) { nextWindow = w; break; }
+    }
+    return { prevWindow, nextWindow };
+}
+
 window.showMandaliDetail = function(key) {
     const data = window._mandaliRows[key];
     if (!data) return;
@@ -2420,6 +2413,23 @@ window.showMandaliDetail = function(key) {
             <span style="${showTte1 ? '' : 'opacity:0.35;'}">TTE-1: ${team.tte1 || '-'}</span><br>
             <span style="${showTte2 ? '' : 'opacity:0.35;'}">TTE-2: ${team.tte2 || '-'}</span>
         </p>`;
+
+    // Point: this row combines all three members (unsplit journey right now) — but the junior
+    // member (TTE-2) may still have their own separate split history elsewhere. Show it here so
+    // tapping the combined row still answers "which train did TTE-2 last return on, and what's
+    // their next one" instead of only showing the current unified journey.
+    if (roleLabel && roleLabel.includes('TTE-1') && roleLabel.includes('TTE-2')) {
+        const dateStr = document.getElementById('lobby-date').value;
+        const now = new Date();
+        const nowMoment = combineDateTime(dateStr, `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`);
+        const { prevWindow, nextWindow } = computeSecondaryOwnContext(teamNo, dateStr, nowMoment);
+        if (prevWindow || nextWindow) {
+            const secTrips = [prevWindow && prevWindow.trip, nextWindow && nextWindow.trip].filter(Boolean);
+            html += `<p style="font-size:12.5px; font-weight:800; color:var(--purple); margin:14px 0 4px;">🔀 ${team.tte2}'s own separate duties</p>
+                <p style="font-size:11px; color:var(--text-muted); margin-bottom:6px;">Right now they're traveling together with ${team.cor}/${team.tte1} — but here's their last and next INDEPENDENT split/special duty:</p>
+                <div class="trip-table-wrap">${buildTripTable(secTrips, true)}</div>`;
+        }
+    }
 
     showResultModal(title, html);
 };
@@ -3011,6 +3021,7 @@ window.toggleScheduleTable = function() {
             <td contenteditable="true" class="editable-cell" data-field="dep">${s.dep || ''}</td>
             <td contenteditable="true" class="editable-cell" data-field="arr">${s.arr || ''}</td>
             <td><input type="checkbox" class="sched-nextday-cb" ${s.arrNextDay ? 'checked' : ''}></td>
+            <td><button class="inline-save-btn" style="background:var(--purple);" title="Day-specific manning override" onclick="window.openTrainOverrideModal('${trainNo}')">🔀</button></td>
             <td><button class="inline-save-btn" style="background:var(--red);" onclick="window.deleteScheduleRowInline('${trainNo}', this)">✕</button></td>
         </tr>`;
     });
@@ -3024,8 +3035,9 @@ window.toggleScheduleTable = function() {
         <td contenteditable="true" class="editable-cell" id="sched-new-arr"></td>
         <td><input type="checkbox" id="sched-new-nextday"></td>
         <td></td>
+        <td></td>
     </tr>`;
-    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table prog-table-bordered" id="all-schedule-edit-table"><thead><tr><th>Train</th><th>Save</th><th>From</th><th>To</th><th>Dep</th><th>Arr</th><th>+1 Day</th><th>Del</th></tr></thead><tbody>${rows}${addRow}</tbody></table></div>
+    const html = `${hint}<div class="admin-table-wrap"><table class="admin-table prog-table-bordered" id="all-schedule-edit-table"><thead><tr><th>Train</th><th>Save</th><th>From</th><th>To</th><th>Dep</th><th>Arr</th><th>+1 Day</th><th>Day Ovr.</th><th>Del</th></tr></thead><tbody>${rows}${addRow}</tbody></table></div>
         <div class="admin-bottom-actions">
             <button class="action" style="background:var(--green);" onclick="window.saveAllScheduleRows()">💾 Save All</button>
         </div>`;
@@ -3090,6 +3102,80 @@ window.addNewScheduleRow = async function() {
         window.toggleScheduleTable();
     } catch (e) {
         showToast('❌ Save failed: ' + e.message, true);
+    }
+};
+
+// ---- Day-of-week manning overrides ----
+// Same train number, different manned destination/arrival on specific days — e.g. train 22417
+// runs BSB→NDLS on Tue/Thu but is only manned as far as LKO on Saturdays. The "From"/"Dep" side
+// never changes here (the crew starts duty the same way regardless); only "To"/"Arr"/"+1 Day"
+// can be overridden per day.
+window.openTrainOverrideModal = function(trainNo) {
+    const base = window.appData.trainSchedule[trainNo] || {};
+    const overrides = (window.appData.trainScheduleOverrides && window.appData.trainScheduleOverrides[trainNo]) || {};
+    const weekdays = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+    const existingRows = weekdays.filter(wd => overrides[wd]).map(wd => {
+        const o = overrides[wd];
+        return `<tr>
+            <td>${wd}</td>
+            <td>${o.to}</td>
+            <td>${o.arr}${o.arrNextDay ? ' +1' : ''}</td>
+            <td><button class="inline-save-btn" style="background:var(--red);" onclick="window.deleteTrainOverride('${trainNo}','${wd}')">✕</button></td>
+        </tr>`;
+    }).join('');
+    const existingTable = existingRows
+        ? `<div class="admin-table-wrap" style="margin-bottom:14px;"><table class="admin-table"><thead><tr><th>Day</th><th>To</th><th>Arr</th><th></th></tr></thead><tbody>${existingRows}</tbody></table></div>`
+        : `<p style="font-size:12.5px; color:var(--text-muted); margin-bottom:14px;">No day-specific overrides yet — every day currently uses the normal schedule: ${base.from || '?'}→${base.to || '?'} · ${base.dep || '?'}-${base.arr || '?'}${base.arrNextDay ? ' +1' : ''}.</p>`;
+
+    const dayCheckboxes = weekdays.map(wd => `<label style="display:inline-flex; align-items:center; gap:4px; margin:2px 8px 6px 0; font-size:12.5px;"><input type="checkbox" class="ovr-day-cb" value="${wd}"> ${wd}</label>`).join('');
+
+    const html = `
+        <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:10px;">Normal schedule: <b>${base.from || '?'}→${base.to || '?'} · ${base.dep || '?'}-${base.arr || '?'}${base.arrNextDay ? ' +1' : ''}</b>. Set a different manned destination/arrival for specific days below — days not listed always use the normal schedule.</p>
+        ${existingTable}
+        <p style="font-weight:800; font-size:13px; margin-bottom:6px;">➕ Add / Update Override</p>
+        <div style="margin-bottom:10px;">${dayCheckboxes}</div>
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+            <input type="text" id="ovr-to" placeholder="To (e.g. LKO)" style="flex:1; margin:0;">
+            <input type="text" id="ovr-arr" placeholder="Arr (e.g. 15:10)" style="flex:1; margin:0;">
+        </div>
+        <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; margin-bottom:14px;"><input type="checkbox" id="ovr-nextday"> Arrives next day (+1)</label>
+        <button class="action" style="background:var(--purple);" onclick="window.saveTrainOverride('${trainNo}')">💾 Save Override</button>
+    `;
+    showResultModal(`🔀 Train ${trainNo} — Day Overrides`, html);
+};
+
+window.saveTrainOverride = async function(trainNo) {
+    const selectedDays = Array.from(document.querySelectorAll('.ovr-day-cb:checked')).map(cb => cb.value);
+    const to = document.getElementById('ovr-to').value.trim();
+    const arr = document.getElementById('ovr-arr').value.trim();
+    const arrNextDay = document.getElementById('ovr-nextday').checked;
+    if (!selectedDays.length) return showToast('❌ Select at least one day', true);
+    if (!to || !arr) return showToast('❌ To and Arr are required', true);
+    try {
+        window.appData.trainScheduleOverrides = window.appData.trainScheduleOverrides || {};
+        window.appData.trainScheduleOverrides[trainNo] = window.appData.trainScheduleOverrides[trainNo] || {};
+        for (const wd of selectedDays) {
+            const entry = { to, arr, arrNextDay };
+            window.appData.trainScheduleOverrides[trainNo][wd] = entry;
+            await set(ref(db, `roster/BSB/trainScheduleOverrides/${trainNo}/${wd}`), entry);
+        }
+        showToast('✅ Override saved for ' + selectedDays.join(', '));
+        window.openTrainOverrideModal(trainNo);
+    } catch (e) {
+        showToast('❌ Save failed: ' + e.message, true);
+    }
+};
+
+window.deleteTrainOverride = async function(trainNo, weekday) {
+    try {
+        if (window.appData.trainScheduleOverrides && window.appData.trainScheduleOverrides[trainNo]) {
+            delete window.appData.trainScheduleOverrides[trainNo][weekday];
+        }
+        await set(ref(db, `roster/BSB/trainScheduleOverrides/${trainNo}/${weekday}`), null);
+        showToast('✅ Override removed');
+        window.openTrainOverrideModal(trainNo);
+    } catch (e) {
+        showToast('❌ Failed: ' + e.message, true);
     }
 };
 
