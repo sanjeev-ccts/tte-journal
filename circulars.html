@@ -15,8 +15,10 @@
         --shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
     body.dark-mode {
-        --bg: #0b1220; --card: #131c2e; --text: #e2e8f0; --text-muted: #94a3b8;
-        --border: #253449; --input-bg: #0f1826; --shadow: 0 4px 15px rgba(0,0,0,0.4);
+        --bg: #0d1117; --card: #161b22; --text: #e6edf3; --text-muted: #8b949e;
+        --border: #30363d; --input-bg: #1c2128; --top-bar-bg: #010409;
+        --blue: #58a6ff; --green: #3fb950; --purple: #bc8cff; --orange: #f0883e; --red: #ff7b72;
+        --shadow: 0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
     }
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { margin:0; font-family:'Roboto',sans-serif; background:var(--bg); color:var(--text); transition:background 0.3s, color 0.3s; padding-bottom:90px; }
@@ -35,26 +37,22 @@
     .dash-card {
         background:var(--card);
         background:linear-gradient(155deg, color-mix(in srgb, var(--card) 92%, white 8%) 0%, var(--card) 55%, color-mix(in srgb, var(--card) 90%, black 10%) 100%);
-        border-radius:18px; padding:20px 12px;
+        border-radius:18px; padding:16px 12px;
         box-shadow:0 8px 20px rgba(0,0,0,0.12), 0 2px 6px rgba(0,0,0,0.08), inset 0 1px 0 color-mix(in srgb, white 25%, transparent), inset 0 -2px 3px color-mix(in srgb, black 10%, transparent);
         border:1px solid var(--border); text-align:center; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;
         user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent;
     }
     body.dark-mode .dash-card { box-shadow:0 8px 20px rgba(0,0,0,0.45), 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 color-mix(in srgb, white 12%, transparent), inset 0 -2px 3px color-mix(in srgb, black 25%, transparent); }
     .dash-card:active { transform:scale(0.96) translateY(2px); box-shadow:0 3px 10px rgba(0,0,0,0.15), inset 0 2px 4px rgba(0,0,0,0.2); }
-    .dash-icon-badge { width:50px; height:50px; border-radius:50%; margin:0 auto 10px; display:flex; align-items:center; justify-content:center; font-size:23px; box-shadow:0 5px 12px rgba(0,0,0,0.25), inset 0 2px 3px rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.15); }
-    .dash-card:nth-child(1) .dash-icon-badge { background:radial-gradient(circle at 35% 30%, #93c5fd 0%, #2563eb 60%, #1e3a8a 100%); }
-    .dash-card:nth-child(2) .dash-icon-badge { background:radial-gradient(circle at 35% 30%, #c4b5fd 0%, #7c3aed 60%, #4c1d95 100%); }
-    .dash-card:nth-child(3) .dash-icon-badge { background:radial-gradient(circle at 35% 30%, #fde68a 0%, #d97706 60%, #78350f 100%); }
-    .dash-card:nth-child(4) .dash-icon-badge { background:radial-gradient(circle at 35% 30%, #fca5a5 0%, #dc2626 60%, #7f1d1d 100%); }
-    .dash-card:nth-child(5) .dash-icon-badge { background:radial-gradient(circle at 35% 30%, #86efac 0%, #16a34a 60%, #14532d 100%); }
-    .dash-card:nth-child(6) .dash-icon-badge { background:radial-gradient(circle at 35% 30%, #67e8f9 0%, #0891b2 60%, #164e63 100%); }
+    .dash-icon-badge { margin:0 auto 8px; display:flex; align-items:center; justify-content:center; font-size:28px; }
     .dash-card .dash-label { font-size:13.5px; font-weight:800; }
     .dash-card .dash-desc { font-size:10.5px; color:var(--text-muted); margin-top:4px; line-height:1.35; }
     .dash-card .dash-count { font-size:11px; color:var(--text-muted); margin-top:4px; }
 
     /* ---- Search / filter ---- */
     .search-card { background:var(--card); border-radius:16px; padding:14px; box-shadow:var(--shadow); border:1px solid var(--border); margin-bottom:14px; position:sticky; top:58px; z-index:90; }
+    .bucket-heading { font-size:15px; font-weight:900; color:var(--text); text-align:center; margin-bottom:10px; }
+    .bucket-heading:empty { display:none; margin:0; }
     .search-box { display:flex; align-items:center; gap:8px; background:var(--input-bg); border:1.5px solid var(--border); border-radius:24px; padding:10px 16px; margin-bottom:10px; }
     .search-box input { flex:1; border:none; background:transparent; outline:none; font-size:14.5px; color:var(--text); font-family:inherit; }
     .search-box input::placeholder { color:var(--text-muted); }
@@ -146,7 +144,7 @@
     <div class="search-card" style="position:static;">
         <div class="search-box">
             <span>🔍</span>
-            <input type="text" id="dash-search-input" placeholder="Search all circulars by title..." onkeydown="if(event.key==='Enter') searchFromDashboard();">
+            <input type="text" id="dash-search-input" placeholder="Search all circulars by title, year or description..." oninput="searchFromDashboard()">
         </div>
     </div>
     <div class="dash-grid">
@@ -174,7 +172,6 @@
             <div class="dash-icon-badge">📚</div>
             <div class="dash-label">Others</div>
             <div class="dash-desc">Acts, Rules & Books</div>
-            <div class="dash-count" id="count-rules"></div>
         </div>
         <div class="dash-card" onclick="document.getElementById('feedback-modal').classList.remove('hidden')">
             <div class="dash-icon-badge">💬</div>
@@ -187,6 +184,7 @@
 <!-- List screen -->
 <div id="screen-list" class="wrap hidden">
     <div class="search-card">
+        <div id="bucket-heading" class="bucket-heading"></div>
         <div class="search-box">
             <span>🔍</span>
             <input type="text" id="search-input" placeholder="Search by title..." oninput="renderList()">
@@ -253,6 +251,7 @@
             <h3 style="margin:0;">⚙️ Manage Circulars</h3>
         </div>
         <div style="padding:16px 20px 20px;">
+            <div id="manage-feedback-section"></div>
             <div id="manage-list"></div>
         </div>
     </div>
@@ -392,6 +391,8 @@ window.handleHeaderBackTap = function() {
 };
 
 // ---- Navigation: dashboard <-> list ----
+const BUCKET_LABELS = { '': '📋 All Circulars', 'com': '💼 Com. Circulars', 'rbe': '🚊 RBE Circulars', 'misc': '📌 Miscellaneous', 'rules': '📚 Others (Acts, Rules & Books)' };
+
 window.goToBucket = function(bucket) {
     window.currentBucket = bucket;
     document.getElementById('screen-dashboard').classList.add('hidden');
@@ -399,6 +400,7 @@ window.goToBucket = function(bucket) {
     document.getElementById('floating-back-btn').classList.remove('hidden');
     document.getElementById('search-input').value = '';
     document.getElementById('category-select').value = '';
+    document.getElementById('bucket-heading').innerText = BUCKET_LABELS[bucket] || '';
     populateCategoryFilter();
     updateAdminFabVisibility();
     renderList();
@@ -429,7 +431,8 @@ function updateDashboardCounts() {
     document.getElementById('count-all').innerText = items.length ? `${items.length} circulars` : '';
     ['com','rbe','misc','rules'].forEach(b => {
         const n = items.filter(c => (c.bucket || 'misc') === b).length;
-        document.getElementById(`count-${b}`).innerText = n ? `${n} circulars` : '';
+        const el = document.getElementById(`count-${b}`);
+        if (el) el.innerText = n ? `${n} circulars` : '';
     });
 }
 
@@ -460,11 +463,18 @@ function escapeHtml(s) {
 }
 
 window.searchFromDashboard = function() {
-    const q = document.getElementById('dash-search-input').value.trim();
+    const dashInput = document.getElementById('dash-search-input');
+    const q = dashInput.value;
+    if (q.trim() === '') return; // don't navigate away just because the field is empty
     goToBucket(''); // always searches across All Circulars, regardless of which card triggered it
-    document.getElementById('search-input').value = q;
+    const listInput = document.getElementById('search-input');
+    listInput.value = q;
     renderList();
-    document.getElementById('dash-search-input').value = '';
+    // Hand off keyboard focus to the now-visible list search box so further typing continues
+    // live, without the user needing to re-tap anything.
+    listInput.focus();
+    const len = listInput.value.length;
+    listInput.setSelectionRange(len, len);
 };
 
 window.clearFilters = function() {
@@ -486,7 +496,11 @@ window.renderList = function() {
     if (!window.isAdmin) items = items.filter(c => c.visible !== false);
 
     if (window.currentBucket) items = items.filter(c => (c.bucket || 'misc') === window.currentBucket);
-    if (q) items = items.filter(c => (c.title || '').toLowerCase().includes(q));
+    if (q) items = items.filter(c =>
+        (c.title || '').toLowerCase().includes(q) ||
+        (c.description || '').toLowerCase().includes(q) ||
+        String(c.year || '').includes(q)
+    );
     if (catFilter) items = items.filter(c => c.category === catFilter);
 
     items.sort((a, b) => {
@@ -751,7 +765,8 @@ window.submitFeedback = async function() {
 };
 
 async function renderFeedbackSection() {
-    if (!window.isAdmin) return;
+    const container = document.getElementById('manage-feedback-section');
+    if (!window.isAdmin) { container.innerHTML = ''; return; }
     try {
         const snap = await get(ref(db, 'circular_feedback'));
         const data = snap.val() || {};
@@ -759,9 +774,8 @@ async function renderFeedbackSection() {
         document.getElementById('feedback-badge').classList.toggle('hidden', items.length === 0);
         document.getElementById('feedback-badge').innerText = items.length;
 
-        const container = document.getElementById('manage-list');
-        if (!items.length) return;
-        const feedbackHtml = `<h3 style="font-size:14px; margin:18px 0 10px;">💬 Suggestions from Users (${items.length})</h3>` + items.map(f => `
+        if (!items.length) { container.innerHTML = ''; return; }
+        const feedbackHtml = `<h3 style="font-size:14px; margin:0 0 10px;">💬 Suggestions from Users (${items.length})</h3>` + items.map(f => `
             <div class="admin-row" style="align-items:flex-start;">
                 <div class="admin-row-title">
                     ${escapeHtml(f.title)}
@@ -770,8 +784,8 @@ async function renderFeedbackSection() {
                 ${f.fileData ? `<a class="icon-action" style="background:rgba(37,99,235,0.12); color:var(--blue); text-decoration:none;" title="View attachment" href="${f.fileData}" download="${escapeHtml(f.fileName||'attachment')}">📎</a>` : ''}
                 <button class="icon-action" style="background:rgba(220,38,38,0.12); color:var(--red);" title="Dismiss" onclick="dismissFeedback('${f.id}')">🗑️</button>
             </div>
-        `).join('');
-        container.innerHTML += feedbackHtml;
+        `).join('') + `<div style="border-bottom:1px solid var(--border); margin:16px 0;"></div>`;
+        container.innerHTML = feedbackHtml;
     } catch (e) {}
 }
 
