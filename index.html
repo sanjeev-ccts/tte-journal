@@ -306,21 +306,21 @@
         .field-invalid { border: 2px solid var(--red) !important; background: rgba(220,38,38,0.08) !important; }
         .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: white; font-size: 10px; font-weight: bold; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
         
-        .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
-        .nav-fab-ring { position: absolute; top: -17px; width: 68px; height: 68px; border-radius: 50%; background: rgba(59,130,246,0.18); border: 2px solid rgba(59,130,246,0.35); z-index: 4000; pointer-events: none; }
-        .nav-fab {
-            position: absolute; top: -17px; width: 64px; height: 64px;
-            background:
-                radial-gradient(circle at 38% 30%, #bfdcff 0%, #7fb4ff 18%, var(--blue) 46%, #1d4ed8 78%, #123a91 100%);
-            color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center;
-            font-size: 32px;
-            box-shadow:
-                inset -4px -6px 10px rgba(0,0,0,0.45),
-                inset 3px 4px 6px rgba(255,255,255,0.5),
-                0 6px 15px rgba(0,0,0,0.6);
-            border: none; cursor: pointer; z-index: 4001; transition: background 0.3s, box-shadow 0.15s, transform 0.1s; touch-action: manipulation;
-        }
-        .nav-fab:active { transform: scale(0.88) translateY(2px); box-shadow: inset -4px -5px 10px rgba(0,0,0,0.6), inset 3px 4px 7px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.5); }
+        .nav-fab-wrapper { position: relative; width: 61px; height: 61px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; }
+.nav-fab-ring { position: absolute; top: -15px; width: 61px; height: 61px; border-radius: 50%; background: rgba(59,130,246,0.18); border: 2px solid rgba(59,130,246,0.35); z-index: 4000; pointer-events: none; }
+.nav-fab {
+    position: absolute; top: -15px; width: 58px; height: 58px;
+    background:
+        radial-gradient(circle at 38% 30%, #bfdcff 0%, #7fb4ff 18%, var(--blue) 46%, #1d4ed8 78%, #123a91 100%);
+    color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+    font-size: 29px;
+    box-shadow:
+        inset -4px -6px 10px rgba(0,0,0,0.45),
+        inset 3px 4px 6px rgba(255,255,255,0.5),
+        0 6px 15px rgba(0,0,0,0.6);
+    border: none; cursor: pointer; z-index: 4001; transition: background 0.3s, box-shadow 0.15s, transform 0.1s; touch-action: manipulation;
+}
+.nav-fab:active { transform: scale(0.88) translateY(2px); box-shadow: inset -4px -5px 10px rgba(0,0,0,0.6), inset 3px 4px 7px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.5); }
         
         #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
         #preview-controls { position: fixed; top: 0; left: 0; width: 100%; background: #0f172a; padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; z-index: 5000; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
