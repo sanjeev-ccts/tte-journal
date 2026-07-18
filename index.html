@@ -5139,7 +5139,7 @@
         testLegs.push(leg);
         testLegs.sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`)); 
         
-        const hqGroup = [window.appState.profile.hq, ...(window.appState.profile.nearby || [])]; 
+        const hqGroup = [window.appState.profile.hq, ...(window._nearbyStations || [])]; 
         let dutyOnly = testLegs.filter(l => !l.isNonDuty);
         let idx = dutyOnly.findIndex(l => l.id === leg.id); let prev = idx > 0 ? dutyOnly[idx-1] : null;
         let next = idx < dutyOnly.length - 1 ? dutyOnly[idx+1] : null;
