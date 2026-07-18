@@ -5188,7 +5188,7 @@
                 finalizeLegSave(leg, testLegs);
             }
         } else {
-            if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", (window.i18n ? window.i18n.t('chain_first_journey_hq') : `Your very first duty journey must start from HQ.`), "error", false);
+            if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", (window.i18n ? window.i18n.t('chain_first_journey_hq') : `Your very first duty journey must start from HQ or Nearby HQ.`), "error", false);
             const unclosed2 = findUnclosedOutsideDuty(leg.depDate, null);
             if (unclosed2) return showModal("MISSING JOURNEY", (window.i18n ? window.i18n.tf('chain_missing_journey', {stn: unclosed2.dutyStn, date: formatDateShort(unclosed2.fromDate)}) : `Station Duty at ${unclosed2.dutyStn} (outside HQ, ${formatDateShort(unclosed2.fromDate)}) requires a return train FROM ${unclosed2.dutyStn} to HQ before this journey.\n\nPlease add that connecting journey first (Duty Journey tab).`), "error", false);
             finalizeLegSave(leg, testLegs);
