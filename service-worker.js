@@ -1,9 +1,11 @@
-const CACHE_NAME = 'tte-tracker-v2.46';
+const CACHE_NAME = 'tte-tracker-v2.5';
 const ASSETS_TO_CACHE = [
     './index.html',
     './roster.html',
     './i18n.js',
-    './manifest.json'
+    './manifest.json', 
+    './icon.png', 
+    './login-bg.png'
 ];
 
 // 1. INSTALL PHASE: Cache new files and bypass the waiting phase
