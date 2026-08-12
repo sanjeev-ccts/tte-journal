@@ -1,11 +1,10 @@
-const CACHE_NAME = 'tte-tracker-v2.81';
+const CACHE_NAME = 'tte-tracker-v2.9';
 const CORE_ASSETS = [
     './index.html',
     './roster.html',
     './i18n.js',
     './manifest.json', 
     './icon.png', 
-    './login-bg.png'
 ];
 const EXTERNAL_ASSETS = [
     'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js',
