@@ -1,7 +1,7 @@
 const CACHE_NAME = 'tte-tracker-v3.3';
 
 const CORE_ASSETS = [
-    './index-1.html',
+    './index.html',
     './roster.html',
     './i18n.js',
     './manifest.json',
