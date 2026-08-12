@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tte-tracker-v2.8';
+const CACHE_NAME = 'tte-tracker-v2.81';
 const CORE_ASSETS = [
     './index.html',
     './roster.html',
@@ -65,9 +65,19 @@ self.addEventListener('activate', (event) => {
 // Sub-resource requests now just fail cleanly if they're not cached, which is the correct,
 // debuggable behavior — and it's what makes the "not available offline" case distinguishable
 // from "broken".
+// Point (timeout fix): fetch() has no built-in timeout. Some Android WebViews don't reliably
+// reject a fetch() promise when genuinely offline — it can just hang indefinitely instead of
+// failing fast, which meant the .catch() cache fallback below was NEVER running; the page just
+// sat waiting for a network response that would only ever arrive once real connectivity returned.
+// Racing fetch() against a short manual timeout forces a fallback to cache instead of hanging.
+const FETCH_TIMEOUT_MS = 4000;
+function timeoutAfter(ms) {
+    return new Promise((_, reject) => setTimeout(() => reject(new Error('fetch timeout')), ms));
+}
+
 self.addEventListener('fetch', (event) => {
     event.respondWith(
-        fetch(event.request).catch(() => {
+        Promise.race([fetch(event.request), timeoutAfter(FETCH_TIMEOUT_MS)]).catch(() => {
             return caches.match(event.request).then((cached) => {
                 if (cached) return cached;
                 if (event.request.mode === 'navigate') return caches.match('./index.html');
