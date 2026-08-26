@@ -3,7 +3,7 @@
   "short_name": "TTE LOGS",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0a0a0a",
+  "background_color": "#0a0a0d",
   "theme_color": "#0f172a",
   "icons": [
     {
