@@ -35,7 +35,7 @@
        cue that actually works well in dark mode (measured 2.27 contrast already) - compensating
        for what the shadow alone can't fully deliver. */
     body.dark-mode button { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
-    .admin-quick-card, .duty-box { background: var(--card); border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.4) !important; }
+    body:not(.card-shadow-on).dark-mode .admin-quick-card, body:not(.card-shadow-on).dark-mode .duty-box { background: var(--card); border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     .result-modal-box { background: var(--card); box-shadow: 0 -8px 30px rgba(0,0,0,0.5) !important; }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
     body.dark-mode .team-info-card .cor-name, body.dark-mode .team-info-card .tte-name { color: var(--orange); }
@@ -81,7 +81,7 @@
         box-shadow: var(--shadow), inset 0 1px 0 color-mix(in srgb, white 25%, transparent), inset 0 -2px 3px color-mix(in srgb, black 12%, transparent);
         border: 1px solid var(--border);
     }
-    .card { background: var(--card); border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+    body:not(.card-shadow-on) .card { background: var(--card); border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
     /* Point: tab-bar converted from a separate pill-row-below-header (its own tinted background,
        rounded pill, hardcoded #1d4ed8 active text) into a header-tab strip merged directly into
        the top-bar - same visual language as index.html's Generate PDF page (TA Journal/NDA Bill)
@@ -173,8 +173,8 @@
     .team-info-card .cor-name { color: var(--orange); font-weight: 800; }
     .team-info-card .tte-name { color: var(--orange); font-weight: 800; }
     .duty-box-grid { display: flex; flex-direction: column; gap: 10px; }
-    body.card-shadow-on:not(.dark-mode) .duty-box, body.card-shadow-on:not(.dark-mode) .admin-quick-card { box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.55); }
-    body.dark-mode.card-shadow-on .duty-box, body.dark-mode.card-shadow-on .admin-quick-card { box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07); }
+    body.card-shadow-on:not(.dark-mode) .card, body.card-shadow-on:not(.dark-mode) .duty-box, body.card-shadow-on:not(.dark-mode) .admin-quick-card { box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.55) !important; }
+    body.dark-mode.card-shadow-on .card, body.dark-mode.card-shadow-on .duty-box, body.dark-mode.card-shadow-on .admin-quick-card { box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07) !important; }
     .duty-box {
         border-radius: 16px; padding: 15px;
         background: var(--card);
@@ -436,9 +436,9 @@ if (window.parent !== window) {
 <div class="top-bar">
     <div class="top-bar-title-row"><span>BSB Duty Roster</span></div>
     <div class="tab-bar">
-        <div class="header-tab active" id="tab-mine" onclick="switchTab('mine')">My Duty</div>
-        <div class="header-tab" id="tab-search" onclick="switchTab('search')">Search Duty</div>
-        <div class="header-tab hidden" id="tab-admin" onclick="switchTab('admin')">Admin</div>
+        <div class="header-tab active" id="tab-mine" onclick="switchTab('mine')" data-i18n="roster_tab_mine">My Duty</div>
+        <div class="header-tab" id="tab-search" onclick="switchTab('search')" data-i18n="roster_tab_search">Search Duty</div>
+        <div class="header-tab hidden" id="tab-admin" onclick="switchTab('admin')" data-i18n="roster_tab_admin">Admin</div>
     </div>
 </div>
 <div id="save-toast">✅ Saved successfully!</div>
@@ -4469,7 +4469,7 @@ window.addEventListener('message', function(event) {
         if (window.i18n && window.i18n.getLang() !== event.data.lang) {
             window.i18n.setLang(event.data.lang);
             window.i18n.applyTranslations();
-            if (typeof window.onLanguageChanged === 'function') window.onLanguageChanged();
+            if (typeof window.onLanguageChanged === 'function') window.onLanguageChanged(true);
         }
     }
     // Point: these arrive from index.html's Settings toggles while Roster's iframe is
@@ -4478,7 +4478,7 @@ window.addEventListener('message', function(event) {
     // above.
     if (event.data && event.data.type === 'CARD_SHADOW_CHANGED') {
         localStorage.setItem('card_shadow_enabled', event.data.value ? 'true' : 'false');
-        document.body.classList.toggle('card-shadow-on', event.data.value);
+        window.applyRosterCardShadow();
     }
     if (event.data && event.data.type === 'FLOATING_BACK_CHANGED') {
         localStorage.setItem('floating_back_enabled', event.data.value ? 'true' : 'false');
@@ -4494,6 +4494,23 @@ window.addEventListener('message', function(event) {
         localStorage.setItem('haptic_enabled', event.data.value ? 'true' : 'false');
     }
 });
+
+window.applyRosterCardShadow = function() {
+    const on = localStorage.getItem('card_shadow_enabled') === 'true';
+    document.body.classList.toggle('card-shadow-on', on);
+};
+
+window.refreshRosterLiveContent = function() {
+    if (typeof renderMyDutyWeek === 'function' && window._currentTab === 'mine') renderMyDutyWeek();
+    const mandaliOverlay = document.getElementById('mandali-page-overlay');
+    if (mandaliOverlay && !mandaliOverlay.classList.contains('hidden') && typeof window.renderMandaliBothTabs === 'function') {
+        window.renderMandaliBothTabs();
+    }
+    const searchDateOnly = document.getElementById('search-date-only');
+    if (window._currentTab === 'search' && searchDateOnly && searchDateOnly.value && typeof window.renderDateOnlySearch === 'function') {
+        window.renderDateOnlySearch();
+    }
+};
 
 window.applyRosterThemeUI = function(isDark) {
     const themeToggleEl = document.getElementById('theme-toggle');
@@ -4524,14 +4541,15 @@ window.toggleDarkMode = function() {
 // isn't a data-i18n element since its text depends on CURRENT theme state, not a fixed key, so it
 // needs this separate hook to refresh into the new language too. Same reasoning for the language
 // label itself, which names a language ("English"/"हिंदी") rather than translating a key.
-window.onLanguageChanged = function() {
+window.onLanguageChanged = function(fromRemote) {
     if (!window.i18n) return;
     const isDark = document.body.classList.contains('dark-mode');
     const themeLabel = document.getElementById('theme-toggle-label');
     if (themeLabel) themeLabel.innerText = window.i18n.t(isDark ? 'light' : 'dark');
     const langLabel = document.getElementById('language-toggle-label');
     if (langLabel) langLabel.innerText = window.i18n.getLang() === 'hi' ? 'English' : 'Hindi';
-    if (window.parent !== window) {
+    window.refreshRosterLiveContent();
+    if (!fromRemote && window.parent !== window) {
         window.parent.postMessage({ type: 'LANGUAGE_CHANGED', lang: window.i18n.getLang() }, '*');
     }
 };
@@ -4627,10 +4645,8 @@ function initAfterAuth() {
     }
     // Point: same shared 'card_shadow_enabled' key the parent app's Settings toggle writes to -
     // matches the existing cross-app pattern already used for 'app_theme' above.
-    if (localStorage.getItem('card_shadow_enabled') === 'true') {
-        document.body.classList.add('card-shadow-on');
-    }
-    if (window.onLanguageChanged) window.onLanguageChanged();
+    window.applyRosterCardShadow();
+    if (window.onLanguageChanged) window.onLanguageChanged(true);
     const savedTeam = localStorage.getItem('roster_my_team');
     loadFestivals().then(() => { renderFestivalsAdminTable(); return loadRosterData(); }).then(() => {
         applySavedTeamState(savedTeam);
