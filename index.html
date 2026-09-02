@@ -345,6 +345,31 @@
         body.dark-mode.card-shadow-on .card, body.dark-mode.card-shadow-on .nav-card, body.dark-mode.card-shadow-on .circ-dash-card, body.dark-mode.card-shadow-on .circ-circular-card { box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07); }
         
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-bottom: 0; }
+        .dash-link-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; margin-bottom: 4px; }
+        .dash-link-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 14px 16px; background: var(--card); border-radius: 14px;
+            border: 1px solid var(--border);
+            cursor: pointer; font-size: 15px; font-weight: 700; color: var(--text);
+            transition: transform 0.1s;
+        }
+        .ta-journal-summary-wrap { margin-top: 18px; display: flex; justify-content: center; }
+        .ta-journal-summary-table {
+            width: 100%; max-width: 280px; border-collapse: collapse; text-align: center;
+            font-size: 13px; font-weight: 700; color: var(--text);
+        }
+        .ta-journal-summary-table td {
+            border: 1px solid var(--text); padding: 6px 4px;
+        }
+        .ta-journal-summary-table .ta-summary-head td,
+        .ta-journal-summary-table .ta-summary-foot td {
+            background: color-mix(in srgb, var(--text-muted) 22%, var(--card));
+        }
+        body.dark-mode .ta-journal-summary-table td { border-color: var(--border); }
+        .dash-link-row:active { transform: scale(0.98); }
+        body.card-shadow-on:not(.dark-mode) .dash-link-row { box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.55); }
+        body.dark-mode.card-shadow-on .dash-link-row { box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07); }
+        .dash-link-chevron { flex-shrink: 0; color: var(--text-muted); font-size: 20px; line-height: 1; font-weight: 400; }
         
         .nav-main-text { font-size: 16px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
         .nav-sub-text { font-size: 11.5px; color: var(--text-muted); font-weight: normal; }
@@ -1441,6 +1466,11 @@
             window.broadcastSettingToRoster('SCROLL_STRETCH_CHANGED', window.isScrollBounceEnabled());
             window.broadcastSettingToRoster('PAGE_ANIM_CHANGED', window.isPageAnimEnabled());
             window.broadcastSettingToRoster('HAPTIC_CHANGED', window.isHapticEnabled());
+            window.syncNotificationBadgeToRoster();
+        };
+        window.syncNotificationBadgeToRoster = function() {
+            const count = (window.globalNotifications || []).length;
+            window.broadcastSettingToRoster('NOTIFICATION_COUNT_CHANGED', count);
         };
         window.toggleCardShadowSetting = function() {
             const wasOn = window.isCardShadowEnabled();
@@ -3308,7 +3338,7 @@
                  (unlike Recent Entries' own bordered container before it). -->
             <div id="sheet-outer-box" style="position:relative;">
                 <div style="border-radius:10px; overflow:hidden; border:1px solid var(--sheet-grid-border);">
-                <div id="sheet-table-scroll-wrap" style="overflow-x:auto; overflow-y:auto; max-height:calc(100vh - 400px); -webkit-overflow-scrolling:touch;">
+                <div id="sheet-table-scroll-wrap" style="overflow-x:auto; overflow-y:auto; max-height:clamp(200px, 36vh, 300px); -webkit-overflow-scrolling:touch;">
                     <table id="sheet-add-table" style="border-collapse:collapse; width:100%; background:var(--card); table-layout:fixed;">
                         <thead>
                             <tr>
@@ -3417,6 +3447,20 @@
                         <div class="nav-icon" style="color:var(--green);"><svg viewBox="0 0 512 512" style="width:24px; height:24px;"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M256 59.55c108.49 0 196.45 87.96 196.45 196.45S364.49 452.45 256 452.45 59.55 364.49 59.55 256 147.51 59.55 256 59.55zM256 0c70.68 0 134.69 28.66 181.01 74.98C483.34 121.31 512 185.31 512 256c0 70.69-28.66 134.69-74.99 181.01C390.69 483.34 326.69 512 256 512s-134.69-28.66-181.02-74.99C28.66 390.69 0 326.68 0 256c0-70.69 28.66-134.69 74.98-181.02C121.31 28.66 185.31 0 256 0zm163.27 92.72C377.49 50.94 319.76 25.09 256 25.09c-63.77 0-121.5 25.85-163.28 67.63C50.94 134.5 25.09 192.23 25.09 256c0 63.76 25.85 121.49 67.63 163.27C134.5 461.06 192.23 486.9 256 486.9c63.77 0 121.5-25.84 163.27-67.63 41.79-41.77 67.63-99.5 67.63-163.27 0-63.77-25.84-121.5-67.63-163.28zM181.09 235.97l12.7-28.61h47.9c-3.02-10.16-14.89-15.87-24.84-15.87h-35.76l12.7-28.61h137.12l-12.7 28.61h-33.12c4.39 3.37 9.1 10.32 9.93 15.87h35.89l-12.7 28.61h-25.97c-8.38 21.34-33.95 35.83-55.75 38.97l72.05 74.18h-56.96l-64.25-70.49v-26.27h28.44c2.73 0 5.42-.44 8.06-1.35 6.93-2.34 14.42-7.81 16.74-15.04h-59.48z"/></svg></div>
                         <div class="nav-main-text" id="expected-salary-value" style="color: var(--green);">₹0</div>
                         <div class="nav-sub-text" id="expected-salary-month-label">Expected Salary - This Month</div>
+                    </div>
+                </div>
+                <div class="dash-link-list">
+                    <div class="dash-link-row" onclick="window.navTo('screen-circulars-dashboard')">
+                        <span data-i18n="nav_circulars">Circulars</span>
+                        <span class="dash-link-chevron" aria-hidden="true">›</span>
+                    </div>
+                    <div class="dash-link-row" onclick="window.openRosterDeepLink('OPEN_MANDALI', 'Opening Mandali…')">
+                        <span data-i18n="nav_mandali">Mandali</span>
+                        <span class="dash-link-chevron" aria-hidden="true">›</span>
+                    </div>
+                    <div class="dash-link-row" onclick="window.showSidebarNationalHoliday()">
+                        <span data-i18n="sidebar_national_holiday">National Holiday</span>
+                        <span class="dash-link-chevron" aria-hidden="true">›</span>
                     </div>
                 </div>
                 <div id="dashboard-announcements-area" style="margin-top:14px;"></div>
@@ -3923,26 +3967,9 @@
                     <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_earnings_label">Earnings</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><div style="display:flex; align-items:center; justify-content:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><span id="pdf-earnings-unit" style="color:var(--purple); font-size:14px; font-weight:700; display:none;">₹</span><input type="number" id="pdf-earnings" placeholder="0" oninput="window.toggleUnitLabel('pdf-earnings','pdf-earnings-unit'); window.toggleFillHint('pdf-earnings','pdf-earnings-fill')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"></div><span id="pdf-earnings-fill" style="display:inline-flex; align-items:center; margin-left:8px; color:var(--red); font-size:12px; font-weight:400; white-space:nowrap; line-height:1;"><svg viewBox="0 0 512 243.58" style="width:16px; height:8px; flex-shrink:0;" fill="currentColor"><path fill-rule="nonzero" d="M138.43 243.58 0 122.84 140.47 0l20.92 23.91-94.92 83 445.53-.42v31.75l-445.54.41 92.89 81.02z"/></svg><span data-i18n="pdf_fill_hint" style="margin-left:3px;">Fill</span></span></div>
                 </div>
                 <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate PDF Document</button>
+                <div id="ta-journal-summary" class="ta-journal-summary-wrap hidden"></div>
             </div>
-            <div id="ta-confirm-values-modal" class="hidden" onclick="if(event.target === this) this.classList.add('hidden')">
-                <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 88%; max-width: 360px; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">
-                    <div data-i18n="ta_confirm_title" style="text-align:center; font-size:15px; font-weight:900; color:var(--blue); margin-bottom:6px;">Is this correct?</div>
-                    <div data-i18n="ta_confirm_subtitle" style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom:16px; line-height:1.4;">Review or fill in Working Days and Earnings before generating — both are optional.</div>
-                    <div style="display:flex; align-items:center; padding:8px 0; border-bottom:1px dashed var(--border);">
-                        <span data-i18n="report_working_days_label" style="flex:1; font-size:14px;">Working Days</span>
-                        <div style="display:flex; align-items:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><input type="number" id="ta-confirm-work-days" placeholder="0" oninput="window.toggleUnitLabel('ta-confirm-work-days','ta-confirm-work-days-unit')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"><span id="ta-confirm-work-days-unit" data-i18n="report_days_unit" style="color:var(--purple); font-size:13px; font-weight:700; white-space:nowrap; display:none;">&nbsp;Days</span></div>
-                    </div>
-                    <div style="display:flex; align-items:center; padding:8px 0 16px;">
-                        <span data-i18n="report_earnings_label" style="flex:1; font-size:14px;">Earnings</span>
-                        <div style="display:flex; align-items:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><span id="ta-confirm-earnings-unit" style="color:var(--purple); font-size:14px; font-weight:700; display:none;">₹</span><input type="number" id="ta-confirm-earnings" placeholder="0" oninput="window.toggleUnitLabel('ta-confirm-earnings','ta-confirm-earnings-unit')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"></div>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <button onclick="document.getElementById('ta-confirm-values-modal').classList.add('hidden')" style="flex:1; margin:0; background:var(--input-bg); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">Cancel</button>
-                        <button onclick="window.confirmTAValuesAndGenerate()" data-i18n="ta_confirm_generate_btn" style="flex:1; margin:0; background:var(--blue-fill);">Generate TA</button>
-                    </div>
-                </div>
-            </div>
-    <div id="preview-browser-hint" class="tte-fade" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:65px; padding:16px 16px 4px; border-top:1px solid var(--border);">
+            <div id="preview-browser-hint" class="tte-fade" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:20px; padding:16px 16px 4px; border-top:1px solid var(--border);">
         <p data-i18n="pdf_browser_recommend" style="color:var(--text-muted); font-size:11px; font-weight:500; margin:0; text-align:center; max-width:320px; line-height:1.5;">Printing TA and NDA PDF files works best using Google Chrome and similar chromium browsers.</p>
         <div style="display: flex; gap: 10px; align-items: center;">
                 <div title="Chrome" style="width: 18px; height: 18px; border-radius: 50%; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"><svg style="width:100%; height:100%; display:block;" version="1.1" id="pchr-Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -3980,6 +4007,24 @@
                 <div title="Opera" style="width: 18px; height: 18px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="100%" height="100%" style="display:block;"><defs><linearGradient id="popr2-a" gradientUnits="userSpaceOnUse" x1="53.327" y1="2.095" x2="53.327" y2="126.143"><stop offset="0" stop-color="#FF1B2D"/><stop offset=".614" stop-color="#FF1B2D"/><stop offset="1" stop-color="#A70014"/></linearGradient><linearGradient id="popr2-b" gradientUnits="userSpaceOnUse" x1="85.463" y1="9.408" x2="85.463" y2="119.121"><stop offset="0" stop-color="#9C0000"/><stop offset=".7" stop-color="#FF4B4B"/></linearGradient></defs><path d="M63.996.008C28.652.008 0 28.66 0 64.008c0 34.32 27.02 62.332 60.949 63.922 1.012.047 2.027.074 3.047.074a63.77 63.77 0 0042.652-16.285c-7.5 4.973-16.273 7.836-25.645 7.836-15.242 0-28.891-7.562-38.07-19.484-7.078-8.352-11.66-20.699-11.973-34.559V62.5c.313-13.859 4.895-26.207 11.973-34.559C52.113 16.016 65.762 8.457 81 8.457c9.375 0 18.148 2.863 25.652 7.84C95.383 6.219 80.531.07 64.238.008h-.242zm0 0" fill="url(#popr2-a)"/><path d="M42.934 27.945c5.871-6.934 13.457-11.117 21.742-11.117 18.633 0 33.734 21.125 33.734 47.18s-15.102 47.18-33.734 47.18c-8.285 0-15.871-4.18-21.742-11.113 9.18 11.926 22.828 19.484 38.07 19.484 9.375 0 18.145-2.863 25.645-7.836 13.102-11.719 21.348-28.754 21.348-47.715s-8.246-35.988-21.344-47.707c-7.5-4.977-16.273-7.84-25.648-7.84-15.242 0-28.891 7.562-38.07 19.484" fill="url(#popr2-b)"/></svg></div>
             </div>
     </div>
+            <div id="ta-confirm-values-modal" class="hidden" onclick="if(event.target === this) this.classList.add('hidden')">
+                <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 88%; max-width: 360px; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">
+                    <div data-i18n="ta_confirm_title" style="text-align:center; font-size:15px; font-weight:900; color:var(--blue); margin-bottom:6px;">Is this correct?</div>
+                    <div data-i18n="ta_confirm_subtitle" style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom:16px; line-height:1.4;">Review or fill in Working Days and Earnings before generating — both are optional.</div>
+                    <div style="display:flex; align-items:center; padding:8px 0; border-bottom:1px dashed var(--border);">
+                        <span data-i18n="report_working_days_label" style="flex:1; font-size:14px;">Working Days</span>
+                        <div style="display:flex; align-items:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><input type="number" id="ta-confirm-work-days" placeholder="0" oninput="window.toggleUnitLabel('ta-confirm-work-days','ta-confirm-work-days-unit')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"><span id="ta-confirm-work-days-unit" data-i18n="report_days_unit" style="color:var(--purple); font-size:13px; font-weight:700; white-space:nowrap; display:none;">&nbsp;Days</span></div>
+                    </div>
+                    <div style="display:flex; align-items:center; padding:8px 0 16px;">
+                        <span data-i18n="report_earnings_label" style="flex:1; font-size:14px;">Earnings</span>
+                        <div style="display:flex; align-items:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><span id="ta-confirm-earnings-unit" style="color:var(--purple); font-size:14px; font-weight:700; display:none;">₹</span><input type="number" id="ta-confirm-earnings" placeholder="0" oninput="window.toggleUnitLabel('ta-confirm-earnings','ta-confirm-earnings-unit')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"></div>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="document.getElementById('ta-confirm-values-modal').classList.add('hidden')" style="flex:1; margin:0; background:var(--input-bg); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">Cancel</button>
+                        <button onclick="window.confirmTAValuesAndGenerate()" data-i18n="ta_confirm_generate_btn" style="flex:1; margin:0; background:var(--blue-fill);">Generate TA</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -6281,7 +6326,7 @@
         updateThemeColorMeta();
     }
 
-    // Point: i18n.js's own toggleLanguage() calls window.onLanguageChanged(lang) if defined, right
+    // Point: i18n.js's own toggleLanguage() calls window.onLanguageChanged() if defined, right
     // after it applies translations to every [data-i18n] element. The theme label ("Light"/"Dark")
     // isn't a data-i18n element since its text depends on CURRENT theme state, not a fixed key — so
     // it needs this separate hook to refresh into the new language too.
@@ -6297,7 +6342,7 @@
         if (langLabel && window.i18n) {
             langLabel.innerText = window.i18n.getLang() === 'hi' ? 'English' : 'Hindi';
         }
-        if (!fromRemote && window.i18n) window.broadcastSettingToRoster('LANGUAGE_CHANGED', window.i18n.getLang());
+        if (fromRemote !== true && window.i18n) window.broadcastSettingToRoster('LANGUAGE_CHANGED', window.i18n.getLang());
         // Same reasoning as the theme label above — sync status text depends on dynamic sync
         // state (syncing/synced/pending/failing), not a fixed key, so it isn't a data-i18n
         // element and needs this explicit refresh to pick up the new language immediately
@@ -8379,6 +8424,7 @@
                 b.classList.add('hidden');
             }
         });
+        window.syncNotificationBadgeToRoster && window.syncNotificationBadgeToRoster();
     }
 
     function checkProfileNotifications() {
@@ -13688,7 +13734,8 @@
             if(document.getElementById('rep-nda-hours')) document.getElementById('rep-nda-hours').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} ${window.i18n ? window.i18n.t('hrs_suffix') : 'Hrs'}`;
             if(document.getElementById('rep-nda-units')) document.getElementById('rep-nda-units').innerText = `${ndaUnits} ${window.i18n ? window.i18n.t('report_units_suffix') : 'units'}`;
             document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
-        } 
+        }
+        renderTaJournalSummary(mo);
     }
     
     // Point 1: zoom controls scoped to JUST the PDF preview content (CSS transform on
@@ -13863,6 +13910,79 @@
     // Change 4: Get segment key for mela/station duty by station (so same-station consecutive entries merge in PDF)
     function getMelaSegKey(special) {
         return special ? `mela_stn_${special.dutyStn || special.melaStn}` : 'normal';
+    }
+
+    function collectTaMonthBreakdown(mo) {
+        const p = window.appState.profile;
+        const empty = { counts: {30:0, 70:0, 100:0}, tarate: 0, totalAmount: 0 };
+        if (!p) return empty;
+        let counts = {30:0, 70:0, 100:0};
+        let totalAmount = 0;
+        const dutyOnly = (window.appState.legs || []).filter(l => !l.isNonDuty);
+        const cycles = buildCycles([...dutyOnly].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`)));
+        let taResultsAll = [];
+        cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
+        getMelaDutyTA(mo).forEach(r => { if (!taResultsAll.find(x => x.date === r.date)) taResultsAll.push(r); });
+
+        let validLegs = [];
+        cycles.forEach(cycle => {
+            const splitCycle = getSplitLegs(cycle);
+            const cycleTAResults = calculateCycleTA(cycle);
+            const legsByDate = {};
+            splitCycle.forEach(pl => { if (!legsByDate[pl.date]) legsByDate[pl.date] = []; legsByDate[pl.date].push(pl); });
+            splitCycle.forEach(item => {
+                if (!item.date.startsWith(mo)) return;
+                const lastLegForDate = legsByDate[item.date][legsByDate[item.date].length - 1];
+                const isLastOfDay = lastLegForDate.id === item.id;
+                const matchingTA = cycleTAResults.find(r => r.date === item.date);
+                validLegs.push({ item, isLastOfDay, matchingTA });
+            });
+        });
+
+        const existingDates = new Set(validLegs.map(r => r.item.date));
+        const [moY, moM] = mo.split('-').map(Number);
+        const daysInMonth = new Date(moY, moM, 0).getDate();
+        for (let d = 1; d <= daysInMonth; d++) {
+            const dateStr = `${mo}-${String(d).padStart(2,'0')}`;
+            if (existingDates.has(dateStr)) continue;
+            const special = findSpecialDutyForDate(dateStr);
+            if (!special) continue;
+            const matchingTA = taResultsAll.find(r => r.date === dateStr);
+            validLegs.push({
+                item: { date: dateStr, train: '-', depTime: '-', arrTime: '-', depStn: '-', arrStn: '-' },
+                isLastOfDay: true,
+                matchingTA: matchingTA || null
+            });
+        }
+
+        validLegs.forEach(r => {
+            if (r.isLastOfDay && r.matchingTA && r.matchingTA.pct > 0) {
+                totalAmount += r.matchingTA.rate;
+                counts[r.matchingTA.pct]++;
+            }
+        });
+
+        return { counts, tarate: p.tarate || 0, totalAmount: Math.floor(totalAmount) };
+    }
+
+    function renderTaJournalSummary(mo) {
+        const wrap = document.getElementById('ta-journal-summary');
+        if (!wrap) return;
+        if (currentTab !== 'ta') {
+            wrap.classList.add('hidden');
+            wrap.innerHTML = '';
+            return;
+        }
+        wrap.classList.remove('hidden');
+        const { counts, tarate, totalAmount } = collectTaMonthBreakdown(mo);
+        let rowsHtml = '';
+        [30, 70, 100].forEach(pct => {
+            if (counts[pct] <= 0) return;
+            const unitRate = pct === 100 ? tarate : Math.round(tarate * (pct / 100) * 100) / 100;
+            const rowAmt = pct === 100 ? counts[pct] * tarate : Math.round(counts[pct] * tarate * (pct / 100) * 100) / 100;
+            rowsHtml += `<tr><td>${pct}% x ${counts[pct]}</td><td>${unitRate} x ${counts[pct]}</td><td>₹${rowAmt}</td></tr>`;
+        });
+        wrap.innerHTML = `<table class="ta-journal-summary-table" aria-label="TA month summary"><tr class="ta-summary-head"><td colspan="2">TA RATE</td><td>₹${tarate}</td></tr>${rowsHtml}<tr class="ta-summary-foot"><td colspan="2">TOTAL AMOUNT</td><td>₹${totalAmount}</td></tr></table>`;
     }
 
     function buildTAPreview(mo, wDays, earn) {
