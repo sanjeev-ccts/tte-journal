@@ -353,19 +353,21 @@
             cursor: pointer; font-size: 15px; font-weight: 700; color: var(--text);
             transition: transform 0.1s;
         }
-        .ta-journal-summary-wrap { margin-top: 18px; display: flex; justify-content: center; }
+        .ta-journal-summary-wrap { margin-top: 16px; display: flex; justify-content: center; }
         .ta-journal-summary-table {
-            width: 100%; max-width: 280px; border-collapse: collapse; text-align: center;
-            font-size: 13px; font-weight: 700; color: var(--text);
+            width: 100%; max-width: 220px; border-collapse: separate; border-spacing: 0;
+            text-align: center; font-size: 12px; font-weight: 400; color: var(--text);
+            border: 1px solid var(--border); border-radius: 12px; overflow: hidden;
         }
         .ta-journal-summary-table td {
-            border: 1px solid var(--text); padding: 6px 4px;
+            border: none; border-bottom: 1px solid var(--border); padding: 4px 6px;
         }
+        .ta-journal-summary-table tr:last-child td { border-bottom: none; }
+        .ta-journal-summary-table td:not(:last-child) { border-right: 1px solid var(--border); }
         .ta-journal-summary-table .ta-summary-head td,
         .ta-journal-summary-table .ta-summary-foot td {
-            background: color-mix(in srgb, var(--text-muted) 22%, var(--card));
+            background: var(--card);
         }
-        body.dark-mode .ta-journal-summary-table td { border-color: var(--border); }
         .dash-link-row:active { transform: scale(0.98); }
         body.card-shadow-on:not(.dark-mode) .dash-link-row { box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.55); }
         body.dark-mode.card-shadow-on .dash-link-row { box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07); }
