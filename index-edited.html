@@ -4319,7 +4319,7 @@
     // initial UI check once the page loads, in case beforeinstallprompt already fired early.
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+            navigator.serviceWorker.register('./service-worker.js?v=1.3').catch(() => {});
         });
     }
     document.addEventListener('DOMContentLoaded', () => window.updatePWAInstallUI());
@@ -6895,7 +6895,7 @@
             window.updatePWAInstallUI();
         }
         
-        if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); window.openSheetAddJourney(); window.applyDashboardBallsVisibility(); }
+        if(screenId === 'screen-dashboard') { updateDashboardUI(); checkGlobalNotifications(); window.openSheetAddJourney(); window.applyDashboardBallsVisibility(); if (window.updateSyncLabels) window.updateSyncLabels(); }
         if(screenId === 'screen-all') { 
             const _n = new Date();
             const _me = document.getElementById('all-logs-month');
