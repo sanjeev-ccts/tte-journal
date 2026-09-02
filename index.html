@@ -1421,9 +1421,23 @@
         // the new value to Roster's own window immediately, same-origin, no page reload needed.
         window.broadcastSettingToRoster = function(type, value) {
             const iframe = document.getElementById('roster-iframe');
-            if (iframe && iframe.contentWindow) {
+            if (!iframe || !iframe.contentWindow) return;
+            if (type === 'THEME_CHANGED') {
+                iframe.contentWindow.postMessage({ type, isDark: value }, '*');
+            } else if (type === 'LANGUAGE_CHANGED') {
+                iframe.contentWindow.postMessage({ type, lang: value }, '*');
+            } else {
                 iframe.contentWindow.postMessage({ type, value }, '*');
             }
+        };
+        window.pushAllSettingsToRoster = function() {
+            window.broadcastSettingToRoster('THEME_CHANGED', document.body.classList.contains('dark-mode'));
+            if (window.i18n) window.broadcastSettingToRoster('LANGUAGE_CHANGED', window.i18n.getLang());
+            window.broadcastSettingToRoster('CARD_SHADOW_CHANGED', window.isCardShadowEnabled());
+            window.broadcastSettingToRoster('FLOATING_BACK_CHANGED', window.isFloatingBackEnabled());
+            window.broadcastSettingToRoster('SCROLL_STRETCH_CHANGED', window.isScrollBounceEnabled());
+            window.broadcastSettingToRoster('PAGE_ANIM_CHANGED', window.isPageAnimEnabled());
+            window.broadcastSettingToRoster('HAPTIC_CHANGED', window.isHapticEnabled());
         };
         window.toggleCardShadowSetting = function() {
             const wasOn = window.isCardShadowEnabled();
@@ -2962,16 +2976,16 @@
                     </div>
                     <div id="reg-nearby-ta-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
                 </div>
-                <hr style="border: 0; border-top: 2px dashed var(--text-muted); margin: 20px 0;">
-                <div style="margin-bottom: 6px;">
-                    <label class="profile-lbl" data-i18n="profile_originating_trains_lbl">Originating Trains (NDA)</label>
-                    <p data-i18n="profile_originating_trains_desc" style="font-size:11px; color:var(--text-muted); margin:2px 0 6px 0;">Add train numbers that originate on your duty (including return journeys from destination). These get a 45-minute NDA sign-on margin (30 minutes for all other trains). Only hours between 22:00 and 06:00 count toward NDA.</p>
-                    <div style="display:flex; gap:8px; margin-top:4px;">
-                        <input type="text" id="reg-originating-input" placeholder="e.g. 13239" style="margin:0; flex:1;" oninput="window.filterNumericOnly(this)" maxlength="5">
-                        <button type="button" onclick="window.addOriginatingTrain()" style="width:auto; margin:0; padding:0 16px; background:#3b7aec; flex-shrink:0;">Add</button>
-                    </div>
-                    <div id="reg-originating-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
+            </div>
+
+            <button type="button" id="btn-toggle-originating-trains" onclick="window.toggleOriginatingTrainsSection()" style="background: rgba(59,130,246,0.12); color: var(--blue); border: 1px solid var(--blue); box-shadow: none; margin-bottom: 6px;">🚂 <span data-i18n="profile_originating_trains_toggle">Originating Trains (NDA)</span> <span style="color:var(--text-muted); font-weight:400; font-size:11px;" data-i18n="aj_label_opt">(opt)</span></button>
+            <div id="reg-originating-section" class="hidden card" style="margin-top:0; margin-bottom:15px; padding:14px 15px;">
+                <p data-i18n="profile_originating_trains_desc" style="font-size:11px; color:var(--text-muted); margin:0 0 10px 0;">Optional — add only if you have originating trains. These get a 45-minute NDA sign-on margin (30 minutes for all others). Only hours between 22:00 and 06:00 count toward NDA.</p>
+                <div style="display:flex; gap:8px; margin-top:4px;">
+                    <input type="text" id="reg-originating-input" placeholder="e.g. 13239" style="margin:0; flex:1;" oninput="window.filterNumericOnly(this)" maxlength="5">
+                    <button type="button" onclick="window.addOriginatingTrain()" style="width:auto; margin:0; padding:0 16px; background:#3b7aec; flex-shrink:0;">Add</button>
                 </div>
+                <div id="reg-originating-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
             </div>
 
             <button type="button" onclick="window.openDestDiversionModal()" style="background: rgba(59,130,246,0.12); color: var(--blue); border: 1px solid var(--blue); box-shadow: none; margin-bottom: 6px;">📍 Add Destination &amp; Diversion Stations</button>
@@ -4328,7 +4342,7 @@
     // initial UI check once the page loads, in case beforeinstallprompt already fired early.
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./service-worker.js?v=1.4').catch(() => {});
+            navigator.serviceWorker.register('./service-worker.js?v=1.6').catch(() => {});
         });
     }
     document.addEventListener('DOMContentLoaded', () => window.updatePWAInstallUI());
@@ -4507,6 +4521,7 @@
         localStorage.setItem('page_anim_enabled', wasOn ? 'false' : 'true');
         window.applyPageAnimBodyClass();
         window.updateSettingsToggleSwitches();
+        window.broadcastSettingToRoster('PAGE_ANIM_CHANGED', !wasOn);
     };
     window.isCloseAnimEnabled = function() {
         const v = localStorage.getItem('close_anim_enabled');
@@ -4887,6 +4902,7 @@
         const wasOn = window.isHapticEnabled();
         window.setHapticEnabled(!wasOn);
         window.updateSettingsToggleSwitches();
+        window.broadcastSettingToRoster('HAPTIC_CHANGED', !wasOn);
         if (!wasOn) window.hapticTap(); // give a confirming buzz right when turning it ON
     };
 
@@ -6248,10 +6264,7 @@
         if (!document.getElementById('screen-salary').classList.contains('hidden') && window.renderSalaryYearGraph) {
             window.renderSalaryYearGraph();
         }
-        const rosterFrame = document.getElementById('roster-iframe');
-        if (rosterFrame && rosterFrame.contentWindow) {
-            rosterFrame.contentWindow.postMessage({ type: 'THEME_CHANGED', isDark }, '*');
-        }
+        window.broadcastSettingToRoster('THEME_CHANGED', isDark);
         updateThemeColorMeta();
     }
 
@@ -6271,6 +6284,7 @@
         if (langLabel && window.i18n) {
             langLabel.innerText = window.i18n.getLang() === 'hi' ? 'English' : 'Hindi';
         }
+        if (window.i18n) window.broadcastSettingToRoster('LANGUAGE_CHANGED', window.i18n.getLang());
         // Same reasoning as the theme label above — sync status text depends on dynamic sync
         // state (syncing/synced/pending/failing), not a fixed key, so it isn't a data-i18n
         // element and needs this explicit refresh to pick up the new language immediately
@@ -7456,6 +7470,25 @@
         wrap.innerHTML = (window._originatingTrains || []).map(tn =>
             `<span class="station-chip">${tn}<span class="chip-remove" onclick="window.removeOriginatingTrain('${tn}')">✕</span></span>`
         ).join('');
+        window.updateOriginatingTrainsSection && window.updateOriginatingTrainsSection();
+    };
+
+    window.updateOriginatingTrainsSection = function() {
+        const sec = document.getElementById('reg-originating-section');
+        const btn = document.getElementById('btn-toggle-originating-trains');
+        const count = (window._originatingTrains || []).length;
+        if (btn) {
+            const base = window.i18n ? window.i18n.t('profile_originating_trains_toggle') : 'Originating Trains (NDA)';
+            const opt = window.i18n ? window.i18n.t('aj_label_opt') : '(opt)';
+            const countHtml = count ? ` <span style="color:var(--green); font-weight:800;">(${count})</span>` : '';
+            btn.innerHTML = `🚂 ${base}${countHtml} <span style="color:var(--text-muted); font-weight:400; font-size:11px;">${opt}</span>`;
+        }
+        if (sec && count > 0) sec.classList.remove('hidden');
+    };
+
+    window.toggleOriginatingTrainsSection = function() {
+        const sec = document.getElementById('reg-originating-section');
+        if (sec) sec.classList.toggle('hidden');
     };
 
     window.getOriginatingTrainList = function() {
@@ -8227,6 +8260,9 @@
         window.renderNearbyTaClaimedChips();
         window._originatingTrains = (p.originatingTrains || []).slice();
         window.renderOriginatingTrainChips();
+        const origSec = document.getElementById('reg-originating-section');
+        if (origSec) origSec.classList.toggle('hidden', !(window._originatingTrains || []).length);
+        window.updateOriginatingTrainsSection && window.updateOriginatingTrainsSection();
         window._destStations = (p.dest || []).slice();
         window.renderDestChips();
         window._diversionMap = p.diversionMap ? JSON.parse(JSON.stringify(p.diversionMap)) : {};
@@ -11133,6 +11169,7 @@
             window._rosterDataReady = true;
             const overlay = document.getElementById('roster-loading-overlay');
             if (overlay) overlay.classList.add('hidden');
+            window.pushAllSettingsToRoster();
         }
         // Fix: roster's floating back button AND home button both send this — close the modal
         if (event.data && event.data.type === 'ROSTER_CLOSE') {
