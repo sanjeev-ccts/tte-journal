@@ -366,6 +366,10 @@
         .ta-journal-summary-table td:not(:last-child) { border-right: 1px solid var(--border); }
         .ta-journal-summary-table .ta-summary-head td,
         .ta-journal-summary-table .ta-summary-foot td {
+            background: color-mix(in srgb, var(--text-muted) 22%, var(--card));
+        }
+        body.dark-mode .ta-journal-summary-table .ta-summary-head td,
+        body.dark-mode .ta-journal-summary-table .ta-summary-foot td {
             background: var(--card);
         }
         .dash-link-row:active { transform: scale(0.98); }
@@ -3454,14 +3458,6 @@
                 <div class="dash-link-list">
                     <div class="dash-link-row" onclick="window.navTo('screen-circulars-dashboard')">
                         <span data-i18n="nav_circulars">Circulars</span>
-                        <span class="dash-link-chevron" aria-hidden="true">›</span>
-                    </div>
-                    <div class="dash-link-row" onclick="window.openRosterDeepLink('OPEN_MANDALI', 'Opening Mandali…')">
-                        <span data-i18n="nav_mandali">Mandali</span>
-                        <span class="dash-link-chevron" aria-hidden="true">›</span>
-                    </div>
-                    <div class="dash-link-row" onclick="window.showSidebarNationalHoliday()">
-                        <span data-i18n="sidebar_national_holiday">National Holiday</span>
                         <span class="dash-link-chevron" aria-hidden="true">›</span>
                     </div>
                 </div>
@@ -9201,7 +9197,7 @@
     // Point (restructure v2): how many rows (including the active one) should be visible in the
     // container before it starts scrolling internally — computed into an actual pixel max-height
     // after each render, since real row height depends on font metrics, not guessed up front.
-    const SHEET_VISIBLE_ROWS = 6;
+    const SHEET_VISIBLE_ROWS = 5;
 
     // Point (Task 1): matches the exact same "continue the chain" convenience the main Add
     // Journey form already has (screen-add's navTo handler) - find the most recent duty leg by
