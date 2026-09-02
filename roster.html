@@ -13,7 +13,7 @@
         --bg: #e2e6ea; --card: #ffffff; --text: #1e293b; --text-muted: #475569;
         --border: #b6c2d1; --blue: #3b82f6; --blue-fill: #2563eb; --green: #22c55e; --red: #ef4444;
         --orange: #f97316; --purple: #a855f7; --yellow: #eab308;
-        --top-bar-bg: #1a1c24; --input-bg: #cfd7e0; --modal-bg: #ffffff; --shadow: 0 4px 14px rgba(30,41,59,0.15), 0 1px 3px rgba(30,41,59,0.10);
+        --top-bar-bg: #1a1c24; --bottom-bar-bg: #1a1c24; --input-bg: #cfd7e0; --modal-bg: #ffffff; --shadow: 0 4px 14px rgba(30,41,59,0.15), 0 1px 3px rgba(30,41,59,0.10);
         --table-border: #a5b4fc;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
     }
@@ -372,21 +372,24 @@
     table.admin-table tbody tr { cursor: pointer; }
     table.admin-table tbody tr:active { background: rgba(59,130,246,0.15); }
     .table-toggle-btn { background: var(--purple); margin-bottom: 10px; }
-    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 76px; background: var(--top-bar-bg); display: flex; justify-content: space-between; align-items: stretch; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.08); border-top-left-radius: 13px; border-top-right-radius: 13px; padding: 0 12px; }
-    .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 9px; flex-shrink: 0; }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: 84px; background: var(--bottom-bar-bg); display: flex; justify-content: space-between; align-items: stretch; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.08); transition: background 0.3s; padding: 0 12px; }
+    body.mandali-open #roster-bottom-bar { z-index: 10001; }
+    .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
     .bottom-icon-label { font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
-    .bottom-icon { width: 36px; height: 36px; border-radius: 50%; background: none; border: none; box-shadow: none; display: flex; justify-content: center; align-items: center; font-size: 16px; color: white; cursor: pointer; position: relative; flex-shrink: 0; transition: transform 0.1s; }
-    .bottom-icon svg { width: 25px; height: 25px; transition: color 0.15s; }
-    .lang-toggle-icon { font-size: 12px; font-weight: 800; }
+    .bottom-icon { width: 48px; height: 48px; border-radius: 50%; background: none; border: none; box-shadow: none; display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; flex-shrink: 0; transition: transform 0.1s; }
+    .bottom-icon svg { width: 27px; height: 27px; transition: color 0.15s; }
+    .lang-toggle-icon { font-size: 12px; }
     .bottom-icon:active { transform: scale(0.85); }
     .bottom-icon-wrap:active .bottom-icon, .bottom-icon-wrap.illuminated .bottom-icon { color: var(--blue); }
     .bottom-icon-wrap:active .bottom-icon-label, .bottom-icon-wrap.illuminated .bottom-icon-label { color: #3b7aec; }
     .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; align-self: flex-end; }
-    .nav-fab-label { position: absolute; bottom: 7px; left: 50%; transform: translateX(-50%); font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; }
-    .nav-fab { position: absolute; top: -22px; width: 64px; height: 64px; background: var(--blue-fill); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 3px 10px rgba(0,0,0,0.5); border: none; cursor: pointer; z-index: 4001; transition: transform 0.1s; touch-action: manipulation; }
+    .nav-fab-label { position: absolute; bottom: 9px; left: 50%; transform: translateX(-50%); font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; }
+    .nav-fab-wrapper.illuminated .nav-fab-label { color: #3b7aec; }
+    .nav-fab-ring { display: none; }
+    .nav-fab { position: absolute; top: -26px; width: 64px; height: 64px; background: var(--blue-fill); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 3px 10px rgba(0,0,0,0.5); border: none; cursor: pointer; z-index: 4001; transition: transform 0.1s; touch-action: manipulation; }
     .nav-fab svg { width: 30px; height: 30px; }
     .nav-fab:active { transform: scale(0.85); }
-    .bell-badge { position: absolute; top: -4px; right: -4px; background: var(--red); color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 15px; height: 15px; display: flex; align-items: center; justify-content: center; }
+    .bell-badge { position: absolute; top: 6px; right: 6px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
     #save-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #16a34a; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 21000; transition: transform 0.3s ease; }
     #save-toast.show { transform: translateX(-50%) translateY(0); }
     .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 10700; display: flex; align-items: flex-end; justify-content: center; }
@@ -598,32 +601,33 @@ if (window.parent !== window) {
         </div>
     </div>
 </div>
-<div class="bottom-bar">
-    <div class="bottom-icon-wrap">
+<div class="bottom-bar" id="roster-bottom-bar">
+    <div class="bottom-icon-wrap" id="bottom-profile-wrap">
         <div class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_PROFILE' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg></div>
         <span class="bottom-icon-label" data-i18n="profile_label">Profile</span>
     </div>
     <div class="bottom-icon-wrap">
-        <div class="bottom-icon theme-toggle-icon" id="theme-toggle" onclick="window.toggleDarkMode()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
-        <span class="bottom-icon-label theme-toggle-label">Light</span>
+        <div class="bottom-icon" id="theme-toggle" onclick="window.toggleDarkMode()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+        <span class="bottom-icon-label" id="theme-toggle-label">Light</span>
     </div>
     <div class="bottom-icon-wrap">
         <div class="bottom-icon" onclick="window.toggleLanguage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-        <span class="bottom-icon-label lang-toggle-label">English</span>
+        <span class="bottom-icon-label" id="language-toggle-label">English</span>
     </div>
-    <div class="nav-fab-wrapper">
-        <div class="nav-fab" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_ADD_JOURNEY' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+    <div class="nav-fab-wrapper" id="bottom-fab-wrap">
+        <div class="nav-fab-ring"></div>
+        <div class="nav-fab" id="main-fab-btn" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_ADD_JOURNEY' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
         <span class="nav-fab-label" data-i18n="add_journey">Add Journey</span>
     </div>
     <div class="bottom-icon-wrap">
-        <div class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_NOTIFICATIONS' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="bottom-icon" id="bottom-bell-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_NOTIFICATIONS' }, '*');" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
         <span class="bottom-icon-label" data-i18n="notifications_label">Alerts</span>
     </div>
-    <div class="bottom-icon-wrap">
+    <div class="bottom-icon-wrap" id="bottom-settings-wrap">
         <div class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_SETTINGS' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
         <span class="bottom-icon-label" data-i18n="settings">Settings</span>
     </div>
-    <div class="bottom-icon-wrap">
+    <div class="bottom-icon-wrap" id="bottom-home-wrap">
         <div class="bottom-icon" onclick="window.goHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div>
         <span class="bottom-icon-label" data-i18n="home">Home</span>
     </div>
@@ -689,36 +693,6 @@ if (window.parent !== window) {
         <div id="mandali-tab-train-panel" class="hidden">
             <p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:0 0 10px;" data-i18n="mandali_train_hint">Tap any train number to see which team is manning it</p>
             <div id="train-wise-results"></div>
-        </div>
-    </div>
-    <div class="bottom-bar">
-        <div class="bottom-icon-wrap">
-            <div class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_PROFILE' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg></div>
-            <span class="bottom-icon-label" data-i18n="profile_label">Profile</span>
-        </div>
-        <div class="bottom-icon-wrap">
-            <div class="bottom-icon theme-toggle-icon" onclick="window.toggleDarkMode()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
-            <span class="bottom-icon-label theme-toggle-label">Light</span>
-        </div>
-        <div class="bottom-icon-wrap">
-            <div class="bottom-icon" onclick="window.toggleLanguage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-            <span class="bottom-icon-label lang-toggle-label">English</span>
-        </div>
-        <div class="nav-fab-wrapper">
-            <div class="nav-fab" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_ADD_JOURNEY' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
-            <span class="nav-fab-label" data-i18n="add_journey">Add Journey</span>
-        </div>
-        <div class="bottom-icon-wrap">
-            <div class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_NOTIFICATIONS' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-            <span class="bottom-icon-label" data-i18n="notifications_label">Alerts</span>
-        </div>
-        <div class="bottom-icon-wrap">
-            <div class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_SETTINGS' }, '*');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
-            <span class="bottom-icon-label" data-i18n="settings">Settings</span>
-        </div>
-        <div class="bottom-icon-wrap">
-            <div class="bottom-icon" onclick="window.goHome()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div>
-            <span class="bottom-icon-label" data-i18n="home">Home</span>
         </div>
     </div>
 </div>
@@ -3124,6 +3098,7 @@ window.openLobbyModal = function() {
     if (slider) slider.value = now.getHours() * 60 + now.getMinutes();
     window.setMandaliSliderFill(now.getHours() * 60 + now.getMinutes());
     document.getElementById('mandali-page-overlay').classList.remove('hidden');
+    document.body.classList.add('mandali-open');
     if (localStorage.getItem('page_anim_enabled') !== 'false') {
         const overlayEl = document.getElementById('mandali-page-overlay');
         overlayEl.classList.remove('page-open-anim');
@@ -3158,6 +3133,7 @@ window.openLobbyModal = function() {
 
 window.closeMandaliPage = function() {
     document.getElementById('mandali-page-overlay').classList.add('hidden');
+    document.body.classList.remove('mandali-open');
     if (mandaliRefreshTimer) { clearInterval(mandaliRefreshTimer); mandaliRefreshTimer = null; }
     if (window.parent !== window) {
         window.parent.postMessage({ type: 'MANDALI_CLOSED' }, '*');
@@ -4483,14 +4459,20 @@ window.addEventListener('message', function(event) {
         if (document.body.classList.contains('dark-mode') !== isDark) {
             document.body.classList.toggle('dark-mode', isDark);
             localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
-            document.querySelectorAll('.theme-toggle-icon').forEach(btn => { btn.innerHTML = isDark ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'; });
-            document.querySelectorAll('.theme-toggle-label').forEach(lbl => { lbl.innerText = window.i18n ? window.i18n.t(isDark ? 'dark' : 'light') : (isDark ? 'Dark' : 'Light'); });
+            window.applyRosterThemeUI(isDark);
             if (document.getElementById('my-duty-week') && document.getElementById('my-duty-week').innerHTML.trim()) {
                 renderMyDutyWeek();
             }
         }
     }
-    // Point: these three arrive from index.html's Settings toggles while Roster's iframe is
+    if (event.data && event.data.type === 'LANGUAGE_CHANGED') {
+        if (window.i18n && window.i18n.getLang() !== event.data.lang) {
+            window.i18n.setLang(event.data.lang);
+            window.i18n.applyTranslations();
+            if (typeof window.onLanguageChanged === 'function') window.onLanguageChanged();
+        }
+    }
+    // Point: these arrive from index.html's Settings toggles while Roster's iframe is
     // already loaded and kept warm in the background - without this, a change made there would
     // silently have no effect here until the whole page reloaded, same reasoning as THEME_CHANGED
     // above.
@@ -4505,19 +4487,30 @@ window.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'SCROLL_STRETCH_CHANGED') {
         localStorage.setItem('scroll_bounce_enabled', event.data.value ? 'true' : 'false');
     }
+    if (event.data && event.data.type === 'PAGE_ANIM_CHANGED') {
+        localStorage.setItem('page_anim_enabled', event.data.value ? 'true' : 'false');
+    }
+    if (event.data && event.data.type === 'HAPTIC_CHANGED') {
+        localStorage.setItem('haptic_enabled', event.data.value ? 'true' : 'false');
+    }
 });
+
+window.applyRosterThemeUI = function(isDark) {
+    const themeToggleEl = document.getElementById('theme-toggle');
+    if (themeToggleEl) {
+        themeToggleEl.innerHTML = isDark
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+            : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    }
+    const themeLabelEl = document.getElementById('theme-toggle-label');
+    if (themeLabelEl) themeLabelEl.innerText = window.i18n ? window.i18n.t(isDark ? 'light' : 'dark') : (isDark ? 'Light' : 'Dark');
+};
 
 window.toggleDarkMode = function() {
     document.body.classList.toggle('dark-mode');
     const isDark = document.body.classList.contains('dark-mode');
-    document.querySelectorAll('.theme-toggle-icon').forEach(btn => { btn.innerHTML = isDark ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>'; });
-    document.querySelectorAll('.theme-toggle-label').forEach(lbl => { lbl.innerText = window.i18n ? window.i18n.t(isDark ? 'dark' : 'light') : (isDark ? 'Dark' : 'Light'); });
     localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
-    // Point (fix): the day-box border color (Out/In/Halt trip-group borders) is computed as a
-    // plain JS string baked into the rendered HTML, not a CSS variable - so it doesn't
-    // automatically pick up the new theme until the calendar is re-rendered. Without this, the
-    // border stayed stuck on whichever color it had at the LAST render until month navigation
-    // (or anything else) forced a fresh render.
+    window.applyRosterThemeUI(isDark);
     if (document.getElementById('my-duty-week') && document.getElementById('my-duty-week').innerHTML.trim()) {
         renderMyDutyWeek();
     }
@@ -4534,12 +4527,10 @@ window.toggleDarkMode = function() {
 window.onLanguageChanged = function() {
     if (!window.i18n) return;
     const isDark = document.body.classList.contains('dark-mode');
-    document.querySelectorAll('.theme-toggle-label').forEach(lbl => { lbl.innerText = window.i18n.t(isDark ? 'dark' : 'light'); });
-    document.querySelectorAll('.lang-toggle-label').forEach(lbl => { lbl.innerText = window.i18n.getLang() === 'hi' ? 'English' : 'Hindi'; });
-    // Point (fix): unlike theme (which already posts THEME_CHANGED back to the parent), a
-    // language switch made inside Roster never told the parent app at all - toggling here
-    // updated Roster's own text correctly but index.html stayed in the old language until its
-    // own toggle was tapped or the page was refreshed. Same postMessage pattern as theme.
+    const themeLabel = document.getElementById('theme-toggle-label');
+    if (themeLabel) themeLabel.innerText = window.i18n.t(isDark ? 'light' : 'dark');
+    const langLabel = document.getElementById('language-toggle-label');
+    if (langLabel) langLabel.innerText = window.i18n.getLang() === 'hi' ? 'English' : 'Hindi';
     if (window.parent !== window) {
         window.parent.postMessage({ type: 'LANGUAGE_CHANGED', lang: window.i18n.getLang() }, '*');
     }
@@ -4632,7 +4623,7 @@ function initAfterAuth() {
     }
     if (localStorage.getItem('app_theme') === 'dark') {
         document.body.classList.add('dark-mode');
-        document.querySelectorAll('.theme-toggle-icon').forEach(btn => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'; });
+        window.applyRosterThemeUI(true);
     }
     // Point: same shared 'card_shadow_enabled' key the parent app's Settings toggle writes to -
     // matches the existing cross-app pattern already used for 'app_theme' above.
