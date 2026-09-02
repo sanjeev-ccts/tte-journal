@@ -461,6 +461,9 @@
         .qadd-subday { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; padding: 2px; box-sizing: border-box; height: 100%; }
 
         #custom-modal, #manage-modal, #help-modal, #roster-modal, #calendar-modal, #quick-add-cal-modal, #feedback-modal, #complete-arrival-modal, #complete-departure-modal, #cal-day-modal, #dest-diversion-modal, #pay-rate-modal, #hra-rate-modal, #nha-rate-modal, #admin-maintenance-modal, #admin-versiongate-modal, #admin-dapush-modal, #admin-sessions-modal, #admin-archive-modal, #admin-view-archives-modal, #admin-feedback-modal, #admin-announcement-modal, #admin-stationpush-modal, #suggest-circular-modal, #request-team-change-modal, #settings-modal, #nda-month-picker-modal, #ta-confirm-values-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        /* Point: Roster iframe sits at z-index 999000 — Settings must float above it when opened
+           from inside Roster, without hiding the Roster layer underneath. */
+        #settings-modal.settings-over-roster { z-index: 1000010; }
         #custom-modal { z-index: 7500; }
         /* Task 4: Settings comes up from the bottom edge as a sheet, not a centered dialog */
         @keyframes settings-sheet-slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -4342,7 +4345,7 @@
     // initial UI check once the page loads, in case beforeinstallprompt already fired early.
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./service-worker.js?v=1.6').catch(() => {});
+            navigator.serviceWorker.register('./service-worker.js?v=1.7').catch(() => {});
         });
     }
     document.addEventListener('DOMContentLoaded', () => window.updatePWAInstallUI());
@@ -4622,10 +4625,20 @@
 
     window.openSettingsModal = function() {
         try { window.updateSettingsToggleSwitches(); } catch (e) { console.error('updateSettingsToggleSwitches failed:', e); }
-        document.getElementById('settings-modal').classList.remove('hidden');
+        const rosterEl = document.getElementById('roster-iframe-modal');
+        const settingsEl = document.getElementById('settings-modal');
+        const fromRoster = rosterEl && !rosterEl.classList.contains('hidden');
+        window._settingsOpenedFromRoster = fromRoster;
+        if (settingsEl) settingsEl.classList.toggle('settings-over-roster', fromRoster);
+        settingsEl.classList.remove('hidden');
     };
     window.closeSettingsModal = function() {
-        document.getElementById('settings-modal').classList.add('hidden');
+        const settingsEl = document.getElementById('settings-modal');
+        if (settingsEl) {
+            settingsEl.classList.add('hidden');
+            settingsEl.classList.remove('settings-over-roster');
+        }
+        window._settingsOpenedFromRoster = false;
     };
 
     window.getUserMainHq = function() {
@@ -6272,7 +6285,7 @@
     // after it applies translations to every [data-i18n] element. The theme label ("Light"/"Dark")
     // isn't a data-i18n element since its text depends on CURRENT theme state, not a fixed key — so
     // it needs this separate hook to refresh into the new language too.
-    window.onLanguageChanged = function() {
+    window.onLanguageChanged = function(fromRemote) {
         const themeLabel = document.getElementById('theme-toggle-label');
         if (themeLabel && window.i18n) {
             const isDark = document.body.classList.contains('dark-mode');
@@ -6284,7 +6297,7 @@
         if (langLabel && window.i18n) {
             langLabel.innerText = window.i18n.getLang() === 'hi' ? 'English' : 'Hindi';
         }
-        if (window.i18n) window.broadcastSettingToRoster('LANGUAGE_CHANGED', window.i18n.getLang());
+        if (!fromRemote && window.i18n) window.broadcastSettingToRoster('LANGUAGE_CHANGED', window.i18n.getLang());
         // Same reasoning as the theme label above — sync status text depends on dynamic sync
         // state (syncing/synced/pending/failing), not a fixed key, so it isn't a data-i18n
         // element and needs this explicit refresh to pick up the new language immediately
@@ -11204,10 +11217,6 @@
             window.navTo('screen-register');
         }
         if (event.data && event.data.type === 'OPEN_SETTINGS') {
-            const rosterEl = document.getElementById('roster-iframe-modal');
-            if (rosterEl && !rosterEl.classList.contains('hidden')) {
-                rosterEl.classList.add('hidden');
-            }
             window.openSettingsModal();
         }
         if (event.data && event.data.type === 'OPEN_NOTIFICATIONS') {
@@ -11221,7 +11230,7 @@
             if (window.i18n && window.i18n.getLang() !== event.data.lang) {
                 window.i18n.setLang(event.data.lang);
                 window.i18n.applyTranslations();
-                if (typeof window.onLanguageChanged === 'function') window.onLanguageChanged();
+                if (typeof window.onLanguageChanged === 'function') window.onLanguageChanged(true);
             }
         }
         if (event.data && event.data.type === 'THEME_CHANGED') {
