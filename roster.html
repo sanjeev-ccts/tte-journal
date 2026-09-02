@@ -266,6 +266,18 @@
 
     /* ---- My Duty: compact monthly calendar ---- */
     .duty-cal-card { padding: 10px 8px; }
+    /* My Duty tab: calendar sits flush on page bg — no outer card panel behind the grid */
+    #my-duty-week .duty-cal-card {
+        background: transparent !important;
+        background-image: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        margin-bottom: 0;
+        padding: 10px 0 0;
+    }
+    body.card-shadow-on #my-duty-week .duty-cal-card {
+        box-shadow: none !important;
+    }
     .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; gap: 6px; }
     .cal-nav-btn { width: 30px; height: 30px; flex-shrink: 0; border: none; border-radius: 50%; background: var(--blue-fill); color: white; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(59,130,246,0.35); }
     body.dark-mode .cal-nav-btn { background: #475569; box-shadow: 0 2px 6px rgba(71,85,105,0.35); }
@@ -620,7 +632,7 @@ if (window.parent !== window) {
         <span class="nav-fab-label" data-i18n="add_journey">Add Journey</span>
     </div>
     <div class="bottom-icon-wrap">
-        <div class="bottom-icon" id="bottom-bell-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_NOTIFICATIONS' }, '*');" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="bottom-icon" id="bottom-bell-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_NOTIFICATIONS' }, '*');" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="bell-badge hidden" id="bottom-bell-badge">0</div></div>
         <span class="bottom-icon-label" data-i18n="notifications_label">Alerts</span>
     </div>
     <div class="bottom-icon-wrap" id="bottom-settings-wrap">
@@ -4493,7 +4505,22 @@ window.addEventListener('message', function(event) {
     if (event.data && event.data.type === 'HAPTIC_CHANGED') {
         localStorage.setItem('haptic_enabled', event.data.value ? 'true' : 'false');
     }
+    if (event.data && event.data.type === 'NOTIFICATION_COUNT_CHANGED') {
+        window.applyRosterNotificationBadge(event.data.value);
+    }
 });
+
+window.applyRosterNotificationBadge = function(count) {
+    const b = document.getElementById('bottom-bell-badge');
+    if (!b) return;
+    const n = Number(count) || 0;
+    if (n > 0) {
+        b.innerText = n > 9 ? '9+' : String(n);
+        b.classList.remove('hidden');
+    } else {
+        b.classList.add('hidden');
+    }
+};
 
 window.applyRosterCardShadow = function() {
     const on = localStorage.getItem('card_shadow_enabled') === 'true';
@@ -4501,7 +4528,9 @@ window.applyRosterCardShadow = function() {
 };
 
 window.refreshRosterLiveContent = function() {
-    if (typeof renderMyDutyWeek === 'function' && window._currentTab === 'mine') renderMyDutyWeek();
+    if (window.i18n) window.i18n.applyTranslations();
+    const teamNo = document.getElementById('my-team-select') && document.getElementById('my-team-select').value;
+    if (teamNo && typeof renderMyDutyWeek === 'function') renderMyDutyWeek();
     const mandaliOverlay = document.getElementById('mandali-page-overlay');
     if (mandaliOverlay && !mandaliOverlay.classList.contains('hidden') && typeof window.renderMandaliBothTabs === 'function') {
         window.renderMandaliBothTabs();
@@ -4536,7 +4565,7 @@ window.toggleDarkMode = function() {
     }
 };
 
-// Point: i18n.js's own toggleLanguage() calls window.onLanguageChanged(lang) if defined, right
+// Point: i18n.js's own toggleLanguage() calls window.onLanguageChanged() if defined, right
 // after it applies translations to every [data-i18n] element - the theme label ("Light"/"Dark")
 // isn't a data-i18n element since its text depends on CURRENT theme state, not a fixed key, so it
 // needs this separate hook to refresh into the new language too. Same reasoning for the language
@@ -4549,7 +4578,7 @@ window.onLanguageChanged = function(fromRemote) {
     const langLabel = document.getElementById('language-toggle-label');
     if (langLabel) langLabel.innerText = window.i18n.getLang() === 'hi' ? 'English' : 'Hindi';
     window.refreshRosterLiveContent();
-    if (!fromRemote && window.parent !== window) {
+    if (fromRemote !== true && window.parent !== window) {
         window.parent.postMessage({ type: 'LANGUAGE_CHANGED', lang: window.i18n.getLang() }, '*');
     }
 };
