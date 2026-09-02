@@ -74,6 +74,7 @@
             nav_profile: "Profile",
             nav_stations_pay_details: "Stations, pay details",
             nav_circulars: "Circulars",
+            nav_mandali: "Mandali",
             nav_important_circulars: "Important Circulars",
             nav_roster: "Roster",
             nav_roster_bsb_only: "Roster for BSB",
@@ -463,6 +464,7 @@
             nav_profile: "प्रोफ़ाइल",
             nav_stations_pay_details: "स्टेशन, पे डिटेल्स",
             nav_circulars: "सर्कुलर",
+            nav_mandali: "मंडली",
             nav_important_circulars: "महत्वपूर्ण सर्कुलर",
             nav_roster: "रोस्टर",
             nav_roster_bsb_only: "BSB के लिए रोस्टर",
@@ -873,7 +875,7 @@
         setLang(getLang() === 'en' ? 'hi' : 'en');
         applyTranslations();
         if (typeof window.onLanguageChanged === 'function') {
-            window.onLanguageChanged(getLang());
+            window.onLanguageChanged();
         }
     };
 
