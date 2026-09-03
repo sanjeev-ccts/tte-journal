@@ -11567,9 +11567,11 @@
             { labelKey: 'my_archived_data_row', fallback: 'Archive Data', aliases: ['archive', 'archived', 'आर्काइव'], run: () => { window.navTo('screen-my-archive'); window.loadMyArchivedData(); } },
             { labelKey: 'backup_row', fallback: 'Backup', aliases: ['backup', 'restore', 'बैकअप'], run: () => window.navTo('screen-backup') },
             { labelKey: 'nav_profile', fallback: 'Profile', aliases: ['profile', 'register', 'pf', 'hq', 'प्रोफ़ाइल'], run: () => window.navTo('screen-register') },
-            { labelKey: 'page_title_admin', fallback: 'Admin', aliases: ['admin'], run: () => window.navTo('screen-admin') }
+            { labelKey: 'page_title_admin', fallback: 'Admin', aliases: ['admin'], adminOnly: true, run: () => window.navTo('screen-admin') }
         ];
+        const isAdminUser = window.currentUid === window.ADMIN_UID || (window.ADMIN_EMAILS && window.ADMIN_EMAILS.includes(window.currentUserEmail || ''));
         featureEntries.forEach(entry => {
+            if (entry.adminOnly && !isAdminUser) return;
             const title = label(entry.labelKey, entry.fallback);
             const haystack = [title, entry.fallback, ...(entry.aliases || [])].join(' ').toLowerCase();
             items.push({
