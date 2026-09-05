@@ -737,12 +737,12 @@
         #sheet-add-table input.field-invalid ~ span, #sheet-active-row-table input.field-invalid ~ span { background: transparent !important; }
         .bell-badge { position: absolute; top: -3px; right: -3px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
         
-        .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; align-self: flex-end; }
-        .nav-fab-label { position: absolute; bottom: 9px; left: 50%; transform: translateX(-50%); font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; }
+        .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; }
+        .nav-fab-label { position: static; transform: none; font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
         .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue); }
         .nav-fab-ring { display: none; }
         .nav-fab {
-            position: absolute; top: -26px; width: 64px; height: 64px;
+            position: absolute; top: -34px; width: 64px; height: 64px;
             background: var(--blue-fill);
             color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 32px;
@@ -800,10 +800,12 @@
         #nda-signon-table .nda-signon-signon-col { padding: 3px 2px !important; }
         #nda-signon-info-box { font-size: 10.5px; color: var(--text-muted); margin: 0 0 10px 0; line-height: 1.5; padding: 10px 12px; background: color-mix(in srgb, var(--blue) 8%, var(--card)); border: 1px solid color-mix(in srgb, var(--blue) 22%, var(--border)); border-radius: 10px; }
         #nda-signon-scroll-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: visible; }
+        .add-signon-link-btn { width: auto !important; max-width: 220px; margin: 10px auto 0 !important; padding: 6px 14px !important; font-size: 11px !important; font-weight: 700; color: var(--text-muted) !important; background: color-mix(in srgb, var(--blue) 6%, var(--card)) !important; border: 1px dashed color-mix(in srgb, var(--blue) 35%, var(--border)) !important; border-radius: 20px !important; box-shadow: none !important; display: block; }
+        .add-signon-link-btn:active { opacity: 0.85; transform: translateY(1px); }
         .inline-save-btn { background: var(--green); color: white; border: none; border-radius: 8px; padding: 4px 8px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(34,197,94,0.3); }
-        .station-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(59,130,246,0.12); border: 1px solid var(--blue); color: var(--blue); font-weight: 800; font-size: 11px; padding: 3px 6px 3px 10px; border-radius: 16px; }
+        .station-chip { display: inline-flex; align-items: center; gap: 5px; background: color-mix(in srgb, var(--blue) 12%, transparent); border: 1px solid var(--blue); color: var(--blue); font-weight: 800; font-size: 11px; padding: 3px 6px 3px 10px; border-radius: 16px; }
         .station-chip .chip-remove { cursor: pointer; font-weight: 900; background: var(--blue-fill); color: white; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 10px; line-height: 1; }
-        body.dark-mode .station-chip { background: rgba(88,166,255,0.15); }
+        body.dark-mode .station-chip { background: color-mix(in srgb, var(--blue) 15%, transparent); }
 
         /* Roster loading overlay — squeeze/pulse animation on the icon while first opening */
         @keyframes roster-squeeze {
@@ -2641,7 +2643,7 @@
                     <label class="profile-lbl">Outward Destinations <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
                     <div style="display:flex; gap:8px; margin-top:4px;">
                         <input type="text" id="reg-dest-input" placeholder="e.g. LKO PRYJ" style="text-transform: uppercase; margin:0; flex:1;">
-                        <button type="button" onclick="window.addDestStation()" style="width:auto; margin:0; padding:0 16px; background:#3b7aec; flex-shrink:0;">Add</button>
+                        <button type="button" onclick="window.addDestStation()" class="profile-inline-add-btn">Add</button>
                     </div>
                     <div id="reg-dest-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
                 </div>
@@ -2663,7 +2665,7 @@
                         <div style="font-size:12px; font-weight:800; color:var(--blue); margin-bottom:6px;" id="reg-diversion-editor-title"></div>
                         <div style="display:flex; gap:8px; margin-bottom:8px;">
                             <input type="text" id="reg-diversion-sub-input" placeholder="e.g. AMG UTR" style="text-transform: uppercase; margin:0; flex:1;">
-                            <button type="button" onclick="window.addDiversionSubStation()" style="width:auto; margin:0; padding:0 16px; background:#3b7aec; flex-shrink:0;">Add</button>
+                            <button type="button" onclick="window.addDiversionSubStation()" class="profile-inline-add-btn">Add</button>
                         </div>
                         <div id="reg-diversion-sub-chips" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
                     </div>
@@ -2672,7 +2674,7 @@
             </div>
             <div style="display:flex; gap:10px; margin-top:12px; flex-shrink:0;">
                 <button id="btn-edit-dest-diversion" type="button" onclick="window.unlockDestDiversionModal()" style="flex:1; background:var(--blue-fill);">✏️ Edit</button>
-                <button id="btn-save-dest-diversion" type="button" onclick="window.lockDestDiversionModal()" style="flex:1; background:#3b7aec; display:none;">💾 Save</button>
+                <button id="btn-save-dest-diversion" type="button" onclick="window.lockDestDiversionModal()" style="flex:1; background:var(--blue-fill); display:none;">💾 Save</button>
             </div>
         </div>
     </div>
@@ -3615,7 +3617,7 @@
             <div style="margin-top: 12px; margin-bottom: 10px;">
                 <div class="grid-2">
                     <div class="nav-card" onclick="window.switchTab('ta'); window.showYearlyTrendOnly();">
-                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 24 24" style="width:27px; height:27px;" fill="currentColor"><path d="M18 2H6v2h7.5c2.5 0 4.5 2 4.5 4.5S16 13 13.5 13H8v2h5.5c2.8 0 5 2.2 5 5s-2.2 5-5 5H6v-2h7.5c1.7 0 3-1.3 3-3s-1.3-3-3-3H8V11h5.5c1.4 0 2.5-1.1 2.5-2.5S14.9 6 13.5 6H6V4h12V2z"/></svg></div>
+                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 24 24" style="width:27px; height:27px;"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M12.052 1.25H11.948C11.0495 1.24997 10.3003 1.24995 9.70552 1.32991C9.07773 1.41432 8.51093 1.59999 8.05546 2.05546C7.59999 2.51093 7.41432 3.07773 7.32991 3.70552C7.27259 4.13189 7.25637 5.15147 7.25179 6.02566C5.22954 6.09171 4.01536 6.32778 3.17157 7.17157C2 8.34315 2 10.2288 2 14C2 17.7712 2 19.6569 3.17157 20.8284C4.34314 22 6.22876 22 9.99998 22H14C17.7712 22 19.6569 22 20.8284 20.8284C22 19.6569 22 17.7712 22 14C22 10.2288 22 8.34315 20.8284 7.17157C19.9846 6.32778 18.7705 6.09171 16.7482 6.02566C16.7436 5.15147 16.7274 4.13189 16.6701 3.70552C16.5857 3.07773 16.4 2.51093 15.9445 2.05546C15.4891 1.59999 14.9223 1.41432 14.2945 1.32991C13.6997 1.24995 12.9505 1.24997 12.052 1.25ZM15.2479 6.00188C15.2434 5.15523 15.229 4.24407 15.1835 3.9054C15.1214 3.44393 15.0142 3.24644 14.8839 3.11612C14.7536 2.9858 14.5561 2.87858 14.0946 2.81654C13.6116 2.7516 12.964 2.75 12 2.75C11.036 2.75 10.3884 2.7516 9.90539 2.81654C9.44393 2.87858 9.24644 2.9858 9.11612 3.11612C8.9858 3.24644 8.87858 3.44393 8.81654 3.9054C8.771 4.24407 8.75661 5.15523 8.75208 6.00188C9.1435 6 9.55885 6 10 6H14C14.4412 6 14.8565 6 15.2479 6.00188ZM12 9.25C12.4142 9.25 12.75 9.58579 12.75 10V10.0102C13.8388 10.2845 14.75 11.143 14.75 12.3333C14.75 12.7475 14.4142 13.0833 14 13.0833C13.5858 13.0833 13.25 12.7475 13.25 12.3333C13.25 11.9493 12.8242 11.4167 12 11.4167C11.1758 11.4167 10.75 11.9493 10.75 12.3333C10.75 12.7174 11.1758 13.25 12 13.25C13.3849 13.25 14.75 14.2098 14.75 15.6667C14.75 16.857 13.8388 17.7155 12.75 17.9898V18C12.75 18.4142 12.4142 18.75 12 18.75C11.5858 18.75 11.25 18.4142 11.25 18V17.9898C10.1612 17.7155 9.25 16.857 9.25 15.6667C9.25 15.2525 9.58579 14.9167 10 14.9167C10.4142 14.9167 10.75 15.2525 10.75 15.6667C10.75 16.0507 11.1758 16.5833 12 16.5833C12.8242 16.5833 13.25 16.0507 13.25 15.6667C13.25 15.2826 12.8242 14.75 12 14.75C10.6151 14.75 9.25 13.7903 9.25 12.3333C9.25 11.143 10.1612 10.2845 11.25 10.0102V10C11.25 9.58579 11.5858 9.25 12 9.25Z"/></svg></div>
                         <div class="nav-main-text" id="dash-ta-val" style="color: var(--ta-accent);">₹0</div>
                         <div class="nav-sub-text" id="dash-ta-lbl">TA this month</div>
                     </div>
@@ -3829,6 +3831,7 @@
                     <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center; white-space:nowrap;">Add Rest/Leave</span>
                 </div>
             </div>
+            <button type="button" id="btn-add-signon-time" class="add-signon-link-btn" onclick="window.openNdaSignOnFromAddJourney()" data-i18n="add_signon_time_btn">Add Sign On Time</button>
 
             <!-- Point: compact spreadsheet view of duty history, same underlying data/rendering
                  approach as the Dashboard's sheet, but with its own dedicated DOM ids (separate
@@ -13467,6 +13470,12 @@
     // Point 1: Dashboard TA/NDA cards open the trend modal
     window.showYearlyTrendOnly = function() {
         showTrendChart(false, true);
+    };
+
+    window.openNdaSignOnFromAddJourney = function() {
+        window.switchTab('nda');
+        window.showYearlyTrendOnly();
+        window.switchTrendViewTab('signon');
     };
 
     function trendLocale() {
