@@ -734,7 +734,11 @@
         td.editable-cell:focus { outline: 2px solid var(--blue); background: rgba(59,130,246,0.15); }
         .nda-signon-locked-cell { color: var(--text-muted); opacity: 0.72; background: color-mix(in srgb, var(--input-bg) 90%, transparent); }
         #nda-signon-table input.nda-signon-input { width: 58px; margin: 0 auto; text-align: center; padding: 6px 4px; font-size: 11px; font-weight: 800; color: var(--text); background: rgba(59,130,246,0.1); border: 1.5px solid var(--blue); border-radius: 8px; box-shadow: none; display: block; }
-        #nda-signon-table input.nda-signon-input::placeholder { color: var(--text-muted); font-weight: 600; opacity: 0.85; }
+        #nda-signon-table { min-width: 0 !important; }
+        #nda-signon-table .nda-signon-locked-cell { padding: 3px 2px !important; font-size: 9px !important; }
+        #nda-signon-table thead th { padding: 6px 2px !important; font-size: 9px !important; }
+        #nda-signon-table .nda-signon-signon-col { padding: 4px 3px !important; min-width: 72px; }
+        #nda-signon-scroll-wrap { touch-action: pan-x pan-y; overscroll-behavior: contain; }
         .inline-save-btn { background: var(--green); color: white; border: none; border-radius: 8px; padding: 4px 8px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(34,197,94,0.3); }
         .station-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(59,130,246,0.12); border: 1px solid var(--blue); color: var(--blue); font-weight: 800; font-size: 11px; padding: 3px 6px 3px 10px; border-radius: 16px; }
         .station-chip .chip-remove { cursor: pointer; font-weight: 900; background: var(--blue-fill); color: white; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 10px; line-height: 1; }
@@ -2513,7 +2517,7 @@
             <div style="display:flex; width:100%;">
                 <button id="trend-tab-graph-btn" class="header-tab active" onclick="window.switchTrendViewTab('graph')" data-i18n="trend_tab_graph">Graph View</button>
                 <button id="trend-tab-list-btn" class="header-tab" onclick="window.switchTrendViewTab('list')" data-i18n="trend_tab_list">List View</button>
-                <button id="trend-tab-signon-btn" class="header-tab hidden" onclick="window.switchTrendViewTab('signon')" data-i18n="trend_tab_signon">Sign On</button>
+                <button id="trend-tab-signon-btn" class="header-tab hidden" onclick="window.switchTrendViewTab('signon')" data-i18n="trend_tab_signon">Sign On Time</button>
             </div>
         </div>
         <div class="screen-content">
@@ -2522,15 +2526,25 @@
             <div id="trend-signon-area" class="hidden">
                 <div id="nda-signon-period-nav" style="margin-bottom:12px;"></div>
                 <p data-i18n="nda_signon_hint" style="font-size:10.5px; color:var(--text-muted); margin:0 0 8px 0;">Only Sign On time is editable. Filled values override the Sign On column in the printed NDA PDF.</p>
-                <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border); border-radius:10px;">
-                    <table id="nda-signon-table" style="width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed; min-width:720px;">
+                <div id="nda-signon-scroll-wrap" style="overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border); border-radius:10px;">
+                    <table id="nda-signon-table" style="width:100%; border-collapse:collapse; font-size:10px; table-layout:fixed;">
+                        <colgroup>
+                            <col style="width:9%">
+                            <col style="width:8%">
+                            <col style="width:7%">
+                            <col style="width:7%">
+                            <col style="width:8%">
+                            <col style="width:8%">
+                            <col style="width:18%">
+                            <col style="width:8%">
+                        </colgroup>
                         <thead>
                             <tr id="nda-signon-table-header" style="background:var(--all-header-bg); position:sticky; top:0; z-index:2;"></tr>
                         </thead>
                         <tbody id="nda-signon-table-body"></tbody>
                     </table>
                 </div>
-                <button onclick="window.saveNdaSignOnTable()" style="background:var(--purple-fill); margin-top:12px; margin-bottom:70px;" data-i18n="save_nda_signon_btn">💾 Save Sign On Times</button>
+                <button onclick="window.saveNdaSignOnTable()" style="background:var(--blue-fill); margin-top:12px; margin-bottom:70px;" data-i18n="save_nda_signon_btn">💾 Save Sign On Times</button>
             </div>
         </div>
     </div>
@@ -6630,10 +6644,17 @@
         
         // FIXED SWIPE ENGINE
         let startX = 0;
-        document.addEventListener('touchstart', e => startX = e.touches[0].clientX, {passive: true});
+        let startY = 0;
+        document.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        }, {passive: true});
         document.addEventListener('touchend', e => { 
-            if (e.target.closest('#preview-wrapper')) return; // Point: PDF preview overlay hides its parent (#ui-wrapper), not screen-reports/screen-add themselves, so without this check this still incorrectly fired underneath the preview
+            if (e.target.closest('#preview-wrapper')) return;
+            if (e.target.closest('#trend-signon-area, #nda-signon-scroll-wrap, #nda-signon-table')) return;
             let diff = e.changedTouches[0].clientX - startX;
+            let diffY = e.changedTouches[0].clientY - startY;
+            if (Math.abs(diffY) > Math.abs(diff)) return;
             if (Math.abs(diff) > 50) {
                 if (!document.getElementById('screen-reports').classList.contains('hidden')) {
                     window.hapticTap();
@@ -13280,14 +13301,14 @@
         window.renderNdaSignOnPeriodNav();
         const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
         header.innerHTML = `
-            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text);">${t('nda_signon_col_date', 'Date')}</th>
-            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_train', 'Train No.')}</th>
-            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_from', 'From')}</th>
-            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_to', 'To')}</th>
-            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_dep', 'Actual Dep.')}</th>
-            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_arr', 'Actual Arr.')}</th>
-            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_signon', 'Sign On')}</th>
-            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_signoff', 'Sign Off')}</th>`;
+            <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text);">${t('nda_signon_col_date', 'Date')}</th>
+            <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_train', 'Train')}</th>
+            <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_from', 'From')}</th>
+            <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_to', 'To')}</th>
+            <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_dep', 'Dep')}</th>
+            <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_arr', 'Arr')}</th>
+            <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_signon', 'Sign On')}</th>
+            <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_signoff', 'Sign Off')}</th>`;
         const mo = window._ndaSignOnMonthKey || window.getCurrentNdaMonthKey();
         const p = window.appState.profile;
         if (!p || p.empType === 'Gazetted') {
@@ -13301,7 +13322,7 @@
             return;
         }
         const locked = 'nda-signon-locked-cell';
-        const cell = (text, extra) => `<td class="${locked}" style="padding:6px 4px; text-align:center; font-size:10px; border-bottom:1px solid var(--border);${extra || ''}">${text}</td>`;
+        const cell = (text, extra) => `<td class="${locked}" style="padding:3px 2px; text-align:center; font-size:9px; border-bottom:1px solid var(--border);${extra || ''}">${text}</td>`;
         let html = '';
         rowGroups.forEach(group => {
             if (group.type === 'train') {
@@ -13319,8 +13340,8 @@
                     html += cell(window.escapeHtml(trip.depTime || '—'), '; border-left:1px solid var(--border)');
                     html += cell(window.escapeHtml(trip.arrTime || '—'), '; border-left:1px solid var(--border)');
                     if (idx === 0) {
-                        html += `<td rowspan="${rs}" style="padding:6px 4px; text-align:center; vertical-align:middle; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" oninput="window.liveFormatTimeInput(this)" onblur="window.formatTimeInput(this)"></td>`;
-                        html += `<td rowspan="${rs}" class="${locked}" style="padding:6px 4px; text-align:center; vertical-align:middle; font-size:10px; border-bottom:1px solid var(--border); border-left:1px solid var(--border);">${defaultSignOffStr}</td>`;
+                        html += `<td rowspan="${rs}" class="nda-signon-signon-col" style="text-align:center; vertical-align:middle; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" oninput="window.liveFormatTimeInput(this)" onblur="window.formatTimeInput(this)"></td>`;
+                        html += `<td rowspan="${rs}" class="${locked}" style="padding:3px 2px; text-align:center; vertical-align:middle; font-size:9px; border-bottom:1px solid var(--border); border-left:1px solid var(--border);">${defaultSignOffStr}</td>`;
                     }
                     html += '</tr>';
                 });
@@ -13334,8 +13355,8 @@
                 const extraLabel = e.objective && e.objective !== e.dutyType ? ' — ' + e.objective : '';
                 html += `<tr data-row-key="${group.rowKey}" data-signon-row="1">`;
                 html += cell(formatDate(e.date));
-                html += `<td colspan="5" class="${locked}" style="padding:6px 4px; text-align:center; font-size:10px; font-weight:800; border-bottom:1px solid var(--border); border-left:1px solid var(--border);">${window.escapeHtml(dutyLabel + extraLabel)}</td>`;
-                html += `<td style="padding:6px 4px; text-align:center; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" oninput="window.liveFormatTimeInput(this)" onblur="window.formatTimeInput(this)"></td>`;
+                html += `<td colspan="5" class="${locked}" style="padding:3px 2px; text-align:center; font-size:9px; font-weight:800; border-bottom:1px solid var(--border); border-left:1px solid var(--border);">${window.escapeHtml(dutyLabel + extraLabel)}</td>`;
+                html += `<td class="nda-signon-signon-col" style="text-align:center; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" oninput="window.liveFormatTimeInput(this)" onblur="window.formatTimeInput(this)"></td>`;
                 html += cell(defaultSignOffStr, '; border-left:1px solid var(--border)');
                 html += '</tr>';
             }
@@ -13721,6 +13742,14 @@
         window.renderYearlyLineGraph();
     };
 
+    window.usesPfSubsScheme = function(profile) {
+        const p = profile || window.appState.profile;
+        if (!p || !p.appt) return false;
+        const appt = new Date(p.appt + 'T00:00:00');
+        if (isNaN(appt.getTime())) return false;
+        return appt < new Date('2004-01-01T00:00:00');
+    };
+
     // Point 8: Expected Salary (Current Month) calculation.
     // Formula: Basic Pay + DA% of Basic + HRA (HQ-wise %) + TPT (city/level-based) + TA (this month) +
     //          NDA (this month, money value) - Railway Employee Insurance Scheme (fixed ₹30) - NPS (10% of Basic+DA)
@@ -13834,8 +13863,10 @@
             }
         }
 
-        // Point 8-iii: NPS = 10% of (Basic Pay + DA)
-        const npsAmount = Math.round((basicPay + daAmount) * 0.10);
+        // Point 8-iii: NPS = 10% of (Basic Pay + DA), unless appointment is before 1 Jan 2004
+        // — then PF-SUBS = 1/12 of Basic Pay instead.
+        const usesPfSubs = window.usesPfSubsScheme(p);
+        const npsAmount = usesPfSubs ? Math.round(basicPay / 12) : Math.round((basicPay + daAmount) * 0.10);
 
         const relsAmount = 30; // fixed, per specification
 
@@ -13851,7 +13882,7 @@
         const ndaRangeLabel = `${prevMonthD.toLocaleString('default', { month: 'short' })}-${monthName}`;
 
         return {
-            mo, basicPay, daAmount, daPct, hraAmount, hraPct, isBigCity, tptAmount, taThisMonth, ndaMoney, nhaMoney, nhaDatesWorked, dressAmount, plbAmount, relsAmount, npsAmount, monthName, ndaRangeLabel,
+            mo, basicPay, daAmount, daPct, hraAmount, hraPct, isBigCity, tptAmount, taThisMonth, ndaMoney, nhaMoney, nhaDatesWorked, dressAmount, plbAmount, relsAmount, npsAmount, usesPfSubs, monthName, ndaRangeLabel,
             total: Math.round(total)
         };
     }
@@ -14024,7 +14055,7 @@
         if (result.dressAmount > 0) rows.push(['Dress Allowance', result.dressAmount, true]);
         if (result.plbAmount > 0) rows.push(['Productivity Linked Bonus (PLB)', result.plbAmount, true]);
         rows.push(['Railway Employee Insurance Scheme', -result.relsAmount]);
-        rows.push(['NPS (10% of Basic+DA)', -result.npsAmount]);
+        rows.push([result.usesPfSubs ? (window.i18n ? window.i18n.t('salary_pf_subs_row') : 'PF-SUBS (1/12 of Basic Pay)') : (window.i18n ? window.i18n.t('salary_nps_row') : 'NPS (10% of Basic+DA)'), -result.npsAmount]);
         const rowsHtml = rows.map(([label, val, isOccasional], idx) =>
             `<div style="display:flex; align-items:center; justify-content:space-between; padding:9px 0; ${idx < rows.length - 1 ? 'border-bottom:1px dashed var(--border);' : ''} font-size:13px;">
                 <span style="color:${isOccasional ? 'var(--orange)' : 'var(--text-muted)'};"><span style="color:var(--text-muted); margin-right:6px;">›</span>${label}</span>
