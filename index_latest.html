@@ -7727,14 +7727,14 @@
         panel.classList.toggle('hidden');
         row.classList.toggle('expanded', opening);
         if (opening) {
-            const firstInput = panel.querySelector('input');
-            if (firstInput && !firstInput.disabled) {
-                setTimeout(() => firstInput.focus(), 50);
-            }
+            const help = panel.querySelector('.profile-station-help');
+            if (help) help.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
     };
 
     window.addNearbyHQ = function() {
+        const input = document.getElementById('reg-nearby-input');
+        const codes = parseMultiStationInput(input.value);
         if (codes.length === 0) return;
         codes.forEach(val => { if (!window._nearbyStations.includes(val)) window._nearbyStations.push(val); });
         input.value = '';
