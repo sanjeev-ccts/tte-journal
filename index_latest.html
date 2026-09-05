@@ -158,8 +158,6 @@
             --all-header-border: #22c55e;
             --earnings-total-bg: #14261a;
         }
-        body.green-theme .nav-fab { background: #22c55e; }
-        body.dark-mode.green-theme .nav-fab { background: #34d399; }
 
         body.dark-mode .summary-pill { background: linear-gradient(135deg, #1a2035, #0d2010) !important; color: #79c0ff !important; border-color: #30363d !important; }
         body.green-theme .summary-pill { color: var(--blue) !important; }
@@ -169,6 +167,9 @@
         body.green-theme #nda-signon-table input.nda-signon-input { background: color-mix(in srgb, var(--blue) 12%, transparent); }
         body.green-theme .station-chip { background: color-mix(in srgb, var(--blue) 12%, transparent); }
         body.green-theme .circ-tag-year { background: color-mix(in srgb, var(--blue) 12%, transparent); color: var(--blue); }
+        body.green-theme .circ-dash-icon-badge { color: var(--blue); }
+        body.green-theme .circ-circular-icon { background: color-mix(in srgb, var(--blue) 12%, transparent); }
+        body.green-theme .circ-fab-right { background: radial-gradient(circle at center, #4ade80 0%, #15803d 55%, #14532d 100%); }
         body.green-theme .profile-lbl,
         body.dark-mode.green-theme .profile-lbl { color: var(--blue); }
         body.green-theme #sidebar-user-name { color: var(--blue) !important; }
@@ -176,7 +177,7 @@
         body.green-theme .nav-card:has(#dash-ta-val) .nav-icon { color: var(--ta-accent) !important; }
         .profile-inline-add-btn { width: auto !important; margin: 0 !important; padding: 0 16px !important; background: var(--blue-fill) !important; flex-shrink: 0; }
         .form-field-lbl { font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px; }
-        #profile-action-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 3999; padding: 12px 16px 92px; background: var(--bg); border-top: 1px solid var(--border); box-shadow: 0 -4px 16px rgba(0,0,0,0.12); pointer-events: none; }
+        #profile-action-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 3999; padding: 12px 16px 110px; background: var(--bg); border-top: 1px solid var(--border); box-shadow: 0 -4px 16px rgba(0,0,0,0.12); pointer-events: none; }
         #profile-action-bar button { pointer-events: auto; }
         #screen-register .screen-content { padding-bottom: 200px; }
         * { box-sizing: border-box; font-family: 'Roboto', system-ui, sans-serif; }
@@ -792,6 +793,7 @@
         td.editable-cell:focus { outline: 2px solid var(--blue); background: color-mix(in srgb, var(--blue) 15%, transparent); }
         .nda-signon-locked-cell { color: var(--text); background: color-mix(in srgb, var(--input-bg) 88%, transparent); }
         #nda-signon-table input.nda-signon-input { width: 100%; max-width: 100%; box-sizing: border-box; margin: 0 auto; text-align: center; padding: 4px 2px; font-size: 10px; font-weight: 800; color: var(--text); background: color-mix(in srgb, var(--blue) 10%, transparent); border: 1.5px solid var(--blue); border-radius: 6px; box-shadow: none; display: block; min-height: 30px; touch-action: manipulation; pointer-events: auto; position: relative; z-index: 1; -webkit-appearance: none; appearance: none; }
+        #nda-signon-table input.nda-signon-input:focus::placeholder { opacity: 0; color: transparent; }
         #nda-signon-table { min-width: 0 !important; }
         #nda-signon-table .nda-signon-locked-cell { padding: 6px 5px !important; font-size: 9.5px !important; line-height: 1.3; }
         #nda-signon-table thead th { padding: 7px 5px !important; font-size: 9px !important; }
@@ -826,7 +828,7 @@
         }
         .circ-dash-card { background: var(--card); border: none; }
         .circ-dash-card:active { transform:scale(0.96) translateY(2px); box-shadow:0 3px 10px rgba(0,0,0,0.15), inset 0 2px 4px rgba(0,0,0,0.2); }
-        .circ-dash-icon-badge { margin:0 auto 8px; display:flex; align-items:center; justify-content:center; font-size:28px; }
+        .circ-dash-icon-badge { margin:0 auto 8px; display:flex; align-items:center; justify-content:center; font-size:28px; color: var(--blue); }
         .circ-dash-card .circ-dash-label { font-size:13.5px; font-weight:800; }
         .circ-dash-card .circ-dash-desc { font-size:10.5px; color:var(--text-muted); margin-top:4px; line-height:1.35; }
         .circ-dash-card .circ-dash-count { font-size:11px; color:var(--text-muted); margin-top:4px; }
@@ -882,7 +884,7 @@
         .circ-circular-card.circ-pinned { border:1.5px solid rgba(234,179,8,0.5); background:rgba(234,179,8,0.05); }
         .circ-circular-card { background: var(--card); border: none; }
         .circ-circular-link-row { display:flex; gap:12px; align-items:flex-start; flex:1; min-width:0; text-decoration:none; color:inherit; cursor:pointer; }
-        .circ-circular-icon { width:40px; height:40px; border-radius:10px; background:rgba(37,99,235,0.1); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+        .circ-circular-icon { width:40px; height:40px; border-radius:10px; background:color-mix(in srgb, var(--blue) 10%, transparent); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
         .circ-circular-body { flex:1; min-width:0; }
         .circ-circular-title { font-size:14.5px; font-weight:700; color:var(--text); margin:0 0 6px; line-height:1.35; }
         .circ-circular-meta { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
@@ -2599,10 +2601,10 @@
                             <col style="width:11%">
                             <col style="width:10%">
                             <col style="width:10%">
-                            <col style="width:12%">
-                            <col style="width:12%">
                             <col style="width:10%">
-                            <col style="width:12%">
+                            <col style="width:10%">
+                            <col style="width:14%">
+                            <col style="width:10%">
                         </colgroup>
                         <thead>
                             <tr id="nda-signon-table-header" style="background:var(--all-header-bg);"></tr>
@@ -3613,7 +3615,7 @@
             <div style="margin-top: 12px; margin-bottom: 10px;">
                 <div class="grid-2">
                     <div class="nav-card" onclick="window.switchTab('ta'); window.showYearlyTrendOnly();">
-                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 24 24" style="width:27px; height:27px;"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M12.052 1.25H11.948C11.0495 1.24997 10.3003 1.24995 9.70552 1.32991C9.07773 1.41432 8.51093 1.59999 8.05546 2.05546C7.59999 2.51093 7.41432 3.07773 7.32991 3.70552C7.27259 4.13189 7.25637 5.15147 7.25179 6.02566C5.22954 6.09171 4.01536 6.32778 3.17157 7.17157C2 8.34315 2 10.2288 2 14C2 17.7712 2 19.6569 3.17157 20.8284C4.34314 22 6.22876 22 9.99998 22H14C17.7712 22 19.6569 22 20.8284 20.8284C22 19.6569 22 17.7712 22 14C22 10.2288 22 8.34315 20.8284 7.17157C19.9846 6.32778 18.7705 6.09171 16.7482 6.02566C16.7436 5.15147 16.7274 4.13189 16.6701 3.70552C16.5857 3.07773 16.4 2.51093 15.9445 2.05546C15.4891 1.59999 14.9223 1.41432 14.2945 1.32991C13.6997 1.24995 12.9505 1.24997 12.052 1.25ZM15.2479 6.00188C15.2434 5.15523 15.229 4.24407 15.1835 3.9054C15.1214 3.44393 15.0142 3.24644 14.8839 3.11612C14.7536 2.9858 14.5561 2.87858 14.0946 2.81654C13.6116 2.7516 12.964 2.75 12 2.75C11.036 2.75 10.3884 2.7516 9.90539 2.81654C9.44393 2.87858 9.24644 2.9858 9.11612 3.11612C8.9858 3.24644 8.87858 3.44393 8.81654 3.9054C8.771 4.24407 8.75661 5.15523 8.75208 6.00188C9.1435 6 9.55885 6 10 6H14C14.4412 6 14.8565 6 15.2479 6.00188ZM12 9.25C12.4142 9.25 12.75 9.58579 12.75 10V10.0102C13.8388 10.2845 14.75 11.143 14.75 12.3333C14.75 12.7475 14.4142 13.0833 14 13.0833C13.5858 13.0833 13.25 12.7475 13.25 12.3333C13.25 11.9493 12.8242 11.4167 12 11.4167C11.1758 11.4167 10.75 11.9493 10.75 12.3333C10.75 12.7174 11.1758 13.25 12 13.25C13.3849 13.25 14.75 14.2098 14.75 15.6667C14.75 16.857 13.8388 17.7155 12.75 17.9898V18C12.75 18.4142 12.4142 18.75 12 18.75C11.5858 18.75 11.25 18.4142 11.25 18V17.9898C10.1612 17.7155 9.25 16.857 9.25 15.6667C9.25 15.2525 9.58579 14.9167 10 14.9167C10.4142 14.9167 10.75 15.2525 10.75 15.6667C10.75 16.0507 11.1758 16.5833 12 16.5833C12.8242 16.5833 13.25 16.0507 13.25 15.6667C13.25 15.2826 12.8242 14.75 12 14.75C10.6151 14.75 9.25 13.7903 9.25 12.3333C9.25 11.143 10.1612 10.2845 11.25 10.0102V10C11.25 9.58579 11.5858 9.25 12 9.25Z"/></svg></div>
+                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 24 24" style="width:27px; height:27px;" fill="currentColor"><path d="M18 2H6v2h7.5c2.5 0 4.5 2 4.5 4.5S16 13 13.5 13H8v2h5.5c2.8 0 5 2.2 5 5s-2.2 5-5 5H6v-2h7.5c1.7 0 3-1.3 3-3s-1.3-3-3-3H8V11h5.5c1.4 0 2.5-1.1 2.5-2.5S14.9 6 13.5 6H6V4h12V2z"/></svg></div>
                         <div class="nav-main-text" id="dash-ta-val" style="color: var(--ta-accent);">₹0</div>
                         <div class="nav-sub-text" id="dash-ta-lbl">TA this month</div>
                     </div>
@@ -4326,34 +4328,34 @@
             </div>
             <div class="circ-dash-grid">
                 <div class="circ-dash-card" onclick="window.circGoToBucket('')">
-                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></div>
+                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg></div>
                     <div class="circ-dash-label">All Circulars</div>
                     <div class="circ-dash-count" id="circ-count-all"></div>
                 </div>
                 <div class="circ-dash-card" onclick="window.circGoToBucket('com')">
-                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="13" x2="21" y2="13"/></svg></div>
+                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="13" x2="21" y2="13"/></svg></div>
                     <div class="circ-dash-label">Com. Circulars</div>
                     <div class="circ-dash-count" id="circ-count-com"></div>
                 </div>
                 <div class="circ-dash-card" onclick="window.circGoToBucket('rbe')">
-                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 256 256" style="width:24px; height:24px;"><path fill="#1d4ed8" d="M188,24H68A32.03667,32.03667,0,0,0,36,56V184a32.03667,32.03667,0,0,0,32,32H79.99976L65.59961,235.2002a8.00019,8.00019,0,0,0,12.80078,9.5996L100.00024,216h55.99952l21.59985,28.7998a8.00019,8.00019,0,0,0,12.80078-9.5996L176.00024,216H188a32.03667,32.03667,0,0,0,32-32V56A32.03667,32.03667,0,0,0,188,24ZM84,184a12,12,0,1,1,12-12A12,12,0,0,1,84,184Zm36-64H52V80h68Zm52,64a12,12,0,1,1,12-12A12,12,0,0,1,172,184Zm32-64H136V80h68Z"/></svg></div>
+                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 256 256" style="width:24px; height:24px;"><path fill="currentColor" d="M188,24H68A32.03667,32.03667,0,0,0,36,56V184a32.03667,32.03667,0,0,0,32,32H79.99976L65.59961,235.2002a8.00019,8.00019,0,0,0,12.80078,9.5996L100.00024,216h55.99952l21.59985,28.7998a8.00019,8.00019,0,0,0,12.80078-9.5996L176.00024,216H188a32.03667,32.03667,0,0,0,32-32V56A32.03667,32.03667,0,0,0,188,24ZM84,184a12,12,0,1,1,12-12A12,12,0,0,1,84,184Zm36-64H52V80h68Zm52,64a12,12,0,1,1,12-12A12,12,0,0,1,172,184Zm32-64H136V80h68Z"/></svg></div>
                     <div class="circ-dash-label">RBE Circulars</div>
                     <div class="circ-dash-count" id="circ-count-rbe"></div>
                 </div>
                 <div class="circ-dash-card" onclick="window.circGoToBucket('misc')">
-                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" style="width:27px; height:27px;"><path fill="#1d4ed8" stroke="#1d4ed8" stroke-width="0.6" d="M10 10H2V2h8zM3 9h6V3H3zm18 1h-8V2h8zm-7-1h6V3h-6zm3 13.657L11.343 17 17 11.343 22.657 17zM12.757 17L17 21.243 21.243 17 17 12.757zM10 21H2v-8h8zm-7-1h6v-6H3z"/></svg></div>
+                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" style="width:27px; height:27px;"><path fill="currentColor" stroke="currentColor" stroke-width="0.6" d="M10 10H2V2h8zM3 9h6V3H3zm18 1h-8V2h8zm-7-1h6V3h-6zm3 13.657L11.343 17 17 11.343 22.657 17zM12.757 17L17 21.243 21.243 17 17 12.757zM10 21H2v-8h8zm-7-1h6v-6H3z"/></svg></div>
                     <div class="circ-dash-label">Miscellaneous</div>
                     <div class="circ-dash-count" id="circ-count-misc"></div>
                 </div>
                 <div class="circ-dash-card" onclick="window.circGoToBucket('rules')">
-                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
                     <div class="circ-dash-label">Others</div>
                     <div class="circ-dash-desc">Acts, Rules &amp; Books</div>
                 </div>
                 <!-- Point (dedup): points straight at the same Suggest-a-Circular form already
                      built in Settings, instead of keeping a second near-identical copy here. -->
                 <div class="circ-dash-card" onclick="window.openSuggestCircularModal()">
-                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+                    <div class="circ-dash-icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
                     <div class="circ-dash-label">Suggest Circular</div>
                     <div class="circ-dash-count">Tell us what's missing</div>
                 </div>
@@ -6728,11 +6730,9 @@
         // FIXED SWIPE ENGINE
         let startX = 0;
         let startY = 0;
-        let swipeTouchTarget = null;
         document.addEventListener('touchstart', e => {
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
-            swipeTouchTarget = e.target;
         }, {passive: true});
         document.addEventListener('touchend', e => { 
             if (e.target.closest('#preview-wrapper')) return;
@@ -11682,11 +11682,11 @@
 
     const CIRC_BUCKET_LABELS = { '': 'All Circulars', 'com': 'Com. Circulars', 'rbe': 'RBE Circulars', 'misc': 'Miscellaneous', 'rules': 'Others (Acts, Rules & Books)' };
     const CIRC_BUCKET_ICONS = {
-        '': '<svg viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px;"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg>',
-        'com': '<svg viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px;"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="13" x2="21" y2="13"/></svg>',
-        'rbe': '<svg viewBox="0 0 256 256" style="width:18px; height:18px;"><path fill="#1d4ed8" d="M188,24H68A32.03667,32.03667,0,0,0,36,56V184a32.03667,32.03667,0,0,0,32,32H79.99976L65.59961,235.2002a8.00019,8.00019,0,0,0,12.80078,9.5996L100.00024,216h55.99952l21.59985,28.7998a8.00019,8.00019,0,0,0,12.80078-9.5996L176.00024,216H188a32.03667,32.03667,0,0,0,32-32V56A32.03667,32.03667,0,0,0,188,24ZM84,184a12,12,0,1,1,12-12A12,12,0,0,1,84,184Zm36-64H52V80h68Zm52,64a12,12,0,1,1,12-12A12,12,0,0,1,172,184Zm32-64H136V80h68Z"/></svg>',
-        'misc': '<svg viewBox="0 0 24 24" style="width:20px; height:20px;"><path fill="#1d4ed8" stroke="#1d4ed8" stroke-width="0.6" d="M10 10H2V2h8zM3 9h6V3H3zm18 1h-8V2h8zm-7-1h6V3h-6zm3 13.657L11.343 17 17 11.343 22.657 17zM12.757 17L17 21.243 21.243 17 17 12.757zM10 21H2v-8h8zm-7-1h6v-6H3z"/></svg>',
-        'rules': '<svg viewBox="0 0 24 24" fill="none" stroke="#1d4ed8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'
+        '': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px;"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 3v2h6V3"/><line x1="8" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="13" y2="18"/></svg>',
+        'com': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px;"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="3" y1="13" x2="21" y2="13"/></svg>',
+        'rbe': '<svg viewBox="0 0 256 256" style="width:18px; height:18px;"><path fill="currentColor" d="M188,24H68A32.03667,32.03667,0,0,0,36,56V184a32.03667,32.03667,0,0,0,32,32H79.99976L65.59961,235.2002a8.00019,8.00019,0,0,0,12.80078,9.5996L100.00024,216h55.99952l21.59985,28.7998a8.00019,8.00019,0,0,0,12.80078-9.5996L176.00024,216H188a32.03667,32.03667,0,0,0,32-32V56A32.03667,32.03667,0,0,0,188,24ZM84,184a12,12,0,1,1,12-12A12,12,0,0,1,84,184Zm36-64H52V80h68Zm52,64a12,12,0,1,1,12-12A12,12,0,0,1,172,184Zm32-64H136V80h68Z"/></svg>',
+        'misc': '<svg viewBox="0 0 24 24" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="0.6" d="M10 10H2V2h8zM3 9h6V3H3zm18 1h-8V2h8zm-7-1h6V3h-6zm3 13.657L11.343 17 17 11.343 22.657 17zM12.757 17L17 21.243 21.243 17 17 12.757zM10 21H2v-8h8zm-7-1h6v-6H3z"/></svg>',
+        'rules': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px;"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'
     };
 
     window.circLoadCirculars = async function() {
@@ -13425,7 +13425,7 @@
                     html += cell(window.escapeHtml(trip.depTime || '—'), '; border-left:1px solid var(--border)');
                     html += cell(window.escapeHtml(trip.arrTime || '—'), '; border-left:1px solid var(--border)');
                     if (idx === 0) {
-                        html += `<td rowspan="${rs}" class="nda-signon-signon-col" style="text-align:center; vertical-align:middle; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" oninput="window.liveFormatTimeInput(this)" onblur="window.formatTimeInput(this)"></td>`;
+                        html += `<td rowspan="${rs}" class="nda-signon-signon-col" style="text-align:center; vertical-align:middle; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" onfocus="this.dataset.ph=this.placeholder;this.placeholder=''" onblur="if(!this.value.trim())this.placeholder=this.dataset.ph||'';window.formatTimeInput(this)" oninput="window.liveFormatTimeInput(this)"></td>`;
                         html += `<td rowspan="${rs}" class="${locked}" style="padding:3px 2px; text-align:center; vertical-align:middle; font-size:9px; border-bottom:1px solid var(--border); border-left:1px solid var(--border);">${defaultSignOffStr}</td>`;
                     }
                     html += '</tr>';
@@ -13441,7 +13441,7 @@
                 html += `<tr data-row-key="${group.rowKey}" data-signon-row="1">`;
                 html += cell(formatDate(e.date));
                 html += `<td colspan="5" class="${locked}" style="padding:3px 2px; text-align:center; font-size:9px; font-weight:800; border-bottom:1px solid var(--border); border-left:1px solid var(--border);">${window.escapeHtml(dutyLabel + extraLabel)}</td>`;
-                html += `<td class="nda-signon-signon-col" style="text-align:center; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" oninput="window.liveFormatTimeInput(this)" onblur="window.formatTimeInput(this)"></td>`;
+                html += `<td class="nda-signon-signon-col" style="text-align:center; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" onfocus="this.dataset.ph=this.placeholder;this.placeholder=''" onblur="if(!this.value.trim())this.placeholder=this.dataset.ph||'';window.formatTimeInput(this)" oninput="window.liveFormatTimeInput(this)"></td>`;
                 html += cell(defaultSignOffStr, '; border-left:1px solid var(--border)');
                 html += '</tr>';
             }
