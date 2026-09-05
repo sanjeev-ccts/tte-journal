@@ -1,0 +1,11 @@
+{
+  "name": "TTE Journal",
+  "install": "test -f index.html && test -f roster.html && test -f i18n.js && test -f manifest.json && test -f service-worker.js",
+  "terminals": [
+    {
+      "name": "dev-server",
+      "command": "python3 -m http.server 8000 --bind 0.0.0.0"
+    }
+  ],
+  "ports": [8000]
+}
