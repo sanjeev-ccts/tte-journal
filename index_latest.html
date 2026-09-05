@@ -732,6 +732,9 @@
         }
         td.editable-cell { background: rgba(59,130,246,0.06); cursor: text; min-width: 50px; padding: 6px 4px !important; text-align: center; }
         td.editable-cell:focus { outline: 2px solid var(--blue); background: rgba(59,130,246,0.15); }
+        .nda-signon-locked-cell { color: var(--text-muted); opacity: 0.72; background: color-mix(in srgb, var(--input-bg) 90%, transparent); }
+        #nda-signon-table input.nda-signon-input { width: 58px; margin: 0 auto; text-align: center; padding: 6px 4px; font-size: 11px; font-weight: 800; color: var(--text); background: rgba(59,130,246,0.1); border: 1.5px solid var(--blue); border-radius: 8px; box-shadow: none; display: block; }
+        #nda-signon-table input.nda-signon-input::placeholder { color: var(--text-muted); font-weight: 600; opacity: 0.85; }
         .inline-save-btn { background: var(--green); color: white; border: none; border-radius: 8px; padding: 4px 8px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(34,197,94,0.3); }
         .station-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(59,130,246,0.12); border: 1px solid var(--blue); color: var(--blue); font-weight: 800; font-size: 11px; padding: 3px 6px 3px 10px; border-radius: 16px; }
         .station-chip .chip-remove { cursor: pointer; font-weight: 900; background: var(--blue-fill); color: white; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 10px; line-height: 1; }
@@ -2037,6 +2040,7 @@
                         window.appState = userData;
                         if (!window.appState.legs) window.appState.legs = [];
                         if (!window.appState.earnings) window.appState.earnings = {};
+                        if (!window.appState.ndaSignOnOverrides) window.appState.ndaSignOnOverrides = {};
                         // Fix: sync diversion map / destination / nearby-HQ globals immediately when profile
                         // data arrives, not only when the Profile screen is opened. isKnownDiversionPair()
                         // and chain-break checks in Add Journey need this available from the moment of login.
@@ -2509,11 +2513,25 @@
             <div style="display:flex; width:100%;">
                 <button id="trend-tab-graph-btn" class="header-tab active" onclick="window.switchTrendViewTab('graph')" data-i18n="trend_tab_graph">Graph View</button>
                 <button id="trend-tab-list-btn" class="header-tab" onclick="window.switchTrendViewTab('list')" data-i18n="trend_tab_list">List View</button>
+                <button id="trend-tab-signon-btn" class="header-tab hidden" onclick="window.switchTrendViewTab('signon')" data-i18n="trend_tab_signon">Sign On</button>
             </div>
         </div>
         <div class="screen-content">
             <div id="trend-year-nav-wrap" style="margin-bottom:12px;"></div>
             <div id="trend-chart-area" style="width: 100%; overflow-x: auto;"></div>
+            <div id="trend-signon-area" class="hidden">
+                <div id="nda-signon-period-nav" style="margin-bottom:12px;"></div>
+                <p data-i18n="nda_signon_hint" style="font-size:10.5px; color:var(--text-muted); margin:0 0 8px 0;">Only Sign On time is editable. Filled values override the Sign On column in the printed NDA PDF.</p>
+                <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--border); border-radius:10px;">
+                    <table id="nda-signon-table" style="width:100%; border-collapse:collapse; font-size:11px; table-layout:fixed; min-width:720px;">
+                        <thead>
+                            <tr id="nda-signon-table-header" style="background:var(--all-header-bg); position:sticky; top:0; z-index:2;"></tr>
+                        </thead>
+                        <tbody id="nda-signon-table-body"></tbody>
+                    </table>
+                </div>
+                <button onclick="window.saveNdaSignOnTable()" style="background:var(--purple-fill); margin-top:12px; margin-bottom:70px;" data-i18n="save_nda_signon_btn">💾 Save Sign On Times</button>
+            </div>
         </div>
     </div>
 
@@ -2840,6 +2858,9 @@
             <div style="flex:1; overflow-y:auto;">
                 <div class="sidebar-item" onclick="window.closeSidebar(); window.openEarningsModal();">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; flex-shrink:0; color:var(--green);"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/></svg><span data-i18n="earnings_label">Add Earnings</span>
+                </div>
+                <div class="sidebar-item" onclick="window.showSidebarNationalHoliday();">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; flex-shrink:0; color:var(--orange);"><line x1="4" y1="22" x2="4" y2="3"/><path d="M4 4h15l-2.5 4L19 12H4"/></svg><span data-i18n="sidebar_national_holiday">National Holiday</span>
                 </div>
                 <div class="sidebar-item" onclick="window.openSleepRuinedRealModal();">
                     <svg viewBox="0 0 18 18" style="width:20px; height:20px; flex-shrink:0; color:var(--blue);"><path fill="currentColor" fill-rule="evenodd" d="M438,163 L439,163 C439,161.343146 437.656854,160 436,160 C434.343146,160 433,161.343146 433,163 L434,163 C434,161.895431 434.895431,161 436,161 C437.104569,161 438,161.895431 438,163 Z M436,168 C440.970563,168 445,163.970563 445,159 C445,154.029437 440.970563,150 436,150 C431.029437,150 427,154.029437 427,159 C427,163.970563 431.029437,168 436,168 Z M436,167 C440.418278,167 444,163.418278 444,159 C444,154.581722 440.418278,151 436,151 C431.581722,151 428,154.581722 428,159 C428,163.418278 431.581722,167 436,167 Z M433,158 C433.552285,158 434,157.552285 434,157 C434,156.447715 433.552285,156 433,156 C432.447715,156 432,156.447715 432,157 C432,157.552285 432.447715,158 433,158 Z M439,158 C439.552285,158 440,157.552285 440,157 C440,156.447715 439.552285,156 439,156 C438.447715,156 438,156.447715 438,157 C438,157.552285 438.447715,158 439,158 Z" transform="translate(-427 -150)"/></svg><span data-i18n="sleep_real_modal_title">Sleep Ruined</span>
@@ -3510,7 +3531,7 @@
             <div style="margin-top: 12px; margin-bottom: 10px;">
                 <div class="grid-2">
                     <div class="nav-card" onclick="window.switchTab('ta'); window.showYearlyTrendOnly();">
-                        <div class="nav-icon" style="color:#3a7aec;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;" aria-hidden="true"><rect x="3.5" y="4" width="17" height="11.5" rx="2"/><polyline points="7 13 10 10 13 12 17.5 7.5"/><path d="M10 18.5h3.5a1.25 1.25 0 1 0 0-2.5H10"/><path d="M10.5 16v5"/><line x1="8" y1="18.5" x2="13" y2="18.5"/></svg></div>
+                        <div class="nav-icon" style="color:#3a7aec;"><svg viewBox="0 0 24 24" style="width:27px; height:27px;"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M12.052 1.25H11.948C11.0495 1.24997 10.3003 1.24995 9.70552 1.32991C9.07773 1.41432 8.51093 1.59999 8.05546 2.05546C7.59999 2.51093 7.41432 3.07773 7.32991 3.70552C7.27259 4.13189 7.25637 5.15147 7.25179 6.02566C5.22954 6.09171 4.01536 6.32778 3.17157 7.17157C2 8.34315 2 10.2288 2 14C2 17.7712 2 19.6569 3.17157 20.8284C4.34314 22 6.22876 22 9.99998 22H14C17.7712 22 19.6569 22 20.8284 20.8284C22 19.6569 22 17.7712 22 14C22 10.2288 22 8.34315 20.8284 7.17157C19.9846 6.32778 18.7705 6.09171 16.7482 6.02566C16.7436 5.15147 16.7274 4.13189 16.6701 3.70552C16.5857 3.07773 16.4 2.51093 15.9445 2.05546C15.4891 1.59999 14.9223 1.41432 14.2945 1.32991C13.6997 1.24995 12.9505 1.24997 12.052 1.25ZM15.2479 6.00188C15.2434 5.15523 15.229 4.24407 15.1835 3.9054C15.1214 3.44393 15.0142 3.24644 14.8839 3.11612C14.7536 2.9858 14.5561 2.87858 14.0946 2.81654C13.6116 2.7516 12.964 2.75 12 2.75C11.036 2.75 10.3884 2.7516 9.90539 2.81654C9.44393 2.87858 9.24644 2.9858 9.11612 3.11612C8.9858 3.24644 8.87858 3.44393 8.81654 3.9054C8.771 4.24407 8.75661 5.15523 8.75208 6.00188C9.1435 6 9.55885 6 10 6H14C14.4412 6 14.8565 6 15.2479 6.00188ZM12 9.25C12.4142 9.25 12.75 9.58579 12.75 10V10.0102C13.8388 10.2845 14.75 11.143 14.75 12.3333C14.75 12.7475 14.4142 13.0833 14 13.0833C13.5858 13.0833 13.25 12.7475 13.25 12.3333C13.25 11.9493 12.8242 11.4167 12 11.4167C11.1758 11.4167 10.75 11.9493 10.75 12.3333C10.75 12.7174 11.1758 13.25 12 13.25C13.3849 13.25 14.75 14.2098 14.75 15.6667C14.75 16.857 13.8388 17.7155 12.75 17.9898V18C12.75 18.4142 12.4142 18.75 12 18.75C11.5858 18.75 11.25 18.4142 11.25 18V17.9898C10.1612 17.7155 9.25 16.857 9.25 15.6667C9.25 15.2525 9.58579 14.9167 10 14.9167C10.4142 14.9167 10.75 15.2525 10.75 15.6667C10.75 16.0507 11.1758 16.5833 12 16.5833C12.8242 16.5833 13.25 16.0507 13.25 15.6667C13.25 15.2826 12.8242 14.75 12 14.75C10.6151 14.75 9.25 13.7903 9.25 12.3333C9.25 11.143 10.1612 10.2845 11.25 10.0102V10C11.25 9.58579 11.5858 9.25 12 9.25Z"/></svg></div>
                         <div class="nav-main-text" id="dash-ta-val" style="color: #3a7aec;">₹0</div>
                         <div class="nav-sub-text" id="dash-ta-lbl">TA this month</div>
                     </div>
@@ -3558,14 +3579,6 @@
                         <span class="dash-link-label">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><circle cx="17" cy="7" r="3"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
                             <span data-i18n="nav_mandali">Mandali</span>
-                        </span>
-                        <span class="dash-link-chevron dash-link-chevron--sm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                    </div>
-                    <div class="dash-link-divider" aria-hidden="true"></div>
-                    <div class="dash-link-row dash-link-row--blue" onclick="window.showSidebarNationalHoliday()">
-                        <span class="dash-link-label">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="22" x2="4" y2="3"/><path d="M4 4h15l-2.5 4L19 12H4"/></svg>
-                            <span data-i18n="sidebar_national_holiday">National Holiday</span>
                         </span>
                         <span class="dash-link-chevron dash-link-chevron--sm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
                     </div>
@@ -6478,6 +6491,7 @@
                 trendTitleEl.innerText = currentTab === 'nda' ? window.i18n.t('trend_title_nda') : window.i18n.t('trend_title_ta');
             }
             if (window._trendActiveView === 'list') window.renderYearlyTrendTable();
+            else if (window._trendActiveView === 'signon') window.renderNdaSignOnTable();
             else window.renderYearlyLineGraph();
         }
         // Same reasoning - the Generate button's TA/NDA-specific text is set via JS in
@@ -6628,7 +6642,11 @@
                     // Point: same swipe-to-switch convenience as the Generate PDF page's TA/NDA
                     // tabs, applied here to this page's own Graph View / List View tabs.
                     window.hapticTap();
-                    if (diff < 0) window.switchTrendViewTab('list'); else window.switchTrendViewTab('graph');
+                    const views = currentTab === 'nda' ? ['graph', 'list', 'signon'] : ['graph', 'list'];
+                    const cur = window._trendActiveView || 'graph';
+                    const idx = Math.max(0, views.indexOf(cur));
+                    if (diff < 0) window.switchTrendViewTab(views[(idx + 1) % views.length]);
+                    else window.switchTrendViewTab(views[(idx - 1 + views.length) % views.length]);
                 }
             }
         }, {passive: true});
@@ -12902,6 +12920,7 @@
                     entries.push({
                         date: calc.ndaDate,
                         startDate: l.fromDate,
+                        legId: l.id,
                         dutyType: l.dutyType,
                         objective: l.objective || l.dutyType,
                         dutyStn, melaStn: dutyStn,
@@ -12930,6 +12949,7 @@
                     entries.push({
                         date: rowDate,
                         startDate: dateStr,
+                        legId: l.id,
                         dutyType: l.dutyType,
                         objective: l.objective || l.dutyType,
                         dutyStn, melaStn: dutyStn,
@@ -13150,7 +13170,10 @@
         // Point (Task 1-i): always resets to the CURRENT year on every open, rather than
         // remembering wherever the year-nav was last left after a previous visit.
         window._trendCurrentYear = new Date().getFullYear();
+        if (currentTab === 'nda') window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
         window.switchTrendViewTab('graph');
+        const signonBtn = document.getElementById('trend-tab-signon-btn');
+        if (signonBtn) signonBtn.classList.toggle('hidden', currentTab !== 'nda');
         const titleEl = document.getElementById('trend-screen-title');
         if (titleEl) {
             titleEl.innerText = currentTab === 'nda'
@@ -13160,14 +13183,179 @@
         window.navTo('screen-yearly-trend');
     }
 
+    window.getCurrentNdaMonthKey = function() {
+        const today = new Date();
+        let ndaY = today.getFullYear();
+        let ndaM = today.getMonth() + 1;
+        if (today.getDate() > 15) {
+            ndaM += 1;
+            if (ndaM > 12) { ndaM = 1; ndaY += 1; }
+        }
+        return `${ndaY}-${String(ndaM).padStart(2, '0')}`;
+    };
+
+    window.getNdaSignOnOverride = function(mo, rowKey, defaultStr) {
+        const overrides = (window.appState.ndaSignOnOverrides || {})[mo] || {};
+        const val = overrides[rowKey];
+        if (val && String(val).trim()) return String(val).trim();
+        return defaultStr;
+    };
+
+    window.buildNdaPdfRowGroups = function(mo) {
+        const nda = extractNDALegs(mo);
+        const stationDuty = extractStationDutyNDA(mo);
+        const rowGroups = [];
+        nda.ndaData.forEach(duty => {
+            if (!duty.trips || !duty.trips.length) return;
+            rowGroups.push({ type: 'train', rowKey: 'train:' + duty.trips[0].id, duty });
+        });
+        stationDuty.entries.forEach(entry => {
+            rowGroups.push({
+                type: 'station',
+                rowKey: 'station:' + (entry.legId || (entry.startDate + ':' + (entry.dutyStn || entry.melaStn || ''))),
+                entry
+            });
+        });
+        rowGroups.sort((a, b) => {
+            const ka = a.type === 'train' ? a.duty.signOn : a.entry.signOn;
+            const kb = b.type === 'train' ? b.duty.signOn : b.entry.signOn;
+            return ka - kb;
+        });
+        return rowGroups;
+    };
+
     window.switchTrendViewTab = function(view) {
+        const isNda = currentTab === 'nda';
+        if (view === 'signon' && !isNda) view = 'graph';
         window._trendActiveView = view;
         const graphBtn = document.getElementById('trend-tab-graph-btn');
         const listBtn = document.getElementById('trend-tab-list-btn');
-        graphBtn.classList.toggle('active', view === 'graph');
-        listBtn.classList.toggle('active', view === 'list');
+        const signonBtn = document.getElementById('trend-tab-signon-btn');
+        const chartArea = document.getElementById('trend-chart-area');
+        const yearNav = document.getElementById('trend-year-nav-wrap');
+        const signonArea = document.getElementById('trend-signon-area');
+        if (signonBtn) signonBtn.classList.toggle('hidden', !isNda);
+        if (graphBtn) graphBtn.classList.toggle('active', view === 'graph');
+        if (listBtn) listBtn.classList.toggle('active', view === 'list');
+        if (signonBtn) signonBtn.classList.toggle('active', view === 'signon');
+        if (chartArea) chartArea.classList.toggle('hidden', view === 'signon');
+        if (yearNav) yearNav.classList.toggle('hidden', view === 'signon');
+        if (signonArea) signonArea.classList.toggle('hidden', view !== 'signon');
         if (view === 'graph') window.renderYearlyLineGraph();
-        else window.renderYearlyTrendTable();
+        else if (view === 'list') window.renderYearlyTrendTable();
+        else if (view === 'signon') window.renderNdaSignOnTable();
+    };
+
+    window.shiftNdaSignOnPeriod = function(delta) {
+        if (!window._ndaSignOnMonthKey) window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
+        let [y, m] = window._ndaSignOnMonthKey.split('-').map(Number);
+        m += delta;
+        if (m > 12) { m = 1; y++; }
+        if (m < 1) { m = 12; y--; }
+        window._ndaSignOnMonthKey = `${y}-${String(m).padStart(2, '0')}`;
+        window.renderNdaSignOnTable();
+    };
+
+    window.renderNdaSignOnPeriodNav = function() {
+        const wrap = document.getElementById('nda-signon-period-nav');
+        if (!wrap) return;
+        const mo = window._ndaSignOnMonthKey || window.getCurrentNdaMonthKey();
+        window._ndaSignOnMonthKey = mo;
+        const [y, m] = mo.split('-').map(Number);
+        const prevD = new Date(y, m - 2, 16);
+        const currD = new Date(y, m - 1, 15);
+        const label = `${formatDateShort(`${prevD.getFullYear()}-${String(prevD.getMonth()+1).padStart(2,'0')}-${String(prevD.getDate()).padStart(2,'0')}`)} – ${formatDateShort(`${currD.getFullYear()}-${String(currD.getMonth()+1).padStart(2,'0')}-${String(currD.getDate()).padStart(2,'0')}`)}`;
+        wrap.innerHTML = `
+            <div style="display:flex; align-items:center; justify-content:center; gap:14px; width:fit-content; margin:0 auto; background:var(--input-bg); border-radius:22px; padding:5px 10px; border:1px solid var(--border);">
+                <button onclick="window.shiftNdaSignOnPeriod(-1)" class="month-nav-arrow-btn prev" type="button">‹</button>
+                <span style="font-size:13px; font-weight:900; color:var(--text); white-space:nowrap;">${label}</span>
+                <button onclick="window.shiftNdaSignOnPeriod(1)" class="month-nav-arrow-btn next" type="button">›</button>
+            </div>`;
+    };
+
+    window.renderNdaSignOnTable = function() {
+        const body = document.getElementById('nda-signon-table-body');
+        const header = document.getElementById('nda-signon-table-header');
+        if (!body || !header) return;
+        window.renderNdaSignOnPeriodNav();
+        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        header.innerHTML = `
+            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text);">${t('nda_signon_col_date', 'Date')}</th>
+            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_train', 'Train No.')}</th>
+            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_from', 'From')}</th>
+            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_to', 'To')}</th>
+            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_dep', 'Actual Dep.')}</th>
+            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_arr', 'Actual Arr.')}</th>
+            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_signon', 'Sign On')}</th>
+            <th style="padding:8px 4px; font-size:10px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_signoff', 'Sign Off')}</th>`;
+        const mo = window._ndaSignOnMonthKey || window.getCurrentNdaMonthKey();
+        const p = window.appState.profile;
+        if (!p || p.empType === 'Gazetted') {
+            body.innerHTML = `<tr><td colspan="8" style="padding:14px; text-align:center; color:var(--text-muted); font-size:11px;">${t('nda_signon_gazetted', 'Gazetted employees are not eligible for Night Duty Allowance.')}</td></tr>`;
+            return;
+        }
+        const rowGroups = window.buildNdaPdfRowGroups(mo);
+        const saved = (window.appState.ndaSignOnOverrides && window.appState.ndaSignOnOverrides[mo]) || {};
+        if (!rowGroups.length) {
+            body.innerHTML = `<tr><td colspan="8" style="padding:14px; text-align:center; color:var(--text-muted); font-size:11px;">${t('nda_signon_empty', 'No NDA duty rows for this period.')}</td></tr>`;
+            return;
+        }
+        const locked = 'nda-signon-locked-cell';
+        const cell = (text, extra) => `<td class="${locked}" style="padding:6px 4px; text-align:center; font-size:10px; border-bottom:1px solid var(--border);${extra || ''}">${text}</td>`;
+        let html = '';
+        rowGroups.forEach(group => {
+            if (group.type === 'train') {
+                const duty = group.duty;
+                const rs = duty.trips.length;
+                const defaultSignOnStr = `${String(duty.signOn.getHours()).padStart(2,'0')}:${String(duty.signOn.getMinutes()).padStart(2,'0')}`;
+                const defaultSignOffStr = `${String(duty.signOff.getHours()).padStart(2,'0')}:${String(duty.signOff.getMinutes()).padStart(2,'0')}`;
+                const savedVal = saved[group.rowKey] || '';
+                duty.trips.forEach((trip, idx) => {
+                    html += `<tr data-row-key="${group.rowKey}"${idx === 0 ? ' data-signon-row="1"' : ''}>`;
+                    html += cell(formatDate(trip.depDate));
+                    html += cell(window.escapeHtml(trip.train || '—'), '; border-left:1px solid var(--border)');
+                    html += cell(window.escapeHtml(trip.depStn || '—'), '; border-left:1px solid var(--border)');
+                    html += cell(window.escapeHtml(trip.arrStn || '—'), '; border-left:1px solid var(--border)');
+                    html += cell(window.escapeHtml(trip.depTime || '—'), '; border-left:1px solid var(--border)');
+                    html += cell(window.escapeHtml(trip.arrTime || '—'), '; border-left:1px solid var(--border)');
+                    if (idx === 0) {
+                        html += `<td rowspan="${rs}" style="padding:6px 4px; text-align:center; vertical-align:middle; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" oninput="window.liveFormatTimeInput(this)" onblur="window.formatTimeInput(this)"></td>`;
+                        html += `<td rowspan="${rs}" class="${locked}" style="padding:6px 4px; text-align:center; vertical-align:middle; font-size:10px; border-bottom:1px solid var(--border); border-left:1px solid var(--border);">${defaultSignOffStr}</td>`;
+                    }
+                    html += '</tr>';
+                });
+            } else {
+                const e = group.entry;
+                const defaultSignOnStr = e.signOn ? `${String(e.signOn.getHours()).padStart(2,'0')}:${String(e.signOn.getMinutes()).padStart(2,'0')}` : (e.shiftFrom || '');
+                const defaultSignOffStr = e.signOff ? `${String(e.signOff.getHours()).padStart(2,'0')}:${String(e.signOff.getMinutes()).padStart(2,'0')}` : (e.shiftTo || '');
+                const savedVal = saved[group.rowKey] || '';
+                const stn = e.dutyStn || e.melaStn || '';
+                const dutyLabel = (e.dutyType === 'Mela Duty' ? 'MELA DUTY' : 'STATION DUTY') + (stn ? ' AT ' + stn : '');
+                const extraLabel = e.objective && e.objective !== e.dutyType ? ' — ' + e.objective : '';
+                html += `<tr data-row-key="${group.rowKey}" data-signon-row="1">`;
+                html += cell(formatDate(e.date));
+                html += `<td colspan="5" class="${locked}" style="padding:6px 4px; text-align:center; font-size:10px; font-weight:800; border-bottom:1px solid var(--border); border-left:1px solid var(--border);">${window.escapeHtml(dutyLabel + extraLabel)}</td>`;
+                html += `<td style="padding:6px 4px; text-align:center; border-bottom:1px solid var(--border); border-left:1px solid var(--border);"><input type="text" class="nda-signon-input" inputmode="numeric" maxlength="5" value="${window.escapeHtml(savedVal)}" placeholder="${defaultSignOnStr}" oninput="window.liveFormatTimeInput(this)" onblur="window.formatTimeInput(this)"></td>`;
+                html += cell(defaultSignOffStr, '; border-left:1px solid var(--border)');
+                html += '</tr>';
+            }
+        });
+        body.innerHTML = html;
+    };
+
+    window.saveNdaSignOnTable = function() {
+        const mo = window._ndaSignOnMonthKey || window.getCurrentNdaMonthKey();
+        const monthData = {};
+        document.querySelectorAll('#nda-signon-table-body tr[data-signon-row="1"]').forEach(row => {
+            const rowKey = row.dataset.rowKey;
+            const input = row.querySelector('.nda-signon-input');
+            const val = input ? input.value.trim() : '';
+            if (val) monthData[rowKey] = val;
+        });
+        window.appState.ndaSignOnOverrides = window.appState.ndaSignOnOverrides || {};
+        window.appState.ndaSignOnOverrides[mo] = monthData;
+        window.saveData();
+        showModal('Saved!', (window.i18n ? window.i18n.t('nda_signon_saved_message') : 'Sign On times for this NDA period have been saved.'), 'success', false, null, 1500);
     };
 
     // Point 1: Dashboard TA/NDA cards open the trend modal
@@ -14698,17 +14886,13 @@
             totalH = Math.floor(combinedMinutes / 60);
             totalM = Math.round(combinedMinutes % 60);
             
-            // Build a unified, chronologically sorted list of row-groups (train duties + station duty days)
-            let rowGroups = [];
-            nda.ndaData.forEach(duty => { rowGroups.push({ type: 'train', sortKey: duty.signOn, duty }); });
-            stationDuty.entries.forEach(entry => { rowGroups.push({ type: 'station', sortKey: entry.signOn, entry }); });
-            rowGroups.sort((a, b) => a.sortKey - b.sortKey);
-
+            const rowGroups = window.buildNdaPdfRowGroups(mo);
             rowGroups.forEach(group => {
                 if (group.type === 'train') {
                     const duty = group.duty;
                     const rs = duty.trips.length; 
-                    const signOnStr = `${String(duty.signOn.getHours()).padStart(2,'0')}:${String(duty.signOn.getMinutes()).padStart(2,'0')}`; 
+                    const defaultSignOnStr = `${String(duty.signOn.getHours()).padStart(2,'0')}:${String(duty.signOn.getMinutes()).padStart(2,'0')}`;
+                    const signOnStr = window.getNdaSignOnOverride(mo, group.rowKey, defaultSignOnStr);
                     const signOffStr = `${String(duty.signOff.getHours()).padStart(2,'0')}:${String(duty.signOff.getMinutes()).padStart(2,'0')}`; 
                     const hStr = String(Math.floor(duty.mins / 60)).padStart(2,'0') + ":" + String(Math.round(duty.mins % 60)).padStart(2,'0'); 
                     
@@ -14730,15 +14914,13 @@
                         tbodyHtml += `</tr>`; 
                     });
                 } else {
-                    // Station Duty / Mela Duty row — merged label spans Train/From/To/Actual
-                    // Dep/Actual Arrival (no real train for these), but Sign On/Sign Off now show
-                    // the user's own filled shift start/end times, same as a real duty row would.
                     const e = group.entry;
                     const hStr = String(Math.floor(e.mins / 60)).padStart(2,'0') + ":" + String(Math.round(e.mins % 60)).padStart(2,'0');
                     const stn = e.dutyStn || e.melaStn || '';
                     const dutyLabel = (e.dutyType === 'Mela Duty' ? 'MELA DUTY' : 'STATION DUTY') + (stn ? ' AT ' + stn : '');
                     const extraLabel = e.objective && e.objective !== e.dutyType ? ' — ' + e.objective : '';
-                    const stationSignOnStr = e.signOn ? `${String(e.signOn.getHours()).padStart(2,'0')}:${String(e.signOn.getMinutes()).padStart(2,'0')}` : (e.shiftFrom || '');
+                    const defaultStationSignOnStr = e.signOn ? `${String(e.signOn.getHours()).padStart(2,'0')}:${String(e.signOn.getMinutes()).padStart(2,'0')}` : (e.shiftFrom || '');
+                    const stationSignOnStr = window.getNdaSignOnOverride(mo, group.rowKey, defaultStationSignOnStr);
                     const stationSignOffStr = e.signOff ? `${String(e.signOff.getHours()).padStart(2,'0')}:${String(e.signOff.getMinutes()).padStart(2,'0')}` : (e.shiftTo || '');
                     tbodyHtml += `<tr>`;
                     tbodyHtml += `<td style="border: 1px solid black; padding: 4px;">${formatDate(e.date)}</td>`;
