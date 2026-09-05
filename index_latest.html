@@ -72,21 +72,21 @@
         }
 
         body.green-theme {
-            --blue: #16a34a;
-            --blue-fill: #15803d;
-            --row-blue-text: #166534;
-            --table-header-bg: #dcfce7;
-            --table-header-text: #14532d;
-            --table-border: #86efac;
-            --sheet-grid-border: #22c55e;
-            --sheet-locked-bg: #f0fdf4;
-            --sheet-unlocked-bg: #dcfce7;
-            --sheet-header-bg: #15803d;
-            --sheet-header-text: #ecfdf5;
-            --all-header-bg: #15803d;
-            --all-header-text: #ecfdf5;
-            --all-header-border: #16a34a;
-            --earnings-total-bg: #f0fdf4;
+            --blue: #2a8f52;
+            --blue-fill: #227346;
+            --row-blue-text: #1e5c38;
+            --table-header-bg: #e8f5ec;
+            --table-header-text: #1a4d30;
+            --table-border: #9fd4b0;
+            --sheet-grid-border: #3d9a62;
+            --sheet-locked-bg: #f3faf5;
+            --sheet-unlocked-bg: #e3f2e8;
+            --sheet-header-bg: #2a7a4a;
+            --sheet-header-text: #eef8f1;
+            --all-header-bg: #2a7a4a;
+            --all-header-text: #eef8f1;
+            --all-header-border: #2a8f52;
+            --earnings-total-bg: #f0f7f2;
         }
 
         body.dark-mode {
@@ -142,24 +142,22 @@
         }
 
         body.dark-mode.green-theme {
-            --blue: #4ade80;
-            --blue-fill: #22c55e;
-            --row-blue-text: #86efac;
-            --table-header-bg: #14532d;
-            --table-header-text: #bbf7d0;
-            --table-border: #166534;
+            --blue: #3d9970;
+            --blue-fill: #2d7a52;
+            --row-blue-text: #7ec8a0;
+            --table-header-bg: #1a3d2a;
+            --table-header-text: #b8e6cc;
+            --table-border: #2a5240;
             --sheet-grid-border: #2a4034;
-            --sheet-locked-bg: #14261a;
-            --sheet-unlocked-bg: #1a3a24;
-            --sheet-header-bg: #166534;
-            --sheet-header-text: #dcfce7;
-            --all-header-bg: #166534;
-            --all-header-text: #dcfce7;
-            --all-header-border: #22c55e;
-            --earnings-total-bg: #14261a;
+            --sheet-locked-bg: #152219;
+            --sheet-unlocked-bg: #1c2e24;
+            --sheet-header-bg: #2d6b47;
+            --sheet-header-text: #dff5e8;
+            --all-header-bg: #2d6b47;
+            --all-header-text: #dff5e8;
+            --all-header-border: #3d9970;
+            --earnings-total-bg: #152219;
         }
-        body.green-theme .nav-fab { background: #22c55e; }
-        body.dark-mode.green-theme .nav-fab { background: #34d399; }
 
         body.dark-mode .summary-pill { background: linear-gradient(135deg, #1a2035, #0d2010) !important; color: #79c0ff !important; border-color: #30363d !important; }
         body.green-theme .summary-pill { color: var(--blue) !important; }
@@ -175,8 +173,9 @@
         body.green-theme #dash-ta-val,
         body.green-theme .nav-card:has(#dash-ta-val) .nav-icon { color: var(--ta-accent) !important; }
         .profile-inline-add-btn { width: auto !important; margin: 0 !important; padding: 0 16px !important; background: var(--blue-fill) !important; flex-shrink: 0; }
-        #profile-action-bar { position: fixed; bottom: 84px; left: 0; right: 0; z-index: 5001; padding: 10px 16px; background: var(--bg); border-top: 1px solid var(--border); }
-        #screen-register .screen-content { padding-bottom: 72px; }
+        .form-field-lbl { font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px; }
+        #profile-action-bar { position: fixed; bottom: 132px; left: 0; right: 0; z-index: 5001; padding: 10px 16px; background: var(--bg); border-top: 1px solid var(--border); box-shadow: 0 -4px 12px rgba(0,0,0,0.08); }
+        #screen-register .screen-content { padding-bottom: 120px; }
         * { box-sizing: border-box; font-family: 'Roboto', system-ui, sans-serif; }
         body { 
             background: var(--bg); 
@@ -3677,36 +3676,36 @@
             <div id="form-duty">
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div style="padding: 10px 12px; border-bottom: 1px solid var(--border);">
-                        <label data-i18n="aj_label_train" style="font-size: 13px; font-weight: 700; color: #3b7aec; display: block; margin-bottom: 2px;">Train No.</label>
+                        <label data-i18n="aj_label_train" class="form-field-lbl" style="font-size: 13px;">Train No.</label>
                         <input type="text" id="trip-train" inputmode="numeric" maxlength="5" style="margin: 0; width: 100%;">
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label data-i18n="aj_label_dep_date" style="font-size: 12px; font-weight: 700; color: #3b7aec; display: block; margin-bottom: 2px;">Departure Date</label>
+                            <label data-i18n="aj_label_dep_date" class="form-field-lbl" style="font-size: 12px;">Departure Date</label>
                             <input type="date" id="trip-dep-date" onchange="document.getElementById('trip-dep-time').focus()" style="margin: 0; width: 100%; font-size: 16px; padding: 7px 8px;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label data-i18n="aj_label_arr_date" style="font-size: 12px; font-weight: 700; color: #3b7aec; display: block; margin-bottom: 2px;">Arrival Date</label>
+                            <label data-i18n="aj_label_arr_date" class="form-field-lbl" style="font-size: 12px;">Arrival Date</label>
                             <input type="date" id="trip-arr-date" onchange="document.getElementById('trip-arr-time').focus()" style="margin: 0; width: 100%; font-size: 16px; padding: 7px 8px;">
                         </div>
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label data-i18n="aj_label_dep_time" style="font-size: 12px; font-weight: 700; color: #3b7aec; display: block; margin-bottom: 2px;">Departure Time</label>
+                            <label data-i18n="aj_label_dep_time" class="form-field-lbl" style="font-size: 12px;">Departure Time</label>
                             <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" oninput="window.liveFormatTimeInput(this);" onblur="window.formatTimeInput(this)" maxlength="5" style="margin: 0; width: 100%;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label style="font-size: 12px; font-weight: 700; color: #3b7aec; display: block; margin-bottom: 2px;"><span data-i18n="aj_label_arr_time">Arrival Time</span> <span style="color:var(--text-muted); font-weight:400; font-size:10px;" data-i18n="aj_label_opt">(opt)</span></label>
+                            <label class="form-field-lbl" style="font-size: 12px;"><span data-i18n="aj_label_arr_time">Arrival Time</span> <span style="color:var(--text-muted); font-weight:400; font-size:10px;" data-i18n="aj_label_opt">(opt)</span></label>
                             <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" oninput="window.liveFormatTimeInput(this); window.timeInputAutoAdvance(this, 'trip-dep-stn', 'trip-dep-stn', 'trip-arr-stn')" onblur="window.formatTimeInput(this)" maxlength="5" style="margin: 0; width: 100%;">
                         </div>
                     </div>
                     <div style="display: flex;">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label data-i18n="aj_label_stn_from" style="font-size: 12px; font-weight: 700; color: #3b7aec; display: block; margin-bottom: 2px;">Station From</label>
+                            <label data-i18n="aj_label_stn_from" class="form-field-lbl" style="font-size: 12px;">Station From</label>
                             <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; width: 100%; text-transform: uppercase;" oninput="window.filterAlphaOnly(this)">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label data-i18n="aj_label_stn_to" style="font-size: 12px; font-weight: 700; color: #3b7aec; display: block; margin-bottom: 2px;">Station To</label>
+                            <label data-i18n="aj_label_stn_to" class="form-field-lbl" style="font-size: 12px;">Station To</label>
                             <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; width: 100%; text-transform: uppercase;" oninput="window.filterAlphaOnly(this)" onfocus="window.populateStnList()">
                             <datalist id="stn-list"></datalist>
                         </div>
@@ -6726,9 +6725,11 @@
         // FIXED SWIPE ENGINE
         let startX = 0;
         let startY = 0;
+        let swipeTouchTarget = null;
         document.addEventListener('touchstart', e => {
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
+            swipeTouchTarget = e.target;
         }, {passive: true});
         document.addEventListener('touchend', e => { 
             if (e.target.closest('#preview-wrapper')) return;
@@ -6736,10 +6737,11 @@
             let diffY = e.changedTouches[0].clientY - startY;
             if (Math.abs(diffY) > Math.abs(diff)) return;
             if (Math.abs(diff) > 50) {
-                if (e.target.closest('#nda-signon-scroll-wrap')) return;
+                if (swipeTouchTarget && swipeTouchTarget.closest && swipeTouchTarget.closest('#nda-signon-scroll-wrap')) return;
                 if (!document.getElementById('screen-reports').classList.contains('hidden')) {
                     window.hapticTap();
-                    if (diff < 0) switchTab('nda', 'left'); else switchTab('ta', 'right');
+                    if (diff < 0 && currentTab === 'ta') switchTab('nda', 'left');
+                    else if (diff > 0 && currentTab === 'nda') switchTab('ta', 'right');
                 } else if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
                     // Point: same swipe-to-switch convenience as the Generate PDF page's TA/NDA
                     // tabs, applied here to this page's own Graph View / List View tabs.
