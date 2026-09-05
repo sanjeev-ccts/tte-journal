@@ -1004,6 +1004,7 @@
         // as offline instead of refreshing to a false "now".
         window._firebaseConnected = (typeof navigator !== 'undefined' && navigator.onLine);
         window._isSyncing = false;
+        window._syncShowOnlineTransient = false;
         // Point (fix): track consecutive GENUINE sync failures (an attempted write that actually
         // failed or timed out) separately from simply being offline. Without this, a write that
         // keeps failing for a real reason (not just "no connection") looks identical to normal
@@ -1068,7 +1069,7 @@
                 : (repeatedlyFailing
                     ? "#ef4444"
                     : (window._firebaseConnected
-                        ? "#3b82f6"
+                        ? "#ffffff"
                         : (hasPending
                             ? "#f97316"
                             : "#ef4444")));
@@ -1088,10 +1089,12 @@
                 syncing: "M19.5 22.94a3.3 3.3 0 1 1-1-3",
                 failing: "M14 21.24l4 4M18 21.24l-4 4",
                 synced: "M13.5 23.34l2 2 3.5-4",
+                online: "M16 23.24a1.6 1.6 0 1 0 0.01 0",
                 pending: "M16 20.24v2.2M16 25.24h.01",
                 offline: "M16 19.04a4.2 4.2 0 1 1 -0.01 0M13.5 20.74l5 5"
             };
-            const syncIconState = window._isSyncing ? 'syncing' : (repeatedlyFailing ? 'failing' : (window._firebaseConnected ? 'synced' : (hasPending ? 'pending' : 'offline')));
+            let syncIconState = window._isSyncing ? 'syncing' : (repeatedlyFailing ? 'failing' : (window._firebaseConnected ? 'synced' : (hasPending ? 'pending' : 'offline')));
+            if (window._syncShowOnlineTransient && syncIconState === 'synced') syncIconState = 'online';
             const dashSyncIcon = document.getElementById('dash-sync-icon');
             const dashSyncSymbol = document.getElementById('dash-sync-symbol-path');
             if (dashSyncIcon && dashSyncSymbol) {
@@ -1112,28 +1115,22 @@
         window.showSyncMiniLabel = function(state) {
             const el = document.getElementById('dash-sync-mini-label');
             if (!el) return;
-            const dash = document.getElementById('screen-dashboard');
-            if (!dash || dash.classList.contains('hidden')) {
+            const cluster = document.getElementById('dash-sync-cluster');
+            if (!cluster || cluster.classList.contains('hidden')) {
                 el.innerText = '';
                 el.style.opacity = '0';
                 return;
             }
             const labelText = {
                 synced: window.i18n ? window.i18n.t('sync_mini_synced') : 'Synced',
+                online: window.i18n ? window.i18n.t('sync_mini_online') : 'Online',
                 syncing: window.i18n ? window.i18n.t('sync_mini_syncing') : 'Syncing',
                 offline: window.i18n ? window.i18n.t('sync_mini_offline') : 'Offline',
                 failing: window.i18n ? window.i18n.t('sync_mini_offline') : 'Offline',
                 pending: window.i18n ? window.i18n.t('sync_mini_pending') : 'Pending',
             }[state] || '';
-            const labelColor = {
-                synced: '#e0f2fe',
-                syncing: '#7dd3fc',
-                offline: '#fecaca',
-                failing: '#fecaca',
-                pending: '#fed7aa'
-            }[state] || '#f8fafc';
             el.innerText = labelText;
-            el.style.color = labelColor;
+            el.style.color = '#ffffff';
             el.style.background = 'none';
             el.style.border = 'none';
             el.style.boxShadow = 'none';
@@ -2253,9 +2250,19 @@
             // online), so this function is now a safe no-op kept only so existing call sites
             // (native online/offline events, the Firebase connection check) don't break.
             window._lastConnectivityState = 'offline';
+            window._syncShowOnlineTransient = false;
+            if (window._syncOnlineToSyncedTimer) { clearTimeout(window._syncOnlineToSyncedTimer); window._syncOnlineToSyncedTimer = null; }
         }
         function showOnline() {
             window._lastConnectivityState = 'online';
+            window._syncShowOnlineTransient = true;
+            if (window._syncOnlineToSyncedTimer) clearTimeout(window._syncOnlineToSyncedTimer);
+            if (window.updateSyncLabels) window.updateSyncLabels();
+            window._syncOnlineToSyncedTimer = setTimeout(() => {
+                window._syncOnlineToSyncedTimer = null;
+                window._syncShowOnlineTransient = false;
+                if (window.updateSyncLabels) window.updateSyncLabels();
+            }, 3000);
         }
         // Point (fix): banner retired (see showOffline/showOnline above) - no longer has any
         // visible text to refresh, kept as a safe no-op since onLanguageChanged still calls it.
@@ -2817,6 +2824,12 @@
         </div>
     </div>
     <div id="sync-status-toast" style="position:fixed; top:70px; left:50%; transform:translateX(-50%) translateY(-20px); background:rgba(30,30,36,0.93); color:white; padding:12px 16px; border-radius:16px; font-size:12px; font-weight:bold; line-height:1.6; z-index:9999; opacity:0; pointer-events:none; transition:opacity 0.2s, transform 0.2s; box-shadow:0 4px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.12); text-align:center; width:350px; max-width:92vw; white-space:pre-line; box-sizing:border-box;"></div>
+    <div id="dash-sync-cluster" class="dash-sync-cluster hidden">
+        <div id="dash-sync-icon" class="dash-signout-btn" onclick="window.showSyncStatusToast()" title="Sync Status">
+            <svg id="dash-sync-icon-svg" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:26px; height:26px;"><path fill="currentColor" d="M7 24.5A6.5 6.5 0 0 1 8.7 11A7.3 7.3 0 0 1 23.3 11A6.5 6.5 0 0 1 25 24.5H7z"/><g id="dash-sync-badge-group"><circle cx="16" cy="23.24" r="8.4" fill="var(--top-bar-bg)" stroke="none"/><circle cx="16" cy="23.24" r="6.3" fill="currentColor" stroke="none"/><path id="dash-sync-symbol-path" fill="none" stroke="var(--top-bar-bg)" stroke-width="2.3" d="M13.5 23.34l2 2 3.5-4"/></g></svg>
+        </div>
+        <span id="dash-sync-mini-label" aria-live="polite"></span>
+    </div>
     <div id="sidebar-pull-handle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></div>
     <div id="sidebar-overlay" onclick="if(event.target === this) window.closeSidebar()">
         <div id="sidebar-panel">
@@ -2825,20 +2838,11 @@
                 <button onclick="window.closeSidebar()" title="Minimize" style="margin:0; width:32px; height:32px; padding:0; border-radius:0; background:transparent; border:none; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0; color:var(--text-muted);"><svg viewBox="0 0 122.88 83.21" style="width:18px; height:14px;"><path fill="currentColor" d="M15.2,70.87c0,4.2-3.4,7.6-7.6,7.6c-4.2,0-7.6-3.4-7.6-7.6V12.35c0-4.2,3.4-7.6,7.6-7.6c4.2,0,7.6,3.4,7.6,7.6V70.87 L15.2,70.87z M35.7,36.78L63.14,2.83c2.62-3.26,7.4-3.78,10.66-1.16c3.26,2.62,3.78,7.4,1.16,10.66l-17.55,21.7l57.9-0.02 c4.18,0,7.57,3.39,7.57,7.57s-3.39,7.57-7.57,7.57L57.4,49.17l17.55,21.72c2.62,3.26,2.1,8.03-1.16,10.66 c-3.26,2.62-8.03,2.1-10.66-1.16L35.7,46.43l-0.06-0.08l-0.24-0.31l-0.04-0.06l-0.07-0.1l-0.04-0.05l-0.07-0.11l-0.1-0.16 l-0.03-0.04l-0.07-0.12l-0.02-0.04l-0.07-0.13l-0.02-0.04l-0.07-0.13l-0.02-0.03l-0.07-0.14l-0.01-0.03l-0.07-0.14l-0.01-0.03 l-0.06-0.14l-0.01-0.02l-0.06-0.15l-0.01-0.02l-0.06-0.15l0-0.02l-0.11-0.33l0-0.01l-0.1-0.34l0-0.01l-0.04-0.17v-0.01l-0.04-0.17 v-0.01l-0.03-0.17v0l-0.03-0.18v0l-0.02-0.18h0l-0.02-0.18v0l-0.02-0.18l-0.01-0.18h0l-0.01-0.18l0-0.18v-0.18l0-0.18l0.01-0.18h0 l0.01-0.18l0.02-0.18v0l0.02-0.18h0l0.02-0.18v0l0.03-0.18v0l0.03-0.17v-0.01l0.04-0.17v-0.01l0.04-0.17l0-0.01l0.1-0.34l0-0.01 l0.11-0.33l0-0.02l0.06-0.15l0.01-0.02l0.06-0.15l0.01-0.02l0.06-0.14l0.01-0.03l0.07-0.14l0.01-0.03l0.07-0.14l0.02-0.03 l0.07-0.13l0.02-0.04l0.07-0.13l0.02-0.04l0.07-0.12l0.03-0.04l0.1-0.16l0.07-0.11l0.04-0.05l0.07-0.1l0.04-0.06l0.24-0.31 L35.7,36.78L35.7,36.78z"/></svg></button>
             </div>
             <div style="flex:1; overflow-y:auto;">
-                <div class="sidebar-item" onclick="window.closeSidebar(); window.navTo('screen-circulars-dashboard');">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; flex-shrink:0; color:var(--red);"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><line x1="9" y1="11" x2="15" y2="11"/><line x1="9" y1="15" x2="15" y2="15"/></svg><span data-i18n="nav_circulars">Circulars</span>
-                </div>
                 <div class="sidebar-item" onclick="window.closeSidebar(); window.openEarningsModal();">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; flex-shrink:0; color:var(--green);"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><line x1="6" y1="12" x2="6.01" y2="12"/><line x1="18" y1="12" x2="18.01" y2="12"/></svg><span data-i18n="earnings_label">Add Earnings</span>
                 </div>
-                <div class="sidebar-item" onclick="window.showSidebarNationalHoliday();">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; flex-shrink:0; color:var(--orange);"><line x1="4" y1="22" x2="4" y2="3"/><path d="M4 4h15l-2.5 4L19 12H4"/></svg><span data-i18n="sidebar_national_holiday">National Holiday</span>
-                </div>
                 <div class="sidebar-item" onclick="window.openSleepRuinedRealModal();">
                     <svg viewBox="0 0 18 18" style="width:20px; height:20px; flex-shrink:0; color:var(--blue);"><path fill="currentColor" fill-rule="evenodd" d="M438,163 L439,163 C439,161.343146 437.656854,160 436,160 C434.343146,160 433,161.343146 433,163 L434,163 C434,161.895431 434.895431,161 436,161 C437.104569,161 438,161.895431 438,163 Z M436,168 C440.970563,168 445,163.970563 445,159 C445,154.029437 440.970563,150 436,150 C431.029437,150 427,154.029437 427,159 C427,163.970563 431.029437,168 436,168 Z M436,167 C440.418278,167 444,163.418278 444,159 C444,154.581722 440.418278,151 436,151 C431.581722,151 428,154.581722 428,159 C428,163.418278 431.581722,167 436,167 Z M433,158 C433.552285,158 434,157.552285 434,157 C434,156.447715 433.552285,156 433,156 C432.447715,156 432,156.447715 432,157 C432,157.552285 432.447715,158 433,158 Z M439,158 C439.552285,158 440,157.552285 440,157 C440,156.447715 439.552285,156 439,156 C438.447715,156 438,156.447715 438,157 C438,157.552285 438.447715,158 439,158 Z" transform="translate(-427 -150)"/></svg><span data-i18n="sleep_real_modal_title">Sleep Ruined</span>
-                </div>
-                <div class="sidebar-item" onclick="window.closeSidebar(); window.openRosterDeepLink('OPEN_MANDALI', 'Opening Mandali…');">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; flex-shrink:0; color:var(--yellow);"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><circle cx="17" cy="7" r="3"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg><span>मंडली</span>
                 </div>
                 <div class="sidebar-item" onclick="window.closeSidebar(); window.navTo('screen-my-archive'); window.loadMyArchivedData();">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:20px; height:20px; flex-shrink:0; color:#a3a3a3;"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg><span data-i18n="my_archived_data_row">Archive Data</span>
@@ -3399,12 +3403,6 @@
 
     <div id="screen-dashboard" class="hidden">
         <div id="dash-hamburger-icon" class="dash-hamburger-btn" onclick="window.openSidebar()" title="Menu">☰</div>
-        <div id="dash-sync-cluster" class="dash-sync-cluster">
-            <div id="dash-sync-icon" class="dash-signout-btn" onclick="window.showSyncStatusToast()" title="Sync Status">
-                <svg id="dash-sync-icon-svg" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:26px; height:26px;"><path fill="currentColor" d="M7 24.5A6.5 6.5 0 0 1 8.7 11A7.3 7.3 0 0 1 23.3 11A6.5 6.5 0 0 1 25 24.5H7z"/><g id="dash-sync-badge-group"><circle cx="16" cy="23.24" r="8.4" fill="var(--top-bar-bg)" stroke="none"/><circle cx="16" cy="23.24" r="6.3" fill="currentColor" stroke="none"/><path id="dash-sync-symbol-path" fill="none" stroke="var(--top-bar-bg)" stroke-width="2.3" d="M13.5 23.34l2 2 3.5-4"/></g></svg>
-            </div>
-            <span id="dash-sync-mini-label" aria-live="polite"></span>
-        </div>
         <div class="top-bar dash-header">
             <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
         </div>
@@ -3512,7 +3510,7 @@
             <div style="margin-top: 12px; margin-bottom: 10px;">
                 <div class="grid-2">
                     <div class="nav-card" onclick="window.switchTab('ta'); window.showYearlyTrendOnly();">
-                        <div class="nav-icon" style="color:#3a7aec;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;" aria-hidden="true"><rect x="5.5" y="4.75" width="13" height="16" rx="2"/><path d="M9.5 4.75V3.75a2.75 2.75 0 0 1 5.5 0v1"/><line x1="8.5" y1="10" x2="15.5" y2="10"/><line x1="8.5" y1="13" x2="15.5" y2="13"/><line x1="8.5" y1="16" x2="12.5" y2="16"/><circle cx="16.75" cy="17.75" r="3.1"/><line x1="16.75" y1="17.75" x2="18.15" y2="19.35"/></svg></div>
+                        <div class="nav-icon" style="color:#3a7aec;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="width:27px; height:27px;" aria-hidden="true"><rect x="3.5" y="4" width="17" height="11.5" rx="2"/><polyline points="7 13 10 10 13 12 17.5 7.5"/><path d="M10 18.5h3.5a1.25 1.25 0 1 0 0-2.5H10"/><path d="M10.5 16v5"/><line x1="8" y1="18.5" x2="13" y2="18.5"/></svg></div>
                         <div class="nav-main-text" id="dash-ta-val" style="color: #3a7aec;">₹0</div>
                         <div class="nav-sub-text" id="dash-ta-lbl">TA this month</div>
                     </div>
@@ -3560,6 +3558,14 @@
                         <span class="dash-link-label">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><circle cx="17" cy="7" r="3"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
                             <span data-i18n="nav_mandali">Mandali</span>
+                        </span>
+                        <span class="dash-link-chevron dash-link-chevron--sm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+                    </div>
+                    <div class="dash-link-divider" aria-hidden="true"></div>
+                    <div class="dash-link-row dash-link-row--blue" onclick="window.showSidebarNationalHoliday()">
+                        <span class="dash-link-label">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="22" x2="4" y2="3"/><path d="M4 4h15l-2.5 4L19 12H4"/></svg>
+                            <span data-i18n="sidebar_national_holiday">National Holiday</span>
                         </span>
                         <span class="dash-link-chevron dash-link-chevron--sm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
                     </div>
@@ -7075,6 +7081,9 @@
         if(bBar) {
             if(screenId === 'screen-login') { bBar.classList.add('hidden'); } else { bBar.classList.remove('hidden'); }
         }
+        const syncCluster = document.getElementById('dash-sync-cluster');
+        if (syncCluster) syncCluster.classList.toggle('hidden', screenId === 'screen-login');
+        if (screenId !== 'screen-login' && window.updateSyncLabels) window.updateSyncLabels();
         if (screenId === 'screen-login') {
             const banner = document.getElementById('pwa-install-banner');
             if (banner) banner.classList.add('hidden');
