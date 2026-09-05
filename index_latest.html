@@ -484,6 +484,29 @@
         input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; -webkit-appearance: checkbox; appearance: auto; }
         input:disabled, select:disabled { background-color: var(--input-disabled); color: var(--text-muted); border-style: dashed; opacity: 0.75; -webkit-text-fill-color: var(--text-muted); }
         .profile-lbl { font-size: 13px; font-weight: 800; color: var(--blue); display: block; margin-bottom: 2px; }
+        .profile-stations-card { padding: 14px 15px 12px; }
+        .profile-stations-title { font-size: 14px; font-weight: 900; color: var(--text); margin: 0 0 4px; letter-spacing: 0.1px; }
+        .profile-stations-intro { font-size: 11px; color: var(--text-muted); margin: 0 0 14px; line-height: 1.45; }
+        .profile-station-hq-block { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .profile-station-hq-block input { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
+        .profile-station-help { margin: 6px 0 0; }
+        .profile-station-help summary { font-size: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; list-style: none; }
+        .profile-station-help summary::-webkit-details-marker { display: none; }
+        .profile-station-help p { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
+        .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 10px; margin: 0 -4px; border-radius: 12px; cursor: pointer; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s; }
+        .profile-station-row + .profile-station-row { margin-top: 2px; }
+        .profile-station-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
+        .profile-station-row.expanded { background: color-mix(in srgb, var(--blue) 6%, var(--card)); border-color: color-mix(in srgb, var(--blue) 18%, var(--border)); }
+        .profile-station-row-main { flex: 1; min-width: 0; }
+        .profile-station-row-title { display: block; font-size: 12px; font-weight: 800; color: var(--text); line-height: 1.25; }
+        .profile-station-row-value { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .profile-station-row-value.has-data { color: var(--blue); font-weight: 800; }
+        .profile-station-row-chevron { flex-shrink: 0; font-size: 16px; font-weight: 900; color: var(--text-muted); line-height: 1; transition: transform 0.15s; }
+        .profile-station-row.expanded .profile-station-row-chevron { transform: rotate(90deg); color: var(--blue); }
+        .profile-station-expand { padding: 0 4px 12px; margin-top: -2px; }
+        .profile-station-expand .profile-station-help { margin-bottom: 8px; }
+        .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
+        .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
         button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue-fill); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); transition: background 0.3s; }
         .quick-add-leg-btn { width: auto; padding: 10px 20px; border-radius: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); font-size: 16px; font-weight: 900; }
@@ -3187,46 +3210,84 @@
                 <div style="display: flex; gap: 10px;"><div style="flex: 1; min-width: 0;"><label class="profile-lbl">Checking Authority No. <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="text" id="reg-auth"></div><div style="flex: 1; min-width: 0;"><label class="profile-lbl">Authority Validity <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="date" id="reg-authval" style="font-size: 16px; padding: 7px 8px;"></div></div>
             </div>
 
-            <div class="card">
-                <div style="margin-bottom: 16px;">
+            <div class="card profile-stations-card">
+                <h3 class="profile-stations-title" data-i18n="profile_stations_routes_title">Stations &amp; Routes</h3>
+                <p class="profile-stations-intro" data-i18n="profile_stations_intro">Set your HQ, nearby starting stations, and usual outward routes so journeys are recognized correctly.</p>
+
+                <div class="profile-station-hq-block">
                     <label class="profile-lbl">Main HQ Station</label>
-                    <p data-i18n="profile_main_hq_desc" style="font-size:11px; color:var(--text-muted); margin:2px 0 6px 0;">This is your main posting station.</p>
-                    <input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;" oninput="window.filterAlphaOnly(this)">
+                    <input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;" oninput="window.filterAlphaOnly(this); window.renderProfileStationSummaries && window.renderProfileStationSummaries();">
+                    <details class="profile-station-help">
+                        <summary data-i18n="profile_whats_this">What's this?</summary>
+                        <p data-i18n="profile_main_hq_desc">This is your main posting station.</p>
+                    </details>
                 </div>
-                <hr style="border: 0; border-top: 2px dashed var(--text-muted); margin: 16px 0 20px 0;">
-                <div>
-                    <label class="profile-lbl">Nearby HQ - TA Not Claimed <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
-                    <p data-i18n="profile_nearby_hq_desc" style="font-size:11px; color:var(--text-muted); margin:2px 0 6px 0;">This is a nearby HQ station your journey sometimes starts from, other than your Main HQ — you do NOT claim TA for travel within this group.</p>
-                    <div style="display:flex; gap:8px; margin-top:4px;">
+
+                <div class="profile-station-row" data-profile-section="nearby" onclick="window.toggleProfileStationSection('nearby')">
+                    <div class="profile-station-row-main">
+                        <span class="profile-station-row-title" data-i18n="profile_nearby_no_ta_short">Nearby HQ · no TA</span>
+                        <span id="profile-summary-nearby" class="profile-station-row-value">Not set</span>
+                    </div>
+                    <span class="profile-station-row-chevron">›</span>
+                </div>
+                <div id="profile-section-nearby" class="profile-station-expand hidden">
+                    <details class="profile-station-help">
+                        <summary data-i18n="profile_whats_this">What's this?</summary>
+                        <p data-i18n="profile_nearby_hq_desc">This is a nearby HQ station your journey sometimes starts from, other than your Main HQ — you do NOT claim TA for travel within this group.</p>
+                    </details>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
                         <input type="text" id="reg-nearby-input" placeholder="e.g. BCY, BNRS" style="text-transform: uppercase; margin:0; flex:1;">
-                        <button type="button" onclick="window.addNearbyHQ()" class="profile-inline-add-btn">Add</button>
+                        <button type="button" onclick="event.stopPropagation(); window.addNearbyHQ()" class="profile-inline-add-btn">Add</button>
                     </div>
-                    <div id="reg-nearby-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
+                    <div id="reg-nearby-chips" class="profile-chip-row" data-empty-label="No stations added"></div>
                 </div>
-                <hr style="border: 0; border-top: 2px dashed var(--text-muted); margin: 20px 0;">
-                <div style="margin-bottom: 6px;">
-                    <label class="profile-lbl">Nearby HQ - TA Claimed <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label>
-                    <p data-i18n="profile_diversion_stn_desc" style="font-size:11px; color:var(--text-muted); margin:2px 0 6px 0;">It is the station from which a journey starts, other than your Main or Nearby HQ, with TA Claimed — e.g. DDU for BSB HQ.</p>
-                    <div style="display:flex; gap:8px; margin-top:4px;">
+
+                <div class="profile-station-row" data-profile-section="nearby-ta" onclick="window.toggleProfileStationSection('nearby-ta')">
+                    <div class="profile-station-row-main">
+                        <span class="profile-station-row-title" data-i18n="profile_nearby_ta_short">Nearby HQ · TA claimed</span>
+                        <span id="profile-summary-nearby-ta" class="profile-station-row-value">Not set</span>
+                    </div>
+                    <span class="profile-station-row-chevron">›</span>
+                </div>
+                <div id="profile-section-nearby-ta" class="profile-station-expand hidden">
+                    <details class="profile-station-help">
+                        <summary data-i18n="profile_whats_this">What's this?</summary>
+                        <p data-i18n="profile_diversion_stn_desc">It is the station from which a journey starts, other than your Main or Nearby HQ, with TA Claimed — e.g. DDU for BSB HQ.</p>
+                    </details>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
                         <input type="text" id="reg-nearby-ta-input" placeholder="e.g. DDU" style="text-transform: uppercase; margin:0; flex:1;">
-                        <button type="button" onclick="window.addNearbyTaClaimedHQ()" class="profile-inline-add-btn">Add</button>
+                        <button type="button" onclick="event.stopPropagation(); window.addNearbyTaClaimedHQ()" class="profile-inline-add-btn">Add</button>
                     </div>
-                    <div id="reg-nearby-ta-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
+                    <div id="reg-nearby-ta-chips" class="profile-chip-row" data-empty-label="No stations added"></div>
+                </div>
+
+                <div class="profile-station-row" data-profile-section="originating" onclick="window.toggleProfileStationSection('originating')">
+                    <div class="profile-station-row-main">
+                        <span class="profile-station-row-title" data-i18n="profile_originating_trains_toggle">Originating Trains (NDA)</span>
+                        <span id="profile-summary-originating" class="profile-station-row-value">Not set</span>
+                    </div>
+                    <span class="profile-station-row-chevron">›</span>
+                </div>
+                <div id="profile-section-originating" class="profile-station-expand hidden">
+                    <details class="profile-station-help">
+                        <summary data-i18n="profile_whats_this">What's this?</summary>
+                        <p data-i18n="profile_originating_trains_desc">Optional — add only if you have originating trains. These get a 45-minute NDA sign-on margin (30 minutes for all others). Only hours between 22:00 and 06:00 count toward NDA.</p>
+                    </details>
+                    <div style="display:flex; gap:8px; margin-top:8px;">
+                        <input type="text" id="reg-originating-input" placeholder="e.g. 13239" style="margin:0; flex:1;" oninput="window.filterNumericOnly(this)" maxlength="5">
+                        <button type="button" onclick="event.stopPropagation(); window.addOriginatingTrain()" class="profile-inline-add-btn">Add</button>
+                    </div>
+                    <div id="reg-originating-chips" class="profile-chip-row" data-empty-label="No trains added"></div>
+                </div>
+
+                <div class="profile-station-row" onclick="window.openDestDiversionModal()">
+                    <div class="profile-station-row-main">
+                        <span class="profile-station-row-title" data-i18n="profile_dest_diversion_short">Destinations &amp; Diversions</span>
+                        <span id="profile-summary-dest" class="profile-station-row-value">Not set</span>
+                    </div>
+                    <span class="profile-station-row-chevron">›</span>
                 </div>
             </div>
-
-            <button type="button" id="btn-toggle-originating-trains" onclick="window.toggleOriginatingTrainsSection()" style="background: rgba(59,130,246,0.12); color: var(--blue); border: 1px solid var(--blue); box-shadow: none; margin-bottom: 6px;">🚂 <span data-i18n="profile_originating_trains_toggle">Originating Trains (NDA)</span> <span style="color:var(--text-muted); font-weight:400; font-size:11px;" data-i18n="aj_label_opt">(opt)</span></button>
-            <div id="reg-originating-section" class="hidden card" style="margin-top:0; margin-bottom:15px; padding:14px 15px;">
-                <p data-i18n="profile_originating_trains_desc" style="font-size:11px; color:var(--text-muted); margin:0 0 10px 0;">Optional — add only if you have originating trains. These get a 45-minute NDA sign-on margin (30 minutes for all others). Only hours between 22:00 and 06:00 count toward NDA.</p>
-                <div style="display:flex; gap:8px; margin-top:4px;">
-                    <input type="text" id="reg-originating-input" placeholder="e.g. 13239" style="margin:0; flex:1;" oninput="window.filterNumericOnly(this)" maxlength="5">
-                    <button type="button" onclick="window.addOriginatingTrain()" class="profile-inline-add-btn">Add</button>
-                </div>
-                <div id="reg-originating-chips" style="display:flex; flex-wrap:wrap; gap:5px; margin-top:8px;"></div>
-            </div>
-
-            <button type="button" onclick="window.openDestDiversionModal()" style="background: rgba(59,130,246,0.12); color: var(--blue); border: 1px solid var(--blue); box-shadow: none; margin-bottom: 6px;">📍 Add Destination &amp; Diversion Stations</button>
-            <p data-i18n="profile_dest_stations_desc" style="font-size:11px; color:var(--text-muted); text-align:center; margin:0 0 15px 0;">Set your usual outward destination stations and any known diversion routes (e.g. LKO trains sometimes diverting via AMG) — helps the app auto-recognize your journeys correctly.</p>
 
             <div style="text-align: center; margin-top: 20px; font-size: 12px; color: var(--text-muted); font-weight: bold;">App Version v2.2</div>
         </div>
@@ -7689,6 +7750,85 @@
     // ========== Point 1 (v5.6): Nearby HQs as add-as-chips ==========
     window._nearbyStations = window._nearbyStations || [];
 
+    window._getDiversionGroupCount = function() {
+        const map = window._diversionMap || {};
+        const stations = Object.keys(map);
+        if (!stations.length) return 0;
+        const visited = new Set();
+        let count = 0;
+        stations.forEach(stn => {
+            if (visited.has(stn)) return;
+            const group = new Set([stn]);
+            (map[stn] || []).forEach(s => group.add(s));
+            group.forEach(s => visited.add(s));
+            count++;
+        });
+        return count;
+    };
+
+    window.renderProfileStationSummaries = function() {
+        const notSet = window.i18n ? window.i18n.t('profile_not_set') : 'Not set';
+        const setListSummary = (id, items) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const list = items || [];
+            if (!list.length) {
+                el.textContent = notSet;
+                el.classList.remove('has-data');
+                return;
+            }
+            el.textContent = list.length <= 3 ? list.join(', ') : `${list.slice(0, 2).join(', ')} +${list.length - 2}`;
+            el.classList.add('has-data');
+        };
+        setListSummary('profile-summary-nearby', window._nearbyStations);
+        setListSummary('profile-summary-nearby-ta', window._nearbyTaClaimedStations);
+        setListSummary('profile-summary-originating', window._originatingTrains);
+        const destEl = document.getElementById('profile-summary-dest');
+        if (destEl) {
+            const dest = window._destStations || [];
+            const divGroups = window._getDiversionGroupCount();
+            if (!dest.length && !divGroups) {
+                destEl.textContent = notSet;
+                destEl.classList.remove('has-data');
+            } else {
+                let text = '';
+                if (dest.length) {
+                    text = dest.length <= 2 ? dest.join(', ') : `${dest.slice(0, 2).join(', ')} +${dest.length - 2}`;
+                }
+                if (divGroups) {
+                    const divLabel = window.i18n
+                        ? window.i18n.tf('profile_diversion_count', { count: divGroups })
+                        : `${divGroups} diversion${divGroups > 1 ? 's' : ''}`;
+                    text = text ? `${text} · ${divLabel}` : divLabel;
+                }
+                destEl.textContent = text;
+                destEl.classList.add('has-data');
+            }
+        }
+        const emptyLabel = window.i18n ? window.i18n.t('profile_no_stations_added') : 'No stations added';
+        document.querySelectorAll('.profile-chip-row[data-empty-label]').forEach(el => {
+            el.setAttribute('data-empty-label', emptyLabel);
+        });
+        const trainsEmpty = window.i18n ? window.i18n.t('profile_no_trains_added') : 'No trains added';
+        const origChips = document.getElementById('reg-originating-chips');
+        if (origChips) origChips.setAttribute('data-empty-label', trainsEmpty);
+    };
+
+    window.toggleProfileStationSection = function(sectionId) {
+        const panel = document.getElementById('profile-section-' + sectionId);
+        const row = document.querySelector('[data-profile-section="' + sectionId + '"]');
+        if (!panel || !row) return;
+        const opening = panel.classList.contains('hidden');
+        panel.classList.toggle('hidden');
+        row.classList.toggle('expanded', opening);
+        if (opening) {
+            const firstInput = panel.querySelector('input');
+            if (firstInput && !firstInput.disabled) {
+                setTimeout(() => firstInput.focus(), 50);
+            }
+        }
+    };
+
     window.addNearbyHQ = function() {
         if (isProfileLocked()) return showModal("Profile Locked", (window.i18n ? window.i18n.t('profile_locked_desc') : "Tap 'Edit Profile' first to make changes."), "warning", false);
         const input = document.getElementById('reg-nearby-input');
@@ -7711,6 +7851,7 @@
         wrap.innerHTML = (window._nearbyStations || []).map(stn =>
             `<span class="station-chip">${stn}<span class="chip-remove" onclick="window.removeNearbyHQ('${stn}')">✕</span></span>`
         ).join('');
+        window.renderProfileStationSummaries();
     };
 
     // ========== Nearby HQ - TA Claimed (e.g. DDU for BSB) as add-as-chips ==========
@@ -7741,6 +7882,7 @@
         wrap.innerHTML = (window._nearbyTaClaimedStations || []).map(stn =>
             `<span class="station-chip">${stn}<span class="chip-remove" onclick="window.removeNearbyTaClaimedHQ('${stn}')">✕</span></span>`
         ).join('');
+        window.renderProfileStationSummaries();
     };
 
     window._originatingTrains = window._originatingTrains || [];
@@ -7771,21 +7913,18 @@
     };
 
     window.updateOriginatingTrainsSection = function() {
-        const sec = document.getElementById('reg-originating-section');
-        const btn = document.getElementById('btn-toggle-originating-trains');
+        window.renderProfileStationSummaries();
+        const sec = document.getElementById('profile-section-originating');
+        const row = document.querySelector('[data-profile-section="originating"]');
         const count = (window._originatingTrains || []).length;
-        if (btn) {
-            const base = window.i18n ? window.i18n.t('profile_originating_trains_toggle') : 'Originating Trains (NDA)';
-            const opt = window.i18n ? window.i18n.t('aj_label_opt') : '(opt)';
-            const countHtml = count ? ` <span style="color:var(--green); font-weight:800;">(${count})</span>` : '';
-            btn.innerHTML = `🚂 ${base}${countHtml} <span style="color:var(--text-muted); font-weight:400; font-size:11px;">${opt}</span>`;
+        if (sec && count > 0) {
+            sec.classList.remove('hidden');
+            if (row) row.classList.add('expanded');
         }
-        if (sec && count > 0) sec.classList.remove('hidden');
     };
 
     window.toggleOriginatingTrainsSection = function() {
-        const sec = document.getElementById('reg-originating-section');
-        if (sec) sec.classList.toggle('hidden');
+        window.toggleProfileStationSection('originating');
     };
 
     window.getOriginatingTrainList = function() {
@@ -7854,11 +7993,19 @@
             window.appState.profile.diversionMap = JSON.parse(JSON.stringify(window._diversionMap || {}));
             window.saveData();
             window.closeDestDiversionModal();
+            window.renderProfileStationSummaries();
             showModal("Saved!", (window.i18n ? window.i18n.t('dest_diversion_saved') : "Destination & Diversion settings saved and synced."), "success", false, null, 1500);
         }
     };
 
     window.openDestDiversionModal = function() {
+        if (isProfileLocked()) {
+            return showModal(
+                window.i18n ? window.i18n.t('profile_locked_title') : 'Edit Profile First',
+                window.i18n ? window.i18n.t('profile_locked_desc') : 'Tap "Edit Profile" first to make changes.',
+                'warning', false
+            );
+        }
         // Point (fix): this modal used to always open locked, requiring a second "Edit" tap even
         // though the ONLY way to reach this button is when the main Profile is already unlocked
         // (it sits behind profile-locked-overlay). That second edit step was pure redundancy —
@@ -7894,6 +8041,7 @@
         wrap.innerHTML = (window._destStations || []).map(stn =>
             `<span class="station-chip">${stn}<span class="chip-remove" onclick="window.removeDestStation('${stn}')">✕</span></span>`
         ).join('');
+        window.renderProfileStationSummaries();
     };
 
     // ========== Point 1 (v5.6): Diversion Stations map (major station -> list of diversion stations) ==========
@@ -8051,7 +8199,7 @@
         if (!el) return;
         const map = window._diversionMap || {};
         const stations = Object.keys(map);
-        if (stations.length === 0) { el.innerHTML = ''; return; }
+        if (stations.length === 0) { el.innerHTML = ''; window.renderProfileStationSummaries(); return; }
         // Group stations into connected components so "LKO -> AMG" and "AMG -> LKO" (mutual by
         // design) render as a single row, not two separate near-duplicate rows.
         const visited = new Set();
@@ -8071,6 +8219,7 @@
                     <span onclick="window.removeDiversionGroupByIndex(${idx})" style="cursor:pointer; color:var(--red); font-weight:900; flex-shrink:0; padding:2px 4px;">✕</span>
                 </div>`;
             }).join('');
+        window.renderProfileStationSummaries();
     };
 
     // Point 1 (v5.6): Save a newly-confirmed diversion pair from the Add Journey mismatch prompt
@@ -8557,14 +8706,17 @@
         window.renderNearbyTaClaimedChips();
         window._originatingTrains = (p.originatingTrains || []).slice();
         window.renderOriginatingTrainChips();
-        const origSec = document.getElementById('reg-originating-section');
+        const origSec = document.getElementById('profile-section-originating');
+        const origRow = document.querySelector('[data-profile-section="originating"]');
         if (origSec) origSec.classList.toggle('hidden', !(window._originatingTrains || []).length);
+        if (origRow) origRow.classList.toggle('expanded', !!(window._originatingTrains || []).length);
         window.updateOriginatingTrainsSection && window.updateOriginatingTrainsSection();
         window._destStations = (p.dest || []).slice();
         window.renderDestChips();
         window._diversionMap = p.diversionMap ? JSON.parse(JSON.stringify(p.diversionMap)) : {};
         window.populateDiversionMajorDropdown();
         window.renderDiversionSummary();
+        window.renderProfileStationSummaries();
         
         if (!p.name) {
             unlockProfile();
