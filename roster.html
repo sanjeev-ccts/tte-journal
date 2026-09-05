@@ -10,21 +10,52 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
     :root {
-        --bg: #e2e6ea; --card: #ffffff; --text: #1e293b; --text-muted: #475569;
+        --bg: #e8ecf1; --card: #ffffff; --text: #1e293b; --text-muted: #475569;
         --border: #b6c2d1; --blue: #3b82f6; --blue-fill: #2563eb; --green: #22c55e; --red: #ef4444;
         --orange: #f97316; --purple: #a855f7; --yellow: #eab308;
-        --top-bar-bg: #1a1c24; --bottom-bar-bg: #1a1c24; --input-bg: #cfd7e0; --modal-bg: #ffffff; --shadow: 0 4px 14px rgba(30,41,59,0.15), 0 1px 3px rgba(30,41,59,0.10);
+        --top-bar-bg: #1a1c24; --bottom-bar-bg: #1a1c24; --input-bg: #dde4ec; --modal-bg: #ffffff; --shadow: 0 4px 14px rgba(30,41,59,0.15), 0 1px 3px rgba(30,41,59,0.10);
         --table-border: #a5b4fc;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
     }
+    body.green-theme {
+        --blue: #16a34a;
+        --blue-fill: #15803d;
+        --table-border: #86efac;
+        --sheet-header-bg: #15803d;
+        --sheet-header-text: #ecfdf5;
+    }
     body.dark-mode {
-        --bg: #121212; --card: #2a2a2f; --text: #e6edf3; --text-muted: #aab4be;
-        --border: #40454f; --input-bg: #1e2026; --shadow: 0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+        --bg: #121212; --card: #303036; --text: #e6edf3; --text-muted: #aab4be;
+        --border: #484e5a; --input-bg: #242832; --shadow: 0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
         --blue: #58a6ff; --blue-fill: #3157c4; --green: #3fb950; --purple: #bc8cff; --yellow: #f0c040; --orange: #f0883e; --red: #ff7b72;
-        --modal-bg: #2e323c; --top-bar-bg: #1a1c24;
+        --modal-bg: #343840; --top-bar-bg: #1a1c24;
         --table-border: #30363d;
         --sheet-header-bg: #254ca9; --sheet-header-text: #cbdcff;
     }
+    body.dark-mode.green-theme {
+        --blue: #4ade80;
+        --blue-fill: #166534;
+        --table-border: #166534;
+        --sheet-header-bg: #166534;
+        --sheet-header-text: #dcfce7;
+    }
+    body.green-theme .top-bar span,
+    body.green-theme h3.section-title,
+    body.green-theme .section-title-box,
+    body.green-theme .lobby-dest-title,
+    body.green-theme .result-modal-header h3,
+    body.green-theme table.admin-table th,
+    body.green-theme .bottom-icon-wrap:active .bottom-icon-label,
+    body.green-theme .bottom-icon-wrap.illuminated .bottom-icon-label,
+    body.green-theme .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue); }
+    body.green-theme .section-title-box { background: color-mix(in srgb, var(--blue) 22%, transparent); border-color: color-mix(in srgb, var(--blue) 35%, transparent); }
+    body.green-theme .header-tab.active { border-bottom-color: var(--blue); }
+    body.green-theme .duty-box.trip-next { background: color-mix(in srgb, var(--blue) 30%, transparent); }
+    body.green-theme .team-saved-card,
+    body.green-theme .view-edit-team-btn,
+    body.dark-mode.green-theme .team-saved-card,
+    body.dark-mode.green-theme .view-edit-team-btn { background: color-mix(in srgb, var(--blue) 10%, var(--card)); }
+    body.dark-mode.green-theme .section-title-box { background: color-mix(in srgb, var(--blue) 18%, transparent); }
     /* Point (fix): the light-mode 3D effect relies mainly on the bottom inset shadow (black at
        12% - nearly invisible on a light card, but genuinely visible there since white-to-black
        has huge contrast headroom). In dark mode that same 12% black is nearly imperceptible
@@ -4477,6 +4508,11 @@ window.addEventListener('message', function(event) {
             }
         }
     }
+    if (event.data && event.data.type === 'GREEN_THEME_CHANGED') {
+        const enabled = !!event.data.enabled;
+        document.body.classList.toggle('green-theme', enabled);
+        localStorage.setItem('green_theme_enabled', enabled ? 'true' : 'false');
+    }
     if (event.data && event.data.type === 'LANGUAGE_CHANGED') {
         if (window.i18n && window.i18n.getLang() !== event.data.lang) {
             window.i18n.setLang(event.data.lang);
@@ -4671,6 +4707,9 @@ function initAfterAuth() {
     if (localStorage.getItem('app_theme') === 'dark') {
         document.body.classList.add('dark-mode');
         window.applyRosterThemeUI(true);
+    }
+    if (localStorage.getItem('green_theme_enabled') === 'true') {
+        document.body.classList.add('green-theme');
     }
     // Point: same shared 'card_shadow_enabled' key the parent app's Settings toggle writes to -
     // matches the existing cross-app pattern already used for 'app_theme' above.

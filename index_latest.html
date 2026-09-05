@@ -497,7 +497,7 @@
         .profile-station-help p { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
         .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 4px; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
         .profile-station-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
-        .profile-station-row.expanded { background: color-mix(in srgb, var(--blue) 4%, var(--card)); }
+        .profile-station-row.expanded { background: color-mix(in srgb, var(--blue) 7%, var(--card)); }
         .profile-station-row-main { flex: 1; min-width: 0; }
         .profile-station-row-title { display: block; font-size: 12.5px; font-weight: 800; color: var(--text); line-height: 1.25; }
         .profile-station-row-value { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1639,6 +1639,8 @@
             if (!iframe || !iframe.contentWindow) return;
             if (type === 'THEME_CHANGED') {
                 iframe.contentWindow.postMessage({ type, isDark: value }, '*');
+            } else if (type === 'GREEN_THEME_CHANGED') {
+                iframe.contentWindow.postMessage({ type, enabled: value }, '*');
             } else if (type === 'LANGUAGE_CHANGED') {
                 iframe.contentWindow.postMessage({ type, lang: value }, '*');
             } else {
@@ -1647,6 +1649,7 @@
         };
         window.pushAllSettingsToRoster = function() {
             window.broadcastSettingToRoster('THEME_CHANGED', document.body.classList.contains('dark-mode'));
+            window.broadcastSettingToRoster('GREEN_THEME_CHANGED', window.isGreenThemeEnabled());
             if (window.i18n) window.broadcastSettingToRoster('LANGUAGE_CHANGED', window.i18n.getLang());
             window.broadcastSettingToRoster('CARD_SHADOW_CHANGED', window.isCardShadowEnabled());
             window.broadcastSettingToRoster('FLOATING_BACK_CHANGED', window.isFloatingBackEnabled());
@@ -2402,7 +2405,7 @@
 <div id="app-splash-screen" style="position:fixed; top:0; left:0; width:100%; height:100%; background:#0a0a0a; z-index:999999; display:flex; align-items:center; justify-content:center;">
     <div style="display:flex; flex-direction:column; align-items:center; gap:18px;">
         <div style="width:56px; height:56px; border:5px solid rgba(255,255,255,0.15); border-top-color:#fff; border-radius:50%; animation:splashSpin 0.9s linear infinite;"></div>
-        <div style="color:#fff; font-size:15px; font-weight:700; letter-spacing:1px;">TTE LOGS</div>
+        <div style="color:#fff; font-size:18px; font-weight:700; letter-spacing:1px;">TTE LOGS</div>
     </div>
 </div>
 <style>
@@ -4068,8 +4071,8 @@
         </div>
         <iframe id="roster-iframe" src="" style="flex:1; width:100%; border:none; background:var(--bg);"></iframe>
         <div id="roster-loading-overlay" class="hidden" style="position:absolute; top:60px; left:0; width:100%; bottom:0; background:var(--bg); z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; transition:opacity 0.2s ease-out;">
-            <div style="width:48px; height:48px; border:4px solid color-mix(in srgb, var(--text) 20%, transparent); border-top-color:var(--blue); border-radius:50%; animation:splashSpin 0.9s linear infinite;"></div>
-            <div style="font-size:15px; font-weight:800; color:var(--purple);">Roster</div>
+            <div style="width:56px; height:56px; border:5px solid color-mix(in srgb, var(--text) 20%, transparent); border-top-color:var(--blue); border-radius:50%; animation:splashSpin 0.9s linear infinite;"></div>
+            <div style="font-size:18px; font-weight:800; color:var(--purple);">Roster</div>
         </div>
     </div>
 
@@ -4814,6 +4817,7 @@
         localStorage.setItem('green_theme_enabled', wasOn ? 'false' : 'true');
         window.applyGreenThemeBodyClass();
         window.updateSettingsToggleSwitches();
+        window.broadcastSettingToRoster('GREEN_THEME_CHANGED', !wasOn);
     };
 
     window.isHapticEnabled = function() {
@@ -7728,7 +7732,13 @@
         row.classList.toggle('expanded', opening);
         if (opening) {
             const help = panel.querySelector('.profile-station-help');
-            if (help) help.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            if (help) {
+                help.open = true;
+                help.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        } else {
+            const help = panel.querySelector('.profile-station-help');
+            if (help) help.open = false;
         }
     };
 
