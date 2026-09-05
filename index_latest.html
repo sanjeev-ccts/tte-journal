@@ -800,8 +800,11 @@
         #nda-signon-table .nda-signon-signon-col { padding: 3px 2px !important; }
         #nda-signon-info-box { font-size: 10.5px; color: var(--text-muted); margin: 0 0 10px 0; line-height: 1.5; padding: 10px 12px; background: color-mix(in srgb, var(--blue) 8%, var(--card)); border: 1px solid color-mix(in srgb, var(--blue) 22%, var(--border)); border-radius: 10px; }
         #nda-signon-scroll-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: visible; }
-        .add-signon-link-btn { width: auto !important; max-width: 220px; margin: 10px auto 0 !important; padding: 6px 14px !important; font-size: 11px !important; font-weight: 700; color: var(--text-muted) !important; background: color-mix(in srgb, var(--blue) 6%, var(--card)) !important; border: 1px dashed color-mix(in srgb, var(--blue) 35%, var(--border)) !important; border-radius: 20px !important; box-shadow: none !important; display: block; }
+        .subtle-pill-banner { color: var(--text-muted) !important; background: color-mix(in srgb, var(--blue) 10%, var(--card)) !important; border: 1px dashed color-mix(in srgb, var(--blue) 38%, var(--border)) !important; border-radius: 20px !important; box-shadow: none !important; font-size: 11px !important; font-weight: 700; line-height: 1.45; }
+        body:not(.dark-mode) .subtle-pill-banner { background: color-mix(in srgb, var(--blue) 12%, var(--input-bg)) !important; border-color: color-mix(in srgb, var(--blue) 42%, var(--border)) !important; }
+        .add-signon-link-btn { width: auto !important; max-width: 220px; margin: 14px auto 0 !important; padding: 6px 14px !important; display: block; }
         .add-signon-link-btn:active { opacity: 0.85; transform: translateY(1px); }
+        #sync-status-toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-20px); padding: 10px 16px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; text-align: center; width: 350px; max-width: 92vw; white-space: pre-line; box-sizing: border-box; }
         .inline-save-btn { background: var(--green); color: white; border: none; border-radius: 8px; padding: 4px 8px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(34,197,94,0.3); }
         .station-chip { display: inline-flex; align-items: center; gap: 5px; background: color-mix(in srgb, var(--blue) 12%, transparent); border: 1px solid var(--blue); color: var(--blue); font-weight: 800; font-size: 11px; padding: 3px 6px 3px 10px; border-radius: 16px; }
         .station-chip .chip-remove { cursor: pointer; font-weight: 900; background: var(--blue-fill); color: white; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 10px; line-height: 1; }
@@ -2925,7 +2928,7 @@
             </div>
         </div>
     </div>
-    <div id="sync-status-toast" style="position:fixed; top:70px; left:50%; transform:translateX(-50%) translateY(-20px); background:rgba(30,30,36,0.93); color:white; padding:12px 16px; border-radius:16px; font-size:12px; font-weight:bold; line-height:1.6; z-index:9999; opacity:0; pointer-events:none; transition:opacity 0.2s, transform 0.2s; box-shadow:0 4px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.12); text-align:center; width:350px; max-width:92vw; white-space:pre-line; box-sizing:border-box;"></div>
+    <div id="sync-status-toast" class="subtle-pill-banner"></div>
     <div id="dash-sync-cluster" class="dash-sync-cluster hidden">
         <div id="dash-sync-icon" class="dash-signout-btn" onclick="window.showSyncStatusToast()" title="Sync Status">
             <svg id="dash-sync-icon-svg" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:26px; height:26px;"><path fill="currentColor" d="M7 24.5A6.5 6.5 0 0 1 8.7 11A7.3 7.3 0 0 1 23.3 11A6.5 6.5 0 0 1 25 24.5H7z"/><g id="dash-sync-badge-group"><circle cx="16" cy="23.24" r="8.4" fill="var(--top-bar-bg)" stroke="none"/><circle cx="16" cy="23.24" r="6.3" fill="currentColor" stroke="none"/><path id="dash-sync-symbol-path" fill="none" stroke="var(--top-bar-bg)" stroke-width="2.3" d="M13.5 23.34l2 2 3.5-4"/></g></svg>
@@ -3831,7 +3834,7 @@
                     <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center; white-space:nowrap;">Add Rest/Leave</span>
                 </div>
             </div>
-            <button type="button" id="btn-add-signon-time" class="add-signon-link-btn" onclick="window.openNdaSignOnFromAddJourney()" data-i18n="add_signon_time_btn">Add Sign On Time</button>
+            <button type="button" id="btn-add-signon-time" class="add-signon-link-btn subtle-pill-banner" onclick="window.openNdaSignOnFromAddJourney()" data-i18n="add_signon_time_btn">Add Sign On Time</button>
 
             <!-- Point: compact spreadsheet view of duty history, same underlying data/rendering
                  approach as the Dashboard's sheet, but with its own dedicated DOM ids (separate
@@ -11839,23 +11842,75 @@
         }
     };
 
+    window._globalSearchFallbackFestivals = [
+        'Republic Day', 'Holi', 'Eid-ul-Fitr', 'Independence Day', 'Diwali', 'Christmas',
+        'Gandhi Jayanti', 'Janmashtami', 'Maha Shivratri', 'Dussehra', 'Good Friday',
+        'Guru Nanak Jayanti', 'Bakrid', 'Muharram', 'Ram Navami', 'Mahavir Jayanti'
+    ];
+
+    window._globalSearchMonthEntries = function() {
+        const label = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const months = [
+            { en: 'January', hi: 'जनवरी', abbr: 'jan' },
+            { en: 'February', hi: 'फ़रवरी', abbr: 'feb' },
+            { en: 'March', hi: 'मार्च', abbr: 'mar' },
+            { en: 'April', hi: 'अप्रैल', abbr: 'apr' },
+            { en: 'May', hi: 'मई', abbr: 'may' },
+            { en: 'June', hi: 'जून', abbr: 'jun' },
+            { en: 'July', hi: 'जुलाई', abbr: 'jul' },
+            { en: 'August', hi: 'अगस्त', abbr: 'aug' },
+            { en: 'September', hi: 'सितंबर', abbr: 'sep' },
+            { en: 'October', hi: 'अक्टूबर', abbr: 'oct' },
+            { en: 'November', hi: 'नवंबर', abbr: 'nov' },
+            { en: 'December', hi: 'दिसंबर', abbr: 'dec' }
+        ];
+        return months.map((m, idx) => {
+            const monthNum = String(idx + 1).padStart(2, '0');
+            const haystack = [m.en, m.hi, m.abbr, m.en.slice(0, 3), monthNum, `month ${idx + 1}`, 'month', 'महीना'].join(' ').toLowerCase();
+            return {
+                type: 'feature',
+                typeLabel: label('global_search_type_month', 'Month'),
+                haystack,
+                title: m.en,
+                subtitle: label('global_search_view_journeys_month', 'View journeys for this month'),
+                run: () => {
+                    const yearSel = document.getElementById('all-logs-year');
+                    const monthSel = document.getElementById('all-logs-month');
+                    const yearNow = String(new Date().getFullYear());
+                    if (yearSel) yearSel.value = yearNow;
+                    if (monthSel) monthSel.value = monthNum;
+                    window.navTo('screen-all');
+                    window.renderAllLogs();
+                }
+            };
+        });
+    };
+
     window.buildGlobalSearchIndex = function() {
         const items = [];
         const label = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
         const featureEntries = [
-            { labelKey: 'nav_all_journey', fallback: 'Journeys', aliases: ['journey', 'journeys', 'train', 'all journey', 'यात्रा', 'सभी यात्राएं'], run: () => window.navTo('screen-all') },
-            { labelKey: 'page_title_add_journey', fallback: 'Add Journey', aliases: ['add', 'quick add', 'यात्रा जोड़ें'], run: () => { window.switchAddTab('duty'); window.navTo('screen-add'); } },
-            { labelKey: 'nav_pdf', fallback: 'PDF', aliases: ['pdf', 'ta', 'nda', 'journal', 'bill', 'पीडीएफ'], run: () => { window.switchTab('ta'); window.navTo('screen-reports'); } },
-            { labelKey: 'nav_roster', fallback: 'Roster', aliases: ['roster', 'duty roster', 'ड्यूटी रोस्टर'], run: () => window.handleRosterCardClick() },
-            { labelKey: 'nav_mandali', fallback: 'Mandali', aliases: ['mandali', 'मंडली', 'team'], run: () => window.openDashMandali() },
-            { labelKey: 'nav_circulars', fallback: 'Circulars', aliases: ['circular', 'circulars', 'order', 'सर्कुलर'], run: () => window.navTo('screen-circulars-dashboard') },
-            { labelKey: 'earnings_label', fallback: 'Earnings', aliases: ['earning', 'eft', 'cases', 'कमाई'], run: () => window.navTo('screen-earnings') },
-            { labelKey: 'page_title_salary', fallback: 'Salary', aliases: ['salary', 'expected salary', 'वेतन'], run: () => { window._salaryCurrentMonthKey = null; window.showSalaryBreakdown(); } },
-            { labelKey: 'sleep_real_modal_title', fallback: 'Sleep Ruined', aliases: ['sleep', 'ruined', 'नींद'], run: () => window.openSleepRuinedRealModal() },
-            { labelKey: 'sidebar_national_holiday', fallback: 'National Holiday', aliases: ['holiday', 'national holiday', 'राष्ट्रीय अवकाश'], run: () => window.showSidebarNationalHoliday() },
-            { labelKey: 'my_archived_data_row', fallback: 'Archive Data', aliases: ['archive', 'archived', 'आर्काइव'], run: () => { window.navTo('screen-my-archive'); window.loadMyArchivedData(); } },
-            { labelKey: 'backup_row', fallback: 'Backup', aliases: ['backup', 'restore', 'बैकअप'], run: () => window.navTo('screen-backup') },
-            { labelKey: 'nav_profile', fallback: 'Profile', aliases: ['profile', 'register', 'pf', 'hq', 'प्रोफ़ाइल'], run: () => window.navTo('screen-register') },
+            { labelKey: 'nav_all_journey', fallback: 'Journeys', aliases: ['journey', 'journeys', 'train', 'all journey', 'logs', 'history', 'यात्रा', 'सभी यात्राएं'], run: () => window.navTo('screen-all') },
+            { labelKey: 'page_title_add_journey', fallback: 'Add Journey', aliases: ['add', 'quick add', 'new journey', 'duty', 'यात्रा जोड़ें'], run: () => { window.switchAddTab('duty'); window.navTo('screen-add'); } },
+            { labelKey: 'nav_pdf', fallback: 'PDF', aliases: ['pdf', 'report', 'journal', 'bill', 'generate', 'पीडीएफ'], run: () => { window.switchTab('ta'); window.navTo('screen-reports'); } },
+            { labelKey: 'nav_roster', fallback: 'Roster', aliases: ['roster', 'duty roster', 'schedule', 'ड्यूटी रोस्टर'], run: () => window.handleRosterCardClick() },
+            { labelKey: 'nav_mandali', fallback: 'Mandali', aliases: ['mandali', 'मंडली', 'team', 'group'], run: () => window.openDashMandali() },
+            { labelKey: 'nav_circulars', fallback: 'Circulars', aliases: ['circular', 'circulars', 'order', 'orders', 'सर्कुलर'], run: () => window.navTo('screen-circulars-dashboard') },
+            { labelKey: 'earnings_label', fallback: 'Earnings', aliases: ['earning', 'eft', 'cases', 'excess fare', 'कमाई'], run: () => window.navTo('screen-earnings') },
+            { labelKey: 'page_title_salary', fallback: 'Salary', aliases: ['salary', 'expected salary', 'pay', 'wages', 'वेतन'], run: () => { window._salaryCurrentMonthKey = null; window.showSalaryBreakdown(); } },
+            { labelKey: 'sleep_real_modal_title', fallback: 'Sleep Ruined', aliases: ['sleep', 'ruined', 'नींद', 'rest hours'], run: () => window.openSleepRuinedRealModal() },
+            { labelKey: 'sidebar_national_holiday', fallback: 'National Holiday', aliases: ['holiday', 'national holiday', 'nha', 'festival', 'festivals', 'राष्ट्रीय अवकाश', 'अवकाश'], run: () => window.showSidebarNationalHoliday() },
+            { labelKey: 'my_archived_data_row', fallback: 'Archive Data', aliases: ['archive', 'archived', 'old data', 'आर्काइव'], run: () => { window.navTo('screen-my-archive'); window.loadMyArchivedData(); } },
+            { labelKey: 'backup_row', fallback: 'Backup', aliases: ['backup', 'restore', 'sync', 'google', 'cloud', 'बैकअप'], run: () => window.navTo('screen-backup') },
+            { labelKey: 'nav_profile', fallback: 'Profile', aliases: ['profile', 'register', 'pf', 'hq', 'station', 'प्रोफ़ाइल'], run: () => window.navTo('screen-register') },
+            { labelKey: 'settings', fallback: 'Settings', aliases: ['settings', 'preference', 'theme', 'green theme', 'language', 'सेटिंग्स'], run: () => window.openSettingsModal() },
+            { labelKey: 'notifications_label', fallback: 'Alerts', aliases: ['alert', 'alerts', 'notification', 'notifications', 'warning', 'अलर्ट'], run: () => window.showNotifications() },
+            { labelKey: 'trend_tab_signon', fallback: 'Sign On Time', aliases: ['sign on', 'signon', 'sign-on', 'sign off', 'night duty sign', 'nda sign', 'साइन ऑन'], run: () => { window.switchTab('nda'); window.showYearlyTrendOnly(); window.switchTrendViewTab('signon'); } },
+            { labelKey: 'dash_ta_label', fallback: 'TA', aliases: ['ta', 'traveling allowance', 'allowance', 'trend ta'], run: () => { window.switchTab('ta'); window.showYearlyTrendOnly(); } },
+            { labelKey: 'dash_nda_label', fallback: 'NDA', aliases: ['nda', 'night duty', 'night duty allowance', 'night'], run: () => { window.switchTab('nda'); window.showYearlyTrendOnly(); } },
+            { labelKey: 'add_signon_time_btn', fallback: 'Add Sign On Time', aliases: ['add sign on', 'sign on time'], run: () => window.openNdaSignOnFromAddJourney() },
+            { labelKey: 'profile_originating_trains_toggle', fallback: 'Originating Trains', aliases: ['originating', 'originating train', 'origin train'], run: () => window.navTo('screen-register') },
+            { labelKey: 'global_search_rest_leave', fallback: 'Rest / Leave', aliases: ['rest', 'leave', 'cl', 'cocl', 'rh', 'off', 'non duty', 'nonduty'], run: () => { window.switchAddTab('nonduty'); window.navTo('screen-add'); } },
             { labelKey: 'page_title_admin', fallback: 'Admin', aliases: ['admin'], adminOnly: true, run: () => window.navTo('screen-admin') }
         ];
         const isAdminUser = window.currentUid === window.ADMIN_UID || (window.ADMIN_EMAILS && window.ADMIN_EMAILS.includes(window.currentUserEmail || ''));
@@ -11870,6 +11925,26 @@
                 title,
                 subtitle: label('global_search_open_feature', 'Open in app'),
                 run: entry.run
+            });
+        });
+
+        items.push(...window._globalSearchMonthEntries());
+
+        const festivalList = Array.isArray(window.nhaFestivals) && window.nhaFestivals.length
+            ? window.nhaFestivals
+            : window._globalSearchFallbackFestivals.map(name => ({ name }));
+        festivalList.forEach(f => {
+            const festName = typeof f === 'string' ? f : (f && f.name);
+            if (!festName) return;
+            const idAlias = f && f.id ? f.id.replace(/_/g, ' ') : '';
+            const haystack = [festName, idAlias, 'holiday', 'festival', 'national holiday', 'nha'].filter(Boolean).join(' ').toLowerCase();
+            items.push({
+                type: 'feature',
+                typeLabel: label('global_search_type_holiday', 'Holiday'),
+                haystack,
+                title: festName,
+                subtitle: label('sidebar_national_holiday', 'National Holiday'),
+                run: () => window.showSidebarNationalHoliday()
             });
         });
 
@@ -11957,7 +12032,12 @@
         });
 
         const p = window.appState.profile || {};
-        const profileHaystack = [p.name, p.pf, p.hq, p.empType, p.basicpay, p.journeyObjective, ...(p.nearby || []), ...(p.diversionStns || [])].filter(Boolean).join(' ').toLowerCase();
+        const diversionStns = Object.keys(p.diversionMap || window._diversionMap || {});
+        const profileHaystack = [
+            p.name, p.pf, p.hq, p.empType, p.basicpay, p.journeyObjective, p.pass, p.ruleGoverned,
+            ...(p.nearby || []), ...(p.nearbyTaClaimed || []), ...(p.dest || []), ...(p.originatingTrains || []),
+            ...(p.diversionStns || []), ...diversionStns
+        ].filter(Boolean).join(' ').toLowerCase();
         if (profileHaystack) {
             items.push({
                 type: 'profile',
@@ -11986,7 +12066,7 @@
         const tokens = q.split(/\s+/).filter(Boolean);
         const matches = window.buildGlobalSearchIndex()
             .filter(item => tokens.every(tok => item.haystack.includes(tok)))
-            .slice(0, 25);
+            .slice(0, 45);
         if (!matches.length) {
             resultsEl.innerHTML = `<div class="dash-global-search-empty">${window.i18n ? window.i18n.t('global_search_no_results') : 'No matches found'}</div>`;
             resultsEl.classList.remove('hidden');
