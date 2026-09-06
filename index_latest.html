@@ -791,13 +791,14 @@
         }
         .all-journey-row-body {
             flex: 0 0 80%; max-width: 80%; min-width: 0; text-align: left;
-            line-height: 1.4; font-size: 14px; overflow: hidden;
+            line-height: 1.38; font-size: 12px; overflow: hidden;
         }
         .all-journey-row-chevron {
             flex: 0 0 20%; max-width: 20%; display: flex; align-items: center;
-            justify-content: center; padding-right: 4px; color: var(--text-muted); flex-shrink: 0;
+            justify-content: flex-end; padding-right: 10px; padding-left: 6px;
+            color: var(--text-muted); flex-shrink: 0;
         }
-        .all-journey-row-chevron svg { width: 30px; height: 30px; stroke-width: 2.5; transition: transform 0.15s; }
+        .all-journey-row-chevron svg { width: 26px; height: 26px; stroke-width: 2.5; transition: transform 0.15s; }
         .all-journey-row--expanded .all-journey-row-chevron svg { transform: rotate(-90deg); color: var(--blue); }
         .aj-train { font-weight: 800; color: var(--row-text); }
         .aj-date { font-weight: 700; color: color-mix(in srgb, var(--blue) 55%, var(--text-muted) 45%); }
@@ -2846,7 +2847,7 @@
                 <div style="margin-bottom:14px; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:12px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
                         <span style="font-size:11px; font-weight:700; color:var(--text-muted);" data-i18n="sleep_window_label">Sleep Window</span>
-                        <span id="sleep-range-label" style="font-size:13px; font-weight:900; color:var(--blue);">23:50 – 06:50</span>
+                        <span id="sleep-range-label" style="font-size:13px; font-weight:900; color:var(--blue);">23:30 – 06:30</span>
                     </div>
                     <div class="sleep-dual-range" id="sleep-dual-range">
                         <div class="sleep-dual-range-track"></div>
@@ -2856,8 +2857,8 @@
                         <div id="sleep-thumb-start" class="sleep-range-thumb sleep-range-thumb-start" role="slider" aria-label="Sleep start"></div>
                         <div id="sleep-thumb-end" class="sleep-range-thumb sleep-range-thumb-end" role="slider" aria-label="Sleep end"></div>
                     </div>
-                    <span id="sleep-start-label" class="hidden" aria-hidden="true">23:50</span>
-                    <span id="sleep-end-label" class="hidden" aria-hidden="true">06:50</span>
+                    <span id="sleep-start-label" class="hidden" aria-hidden="true">23:30</span>
+                    <span id="sleep-end-label" class="hidden" aria-hidden="true">06:30</span>
                     <p style="font-size:10px; color:var(--text-muted); text-align:center; margin:10px 0 0;" data-i18n="sleep_range_hint">Choosable sleep range: 22:00 – 08:00</p>
                 </div>
                 <p style="font-size:12px; color:var(--text-muted); text-align:center; line-height:1.5; margin:0 0 16px; padding:0 4px;" data-i18n="sleep_real_info_text">Based on the actual journeys you've fed in so far — not a fixed schedule. Improves in accuracy as your journey feeding progresses through the month.</p>
@@ -8299,7 +8300,13 @@
         window.onSleepRealMonthChanged();
     };
 
-    window.sleepSliderPosToTime = function(pos) {
+    const SLEEP_REAL_DEFAULT_START = '23:30';
+    const SLEEP_REAL_DEFAULT_END = '06:30';
+
+    window.getSleepRealDefaultRange = function() {
+        return { start: SLEEP_REAL_DEFAULT_START, end: SLEEP_REAL_DEFAULT_END };
+    };
+
         let total = 22 * 60 + parseInt(pos, 10);
         if (total >= 24 * 60) total -= 24 * 60;
         const h = Math.floor(total / 60);
@@ -8363,9 +8370,13 @@
         if (endLabel) endLabel.textContent = endStr;
         if (rangeLabel) rangeLabel.textContent = `${startStr} – ${endStr}`;
         window.updateSleepRangeFill(startPos, endPos);
-        if (dragWhich) window.updateSleepRangeTooltip(dragWhich, dragWhich === 'start' ? startPos : endPos, true);
-        localStorage.setItem('roster_sleep_start', startStr);
-        localStorage.setItem('roster_sleep_end', endStr);
+        if (dragWhich === 'start') {
+            window.updateSleepRangeTooltip('start', startPos, true);
+            window.updateSleepRangeTooltip('end', 0, false);
+        } else if (dragWhich === 'end') {
+            window.updateSleepRangeTooltip('end', endPos, true);
+            window.updateSleepRangeTooltip('start', 0, false);
+        }
         if (!dragWhich) window.renderSleepRuinedRealResults();
     };
 
@@ -8381,7 +8392,7 @@
         const wrap = document.getElementById('sleep-dual-range');
         if (!wrap || wrap._sleepRangeInit) return;
         wrap._sleepRangeInit = true;
-        window._sleepRangeState = window._sleepRangeState || { startPos: 110, endPos: 530, dragging: null };
+        window._sleepRangeState = window._sleepRangeState || { startPos: 90, endPos: 510, dragging: null };
 
         const posFromClientX = (clientX) => {
             const track = wrap.querySelector('.sleep-dual-range-track');
@@ -8427,8 +8438,7 @@
     };
 
     window.syncSleepSlidersFromStorage = function() {
-        const startStr = clampSleepTimeRange(localStorage.getItem('roster_sleep_start') || '23:50');
-        const endStr = clampSleepTimeRange(localStorage.getItem('roster_sleep_end') || '06:50');
+        const { start: startStr, end: endStr } = window.getSleepRealDefaultRange();
         const startLabel = document.getElementById('sleep-start-label');
         const endLabel = document.getElementById('sleep-end-label');
         const rangeLabel = document.getElementById('sleep-range-label');
@@ -8439,8 +8449,6 @@
         if (rangeLabel) rangeLabel.textContent = `${startStr} – ${endStr}`;
         window.initSleepRangeSlider();
         window.applySleepRangePositions(startPos, endPos, null);
-        localStorage.setItem('roster_sleep_start', startStr);
-        localStorage.setItem('roster_sleep_end', endStr);
         requestAnimationFrame(() => window.updateSleepRangeFill(startPos, endPos));
     };
 
@@ -8449,8 +8457,9 @@
         if (!resultsEl) return;
         const startLabel = document.getElementById('sleep-start-label');
         const endLabel = document.getElementById('sleep-end-label');
-        const startStr = startLabel ? startLabel.textContent : (localStorage.getItem('roster_sleep_start') || '23:50');
-        const endStr = endLabel ? endLabel.textContent : (localStorage.getItem('roster_sleep_end') || '06:50');
+        const defaults = window.getSleepRealDefaultRange();
+        const startStr = startLabel ? startLabel.textContent : defaults.start;
+        const endStr = endLabel ? endLabel.textContent : defaults.end;
         const [sh, sm] = startStr.split(':').map(Number);
         const [eh, em] = endStr.split(':').map(Number);
         const startMin = sh * 60 + sm, endMin = eh * 60 + em;
@@ -14526,7 +14535,8 @@
                             ${dots}${monthLabels}
                         </svg>
                     </div>
-                    <div style="margin-top:8px; margin-bottom:14px; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>`;
+                    <div style="margin-top:8px; margin-bottom:6px; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>
+                    <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:0 0 14px; padding:0 8px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. DDU (Nearby HQ-TA Claimed) includes a 3-hour HQ travel margin.')}</p>`;
             }
 
             let html;
