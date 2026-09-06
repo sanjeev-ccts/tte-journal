@@ -485,21 +485,19 @@
         input:disabled, select:disabled { background-color: var(--input-disabled); color: var(--text-muted); border-style: dashed; opacity: 0.75; -webkit-text-fill-color: var(--text-muted); }
         .profile-lbl { font-size: 13px; font-weight: 800; color: var(--blue); display: block; margin-bottom: 2px; }
         .profile-stations-card { padding: 14px 15px 8px; }
-        .profile-stations-title { font-size: 14px; font-weight: 900; color: var(--text); margin: 0 0 4px; letter-spacing: 0.1px; }
-        .profile-stations-intro { font-size: 11px; color: var(--text-muted); margin: 0 0 14px; line-height: 1.45; }
         .profile-station-hq-block { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .profile-station-hq-block input { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
-        .profile-stations-rows { margin: 0 -4px; }
-        .profile-station-divider { border-top: 1px dashed var(--border); margin: 0 4px; }
+        .profile-stations-rows { margin-left: -15px; margin-right: -15px; }
+        .profile-station-divider { border-top: 1px solid var(--border); margin: 0; }
         .profile-station-help { margin: 6px 0 0; }
         .profile-station-help summary { font-size: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; list-style: none; }
         .profile-station-help summary::-webkit-details-marker { display: none; }
         .profile-station-help p { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
-        .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 4px; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
+        .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 15px; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
         .profile-station-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
         .profile-station-row.expanded,
         .profile-station-row.expanded + .profile-station-expand:not(.hidden) { background: color-mix(in srgb, var(--blue) 10%, var(--card)); }
-        .profile-station-row.expanded + .profile-station-expand:not(.hidden) { margin: 0 -4px; padding-left: 8px; padding-right: 8px; }
+        .profile-station-row.expanded + .profile-station-expand:not(.hidden) { margin: 0; padding-left: 15px; padding-right: 15px; }
         .profile-station-row-main { flex: 1; min-width: 0; }
         .profile-station-row-title { display: block; font-size: 12.5px; font-weight: 800; color: var(--text); line-height: 1.25; }
         .profile-station-row-value { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -507,7 +505,7 @@
         .profile-station-row-chevron { flex-shrink: 0; color: var(--text-muted); display: flex; align-items: center; justify-content: center; line-height: 1; transition: transform 0.15s; opacity: 0.9; }
         .profile-station-row-chevron svg { width: 28px; height: 28px; stroke-width: 2.5; }
         .profile-station-row.expanded .profile-station-row-chevron { color: var(--blue); transform: rotate(90deg); }
-        .profile-station-expand { padding: 0 4px 14px; }
+        .profile-station-expand { padding: 0 15px 14px; }
         .profile-station-expand .profile-station-help { margin-bottom: 8px; }
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
@@ -3166,9 +3164,6 @@
             </div>
 
             <div class="card profile-stations-card">
-                <h3 class="profile-stations-title" data-i18n="profile_stations_routes_title">Stations &amp; Routes</h3>
-                <p class="profile-stations-intro" data-i18n="profile_stations_intro">Set your HQ, nearby starting stations, and usual outward routes so journeys are recognized correctly.</p>
-
                 <div class="profile-station-hq-block">
                     <label class="profile-lbl">Main HQ Station</label>
                     <input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;" oninput="window.filterAlphaOnly(this); window.renderProfileStationSummaries && window.renderProfileStationSummaries();">
