@@ -531,18 +531,10 @@
         .all-journey-row {
             position: relative; user-select: none; -webkit-user-select: none;
             -webkit-touch-callout: none; touch-action: manipulation;
-            padding-right: 22px !important;
         }
         .all-journey-row { border: none !important; }
         .all-journey-row:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
         .all-journey-row--expanded { border-radius: 10px 10px 4px 4px !important; }
-        .all-journey-row::after {
-            content: '›'; position: absolute; right: 5px; top: 50%;
-            transform: translateY(-50%); color: var(--text-muted);
-            font-size: 22px; font-weight: 900; line-height: 1;
-            pointer-events: none;
-        }
-        .all-journey-row--expanded::after { content: '⌃'; font-size: 16px; }
         .all-journey-action-row {
             display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
             padding: 8px; margin: -4px 0 8px; border: 1px solid var(--border);
@@ -770,7 +762,7 @@
             75% { transform: rotate(-4deg); }
         }
         .bottom-icon.bell-shake svg { animation: bell-shake 0.55s ease-in-out; transform-origin: top center; }
-        .sleep-dual-range { position: relative; height: 36px; margin: 8px 0 4px; }
+        .sleep-dual-range { position: relative; height: 48px; margin: 12px 0 4px; touch-action: none; }
         .sleep-dual-range-track {
             position: absolute; left: 11px; right: 11px; top: 50%; transform: translateY(-50%);
             height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--blue) 25%, var(--border) 75%);
@@ -780,16 +772,44 @@
             position: absolute; top: 50%; transform: translateY(-50%); height: 4px; border-radius: 2px;
             background: var(--blue-fill); pointer-events: none;
         }
-        .sleep-time-slider { width: 100%; margin: 0; -webkit-appearance: none; appearance: none; height: 36px; background: transparent; }
-        .sleep-dual-range .sleep-time-slider { position: absolute; left: 0; right: 0; top: 0; pointer-events: none; }
-        .sleep-dual-range .sleep-range-thumb-end { z-index: 4; }
-        .sleep-dual-range .sleep-range-thumb-start { z-index: 3; }
-        .sleep-time-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: transparent; }
-        .sleep-time-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue-fill); border: 3px solid var(--card); box-shadow: 0 2px 6px rgba(0,0,0,0.35); margin-top: -9px; cursor: pointer; pointer-events: auto; }
-        .sleep-time-slider::-moz-range-track { height: 4px; border-radius: 2px; background: transparent; }
-        .sleep-time-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--blue-fill); border: 3px solid var(--card); box-shadow: 0 2px 6px rgba(0,0,0,0.35); cursor: pointer; pointer-events: auto; }
-        .all-journey-row { display: flex; align-items: center; gap: 8px; }
-        .all-journey-row-body { flex: 0 0 70%; max-width: 70%; min-width: 0; text-align: left; line-height: 1.35; font-size: 11px; overflow: hidden; }
+        .sleep-range-thumb {
+            position: absolute; top: 50%; width: 22px; height: 22px; margin-top: -11px; margin-left: -11px;
+            border-radius: 50%; background: var(--blue-fill); border: 3px solid var(--card);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35); cursor: grab; touch-action: none; z-index: 3;
+        }
+        .sleep-range-thumb:active { cursor: grabbing; z-index: 5; }
+        .sleep-range-thumb-end { z-index: 4; }
+        .sleep-range-tooltip {
+            position: absolute; top: -2px; transform: translate(-50%, -100%);
+            background: var(--top-bar-bg); color: #fde047; font-size: 11.5px; font-weight: 800;
+            padding: 3px 9px; border-radius: 10px; white-space: nowrap; pointer-events: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3); z-index: 6;
+        }
+        .all-journey-row {
+            display: flex; align-items: center; gap: 6px; min-height: 52px;
+            padding: 12px 0 12px 10px !important;
+        }
+        .all-journey-row-body {
+            flex: 0 0 80%; max-width: 80%; min-width: 0; text-align: left;
+            line-height: 1.4; font-size: 14px; overflow: hidden;
+        }
+        .all-journey-row-chevron {
+            flex: 0 0 20%; max-width: 20%; display: flex; align-items: center;
+            justify-content: center; padding-right: 4px; color: var(--text-muted); flex-shrink: 0;
+        }
+        .all-journey-row-chevron svg { width: 30px; height: 30px; stroke-width: 2.5; transition: transform 0.15s; }
+        .all-journey-row--expanded .all-journey-row-chevron svg { transform: rotate(-90deg); color: var(--blue); }
+        .aj-train { font-weight: 800; color: var(--row-text); }
+        .aj-date { font-weight: 700; color: color-mix(in srgb, var(--blue) 55%, var(--text-muted) 45%); }
+        .aj-stn { font-weight: 700; color: color-mix(in srgb, var(--text) 70%, var(--text-muted) 30%); }
+        .aj-time { font-weight: 600; color: color-mix(in srgb, var(--text-muted) 88%, var(--text) 12%); }
+        .aj-sep { color: color-mix(in srgb, var(--text-muted) 75%, transparent 25%); font-weight: 500; }
+        .all-journey-row--nonduty { font-weight: 700; color: var(--text); }
+        .all-journey-row--rest { background: color-mix(in srgb, var(--green) 14%, var(--card) 86%) !important; }
+        .all-journey-row--leave { background: color-mix(in srgb, #f59e0b 16%, var(--card) 84%) !important; }
+        .all-journey-row--station { background: color-mix(in srgb, var(--blue) 14%, var(--card) 86%) !important; }
+        .all-journey-row--mela { background: color-mix(in srgb, #a855f7 14%, var(--card) 86%) !important; }
+        .all-journey-row--others { background: color-mix(in srgb, var(--text-muted) 12%, var(--card) 88%) !important; }
         
         .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; }
         .nav-fab-label { position: static; transform: none; font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
@@ -2828,11 +2848,13 @@
                         <span style="font-size:11px; font-weight:700; color:var(--text-muted);" data-i18n="sleep_window_label">Sleep Window</span>
                         <span id="sleep-range-label" style="font-size:13px; font-weight:900; color:var(--blue);">23:50 – 06:50</span>
                     </div>
-                    <div class="sleep-dual-range">
+                    <div class="sleep-dual-range" id="sleep-dual-range">
                         <div class="sleep-dual-range-track"></div>
                         <div class="sleep-dual-range-fill" id="sleep-range-fill"></div>
-                        <input type="range" id="sleep-start-slider" class="sleep-time-slider sleep-range-thumb-start" min="0" max="600" step="5" oninput="window.onSleepSliderInput('start', this.value)">
-                        <input type="range" id="sleep-end-slider" class="sleep-time-slider sleep-range-thumb-end" min="0" max="600" step="5" oninput="window.onSleepSliderInput('end', this.value)">
+                        <div id="sleep-tooltip-start" class="sleep-range-tooltip hidden"></div>
+                        <div id="sleep-tooltip-end" class="sleep-range-tooltip hidden"></div>
+                        <div id="sleep-thumb-start" class="sleep-range-thumb sleep-range-thumb-start" role="slider" aria-label="Sleep start"></div>
+                        <div id="sleep-thumb-end" class="sleep-range-thumb sleep-range-thumb-end" role="slider" aria-label="Sleep end"></div>
                     </div>
                     <span id="sleep-start-label" class="hidden" aria-hidden="true">23:50</span>
                     <span id="sleep-end-label" class="hidden" aria-hidden="true">06:50</span>
@@ -8239,6 +8261,7 @@
         if (monthEl) monthEl.value = String(today.getMonth() + 1).padStart(2, '0');
         if (yearEl) yearEl.value = String(today.getFullYear());
         window.syncSleepSlidersFromStorage();
+        window.initSleepRangeSlider();
 
         window.navTo('screen-sleep-ruined');
         window.renderSleepRuinedRealResults();
@@ -8292,50 +8315,45 @@
     };
 
     window.updateSleepRangeFill = function(startPos, endPos) {
+        const wrap = document.getElementById('sleep-dual-range');
         const fill = document.getElementById('sleep-range-fill');
-        if (!fill) return;
-        const pctStart = (startPos / 600) * 100;
-        const pctEnd = (endPos / 600) * 100;
-        fill.style.left = `calc(11px + (100% - 22px) * ${pctStart / 100})`;
-        fill.style.width = `calc((100% - 22px) * ${(pctEnd - pctStart) / 100})`;
+        const thumbStart = document.getElementById('sleep-thumb-start');
+        const thumbEnd = document.getElementById('sleep-thumb-end');
+        if (!wrap || !fill || !thumbStart || !thumbEnd) return;
+        const track = wrap.querySelector('.sleep-dual-range-track');
+        const rect = track ? track.getBoundingClientRect() : wrap.getBoundingClientRect();
+        const trackLeft = 11;
+        const trackWidth = Math.max(rect.width, 1);
+        const pctStart = startPos / 600;
+        const pctEnd = endPos / 600;
+        fill.style.left = `calc(${trackLeft}px + ${trackWidth}px * ${pctStart})`;
+        fill.style.width = `calc(${trackWidth}px * ${(pctEnd - pctStart)})`;
+        thumbStart.style.left = `calc(${trackLeft}px + ${trackWidth}px * ${pctStart})`;
+        thumbEnd.style.left = `calc(${trackLeft}px + ${trackWidth}px * ${pctEnd})`;
     };
 
-    window.syncSleepSlidersFromStorage = function() {
-        const startStr = clampSleepTimeRange(localStorage.getItem('roster_sleep_start') || '23:50');
-        const endStr = clampSleepTimeRange(localStorage.getItem('roster_sleep_end') || '06:50');
-        const startSlider = document.getElementById('sleep-start-slider');
-        const endSlider = document.getElementById('sleep-end-slider');
-        const startLabel = document.getElementById('sleep-start-label');
-        const endLabel = document.getElementById('sleep-end-label');
-        const rangeLabel = document.getElementById('sleep-range-label');
-        const startPos = window.sleepTimeToSliderPos(startStr);
-        const endPos = window.sleepTimeToSliderPos(endStr);
-        if (startSlider) startSlider.value = startPos;
-        if (endSlider) endSlider.value = endPos;
-        if (startLabel) startLabel.textContent = startStr;
-        if (endLabel) endLabel.textContent = endStr;
-        if (rangeLabel) rangeLabel.textContent = `${startStr} – ${endStr}`;
-        window.updateSleepRangeFill(startPos, endPos);
-        localStorage.setItem('roster_sleep_start', startStr);
-        localStorage.setItem('roster_sleep_end', endStr);
+    window.updateSleepRangeTooltip = function(which, pos, visible) {
+        const tooltip = document.getElementById(which === 'start' ? 'sleep-tooltip-start' : 'sleep-tooltip-end');
+        const thumb = document.getElementById(which === 'start' ? 'sleep-thumb-start' : 'sleep-thumb-end');
+        if (!tooltip || !thumb) return;
+        if (!visible) { tooltip.classList.add('hidden'); return; }
+        const timeStr = window.sleepSliderPosToTime(pos);
+        tooltip.textContent = timeStr;
+        tooltip.style.left = thumb.style.left || '50%';
+        tooltip.classList.remove('hidden');
     };
 
-    window.onSleepSliderInput = function(which, rawVal) {
-        const startSlider = document.getElementById('sleep-start-slider');
-        const endSlider = document.getElementById('sleep-end-slider');
-        if (!startSlider || !endSlider) return;
-        let startPos = parseInt(startSlider.value, 10);
-        let endPos = parseInt(endSlider.value, 10);
-        const val = parseInt(rawVal, 10);
-        if (which === 'start') {
-            startPos = val;
-            if (startPos >= endPos) endPos = Math.min(600, startPos + 5);
-        } else {
-            endPos = val;
-            if (endPos <= startPos) startPos = Math.max(0, endPos - 5);
+    window.applySleepRangePositions = function(startPos, endPos, dragWhich) {
+        startPos = Math.max(0, Math.min(600, Math.round(startPos / 5) * 5));
+        endPos = Math.max(0, Math.min(600, Math.round(endPos / 5) * 5));
+        if (startPos >= endPos) {
+            if (dragWhich === 'start') endPos = Math.min(600, startPos + 5);
+            else startPos = Math.max(0, endPos - 5);
         }
-        startSlider.value = startPos;
-        endSlider.value = endPos;
+        window._sleepRangeState = window._sleepRangeState || {};
+        window._sleepRangeState.startPos = startPos;
+        window._sleepRangeState.endPos = endPos;
+
         const startStr = clampSleepTimeRange(window.sleepSliderPosToTime(startPos));
         const endStr = clampSleepTimeRange(window.sleepSliderPosToTime(endPos));
         const startLabel = document.getElementById('sleep-start-label');
@@ -8345,9 +8363,85 @@
         if (endLabel) endLabel.textContent = endStr;
         if (rangeLabel) rangeLabel.textContent = `${startStr} – ${endStr}`;
         window.updateSleepRangeFill(startPos, endPos);
+        if (dragWhich) window.updateSleepRangeTooltip(dragWhich, dragWhich === 'start' ? startPos : endPos, true);
         localStorage.setItem('roster_sleep_start', startStr);
         localStorage.setItem('roster_sleep_end', endStr);
+        if (!dragWhich) window.renderSleepRuinedRealResults();
+    };
+
+    window.commitSleepRangeDrag = function() {
+        window.updateSleepRangeTooltip('start', 0, false);
+        window.updateSleepRangeTooltip('end', 0, false);
+        window._sleepRangeState = window._sleepRangeState || {};
+        window._sleepRangeState.dragging = null;
         window.renderSleepRuinedRealResults();
+    };
+
+    window.initSleepRangeSlider = function() {
+        const wrap = document.getElementById('sleep-dual-range');
+        if (!wrap || wrap._sleepRangeInit) return;
+        wrap._sleepRangeInit = true;
+        window._sleepRangeState = window._sleepRangeState || { startPos: 110, endPos: 530, dragging: null };
+
+        const posFromClientX = (clientX) => {
+            const track = wrap.querySelector('.sleep-dual-range-track');
+            const rect = track.getBoundingClientRect();
+            const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+            return Math.round(pct * 600 / 5) * 5;
+        };
+
+        const onPointerMove = (e) => {
+            const dragging = window._sleepRangeState.dragging;
+            if (!dragging) return;
+            const pos = posFromClientX(e.clientX);
+            if (dragging === 'start') window.applySleepRangePositions(pos, window._sleepRangeState.endPos, 'start');
+            else window.applySleepRangePositions(window._sleepRangeState.startPos, pos, 'end');
+        };
+
+        const endDrag = () => {
+            if (!window._sleepRangeState.dragging) return;
+            window.commitSleepRangeDrag();
+        };
+
+        ['sleep-thumb-start', 'sleep-thumb-end'].forEach((id, idx) => {
+            const thumb = document.getElementById(id);
+            if (!thumb) return;
+            thumb.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
+                window._sleepRangeState.dragging = idx === 0 ? 'start' : 'end';
+                thumb.setPointerCapture(e.pointerId);
+                if (window.hapticTap) window.hapticTap();
+                const pos = posFromClientX(e.clientX);
+                if (idx === 0) window.applySleepRangePositions(pos, window._sleepRangeState.endPos, 'start');
+                else window.applySleepRangePositions(window._sleepRangeState.startPos, pos, 'end');
+            });
+            thumb.addEventListener('pointermove', onPointerMove);
+            thumb.addEventListener('pointerup', endDrag);
+            thumb.addEventListener('pointercancel', endDrag);
+        });
+
+        window.addEventListener('resize', () => {
+            if (!window._sleepRangeState) return;
+            window.updateSleepRangeFill(window._sleepRangeState.startPos, window._sleepRangeState.endPos);
+        });
+    };
+
+    window.syncSleepSlidersFromStorage = function() {
+        const startStr = clampSleepTimeRange(localStorage.getItem('roster_sleep_start') || '23:50');
+        const endStr = clampSleepTimeRange(localStorage.getItem('roster_sleep_end') || '06:50');
+        const startLabel = document.getElementById('sleep-start-label');
+        const endLabel = document.getElementById('sleep-end-label');
+        const rangeLabel = document.getElementById('sleep-range-label');
+        const startPos = window.sleepTimeToSliderPos(startStr);
+        const endPos = window.sleepTimeToSliderPos(endStr);
+        if (startLabel) startLabel.textContent = startStr;
+        if (endLabel) endLabel.textContent = endStr;
+        if (rangeLabel) rangeLabel.textContent = `${startStr} – ${endStr}`;
+        window.initSleepRangeSlider();
+        window.applySleepRangePositions(startPos, endPos, null);
+        localStorage.setItem('roster_sleep_start', startStr);
+        localStorage.setItem('roster_sleep_end', endStr);
+        requestAnimationFrame(() => window.updateSleepRangeFill(startPos, endPos));
     };
 
     window.renderSleepRuinedRealResults = function() {
@@ -11300,7 +11394,19 @@
         deleteLeg(leg.id);
     };
 
-    function renderAllLogs() { 
+    function allJourneyChevronHtml() {
+        return '<span class="all-journey-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>';
+    }
+
+    function getNonDutyRowClass(dutyType) {
+        if (dutyType === 'Rest') return 'all-journey-row--rest';
+        if (dutyType === 'Leave') return 'all-journey-row--leave';
+        if (dutyType === 'Station Duty') return 'all-journey-row--station';
+        if (dutyType === 'Mela Duty') return 'all-journey-row--mela';
+        return 'all-journey-row--others';
+    }
+
+    function renderAllLogs() {
         const container = document.getElementById('all-logs-container'); container.innerHTML = ''; 
         if(!window.appState.legs || window.appState.legs.length === 0) { container.innerHTML = '<p style="padding: 15px; color: var(--text-muted); font-size: 14px; text-align: center;">No entries yet.</p>'; return; } 
         
@@ -11353,34 +11459,30 @@
             let leg = filteredLegs[i];
             
             if (leg.isNonDuty) {
-                let bgCol = "var(--card)"; let icon = "🌴"; let label = leg.dutyType.toUpperCase();
-                if(leg.dutyType === 'Leave') { icon = "📋"; label = `LEAVE${leg.leaveType ? ' — ' + leg.leaveType : ''}`; }
-                if(leg.dutyType === 'Station Duty') { icon = "🏢"; label = `STATION DUTY${leg.dutyStn ? ' AT ' + leg.dutyStn : ''}${leg.objective ? ' — ' + leg.objective : ''}`; }
-                if(leg.dutyType === 'Mela Duty') { icon = "🎪"; label = `MELA DUTY AT ${leg.dutyStn || leg.melaStn || ''}`; }
-                if(leg.dutyType === 'Others') { icon = "📌"; label = leg.othersLabel ? leg.othersLabel.toUpperCase() : 'OTHERS'; }
+                let label = leg.dutyType.toUpperCase();
+                if (leg.dutyType === 'Leave') label = `LEAVE${leg.leaveType ? ' — ' + leg.leaveType : ''}`;
+                if (leg.dutyType === 'Station Duty') label = `STATION DUTY${leg.dutyStn ? ' AT ' + leg.dutyStn : ''}${leg.objective ? ' — ' + leg.objective : ''}`;
+                if (leg.dutyType === 'Mela Duty') label = `MELA DUTY AT ${leg.dutyStn || leg.melaStn || ''}`;
+                if (leg.dutyType === 'Others') label = leg.othersLabel ? leg.othersLabel.toUpperCase() : 'OTHERS';
 
                 const isRest = leg.dutyType === 'Rest';
                 const isLeave = leg.dutyType === 'Leave';
-                const alignRule = 'text-align: center;';
+                const nonDutyRowClass = getNonDutyRowClass(leg.dutyType);
                 const nonDutyChecked = window._allJourneySelected.has(String(leg.id));
-                const nonDutyCheckbox = window._allJourneyMultiSelectMode ? `<span style="margin-right:8px;">${nonDutyChecked ? '<span style="color:var(--red); font-weight:900; font-size:16px;">✔</span>' : '⬜'}</span>` : '';
+                const nonDutyCheckbox = window._allJourneyMultiSelectMode ? `<span style="margin-right:8px; flex-shrink:0;">${nonDutyChecked ? '<span style="color:var(--red); font-weight:900; font-size:16px;">✔</span>' : '⬜'}</span>` : '';
 
-                // Point: a multi-day entry (only Leave can span days) previously showed as one
-                // combined "from to" range row. Expanded here into one row per individual date
-                // instead, all sharing the same leg.id (there's still only one underlying
-                // record — select/edit/delete on any of these rows acts on that one leg).
                 let cursor = new Date(leg.fromDate + 'T00:00:00');
                 const endD = new Date((leg.toDate || leg.fromDate) + 'T00:00:00');
                 let isFirstDisplayedDay = true;
                 while (cursor <= endD) {
                     const y = cursor.getFullYear(), m = String(cursor.getMonth()+1).padStart(2,'0'), d = String(cursor.getDate()).padStart(2,'0');
                     const dateStr = formatDateShort(`${y}-${m}-${d}`);
-                    const contentStr = isRest ? `${icon} ${label} : ${dateStr}`
+                    const contentStr = isRest ? `REST : ${dateStr}`
                         : isLeave ? `Leave: ${dateStr}${leg.leaveType ? ' (' + leg.leaveType + ')' : ''}`
-                        : `${dateStr} — ${icon} ${label}`;
+                        : `${dateStr} — ${label}`;
                     const isExpanded = !window._allJourneyMultiSelectMode && String(window._allJourneyExpandedId) === String(leg.id);
                     if (isExpanded && isFirstDisplayedDay) htmlElements.push(buildAllJourneyActionRow(leg));
-                    htmlElements.push(`<div class="all-journey-row${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="true" style="background: ${bgCol}; color: var(--text); font-weight: bold; padding: 9px 24px 9px 8px; border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%); border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); font-size: 12px; cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;">${nonDutyCheckbox}<div class="all-journey-row-body">${contentStr}</div></div>`);
+                    htmlElements.push(`<div class="all-journey-row all-journey-row--nonduty ${nonDutyRowClass}${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="true" style="border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%); border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;">${nonDutyCheckbox}<div class="all-journey-row-body">${contentStr}</div>${allJourneyChevronHtml()}</div>`);
                     isFirstDisplayedDay = false;
                     cursor.setDate(cursor.getDate() + 1);
                 }
@@ -11389,16 +11491,21 @@
                 let shortDep = formatDateShort(leg.depDate); 
                 let shortArr = formatDateShort(leg.arrDate);
                 const dutyChecked = window._allJourneySelected.has(String(leg.id));
-                const dutyCheckboxCol = window._allJourneyMultiSelectMode ? `<div style="text-align:center;">${dutyChecked ? '<span style="color:var(--red); font-weight:900; font-size:16px;">✔</span>' : '⬜'}</div>` : '';
+                const dutyCheckboxCol = window._allJourneyMultiSelectMode ? `<span style="margin-right:8px; flex-shrink:0;">${dutyChecked ? '<span style="color:var(--red); font-weight:900; font-size:16px;">✔</span>' : '⬜'}</span>` : '';
                 
                 const isExpanded = !window._allJourneyMultiSelectMode && String(window._allJourneyExpandedId) === String(leg.id);
                 if (isExpanded) htmlElements.push(buildAllJourneyActionRow(leg));
-                htmlElements.push(`<div class="all-journey-row${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="false" style="padding: 9px 24px 9px 8px; border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%); border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;">
+                htmlElements.push(`<div class="all-journey-row${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="false" style="border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%); border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;">
                     ${dutyCheckboxCol}
                     <div class="all-journey-row-body">
-                        <span style="font-weight:900; color:var(--row-text);">${leg.train}</span>
-                        <span style="color:var(--text-muted); font-weight:600;"> · ${shortDep} · ${leg.depStn} ${leg.depTime} → ${leg.arrStn} ${leg.arrTime} · ${shortArr}</span>
+                        <span class="aj-train">${leg.train}</span><span class="aj-sep"> · </span>
+                        <span class="aj-date">${shortDep}</span><span class="aj-sep"> · </span>
+                        <span class="aj-stn">${leg.depStn}</span> <span class="aj-time">${leg.depTime}</span>
+                        <span class="aj-sep"> → </span>
+                        <span class="aj-stn">${leg.arrStn}</span> <span class="aj-time">${leg.arrTime}</span>
+                        <span class="aj-sep"> · </span><span class="aj-date">${shortArr}</span>
                     </div>
+                    ${allJourneyChevronHtml()}
                  </div>`);
             }
 
@@ -14419,8 +14526,7 @@
                             ${dots}${monthLabels}
                         </svg>
                     </div>
-                    <div style="margin-top:8px; margin-bottom:6px; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>
-                    <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:0 0 14px; padding:0 8px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. DDU (Nearby HQ-TA Claimed) includes a 3-hour HQ travel margin.')}</p>`;
+                    <div style="margin-top:8px; margin-bottom:14px; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>`;
             }
 
             let html;
@@ -14437,10 +14543,8 @@
                 html = (metric === 'hours'
                     ? buildFutureGraph(hourValues, 'var(--blue)', 'h', 'trend_graph_avg_nda_hrs', toggleHtml)
                     : buildFutureGraph(moneyValues, 'var(--green)', '₹', 'trend_graph_avg_nda_money', toggleHtml));
-                html += window.buildNdaReferenceHtml();
             } else {
                 html = buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta');
-                html += window.buildTaDaReferenceHtml();
             }
             area.innerHTML = html;
         });
