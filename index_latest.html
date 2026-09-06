@@ -497,7 +497,9 @@
         .profile-station-help p { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
         .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 4px; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
         .profile-station-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
-        .profile-station-row.expanded { background: color-mix(in srgb, var(--blue) 7%, var(--card)); }
+        .profile-station-row.expanded,
+        .profile-station-row.expanded + .profile-station-expand:not(.hidden) { background: color-mix(in srgb, var(--blue) 10%, var(--card)); }
+        .profile-station-row.expanded + .profile-station-expand:not(.hidden) { margin: 0 -4px; padding-left: 8px; padding-right: 8px; }
         .profile-station-row-main { flex: 1; min-width: 0; }
         .profile-station-row-title { display: block; font-size: 12.5px; font-weight: 800; color: var(--text); line-height: 1.25; }
         .profile-station-row-value { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -767,7 +769,7 @@
         .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue); }
         .nav-fab-ring { display: none; }
         .nav-fab {
-            position: absolute; top: -34px; width: 64px; height: 64px;
+            position: absolute; top: -30px; width: 64px; height: 64px;
             background: var(--blue-fill);
             color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 32px;
@@ -7730,6 +7732,7 @@
         const opening = panel.classList.contains('hidden');
         panel.classList.toggle('hidden');
         row.classList.toggle('expanded', opening);
+        panel.classList.toggle('expanded', opening);
         if (opening) {
             const help = panel.querySelector('.profile-station-help');
             if (help) {
@@ -13072,6 +13075,47 @@
     }
     window.calcShiftNightMinutes = calcShiftNightMinutes;
 
+    // Shared NDA night-window calculator (22:00–06:00) with period clipping.
+    window.calcNdaNightMinutesBetween = function(signOn, signOff, ndaStart, periodCap) {
+        if (!signOn || !signOff || signOff <= ndaStart || signOn >= periodCap) {
+            return { mins: 0, nFromStr: '', nToStr: '', clippedSignOn: signOn, clippedSignOff: signOff };
+        }
+        const clippedSignOn = signOn < ndaStart ? new Date(ndaStart) : new Date(signOn);
+        const clippedSignOff = signOff > periodCap ? new Date(periodCap) : new Date(signOff);
+        let current = new Date(clippedSignOn);
+        let legNdaMins = 0;
+        let nFromStr = '';
+        let nToStr = '';
+        while (current < clippedSignOff) {
+            const h = current.getHours();
+            if (h >= 22 || h < 6) {
+                if (nFromStr === '') nFromStr = `${String(current.getHours()).padStart(2,'0')}:${String(current.getMinutes()).padStart(2,'0')}`;
+                const nextBound = new Date(current);
+                if (h >= 22) { nextBound.setDate(nextBound.getDate() + 1); nextBound.setHours(6, 0, 0, 0); }
+                else { nextBound.setHours(6, 0, 0, 0); }
+                if (nextBound > clippedSignOff) nextBound.setTime(clippedSignOff.getTime());
+                legNdaMins += (nextBound - current) / 60000;
+                nToStr = `${String(nextBound.getHours()).padStart(2,'0')}:${String(nextBound.getMinutes()).padStart(2,'0')}`;
+                current = nextBound;
+            } else {
+                current.setHours(22, 0, 0, 0);
+            }
+        }
+        return { mins: legNdaMins, nFromStr, nToStr, clippedSignOn, clippedSignOff };
+    };
+
+    window.applySignOnTimeOverride = function(defaultSignOn, timeStr) {
+        if (!defaultSignOn || !timeStr || !String(timeStr).trim()) return new Date(defaultSignOn);
+        const clean = String(timeStr).trim().replace(':', '');
+        if (clean.length < 4) return new Date(defaultSignOn);
+        const h = parseInt(clean.substring(0, 2), 10);
+        const m = parseInt(clean.substring(2, 4), 10);
+        if (isNaN(h) || isNaN(m) || h > 23 || m > 59) return new Date(defaultSignOn);
+        const d = new Date(defaultSignOn);
+        d.setHours(h, m, 0, 0);
+        return d;
+    };
+
     // Extract Station/Mela Duty entries with Night Duty timing that fall in the NDA billing
     // period. New entries are single-date (fromDate === toDate) with an explicit nightDuty flag —
     // handled with the new date-attribution algorithm. Old entries (pre-dating this change) may
@@ -13081,6 +13125,7 @@
         const [year, month] = mo.split('-').map(Number);
         const ndaStart = new Date(year, month - 2, 16, 0, 0, 0);
         const ndaEnd = new Date(year, month - 1, 15, 23, 59, 59);
+        const periodCap = new Date(ndaEnd.getTime() + 1000);
         let entries = []; let totalMins = 0;
         if (!window.appState.legs) return { entries, totalMins };
 
@@ -13091,10 +13136,14 @@
             const dutyStn = l.dutyStn || l.melaStn || '';
 
             if (l.fromDate === l.toDate) {
-                // New model: single date + the 22:00-rule algorithm
                 const calc = calcNightDutyForDate(l.fromDate, l.shiftFrom, l.shiftTo);
-                if (calc.signOn >= ndaStart && calc.signOn <= ndaEnd && calc.mins > 0) {
-                    totalMins += calc.mins;
+                const rowKey = 'station:' + (l.id || (l.fromDate + ':' + (dutyStn || '')));
+                const defaultSignOnStr = calc.signOn ? `${String(calc.signOn.getHours()).padStart(2,'0')}:${String(calc.signOn.getMinutes()).padStart(2,'0')}` : (l.shiftFrom || '');
+                const signOnStr = window.getNdaSignOnOverride(mo, rowKey, defaultSignOnStr);
+                const adjustedSignOn = window.applySignOnTimeOverride(calc.signOn, signOnStr);
+                const night = window.calcNdaNightMinutesBetween(adjustedSignOn, calc.signOff, ndaStart, periodCap);
+                if (night.mins > 0) {
+                    totalMins += night.mins;
                     entries.push({
                         date: calc.ndaDate,
                         startDate: l.fromDate,
@@ -13103,7 +13152,11 @@
                         objective: l.objective || l.dutyType,
                         dutyStn, melaStn: dutyStn,
                         shiftFrom: l.shiftFrom, shiftTo: l.shiftTo,
-                        ...calc
+                        signOn: night.clippedSignOn,
+                        signOff: night.clippedSignOff,
+                        nFromStr: night.nFromStr,
+                        nToStr: night.nToStr,
+                        mins: night.mins
                     });
                 }
                 return;
@@ -13116,10 +13169,15 @@
                 const pad = n => String(n).padStart(2,'0');
                 const dateStr = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
                 const shiftCalc = calcShiftNightMinutes(l.shiftFrom, l.shiftTo, dateStr);
+                const rowKey = 'station:' + (l.id || (dateStr + ':' + (dutyStn || '')));
+                const defaultSignOnStr = shiftCalc.signOn ? `${String(shiftCalc.signOn.getHours()).padStart(2,'0')}:${String(shiftCalc.signOn.getMinutes()).padStart(2,'0')}` : (l.shiftFrom || '');
+                const signOnStr = window.getNdaSignOnOverride(mo, rowKey, defaultSignOnStr);
+                const adjustedSignOn = window.applySignOnTimeOverride(shiftCalc.signOn, signOnStr);
+                const night = window.calcNdaNightMinutesBetween(adjustedSignOn, shiftCalc.signOff, ndaStart, periodCap);
 
-                if (shiftCalc.signOn >= ndaStart && shiftCalc.signOn <= ndaEnd && shiftCalc.mins > 0) {
-                    totalMins += shiftCalc.mins;
-                    const endDate = new Date(shiftCalc.signOff);
+                if (night.mins > 0) {
+                    totalMins += night.mins;
+                    const endDate = new Date(night.clippedSignOff);
                     let rowDate = dateStr;
                     if (endDate.getDate() !== d.getDate()) {
                         rowDate = `${endDate.getFullYear()}-${pad(endDate.getMonth()+1)}-${pad(endDate.getDate())}`;
@@ -13132,7 +13190,11 @@
                         objective: l.objective || l.dutyType,
                         dutyStn, melaStn: dutyStn,
                         shiftFrom: l.shiftFrom, shiftTo: l.shiftTo,
-                        ...shiftCalc
+                        signOn: night.clippedSignOn,
+                        signOff: night.clippedSignOff,
+                        nFromStr: night.nFromStr,
+                        nToStr: night.nToStr,
+                        mins: night.mins
                     });
                 }
                 const parseHM = (str) => { const c = str.replace(':',''); return {h:parseInt(c.substring(0,2)),m:parseInt(c.substring(2,4))}; };
@@ -13199,34 +13261,18 @@
             if(duty.length === 0) return; 
             let firstTrip = duty[0]; let lastTrip = duty[duty.length - 1]; 
             const depMargin = window.getNdaDepMarginMins ? window.getNdaDepMarginMins(firstTrip) : 30;
-            let signOn = new Date(`${firstTrip.depDate}T${firstTrip.depTime}:00`); signOn.setMinutes(signOn.getMinutes() - depMargin); 
+            let defaultSignOn = new Date(`${firstTrip.depDate}T${firstTrip.depTime}:00`); defaultSignOn.setMinutes(defaultSignOn.getMinutes() - depMargin); 
             let signOff = new Date(`${lastTrip.arrDate}T${lastTrip.arrTime}:00`); signOff.setMinutes(signOff.getMinutes() + 30); 
             
-            // Point: count a duty for THIS period as long as it overlaps [ndaStart, periodCap)
-            // at all — not just when signOn itself falls inside the period. This is what lets a
-            // duty that's still open (no return leg logged yet) still contribute its known night
-            // hours right away, AND lets a duty that started in the previous period but spills
-            // into this one contribute its carried-over portion too.
-            if (signOff <= ndaStart || signOn >= periodCap) return;
-            let clippedSignOn = signOn < ndaStart ? new Date(ndaStart) : signOn;
-            let clippedSignOff = signOff > periodCap ? periodCap : signOff;
-
-            let current = new Date(clippedSignOn); let legNdaMins = 0; let nFromStr = ""; let nToStr = ""; 
-            while(current < clippedSignOff) { 
-                let h = current.getHours(); 
-                if(h >= 22 || h < 6) { 
-                    if(nFromStr === "") nFromStr = `${String(current.getHours()).padStart(2,'0')}:${String(current.getMinutes()).padStart(2,'0')}`; 
-                    let nextBound = new Date(current); 
-                    if(h >= 22) { nextBound.setDate(nextBound.getDate()+1); nextBound.setHours(6,0,0,0); } else { nextBound.setHours(6,0,0,0); } 
-                    if(nextBound > clippedSignOff) nextBound = new Date(clippedSignOff); 
-                    legNdaMins += (nextBound - current) / 60000; 
-                    nToStr = `${String(nextBound.getHours()).padStart(2,'0')}:${String(nextBound.getMinutes()).padStart(2,'0')}`; 
-                    current = nextBound; 
-                } else { current.setHours(22,0,0,0); } 
-            } 
-            if(legNdaMins > 0) { 
-                totalNdaMinutes += legNdaMins; 
-                ndaData.push({ trips: duty, fromStn: firstTrip.depStn, toStn: lastTrip.arrStn, signOn: clippedSignOn, signOff: clippedSignOff, nFromStr, nToStr, mins: legNdaMins }); 
+            if (signOff <= ndaStart || defaultSignOn >= periodCap) return;
+            const rowKey = 'train:' + firstTrip.id;
+            const defaultSignOnStr = `${String(defaultSignOn.getHours()).padStart(2,'0')}:${String(defaultSignOn.getMinutes()).padStart(2,'0')}`;
+            const signOnStr = window.getNdaSignOnOverride(mo, rowKey, defaultSignOnStr);
+            const signOn = window.applySignOnTimeOverride(defaultSignOn, signOnStr);
+            const night = window.calcNdaNightMinutesBetween(signOn, signOff, ndaStart, periodCap);
+            if (night.mins > 0) { 
+                totalNdaMinutes += night.mins; 
+                ndaData.push({ trips: duty, fromStn: firstTrip.depStn, toStn: lastTrip.arrStn, signOn: night.clippedSignOn, signOff: night.clippedSignOff, nFromStr: night.nFromStr, nToStr: night.nToStr, mins: night.mins }); 
             } 
         }); 
         return { ndaData, totalNdaMinutes }; 
@@ -13533,6 +13579,11 @@
         window.appState.ndaSignOnOverrides = window.appState.ndaSignOnOverrides || {};
         window.appState.ndaSignOnOverrides[mo] = monthData;
         window.saveData();
+        if (typeof updateDashboardUI === 'function') updateDashboardUI();
+        if (typeof updateReportUI === 'function' && currentTab === 'nda') updateReportUI();
+        if (window._trendActiveView === 'signon') window.renderNdaSignOnTable();
+        else if (window._trendActiveView === 'list') window.renderYearlyTrendTable();
+        else if (window._trendActiveView === 'graph') window.renderYearlyLineGraph();
         showModal('Saved!', (window.i18n ? window.i18n.t('nda_signon_saved_message') : 'Sign On times for this NDA period have been saved.'), 'success', false, null, 1500);
     };
 
@@ -14312,14 +14363,16 @@
         let ndaMoStrDash = `${ndaYDash}-${String(ndaMDash).padStart(2, '0')}`;
         
         const nda = extractNDALegs(ndaMoStrDash); 
+        const stationMins = extractStationDutyNDA(ndaMoStrDash).totalMins;
         const isGazetted = p.empType === 'Gazetted';
         let totalEligibleHours = 0;
         let remainingMinutes = 0;
         let ndaAmt = 0;
 
         if (!isGazetted) {
-            totalEligibleHours = Math.floor(nda.totalNdaMinutes / 60);
-            remainingMinutes = Math.round(nda.totalNdaMinutes % 60);
+            const combinedMins = nda.totalNdaMinutes + stationMins;
+            totalEligibleHours = Math.floor(combinedMins / 60);
+            remainingMinutes = Math.round(combinedMins % 60);
             if (totalEligibleHours > 0) {
                 const basicPayRaw = p.basicpay ? parseFloat(p.basicpay) : 0;
                 const basicPay = basicPayRaw > 43600 ? 43600 : basicPayRaw;
