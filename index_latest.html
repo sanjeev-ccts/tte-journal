@@ -2672,7 +2672,9 @@
         </div>
         <div class="screen-content">
             <div id="trend-year-nav-wrap" style="margin-bottom:12px;"></div>
+            <div id="trend-future-month-nav-wrap" class="hidden" style="margin-bottom:12px;"></div>
             <div id="trend-chart-area" style="width: 100%; overflow-x: auto;"></div>
+            <div id="trend-future-detail-wrap" class="hidden" style="margin-top:16px;"></div>
             <div id="trend-list-below-graph" class="hidden" style="margin-top:16px;"></div>
             <div id="trend-signon-area" class="hidden">
                 <div id="nda-signon-period-nav" style="margin-bottom:12px;"></div>
@@ -8307,6 +8309,7 @@
         return { start: SLEEP_REAL_DEFAULT_START, end: SLEEP_REAL_DEFAULT_END };
     };
 
+    window.sleepSliderPosToTime = function(pos) {
         let total = 22 * 60 + parseInt(pos, 10);
         if (total >= 24 * 60) total -= 24 * 60;
         const h = Math.floor(total / 60);
@@ -9366,6 +9369,55 @@
     }
 
     const PROJECTED_TA_CLAIMED_MARGIN_MINS = 180;
+    const HQ_SHUTTLE_TRAVEL_MINS = 60;
+    const DUMMY_UP_TRAIN = 'XXXXX';
+    const DUMMY_DOWN_TRAIN = 'YYYYY';
+
+    function addMinutesToLegDateTime(dateStr, timeStr, minutes) {
+        const d = new Date(`${dateStr}T${timeStr}:00`);
+        d.setMinutes(d.getMinutes() + minutes);
+        const pad = n => String(n).padStart(2, '0');
+        return {
+            date: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,
+            time: `${pad(d.getHours())}:${pad(d.getMinutes())}`
+        };
+    }
+
+    function makeProjectedLeg(trainNo, depDate, depTime, arrDate, arrTime, depStn, arrStn, extra) {
+        return {
+            id: 'proj_' + trainNo + '_' + depDate + '_' + depTime + '_' + Math.random().toString(36).slice(2, 7),
+            train: trainNo,
+            depDate, depTime, arrDate, arrTime,
+            depStn: (depStn || '').trim().toUpperCase(),
+            arrStn: (arrStn || '').trim().toUpperCase(),
+            isNonDuty: false,
+            projected: true,
+            ...(extra || {})
+        };
+    }
+
+    window.expandProjectedLegsWithDdUDummies = function(legs) {
+        const taClaimed = window.getTaClaimedNearbyUpper();
+        const hq = (window.appState.profile.hq || 'BSB').trim().toUpperCase();
+        const hqGroup = window.getHqGroupUpper();
+        const expanded = [];
+        (legs || []).forEach(leg => {
+            const depStn = (leg.depStn || '').trim().toUpperCase();
+            const arrStn = (leg.arrStn || '').trim().toUpperCase();
+            if (taClaimed.includes(depStn) && !hqGroup.includes(depStn)) {
+                const bsbDep = addMinutesToLegDateTime(leg.depDate, leg.depTime, -PROJECTED_TA_CLAIMED_MARGIN_MINS);
+                const dduArr = addMinutesToLegDateTime(bsbDep.date, bsbDep.time, HQ_SHUTTLE_TRAVEL_MINS);
+                expanded.push(makeProjectedLeg(DUMMY_UP_TRAIN, bsbDep.date, bsbDep.time, dduArr.date, dduArr.time, hq, depStn, { isDummyShuttle: true, shuttleDir: 'up' }));
+            }
+            expanded.push(leg);
+            if (taClaimed.includes(arrStn) && !hqGroup.includes(arrStn)) {
+                const bsbArr = addMinutesToLegDateTime(leg.arrDate, leg.arrTime, PROJECTED_TA_CLAIMED_MARGIN_MINS);
+                const dduDep = addMinutesToLegDateTime(bsbArr.date, bsbArr.time, -HQ_SHUTTLE_TRAVEL_MINS);
+                expanded.push(makeProjectedLeg(DUMMY_DOWN_TRAIN, dduDep.date, dduDep.time, bsbArr.date, bsbArr.time, arrStn, hq, { isDummyShuttle: true, shuttleDir: 'down' }));
+            }
+        });
+        return expanded.sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
+    };
 
     window.getTaClaimedNearbyUpper = function() {
         return (window.appState.profile && window.appState.profile.nearbyTaClaimed)
@@ -9404,18 +9456,6 @@
         }).catch(() => done(false));
     };
 
-    function makeProjectedLeg(trainNo, depDate, depTime, arrDate, arrTime, depStn, arrStn) {
-        return {
-            id: 'proj_' + trainNo + '_' + depDate + '_' + depTime,
-            train: trainNo,
-            depDate, depTime, arrDate, arrTime,
-            depStn: (depStn || '').trim().toUpperCase(),
-            arrStn: (arrStn || '').trim().toUpperCase(),
-            isNonDuty: false,
-            projected: true
-        };
-    }
-
     window.buildProjectedDutyLegsForYear = function(year) {
         const teamNo = localStorage.getItem('roster_my_team');
         if (!teamNo || !window.rosterData) return [];
@@ -9452,22 +9492,16 @@
                 }
             }
         }
-        return legs.sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
+        const sorted = legs.sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
+        return window.expandProjectedLegsWithDdUDummies(sorted);
     };
 
     function getProjectedCycleBounds(cycle) {
-        const taClaimed = window.getTaClaimedNearbyUpper();
-        const hqGroup = window.getHqGroupUpper();
         let start = new Date(`${cycle[0].depDate}T${cycle[0].depTime}`);
         let end = new Date(`${cycle[cycle.length - 1].arrDate}T${cycle[cycle.length - 1].arrTime}`);
-        const firstDep = (cycle[0].depStn || '').trim().toUpperCase();
+        const hqGroup = window.getHqGroupUpper();
         const lastArr = (cycle[cycle.length - 1].arrStn || '').trim().toUpperCase();
-        if (taClaimed.includes(firstDep) && !hqGroup.includes(firstDep)) {
-            start.setMinutes(start.getMinutes() - PROJECTED_TA_CLAIMED_MARGIN_MINS);
-        }
-        if (taClaimed.includes(lastArr) && !hqGroup.includes(lastArr)) {
-            end.setMinutes(end.getMinutes() + PROJECTED_TA_CLAIMED_MARGIN_MINS);
-        } else if (!hqGroup.includes(lastArr)) {
+        if (!hqGroup.includes(lastArr)) {
             const extendedEnd = new Date(`${cycle[cycle.length - 1].arrDate}T23:59:59`);
             if (extendedEnd > end) end = extendedEnd;
         }
@@ -9507,7 +9541,6 @@
         if (!dutyLegsSource || !dutyLegsSource.length) return { ndaData, totalNdaMinutes };
 
         const taClaimedNearby = window.getTaClaimedNearbyUpper();
-        const hqGroup = window.getHqGroupUpper();
         let dutyLegs = [];
         let currentGroup = [];
         dutyLegsSource.forEach(leg => {
@@ -9530,15 +9563,6 @@
             defaultSignOn.setMinutes(defaultSignOn.getMinutes() - depMargin);
             let signOff = new Date(`${lastTrip.arrDate}T${lastTrip.arrTime}:00`);
             signOff.setMinutes(signOff.getMinutes() + 30);
-
-            const firstDep = (firstTrip.depStn || '').trim().toUpperCase();
-            const lastArr = (lastTrip.arrStn || '').trim().toUpperCase();
-            if (taClaimedNearby.includes(firstDep) && !hqGroup.includes(firstDep)) {
-                defaultSignOn.setMinutes(defaultSignOn.getMinutes() - PROJECTED_TA_CLAIMED_MARGIN_MINS);
-            }
-            if (taClaimedNearby.includes(lastArr) && !hqGroup.includes(lastArr)) {
-                signOff.setMinutes(signOff.getMinutes() + PROJECTED_TA_CLAIMED_MARGIN_MINS);
-            }
 
             if (signOff <= ndaStart || defaultSignOn >= periodCap) return;
             const night = window.calcNdaNightMinutesBetween(defaultSignOn, signOff, ndaStart, periodCap);
@@ -13942,6 +13966,8 @@
         const chartArea = document.getElementById('trend-chart-area');
         const listBelow = document.getElementById('trend-list-below-graph');
         const yearNav = document.getElementById('trend-year-nav-wrap');
+        const futureMonthNav = document.getElementById('trend-future-month-nav-wrap');
+        const futureDetail = document.getElementById('trend-future-detail-wrap');
         const signonArea = document.getElementById('trend-signon-area');
         if (signonBtn) signonBtn.classList.toggle('hidden', !isNda);
         if (graphBtn) graphBtn.classList.toggle('active', view === 'graph');
@@ -13949,7 +13975,9 @@
         if (signonBtn) signonBtn.classList.toggle('active', view === 'signon');
         if (chartArea) chartArea.classList.toggle('hidden', view === 'signon');
         if (listBelow) listBelow.classList.toggle('hidden', view !== 'graph');
-        if (yearNav) yearNav.classList.toggle('hidden', view === 'signon');
+        if (yearNav) yearNav.classList.toggle('hidden', view === 'signon' || view === 'future');
+        if (futureMonthNav) futureMonthNav.classList.toggle('hidden', view !== 'future');
+        if (futureDetail) futureDetail.classList.toggle('hidden', view !== 'future');
         if (signonArea) signonArea.classList.toggle('hidden', view !== 'signon');
         if (view === 'graph') window.renderYearlyLineGraph();
         else if (view === 'future') window.renderYearlyFutureTrendGraph();
@@ -14181,14 +14209,162 @@
 
     window.changeTrendYearBy = function(delta) {
         window._trendCurrentYear = (window._trendCurrentYear || new Date().getFullYear()) + delta;
-        if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
-        else if (window._trendActiveView === 'graph') window.renderYearlyLineGraph();
+        if (window._trendActiveView === 'future') {
+            const [y, m] = (window._futureTrendMonthKey || '').split('-').map(Number);
+            if (y) window._futureTrendMonthKey = `${window._trendCurrentYear}-${String(m || 1).padStart(2, '0')}`;
+            window.renderYearlyFutureTrendGraph();
+        } else if (window._trendActiveView === 'graph') window.renderYearlyLineGraph();
     };
 
     window.changeTrendYearTo = function(year) {
         window._trendCurrentYear = parseInt(year);
-        if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
-        else if (window._trendActiveView === 'graph') window.renderYearlyLineGraph();
+        if (window._trendActiveView === 'future') {
+            const [y, m] = (window._futureTrendMonthKey || '').split('-').map(Number);
+            if (y) window._futureTrendMonthKey = `${window._trendCurrentYear}-${String(m || 1).padStart(2, '0')}`;
+            window.renderYearlyFutureTrendGraph();
+        } else if (window._trendActiveView === 'graph') window.renderYearlyLineGraph();
+    };
+
+    window.ensureFutureTrendMonthKey = function() {
+        const year = window._trendCurrentYear || new Date().getFullYear();
+        if (!window._futureTrendMonthKey || !window._futureTrendMonthKey.startsWith(String(year) + '-')) {
+            const today = new Date();
+            const m = (today.getFullYear() === year) ? today.getMonth() + 1 : 1;
+            window._futureTrendMonthKey = `${year}-${String(m).padStart(2, '0')}`;
+        }
+    };
+
+    window.renderFutureTrendMonthNav = function() {
+        const wrap = document.getElementById('trend-future-month-nav-wrap');
+        if (!wrap) return;
+        window.ensureFutureTrendMonthKey();
+        const [y, m] = window._futureTrendMonthKey.split('-').map(Number);
+        const monthOptions = [];
+        for (let mm = 1; mm <= 12; mm++) {
+            monthOptions.push(`<option value="${mm}" ${mm === m ? 'selected' : ''}>${new Date(2000, mm - 1, 1).toLocaleString('default', { month: 'long' })}</option>`);
+        }
+        const actualYear = new Date().getFullYear();
+        const yearOptions = [];
+        for (let yy = 2025; yy <= actualYear + 1; yy++) {
+            yearOptions.push(`<option value="${yy}" ${yy === y ? 'selected' : ''}>${yy}</option>`);
+        }
+        wrap.innerHTML = `
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
+                <button onclick="window.changeFutureTrendMonthBy(-1)" class="month-nav-arrow-btn month-nav-arrow-btn--green prev" type="button">‹</button>
+                <select onchange="window.changeFutureTrendMonthTo(this.value, null)" style="flex:1; padding:9px 28px 9px 12px; border-radius:22px; font-size:14px; font-weight:700; background-color:var(--card); border:1px solid var(--border); text-align:center; text-align-last:center;">${monthOptions.join('')}</select>
+                <select onchange="window.changeFutureTrendMonthTo(null, this.value)" style="flex:1; padding:9px 28px 9px 12px; border-radius:22px; font-size:14px; font-weight:700; background-color:var(--card); border:1px solid var(--border); text-align:center; text-align-last:center;">${yearOptions.join('')}</select>
+                <button onclick="window.changeFutureTrendMonthBy(1)" class="month-nav-arrow-btn month-nav-arrow-btn--green next" type="button">›</button>
+            </div>`;
+    };
+
+    window.changeFutureTrendMonthBy = function(delta) {
+        window.ensureFutureTrendMonthKey();
+        const [y, m] = window._futureTrendMonthKey.split('-').map(Number);
+        const d = new Date(y, m - 1 + delta, 1);
+        window._futureTrendMonthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        window._trendCurrentYear = d.getFullYear();
+        window.renderYearlyFutureTrendGraph();
+    };
+
+    window.changeFutureTrendMonthTo = function(newMonth, newYear) {
+        window.ensureFutureTrendMonthKey();
+        const [y, m] = window._futureTrendMonthKey.split('-');
+        const finalY = newYear || y;
+        const finalM = newMonth ? String(newMonth).padStart(2, '0') : m;
+        window._futureTrendMonthKey = `${finalY}-${finalM}`;
+        window._trendCurrentYear = parseInt(finalY);
+        window.renderYearlyFutureTrendGraph();
+    };
+
+    window.buildFutureTrendDetailHtml = function(moKey, projectedLegs) {
+        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const isNDA = currentTab === 'nda';
+        if (!projectedLegs || !projectedLegs.length) {
+            return `<p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px;">${t('future_trends_no_duties', 'No projected duties for this month.')}</p>`;
+        }
+
+        const formatLegLine = (train, depStn, depTime, arrStn, arrTime, isDummy) => {
+            const dummyStyle = isDummy ? 'color:var(--orange); font-style:italic;' : '';
+            return `<span style="${dummyStyle}"><b>${train}</b> ${depStn} ${depTime} → ${arrStn} ${arrTime}</span>`;
+        };
+
+        let rowsHtml = '';
+        if (isNDA) {
+            const { ndaData } = extractProjectedNDALegs(moKey, projectedLegs);
+            if (!ndaData.length) {
+                return `<p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px;">${t('future_trends_no_nda', 'No projected night duties in this NDA period.')}</p>`;
+            }
+            const hrsSuffix = t('hrs_suffix', 'Hrs');
+            ndaData.forEach(entry => {
+                const h = Math.floor(entry.mins / 60);
+                const min = Math.round(entry.mins % 60);
+                const spellLabel = `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')} ${hrsSuffix}`;
+                entry.trips.forEach((trip, idx) => {
+                    const isDummy = trip.isDummyShuttle;
+                    const line = formatLegLine(trip.train, trip.depStn, trip.depTime, trip.arrStn, trip.arrTime, isDummy);
+                    const right = idx === 0 ? `<span style="font-weight:800; color:var(--blue);">${spellLabel}</span>` : '';
+                    rowsHtml += `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px dashed var(--border); font-size:12px;"><span style="color:var(--text-muted); flex:1; min-width:0;"><span style="margin-right:6px;">›</span>${line}</span>${right}</div>`;
+                });
+            });
+        } else {
+            const cycles = buildCycles([...projectedLegs]);
+            const detailRows = [];
+            cycles.forEach(cycle => {
+                const cycleTouchesMonth = cycle.some(leg => leg.depDate.startsWith(moKey) || leg.arrDate.startsWith(moKey));
+                if (!cycleTouchesMonth) return;
+                const cycleTAResults = calculateProjectedCycleTA(cycle);
+                const splitCycle = getSplitLegs(cycle);
+                const legsByDate = {};
+                splitCycle.forEach(pl => {
+                    if (!legsByDate[pl.date]) legsByDate[pl.date] = [];
+                    legsByDate[pl.date].push(pl);
+                });
+                splitCycle.forEach(item => {
+                    if (!item.date.startsWith(moKey)) return;
+                    const lastLegForDate = legsByDate[item.date][legsByDate[item.date].length - 1];
+                    const isLastOfDay = lastLegForDate.id === item.id;
+                    const matchingTA = cycleTAResults.find(r => r.date === item.date);
+                    const orig = item.originalLeg || item;
+                    detailRows.push({
+                        sortKey: new Date(`${item.date}T${item.depTime !== '-' ? item.depTime : (item.arrTime !== '-' ? item.arrTime : '00:00')}`),
+                        train: item.train,
+                        depStn: item.depStn !== '-' ? item.depStn : orig.depStn,
+                        depTime: item.depTime !== '-' ? item.depTime : orig.depTime,
+                        arrStn: item.arrStn !== '-' ? item.arrStn : orig.arrStn,
+                        arrTime: item.arrTime !== '-' ? item.arrTime : orig.arrTime,
+                        isDummy: orig.isDummyShuttle,
+                        pct: (isLastOfDay && matchingTA) ? matchingTA.pct : null,
+                        rate: (isLastOfDay && matchingTA) ? matchingTA.rate : null
+                    });
+                });
+            });
+            detailRows.sort((a, b) => a.sortKey - b.sortKey);
+            if (!detailRows.length) {
+                return `<p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px;">${t('future_trends_no_duties', 'No projected duties for this month.')}</p>`;
+            }
+            detailRows.forEach(row => {
+                const line = formatLegLine(row.train, row.depStn, row.depTime, row.arrStn, row.arrTime, row.isDummy);
+                const right = row.pct != null
+                    ? `<span style="font-weight:800; color:var(--blue);">${row.pct}%</span>`
+                    : '';
+                rowsHtml += `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px dashed var(--border); font-size:12px;"><span style="color:var(--text-muted); flex:1; min-width:0;"><span style="margin-right:6px;">›</span>${line}</span>${right}</div>`;
+            });
+        }
+
+        const heading = isNDA
+            ? t('future_trends_detail_nda', 'Projected Night Duties')
+            : t('future_trends_detail_ta', 'Projected Duties & TA %');
+        return `
+            <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; margin-bottom:8px; text-align:center;">${heading}</div>
+            <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:4px 12px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">${rowsHtml}</div>`;
+    };
+
+    window.renderFutureTrendDetailList = function(projectedLegs) {
+        const wrap = document.getElementById('trend-future-detail-wrap');
+        if (!wrap) return;
+        window.ensureFutureTrendMonthKey();
+        wrap.innerHTML = window.buildFutureTrendDetailHtml(window._futureTrendMonthKey, projectedLegs);
+        wrap.classList.remove('hidden');
     };
 
     // Point (Task 3): Graph View — a full yearly line graph, adapted from the same SVG technique
@@ -14449,25 +14625,34 @@
     window.renderYearlyFutureTrendGraph = function() {
         const area = document.getElementById('trend-chart-area');
         const listBelow = document.getElementById('trend-list-below-graph');
+        const futureDetail = document.getElementById('trend-future-detail-wrap');
         if (listBelow) listBelow.classList.add('hidden');
         if (!area) return;
         const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        window.ensureFutureTrendMonthKey();
+        window.renderFutureTrendMonthNav();
 
         if (!window.isBsbRosterHq()) {
-            renderTrendYearNav(window._trendCurrentYear);
-            area.innerHTML = `<p style="padding:20px 12px; text-align:center; color:var(--text-muted); font-size:13px; line-height:1.5;">${t('future_trends_bsb_only', 'Future Trends uses roster train timings and is available for BSB HQ users only.')}</p>`;
+            if (futureDetail) {
+                futureDetail.classList.remove('hidden');
+                futureDetail.innerHTML = `<p style="padding:20px 12px; text-align:center; color:var(--text-muted); font-size:13px; line-height:1.5;">${t('future_trends_bsb_only', 'Future Trends uses roster train timings and is available for BSB HQ users only.')}</p>`;
+            }
+            area.innerHTML = '';
             return;
         }
 
         const teamNo = localStorage.getItem('roster_my_team');
         if (!teamNo) {
-            renderTrendYearNav(window._trendCurrentYear);
-            area.innerHTML = `<p style="padding:20px 12px; text-align:center; color:var(--text-muted); font-size:13px; line-height:1.5;">${t('future_trends_team_required', 'Set your Team No. in Roster (My Duty) to see projected yearly trends.')}</p>`;
+            if (futureDetail) {
+                futureDetail.classList.remove('hidden');
+                futureDetail.innerHTML = `<p style="padding:20px 12px; text-align:center; color:var(--text-muted); font-size:13px; line-height:1.5;">${t('future_trends_team_required', 'Set your Team No. in Roster (My Duty) to see projected yearly trends.')}</p>`;
+            }
+            area.innerHTML = '';
             return;
         }
 
         area.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; gap:8px; padding:24px;"><div style="width:20px; height:20px; border:3px solid color-mix(in srgb, var(--text) 25%, transparent); border-top-color:var(--blue); border-radius:50%; animation:splashSpin 0.8s linear infinite;"></div><span style="font-size:12.5px; color:var(--text-muted);">${t('future_trends_loading', 'Loading roster schedule…')}</span></div>`;
-        renderTrendYearNav(window._trendCurrentYear);
+        if (futureDetail) futureDetail.classList.add('hidden');
 
         window.ensureRosterDataForTrends((ok) => {
             if (!ok || !window.rosterData) {
@@ -14478,6 +14663,7 @@
             const isNDA = currentTab === 'nda';
             const year = window._trendCurrentYear;
             const projectedLegs = window.buildProjectedDutyLegsForYear(year);
+            window._futureTrendProjectedLegs = projectedLegs;
             const { hourValues, moneyValues } = window.computeFutureTrendMonthlyValues(year, isNDA, projectedLegs);
 
             const MONTH_SHORT = trendLocalizedMonthShorts(year);
@@ -14536,7 +14722,7 @@
                         </svg>
                     </div>
                     <div style="margin-top:8px; margin-bottom:6px; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>
-                    <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:0 0 14px; padding:0 8px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. DDU (Nearby HQ-TA Claimed) includes a 3-hour HQ travel margin.')}</p>`;
+                    <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:0 0 14px; padding:0 8px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. DDU shuttle legs use dummy trains XXXXX (up) and YYYYY (down) with BSB↔DDU timing.')}</p>`;
             }
 
             let html;
@@ -14557,6 +14743,7 @@
                 html = buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta');
             }
             area.innerHTML = html;
+            window.renderFutureTrendDetailList(projectedLegs);
         });
     };
 
