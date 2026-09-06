@@ -480,7 +480,7 @@
         input:not([type="checkbox"]):not([type="radio"]), select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 30px; margin-top: 4px; font-size: 14.5px; font-weight: 500; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; box-sizing: border-box; -webkit-appearance: none; appearance: none; }
         input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; text-transform: none; }
         select { padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-position: calc(100% - 12px) center; background-size: 14px 14px; background-repeat: no-repeat; }
-        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month-select, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year { text-align: center; text-align-last: center; }
+        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year { text-align: center; text-align-last: center; }
         input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; -webkit-appearance: checkbox; appearance: auto; }
         input:disabled, select:disabled { background-color: var(--input-disabled); color: var(--text-muted); border-style: dashed; opacity: 0.75; -webkit-text-fill-color: var(--text-muted); }
         .profile-lbl { font-size: 13px; font-weight: 800; color: var(--blue); display: block; margin-bottom: 2px; }
@@ -761,6 +761,20 @@
         #sheet-add-table div:has(> input.field-invalid), #sheet-active-row-table div:has(> input.field-invalid) { background: transparent !important; }
         #sheet-add-table input.field-invalid ~ span, #sheet-active-row-table input.field-invalid ~ span { background: transparent !important; }
         .bell-badge { position: absolute; top: -3px; right: -3px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+        @keyframes bell-shake {
+            0%, 100% { transform: rotate(0deg); }
+            15% { transform: rotate(-12deg); }
+            30% { transform: rotate(10deg); }
+            45% { transform: rotate(-8deg); }
+            60% { transform: rotate(6deg); }
+            75% { transform: rotate(-4deg); }
+        }
+        .bottom-icon.bell-shake svg { animation: bell-shake 0.55s ease-in-out; transform-origin: top center; }
+        .sleep-time-slider { width: 100%; margin: 0; -webkit-appearance: none; appearance: none; height: 28px; background: transparent; }
+        .sleep-time-slider::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--blue) 25%, var(--border) 75%); }
+        .sleep-time-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue-fill); border: 3px solid var(--card); box-shadow: 0 2px 6px rgba(0,0,0,0.35); margin-top: -9px; cursor: pointer; }
+        .sleep-time-slider::-moz-range-track { height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--blue) 25%, var(--border) 75%); }
+        .sleep-time-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--blue-fill); border: 3px solid var(--card); box-shadow: 0 2px 6px rgba(0,0,0,0.35); cursor: pointer; }
         
         .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; }
         .nav-fab-label { position: static; transform: none; font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
@@ -1820,7 +1834,7 @@
             const connectingMsg = t('sleep_ideal_connecting') || 'Connecting to Roster (first time may take a moment)…';
             const fetchingMsg = t('sleep_ideal_fetching') || 'Fetching ideal figure…';
             resultEl.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; gap:8px; padding:10px;"><div style="width:18px; height:18px; border:3px solid color-mix(in srgb, var(--text) 25%, transparent); border-top-color:var(--blue); border-radius:50%; animation:splashSpin 0.8s linear infinite;"></div><span style="font-size:12.5px; color:var(--text-muted);">${window._rosterDataReady ? fetchingMsg : connectingMsg}</span></div>`;
-            const monthVal = document.getElementById('sleep-real-month-select').value;
+            const monthVal = window.getSleepRealMonthKeyForRoster();
             ensureRosterLoadedSilently();
             const iframe = document.getElementById('roster-iframe');
             const send = () => { if (iframe && iframe.contentWindow) iframe.contentWindow.postMessage({ type: 'REQUEST_IDEAL_SLEEP_HRS', month: monthVal }, '*'); };
@@ -2780,27 +2794,32 @@
             <h1 style="color: white;" data-i18n="page_title_sleep_ruined">Sleep Ruined</h1>
         </div>
         <div class="screen-content">
-                <div style="display:flex; gap:8px; margin-bottom:6px;">
-                    <div style="flex:1;">
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px; text-align:center;" data-i18n="sleep_start_label">Sleep Start</label>
-                        <div style="position:relative;">
-                            <input type="time" id="sleep-real-start-input" onchange="window.onSleepRealTimeChanged()" style="padding:8px; height:40px; font-size:13px; box-sizing:border-box; background:var(--card); text-align:center;">
-                            <span style="position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none; display:flex;"><svg viewBox="0 0 24 24" style="width:14px; height:14px;" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-                        </div>
-                    </div>
-                    <div style="flex:1;">
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px; text-align:center;" data-i18n="sleep_end_label">Sleep End</label>
-                        <div style="position:relative;">
-                            <input type="time" id="sleep-real-end-input" onchange="window.onSleepRealTimeChanged()" style="padding:8px; height:40px; font-size:13px; box-sizing:border-box; background:var(--card); text-align:center;">
-                            <span style="position:absolute; right:10px; top:50%; transform:translateY(-50%); pointer-events:none; display:flex;"><svg viewBox="0 0 24 24" style="width:14px; height:14px;" fill="none" stroke="#94a3b8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-                        </div>
-                    </div>
-                    <div style="flex:1.3;">
-                        <label style="font-size:11px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px; text-align:center;" data-i18n="sleep_month_label">Month</label>
-                        <select id="sleep-real-month-select" onchange="window.renderSleepRuinedRealResults(); window.showIdealSleepHrs();" style="padding:8px 28px 8px 8px; font-size:13px; height:40px; box-sizing:border-box; background-color:var(--card);"></select>
-                    </div>
+                <div style="display:flex; gap:8px; margin-bottom:12px; align-items:center;">
+                    <button onclick="window.shiftSleepRealMonth(-1)" class="squeeze-ball month-nav-arrow-btn prev" type="button">‹</button>
+                    <select id="sleep-real-month" onchange="window.onSleepRealMonthChanged()" style="margin:0; flex:1.2; background-color:var(--card);">
+                        <option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option>
+                        <option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option>
+                        <option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>
+                    </select>
+                    <select id="sleep-real-year" onchange="window.onSleepRealMonthChanged()" style="margin:0; flex:1; background-color:var(--card);">
+                        <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+                        <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
+                    </select>
+                    <button onclick="window.shiftSleepRealMonth(1)" class="squeeze-ball month-nav-arrow-btn next" type="button">›</button>
                 </div>
-                <p style="font-size:10.5px; color:var(--text-muted); text-align:center; margin:0 0 14px;" data-i18n="sleep_range_hint">Choosable sleep range: 22:00 – 08:00</p>
+                <div style="margin-bottom:14px; padding:12px; background:var(--card); border:1px solid var(--border); border-radius:12px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span style="font-size:11px; font-weight:700; color:var(--text-muted);" data-i18n="sleep_start_label">Sleep Start</span>
+                        <span id="sleep-start-label" style="font-size:13px; font-weight:900; color:var(--blue);">23:50</span>
+                    </div>
+                    <input type="range" id="sleep-start-slider" class="sleep-time-slider" min="0" max="600" step="5" oninput="window.onSleepSliderInput('start', this.value)">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin:12px 0 8px;">
+                        <span style="font-size:11px; font-weight:700; color:var(--text-muted);" data-i18n="sleep_end_label">Sleep End</span>
+                        <span id="sleep-end-label" style="font-size:13px; font-weight:900; color:var(--blue);">06:50</span>
+                    </div>
+                    <input type="range" id="sleep-end-slider" class="sleep-time-slider" min="0" max="600" step="5" oninput="window.onSleepSliderInput('end', this.value)">
+                    <p style="font-size:10px; color:var(--text-muted); text-align:center; margin:10px 0 0;" data-i18n="sleep_range_hint">Choosable sleep range: 22:00 – 08:00</p>
+                </div>
                 <p style="font-size:12px; color:var(--text-muted); text-align:center; line-height:1.5; margin:0 0 16px; padding:0 4px;" data-i18n="sleep_real_info_text">Based on the actual journeys you've fed in so far — not a fixed schedule. Improves in accuracy as your journey feeding progresses through the month.</p>
                 <div style="display:flex; gap:10px;">
                     <div style="flex:1; min-width:0;">
@@ -7559,10 +7578,11 @@
         // by a stale timer left over from a previous, already-dismissed one.
         if (window._modalAutoCloseTimer) { clearTimeout(window._modalAutoCloseTimer); window._modalAutoCloseTimer = null; }
         if (autoCloseMs) {
+            const closeMs = (type === 'success') ? Math.min(autoCloseMs, 850) : autoCloseMs;
             window._modalAutoCloseTimer = setTimeout(() => {
                 closeCustomModal();
                 window._modalAutoCloseTimer = null;
-            }, autoCloseMs);
+            }, closeMs);
         }
     }
 
@@ -8195,54 +8215,124 @@
 
     window.openSleepRuinedRealModal = function() {
         window.closeSidebar();
-        const startStr = localStorage.getItem('roster_sleep_start') || '23:50';
-        const endStr = localStorage.getItem('roster_sleep_end') || '06:50';
-        document.getElementById('sleep-real-start-input').value = startStr;
-        document.getElementById('sleep-real-end-input').value = endStr;
-
-        const monthSelect = document.getElementById('sleep-real-month-select');
         const today = new Date();
-        let monthOptions = '';
-        for (let offset = -12; offset <= 6; offset++) {
-            const d = new Date(today.getFullYear(), today.getMonth() + offset, 1);
-            const val = `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}`;
-            const label = d.toLocaleString('default', { month: 'long', year: 'numeric' });
-            const selected = offset === 0 ? 'selected' : '';
-            monthOptions += `<option value="${val}" ${selected}>${label}</option>`;
-        }
-        monthSelect.innerHTML = monthOptions;
+        const monthEl = document.getElementById('sleep-real-month');
+        const yearEl = document.getElementById('sleep-real-year');
+        if (monthEl) monthEl.value = String(today.getMonth() + 1).padStart(2, '0');
+        if (yearEl) yearEl.value = String(today.getFullYear());
+        window.syncSleepSlidersFromStorage();
 
         window.navTo('screen-sleep-ruined');
         window.renderSleepRuinedRealResults();
         window.showIdealSleepHrs();
     };
 
-    window.onSleepRealTimeChanged = function() {
-        const startInput = document.getElementById('sleep-real-start-input');
-        const endInput = document.getElementById('sleep-real-end-input');
-        const clampedStart = clampSleepTimeRange(startInput.value);
-        const clampedEnd = clampSleepTimeRange(endInput.value);
-        startInput.value = clampedStart;
-        endInput.value = clampedEnd;
-        localStorage.setItem('roster_sleep_start', clampedStart);
-        localStorage.setItem('roster_sleep_end', clampedEnd);
+    window.getSleepRealMonthKey = function() {
+        const y = document.getElementById('sleep-real-year').value;
+        const m = document.getElementById('sleep-real-month').value;
+        return `${y}-${m}`;
+    };
+
+    window.getSleepRealMonthKeyForRoster = function() {
+        const y = document.getElementById('sleep-real-year').value;
+        const m = parseInt(document.getElementById('sleep-real-month').value, 10) - 1;
+        return `${y}-${String(m).padStart(2, '0')}`;
+    };
+
+    window.onSleepRealMonthChanged = function() {
+        window.renderSleepRuinedRealResults();
+        window.showIdealSleepHrs();
+    };
+
+    window.shiftSleepRealMonth = function(delta) {
+        const mSel = document.getElementById('sleep-real-month');
+        const ySel = document.getElementById('sleep-real-year');
+        if (!mSel || !ySel) return;
+        let m = parseInt(mSel.value, 10);
+        let y = parseInt(ySel.value, 10);
+        m += delta;
+        if (m > 12) { m = 1; y++; }
+        if (m < 1) { m = 12; y--; }
+        mSel.value = String(m).padStart(2, '0');
+        ySel.value = String(y);
+        window.onSleepRealMonthChanged();
+    };
+
+    window.sleepSliderPosToTime = function(pos) {
+        let total = 22 * 60 + parseInt(pos, 10);
+        if (total >= 24 * 60) total -= 24 * 60;
+        const h = Math.floor(total / 60);
+        const min = total % 60;
+        return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    };
+
+    window.sleepTimeToSliderPos = function(timeStr) {
+        const [h, m] = timeStr.split(':').map(Number);
+        const total = h * 60 + m;
+        if (total >= 22 * 60) return total - 22 * 60;
+        return 120 + total;
+    };
+
+    window.syncSleepSlidersFromStorage = function() {
+        const startStr = clampSleepTimeRange(localStorage.getItem('roster_sleep_start') || '23:50');
+        const endStr = clampSleepTimeRange(localStorage.getItem('roster_sleep_end') || '06:50');
+        const startSlider = document.getElementById('sleep-start-slider');
+        const endSlider = document.getElementById('sleep-end-slider');
+        const startLabel = document.getElementById('sleep-start-label');
+        const endLabel = document.getElementById('sleep-end-label');
+        if (startSlider) startSlider.value = window.sleepTimeToSliderPos(startStr);
+        if (endSlider) endSlider.value = window.sleepTimeToSliderPos(endStr);
+        if (startLabel) startLabel.textContent = startStr;
+        if (endLabel) endLabel.textContent = endStr;
+        localStorage.setItem('roster_sleep_start', startStr);
+        localStorage.setItem('roster_sleep_end', endStr);
+    };
+
+    window.onSleepSliderInput = function(which, rawVal) {
+        const startSlider = document.getElementById('sleep-start-slider');
+        const endSlider = document.getElementById('sleep-end-slider');
+        if (!startSlider || !endSlider) return;
+        let startPos = parseInt(startSlider.value, 10);
+        let endPos = parseInt(endSlider.value, 10);
+        const val = parseInt(rawVal, 10);
+        if (which === 'start') {
+            startPos = val;
+            if (startPos >= endPos) endPos = Math.min(600, startPos + 5);
+        } else {
+            endPos = val;
+            if (endPos <= startPos) startPos = Math.max(0, endPos - 5);
+        }
+        startSlider.value = startPos;
+        endSlider.value = endPos;
+        const startStr = clampSleepTimeRange(window.sleepSliderPosToTime(startPos));
+        const endStr = clampSleepTimeRange(window.sleepSliderPosToTime(endPos));
+        const startLabel = document.getElementById('sleep-start-label');
+        const endLabel = document.getElementById('sleep-end-label');
+        if (startLabel) startLabel.textContent = startStr;
+        if (endLabel) endLabel.textContent = endStr;
+        localStorage.setItem('roster_sleep_start', startStr);
+        localStorage.setItem('roster_sleep_end', endStr);
         window.renderSleepRuinedRealResults();
     };
 
     window.renderSleepRuinedRealResults = function() {
         const resultsEl = document.getElementById('sleep-ruined-real-results');
         if (!resultsEl) return;
-        const [sh, sm] = document.getElementById('sleep-real-start-input').value.split(':').map(Number);
-        const [eh, em] = document.getElementById('sleep-real-end-input').value.split(':').map(Number);
+        const startLabel = document.getElementById('sleep-start-label');
+        const endLabel = document.getElementById('sleep-end-label');
+        const startStr = startLabel ? startLabel.textContent : (localStorage.getItem('roster_sleep_start') || '23:50');
+        const endStr = endLabel ? endLabel.textContent : (localStorage.getItem('roster_sleep_end') || '06:50');
+        const [sh, sm] = startStr.split(':').map(Number);
+        const [eh, em] = endStr.split(':').map(Number);
         const startMin = sh * 60 + sm, endMin = eh * 60 + em;
 
-        const monthVal = document.getElementById('sleep-real-month-select').value;
+        const monthVal = window.getSleepRealMonthKey();
         const [selYear, selMonth] = monthVal.split('-').map(Number);
 
         const dutyLegs = (window.appState.legs || []).filter(l => l && !l.isNonDuty && l.depDate && l.depTime && l.arrTime);
         const monthLegs = dutyLegs.filter(l => {
             const mo = l.depDate.substring(0, 7);
-            return mo === `${selYear}-${String(selMonth + 1).padStart(2, '0')}`;
+            return mo === `${selYear}-${String(selMonth).padStart(2, '0')}`;
         });
 
         const legs = [];
@@ -8258,14 +8348,14 @@
         });
 
         const fmtHrs = (mins) => (mins / 60).toFixed(1);
-        const monthLabel = new Date(selYear, selMonth).toLocaleString('default', { month: 'long', year: 'numeric' });
+        const monthLabel = new Date(selYear, selMonth - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
         const fmtShortDate = (ds) => { const d = new Date(ds + 'T00:00:00'); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}`; };
         const tf = (key, vars) => window.i18n ? window.i18n.tf(key, vars) : null;
         const t = (key) => window.i18n ? window.i18n.t(key) : null;
 
         const now = new Date();
-        const isCurrentMonth = (selYear === now.getFullYear() && selMonth === now.getMonth());
-        const isPastMonth = (selYear < now.getFullYear()) || (selYear === now.getFullYear() && selMonth < now.getMonth());
+        const isCurrentMonth = (selYear === now.getFullYear() && selMonth === now.getMonth() + 1);
+        const isPastMonth = (selYear < now.getFullYear()) || (selYear === now.getFullYear() && selMonth < now.getMonth() + 1);
         const trainsPhrase = `${legs.length} train${legs.length === 1 ? '' : 's'}`;
         let summarySentence;
         if (isCurrentMonth) {
@@ -8651,7 +8741,38 @@
             }
         });
         window.syncNotificationBadgeToRoster && window.syncNotificationBadgeToRoster();
+        if (window.globalNotifications.length > 0) {
+            window.startBellShakeInterval && window.startBellShakeInterval();
+        } else {
+            window.stopBellShakeInterval && window.stopBellShakeInterval();
+        }
     }
+
+    window.triggerBellShake = function() {
+        const icon = document.getElementById('bottom-bell-icon');
+        if (!icon) return;
+        icon.classList.remove('bell-shake');
+        void icon.offsetWidth;
+        icon.classList.add('bell-shake');
+    };
+
+    window.startBellShakeInterval = function() {
+        if (window._bellShakeTimer) return;
+        window.triggerBellShake();
+        window._bellShakeTimer = setInterval(() => {
+            if ((window.globalNotifications || []).length > 0) window.triggerBellShake();
+            else window.stopBellShakeInterval();
+        }, 4500);
+    };
+
+    window.stopBellShakeInterval = function() {
+        if (window._bellShakeTimer) {
+            clearInterval(window._bellShakeTimer);
+            window._bellShakeTimer = null;
+        }
+        const icon = document.getElementById('bottom-bell-icon');
+        if (icon) icon.classList.remove('bell-shake');
+    };
 
     function checkProfileNotifications() {
         const p = window.appState.profile;
@@ -9388,7 +9509,6 @@
             if (row) {
                 row.values = { train: trainNo, depStn, arrStn, depDate, depTime, arrDate, arrTime };
                 renderSheetRows();
-                showModalOk("Prefilled!", (window.i18n ? window.i18n.t('quickadd_prefilled') : `Journey details pulled in from your roster. Review, then tap Save to confirm.`), "success");
             }
             return;
         }
@@ -9404,7 +9524,6 @@
         // red field-invalid highlight from a prior failed save attempt would otherwise stay stuck
         // even though every field is now correctly filled — clear it explicitly here instead.
         window.clearFieldsInvalid(['trip-train', 'trip-dep-date', 'trip-dep-time', 'trip-arr-date', 'trip-arr-time', 'trip-dep-stn', 'trip-arr-stn']);
-        showModalOk("Prefilled!", (window.i18n ? window.i18n.t('quickadd_prefilled') : `Journey details pulled in from your roster. Review, then tap "Save This Journey" to confirm.`), "success");
     }
 
     // ===================================================================================
