@@ -9351,6 +9351,20 @@
         d.setDate(d.getDate() + n);
         return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     }
+
+    // Roster nominal out-date is BSB-referenced; DDU trains departing before 02:00 board the
+    // next calendar day. Without this shift, projected XXXXX dummy sorts AFTER the real leg,
+    // splitting the NDA duty spell and under-counting night hours (6:00 instead of 8:00).
+    function resolveProjectedOutTrainDepDate(nominalDateStr, sched) {
+        if (!nominalDateStr || !sched) return nominalDateStr;
+        const from = (sched.from || '').trim().toUpperCase();
+        if (from !== 'DDU') return nominalDateStr;
+        const [depH, depM] = (sched.dep || '00:00').split(':').map(Number);
+        const crossesMidnightWithMargin = ((depH * 60) + (depM || 0)) < (2 * 60);
+        if (crossesMidnightWithMargin) return rosterAddDays(nominalDateStr, 1);
+        return nominalDateStr;
+    }
+
     const ROSTER_SLOT_ORDER = ["MON_OUT","TUE_IN","TUE_OUT","WED_IN","WED_OUT","THU_IN","THU_OUT","FRI_IN","FRI_OUT","SAT_IN","SAT_OUT","SUN_IN","SUN_OUT","MON_IN"];
     function rosterNextProgNo(p) { return (p % 43) + 1; }
 
@@ -9470,6 +9484,22 @@
         return first;
     }
 
+    function getProjectedNdaLastTrip(duty) {
+        if (!duty || !duty.length) return null;
+        const sorted = sortProjectedLegsChronologically(duty);
+        const dummyDown = sorted.find(t => (t.isDummyShuttle && t.shuttleDir === 'down') || String(t.train || '').trim() === DUMMY_DOWN_TRAIN);
+        if (dummyDown) return dummyDown;
+        const last = sorted[sorted.length - 1];
+        const taClaimedNearby = window.getTaClaimedNearbyUpper();
+        const hq = (window.appState.profile.hq || 'BSB').trim().toUpperCase();
+        const arrStn = (last.arrStn || '').trim().toUpperCase();
+        if (taClaimedNearby.includes(arrStn)) {
+            const bsbArr = addMinutesToLegDateTime(last.arrDate, last.arrTime, PROJECTED_TA_CLAIMED_MARGIN_MINS);
+            return { ...last, arrStn: hq, arrDate: bsbArr.date, arrTime: bsbArr.time };
+        }
+        return last;
+    }
+
     function addMinutesToLegDateTime(dateStr, timeStr, minutes) {
         const d = new Date(`${dateStr}T${timeStr}:00`);
         d.setMinutes(d.getMinutes() + minutes);
@@ -9572,8 +9602,9 @@
                 if (outTrain) {
                     const sched = rosterGetTrainSchedule(outTrain);
                     if (sched) {
-                        const arrDate = sched.arrNextDay ? rosterAddDays(trip.dateStr, 1) : trip.dateStr;
-                        legs.push(makeProjectedLeg(outTrain, trip.dateStr, sched.dep, arrDate, sched.arr, sched.from, sched.to));
+                        const outDepDate = resolveProjectedOutTrainDepDate(trip.dateStr, sched);
+                        const arrDate = sched.arrNextDay ? rosterAddDays(outDepDate, 1) : outDepDate;
+                        legs.push(makeProjectedLeg(outTrain, outDepDate, sched.dep, arrDate, sched.arr, sched.from, sched.to));
                     }
                 }
                 if (trip.returnTrain) {
@@ -9652,9 +9683,12 @@
         const periodCap = new Date(ndaEnd.getTime() + 1000);
         dutyLegs.forEach(duty => {
             if (!duty.length) return;
-            const sortedDuty = enrichProjectedDutyWithDummyShuttle(duty);
+            const sortedDuty = enrichProjectedDutyWithDummyShuttle(
+                [...duty].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`))
+            );
             const firstTrip = getProjectedNdaSignOnFirstTrip(sortedDuty);
             const lastTrip = sortedDuty[sortedDuty.length - 1];
+            if (!firstTrip || !lastTrip) return;
             const depMargin = window.getNdaDepMarginMins ? window.getNdaDepMarginMins(firstTrip) : 30;
             let defaultSignOn = new Date(`${firstTrip.depDate}T${firstTrip.depTime}:00`);
             defaultSignOn.setMinutes(defaultSignOn.getMinutes() - depMargin);
@@ -12492,7 +12526,7 @@
             { labelKey: 'nav_mandali', fallback: 'Mandali', aliases: ['mandali', 'मंडली', 'team', 'group'], run: () => window.openDashMandali() },
             { labelKey: 'nav_circulars', fallback: 'Circulars', aliases: ['circular', 'circulars', 'order', 'orders', 'सर्कुलर'], run: () => window.navTo('screen-circulars-dashboard') },
             { labelKey: 'earnings_label', fallback: 'Earnings', aliases: ['earning', 'eft', 'cases', 'excess fare', 'कमाई'], run: () => window.navTo('screen-earnings') },
-            { labelKey: 'page_title_salary', fallback: 'Salary', aliases: ['salary', 'expected salary', 'pay', 'wages', 'वेतन'], run: () => { window._salaryCurrentMonthKey = null; window.showSalaryBreakdown(); } },
+            { labelKey: 'page_title_salary', fallback: 'Salary', aliases: ['salary', 'expected salary', 'pay', 'wages', 'वेतन'], run: () => { window.showSalaryBreakdown(); } },
             { labelKey: 'sleep_real_modal_title', fallback: 'Sleep Ruined', aliases: ['sleep', 'ruined', 'नींद', 'rest hours'], run: () => window.openSleepRuinedRealModal() },
             { labelKey: 'sidebar_national_holiday', fallback: 'National Holiday', aliases: ['holiday', 'national holiday', 'nha', 'festival', 'festivals', 'राष्ट्रीय अवकाश', 'अवकाश'], run: () => window.showSidebarNationalHoliday() },
             { labelKey: 'my_archived_data_row', fallback: 'Archive Data', aliases: ['archive', 'archived', 'old data', 'आर्काइव'], run: () => { window.navTo('screen-my-archive'); window.loadMyArchivedData(); } },
