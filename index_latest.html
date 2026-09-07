@@ -595,6 +595,10 @@
             box-shadow: none; cursor: pointer;
         }
         .month-nav-arrow-btn--green { color: var(--green); border-color: var(--green); }
+        body:not(.green-theme) #screen-salary .month-nav-arrow-btn--green,
+        body:not(.green-theme) #trend-future-month-nav-wrap .month-nav-arrow-btn--green { color: var(--blue); border-color: var(--blue); }
+        #screen-salary .salary-accent { color: var(--blue); }
+        body.green-theme #screen-salary .salary-accent { color: var(--green); }
         .month-nav-arrow-btn.prev { padding-right: 2px !important; }
         .month-nav-arrow-btn.next { padding-left: 2px !important; }
         .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; display: flex; align-items: center; justify-content: center; font-size: 14px; }
@@ -3790,7 +3794,7 @@
                         <div class="nav-main-text" style="color:var(--roster-color);" data-i18n="nav_roster">Roster</div>
                         <div class="nav-sub-text" data-i18n="nav_roster_bsb_only">Roster for BSB</div>
                     </div>
-                    <div class="nav-card" id="expected-salary-box" onclick="window._salaryCurrentMonthKey = null; window.showSalaryBreakdown();">
+                    <div class="nav-card" id="expected-salary-box" onclick="window.showSalaryBreakdown();">
                         <div style="position:absolute; top:8px; right:8px; display:flex; flex-direction:column; gap:4px; align-items:flex-end;">
                             <span id="salary-nha-pill" class="hidden" style="height:16px; line-height:16px; font-size:9px; font-weight:900; color:var(--orange); border-radius:20px; padding:0 7px; letter-spacing:0.3px;">NHA</span>
                             <span id="salary-plb-pill" class="hidden" style="height:16px; line-height:16px; font-size:9px; font-weight:900; color:var(--orange); border:1px solid var(--orange); border-radius:20px; padding:0 7px; letter-spacing:0.3px;">PLB</span>
@@ -4327,7 +4331,7 @@
                 </div>
                 <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate PDF Document</button>
             </div>
-            <div id="preview-browser-hint" class="tte-fade" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:20px; padding:16px 16px 4px; border-top:1px solid var(--border);">
+            <div id="preview-browser-hint" class="tte-fade" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:20px; padding:16px 16px 4px;">
         <p data-i18n="pdf_browser_recommend" style="color:var(--text-muted); font-size:11px; font-weight:500; margin:0; text-align:center; max-width:320px; line-height:1.5;">Printing TA and NDA PDF files works best using Google Chrome and similar chromium browsers.</p>
         <div style="display: flex; gap: 10px; align-items: center;">
                 <div title="Chrome" style="width: 18px; height: 18px; border-radius: 50%; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.3);"><svg style="width:100%; height:100%; display:block;" version="1.1" id="pchr-Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -7301,7 +7305,7 @@
         }
 
         if(screenId === 'screen-reports') {
-            switchTab(currentTab); 
+            window.resetReportMonthToCurrent();
         }
         
         ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
@@ -7356,7 +7360,15 @@
             if(dnBtn) dnBtn.style.opacity = '1';
             renderAllLogs(); checkGlobalNotifications(); 
         }
-        if(screenId === 'screen-reports') updateReportUI(); 
+        if(screenId === 'screen-reports') updateReportUI();
+        if(screenId === 'screen-salary') {
+            const salaryEl = document.getElementById('screen-salary');
+            if (salaryEl && salaryEl.classList.contains('hidden')) window.showSalaryBreakdown();
+        }
+        if(screenId === 'screen-yearly-trend') {
+            window.resetTrendDateNavigation();
+            window.switchTrendViewTab(window._trendActiveView || 'graph');
+        }
         if(screenId === 'screen-backup') updateBackupUI(); 
         if(screenId === 'screen-register') {
             openSettings();
@@ -9430,17 +9442,32 @@
         const hasDummyUp = sorted.some(t => (t.isDummyShuttle && t.shuttleDir === 'up') || String(t.train || '').trim() === DUMMY_UP_TRAIN);
         if (hasDummyUp) return sorted;
         const taClaimedNearby = window.getTaClaimedNearbyUpper();
-        const hqGroup = window.getHqGroupUpper();
         const hq = (window.appState.profile.hq || 'BSB').trim().toUpperCase();
         const first = sorted[0];
         const firstDep = (first.depStn || '').trim().toUpperCase();
-        if (taClaimedNearby.includes(firstDep) && !hqGroup.includes(firstDep)) {
+        if (taClaimedNearby.includes(firstDep)) {
             const bsbDep = addMinutesToLegDateTime(first.depDate, first.depTime, -PROJECTED_TA_CLAIMED_MARGIN_MINS);
             const dduArr = addMinutesToLegDateTime(bsbDep.date, bsbDep.time, HQ_SHUTTLE_TRAVEL_MINS);
             const dummy = makeProjectedLeg(DUMMY_UP_TRAIN, bsbDep.date, bsbDep.time, dduArr.date, dduArr.time, hq, firstDep, { isDummyShuttle: true, shuttleDir: 'up' });
             return [dummy, ...sorted];
         }
         return sorted;
+    }
+
+    function getProjectedNdaSignOnFirstTrip(duty) {
+        if (!duty || !duty.length) return null;
+        const sorted = sortProjectedLegsChronologically(duty);
+        const dummyUp = sorted.find(t => (t.isDummyShuttle && t.shuttleDir === 'up') || String(t.train || '').trim() === DUMMY_UP_TRAIN);
+        if (dummyUp) return dummyUp;
+        const taClaimedNearby = window.getTaClaimedNearbyUpper();
+        const hq = (window.appState.profile.hq || 'BSB').trim().toUpperCase();
+        const first = sorted[0];
+        const firstDep = (first.depStn || '').trim().toUpperCase();
+        if (taClaimedNearby.includes(firstDep)) {
+            const bsbDep = addMinutesToLegDateTime(first.depDate, first.depTime, -PROJECTED_TA_CLAIMED_MARGIN_MINS);
+            return { ...first, depStn: hq, depDate: bsbDep.date, depTime: bsbDep.time };
+        }
+        return first;
     }
 
     function addMinutesToLegDateTime(dateStr, timeStr, minutes) {
@@ -9469,18 +9496,17 @@
     window.expandProjectedLegsWithDdUDummies = function(legs) {
         const taClaimed = window.getTaClaimedNearbyUpper();
         const hq = (window.appState.profile.hq || 'BSB').trim().toUpperCase();
-        const hqGroup = window.getHqGroupUpper();
         const expanded = [];
         (legs || []).forEach(leg => {
             const depStn = (leg.depStn || '').trim().toUpperCase();
             const arrStn = (leg.arrStn || '').trim().toUpperCase();
-            if (taClaimed.includes(depStn) && !hqGroup.includes(depStn)) {
+            if (taClaimed.includes(depStn)) {
                 const bsbDep = addMinutesToLegDateTime(leg.depDate, leg.depTime, -PROJECTED_TA_CLAIMED_MARGIN_MINS);
                 const dduArr = addMinutesToLegDateTime(bsbDep.date, bsbDep.time, HQ_SHUTTLE_TRAVEL_MINS);
                 expanded.push(makeProjectedLeg(DUMMY_UP_TRAIN, bsbDep.date, bsbDep.time, dduArr.date, dduArr.time, hq, depStn, { isDummyShuttle: true, shuttleDir: 'up' }));
             }
             expanded.push(leg);
-            if (taClaimed.includes(arrStn) && !hqGroup.includes(arrStn)) {
+            if (taClaimed.includes(arrStn)) {
                 const bsbArr = addMinutesToLegDateTime(leg.arrDate, leg.arrTime, PROJECTED_TA_CLAIMED_MARGIN_MINS);
                 const dduDep = addMinutesToLegDateTime(bsbArr.date, bsbArr.time, -HQ_SHUTTLE_TRAVEL_MINS);
                 expanded.push(makeProjectedLeg(DUMMY_DOWN_TRAIN, dduDep.date, dduDep.time, bsbArr.date, bsbArr.time, arrStn, hq, { isDummyShuttle: true, shuttleDir: 'down' }));
@@ -9627,7 +9653,7 @@
         dutyLegs.forEach(duty => {
             if (!duty.length) return;
             const sortedDuty = enrichProjectedDutyWithDummyShuttle(duty);
-            const firstTrip = window.getNdaSignOnFirstTrip(sortedDuty);
+            const firstTrip = getProjectedNdaSignOnFirstTrip(sortedDuty);
             const lastTrip = sortedDuty[sortedDuty.length - 1];
             const depMargin = window.getNdaDepMarginMins ? window.getNdaDepMarginMins(firstTrip) : 30;
             let defaultSignOn = new Date(`${firstTrip.depDate}T${firstTrip.depTime}:00`);
@@ -9696,11 +9722,9 @@
         window._qaddState.teamNo = teamNo;
 
         const loadAndOpen = () => {
-            if (window._qaddState.year === null) {
-                const now = new Date();
-                window._qaddState.year = now.getFullYear();
-                window._qaddState.month = now.getMonth();
-            }
+            const now = new Date();
+            window._qaddState.year = now.getFullYear();
+            window._qaddState.month = now.getMonth();
             document.getElementById('quick-add-cal-modal').classList.remove('hidden');
             renderQuickAddCalendar();
         };
@@ -13838,8 +13862,9 @@
 
         dutyLegs.forEach(duty => { 
             if(duty.length === 0) return; 
-            let firstTrip = window.getNdaSignOnFirstTrip(duty);
-            let lastTrip = duty[duty.length - 1]; 
+            const sortedDuty = [...duty].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
+            let firstTrip = window.getNdaSignOnFirstTrip(sortedDuty);
+            let lastTrip = sortedDuty[sortedDuty.length - 1]; 
             const depMargin = window.getNdaDepMarginMins ? window.getNdaDepMarginMins(firstTrip) : 30;
             let defaultSignOn = new Date(`${firstTrip.depDate}T${firstTrip.depTime}:00`); defaultSignOn.setMinutes(defaultSignOn.getMinutes() - depMargin); 
             let signOff = new Date(`${lastTrip.arrDate}T${lastTrip.arrTime}:00`); signOff.setMinutes(signOff.getMinutes() + 30); 
@@ -13970,15 +13995,35 @@
     };
     function changeMonth(delta) { let moInput = document.getElementById('report-month-hidden'); let [y, m] = moInput.value.split('-').map(Number); let d = new Date(y, m - 1 + delta, 1); moInput.value = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; updateReportUI(); window.updateDashboardUI(); }
 
+    window.resetReportMonthToCurrent = function() {
+        const moInput = document.getElementById('report-month-hidden');
+        if (!moInput) return;
+        const today = new Date();
+        if (currentTab === 'nda') {
+            let ndaY = today.getFullYear();
+            let ndaM = today.getMonth() + 1;
+            if (today.getDate() > 15) {
+                ndaM += 1;
+                if (ndaM > 12) { ndaM = 1; ndaY += 1; }
+            }
+            moInput.value = `${ndaY}-${String(ndaM).padStart(2, '0')}`;
+        } else {
+            moInput.value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+        }
+    };
+
+    window.resetTrendDateNavigation = function() {
+        const today = new Date();
+        window._trendCurrentYear = today.getFullYear();
+        window._futureTrendMonthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+        window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
+        window._trendFutureCompareActual = false;
+        window._trendActiveView = 'graph';
+    };
+
     function showTrendChart(includeBars, includeYearlyTable) {
         if (!window.appState.legs || !window.appState.profile) return;
-        // Point (Task 3): the old 6-month bar chart and "TA Trend"/"NDA Trend" heading are gone —
-        // replaced by Graph View (a full yearly line graph) and List View (the existing monthly
-        // breakdown table, unchanged). includeBars/includeYearlyTable params are no longer used
-        // but kept so any other call site passing them doesn't break.
-        // Point (Task 1-i): always resets to the CURRENT year on every open, rather than
-        // remembering wherever the year-nav was last left after a previous visit.
-        window._trendCurrentYear = new Date().getFullYear();
+        window.resetTrendDateNavigation();
         if (currentTab === 'nda') window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
         window.switchTrendViewTab('graph');
         const signonBtn = document.getElementById('trend-tab-signon-btn');
@@ -14879,7 +14924,7 @@
                 const sectionTitle = opts.headerHtml
                     ? opts.headerHtml
                     : (opts.sectionTitle
-                        ? `<div style="margin-top:${opts.sectionTitleMarginTop || 0}px; margin-bottom:8px; text-align:center; font-size:14px; font-weight:900; color:var(--text);">${opts.sectionTitle}</div>`
+                        ? `<div style="margin-top:${opts.sectionTitleMarginTop || 0}px; margin-bottom:8px; text-align:left; font-size:14px; font-weight:900; color:var(--text);">${opts.sectionTitle}</div>`
                         : '');
                 return `
                     ${sectionTitle}
@@ -15192,7 +15237,7 @@
         const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const isDark = document.body.classList.contains('dark-mode');
         const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
-        const color = 'var(--green)';
+        const color = document.body.classList.contains('green-theme') ? 'var(--green)' : 'var(--blue)';
         const loggedVals = values.filter(v => v > 0);
         const avg = loggedVals.length > 0 ? (loggedVals.reduce((a,b)=>a+b,0) / loggedVals.length) : 0;
         const maxVal = Math.max(...values, 1) * 1.15;
@@ -15259,7 +15304,7 @@
         }
 
         wrap.innerHTML = `<div style="font-size:14px; font-weight:900; text-align:center; color:var(--text); margin-bottom:10px;">${title}</div>
-            <div style="display:flex; align-items:center; justify-content:center; gap:8px; padding:20px;"><div style="width:18px; height:18px; border:3px solid color-mix(in srgb, var(--text) 25%, transparent); border-top-color:var(--green); border-radius:50%; animation:splashSpin 0.8s linear infinite;"></div><span style="font-size:12px; color:var(--text-muted);">${t('future_trends_loading', 'Loading roster schedule…')}</span></div>`;
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; padding:20px;"><div style="width:18px; height:18px; border:3px solid color-mix(in srgb, var(--text) 25%, transparent); border-top-color:var(--blue); border-radius:50%; animation:splashSpin 0.8s linear infinite;"></div><span style="font-size:12px; color:var(--text-muted);">${t('future_trends_loading', 'Loading roster schedule…')}</span></div>`;
 
         window.ensureRosterDataForTrends((ok) => {
             if (!ok || !window.rosterData) {
@@ -15317,7 +15362,7 @@
     window.showSalaryBreakdown = function(monthKey) {
         const today = new Date();
         const defaultMo = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
-        window._salaryCurrentMonthKey = monthKey || window._salaryCurrentMonthKey || defaultMo;
+        window._salaryCurrentMonthKey = monthKey || defaultMo;
         const result = window.getSalaryForMonth(window._salaryCurrentMonthKey);
         if (!result) return;
         const rows = [
@@ -15346,14 +15391,15 @@
             </div>`
         ).join('');
         document.getElementById('salary-breakdown-body').innerHTML = `${rowsHtml}
-            <div style="margin-top:10px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; color:var(--green); background:var(--input-bg); border-radius:12px; padding:10px;">
+            <div class="salary-accent" style="margin-top:10px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; background:var(--input-bg); border-radius:12px; padding:10px;">
                 <span>Total Expected Salary</span>
                 <span style="font-size:15px;">₹${result.total.toLocaleString('en-IN')}</span>
             </div>`;
         window.renderSalaryMonthNav();
         window.renderSalaryYearGraph();
         window.renderSalaryProjectedYearGraph();
-        window.navTo('screen-salary');
+        const salaryEl = document.getElementById('screen-salary');
+        if (salaryEl && salaryEl.classList.contains('hidden')) window.navTo('screen-salary');
     };
 
 
