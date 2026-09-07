@@ -7942,7 +7942,7 @@
     window.getNdaSignOnFirstTrip = function(duty) {
         if (!duty || !duty.length) return null;
         const sorted = [...duty].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
-        const dummyUp = sorted.find(t => t.isDummyShuttle && t.shuttleDir === 'up');
+        const dummyUp = sorted.find(t => (t.isDummyShuttle && t.shuttleDir === 'up') || String(t.train || '').trim() === 'XXXXX');
         if (dummyUp) return dummyUp;
         const taClaimedNearby = window.getTaClaimedNearbyUpper();
         const hqGroup = window.getHqGroupUpper();
@@ -9420,6 +9420,29 @@
     const DUMMY_UP_TRAIN = 'XXXXX';
     const DUMMY_DOWN_TRAIN = 'YYYYY';
 
+    function sortProjectedLegsChronologically(legs) {
+        return [...(legs || [])].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
+    }
+
+    function enrichProjectedDutyWithDummyShuttle(duty) {
+        if (!duty || !duty.length) return duty;
+        const sorted = sortProjectedLegsChronologically(duty);
+        const hasDummyUp = sorted.some(t => (t.isDummyShuttle && t.shuttleDir === 'up') || String(t.train || '').trim() === DUMMY_UP_TRAIN);
+        if (hasDummyUp) return sorted;
+        const taClaimedNearby = window.getTaClaimedNearbyUpper();
+        const hqGroup = window.getHqGroupUpper();
+        const hq = (window.appState.profile.hq || 'BSB').trim().toUpperCase();
+        const first = sorted[0];
+        const firstDep = (first.depStn || '').trim().toUpperCase();
+        if (taClaimedNearby.includes(firstDep) && !hqGroup.includes(firstDep)) {
+            const bsbDep = addMinutesToLegDateTime(first.depDate, first.depTime, -PROJECTED_TA_CLAIMED_MARGIN_MINS);
+            const dduArr = addMinutesToLegDateTime(bsbDep.date, bsbDep.time, HQ_SHUTTLE_TRAVEL_MINS);
+            const dummy = makeProjectedLeg(DUMMY_UP_TRAIN, bsbDep.date, bsbDep.time, dduArr.date, dduArr.time, hq, firstDep, { isDummyShuttle: true, shuttleDir: 'up' });
+            return [dummy, ...sorted];
+        }
+        return sorted;
+    }
+
     function addMinutesToLegDateTime(dateStr, timeStr, minutes) {
         const d = new Date(`${dateStr}T${timeStr}:00`);
         d.setMinutes(d.getMinutes() + minutes);
@@ -9590,7 +9613,7 @@
         const taClaimedNearby = window.getTaClaimedNearbyUpper();
         let dutyLegs = [];
         let currentGroup = [];
-        dutyLegsSource.forEach(leg => {
+        sortProjectedLegsChronologically(dutyLegsSource).forEach(leg => {
             if (currentGroup.length === 0) { currentGroup.push(leg); return; }
             const prevArr = (currentGroup[currentGroup.length - 1].arrStn || '').trim().toUpperCase();
             const thisDep = (leg.depStn || '').trim().toUpperCase();
@@ -9603,8 +9626,9 @@
         const periodCap = new Date(ndaEnd.getTime() + 1000);
         dutyLegs.forEach(duty => {
             if (!duty.length) return;
-            const firstTrip = window.getNdaSignOnFirstTrip(duty);
-            const lastTrip = duty[duty.length - 1];
+            const sortedDuty = enrichProjectedDutyWithDummyShuttle(duty);
+            const firstTrip = window.getNdaSignOnFirstTrip(sortedDuty);
+            const lastTrip = sortedDuty[sortedDuty.length - 1];
             const depMargin = window.getNdaDepMarginMins ? window.getNdaDepMarginMins(firstTrip) : 30;
             let defaultSignOn = new Date(`${firstTrip.depDate}T${firstTrip.depTime}:00`);
             defaultSignOn.setMinutes(defaultSignOn.getMinutes() - depMargin);
@@ -9615,7 +9639,7 @@
             const night = window.calcNdaNightMinutesBetween(defaultSignOn, signOff, ndaStart, periodCap);
             if (night.mins > 0) {
                 totalNdaMinutes += night.mins;
-                ndaData.push({ trips: duty, signOn: night.clippedSignOn, signOff: night.clippedSignOff, mins: night.mins });
+                ndaData.push({ trips: sortedDuty, signOn: night.clippedSignOn, signOff: night.clippedSignOff, mins: night.mins });
             }
         });
         return { ndaData, totalNdaMinutes };
@@ -14186,6 +14210,16 @@
         return Array.from({ length: 12 }, (_, i) => trendMonthShort(i, year));
     }
 
+    window.getTrendGraphHighlightIdx = function(year, isNDA, monthKey) {
+        if (!monthKey) return null;
+        const parts = monthKey.split('-').map(Number);
+        if (parts.length < 2 || parts[0] !== year) return null;
+        const m = parts[1];
+        if (m < 1 || m > 12) return null;
+        if (isNDA) return m === 1 ? 11 : m - 2;
+        return m - 1;
+    };
+
     // Point 1 + 7: Builds a Jan-Dec table for a selected year, showing TA money or NDA hours+money per month.
     // Redesigned for proper column alignment, light-shaded alternating rows, and a year dropdown selector.
     function renderTrendYearNav(year) {
@@ -14700,17 +14734,13 @@
             const baseline = `<line x1="0" y1="${topMargin+height}" x2="${width}" y2="${topMargin+height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`;
             // Point: highlights the current month's column (spanning from its gridline to the
             // next) so "where am I right now" is obvious at a glance, in both TA and NDA graphs.
-            // Only shown when the year being viewed is the actual current year - a past/future
-            // year has no "current month" to highlight. Uses a light, low-opacity tint so it
-            // reads as a subtle band behind the gridlines/line/dots rather than competing with them.
             const today = new Date();
+            const highlightMonthKey = year === today.getFullYear()
+                ? `${year}-${String(today.getMonth() + 1).padStart(2, '0')}`
+                : null;
+            const highlightIdx = window.getTrendGraphHighlightIdx(year, isNDA, highlightMonthKey);
             let currentMonthBand = '';
-            if (year === today.getFullYear()) {
-                let highlightIdx = today.getMonth();
-                if (isNDA) {
-                    const m = today.getMonth() + 1;
-                    highlightIdx = m === 1 ? 11 : m - 2;
-                }
+            if (highlightIdx !== null && highlightIdx >= 0) {
                 const bandX = (highlightIdx * stepX + xOffset - stepX / 2).toFixed(1);
                 currentMonthBand = `<rect x="${bandX}" y="${topMargin}" width="${stepX.toFixed(1)}" height="${height}" fill="${color}" fill-opacity="0.18"/>`;
             }
@@ -14840,20 +14870,17 @@
                     `<line x1="${(i * stepX).toFixed(1)}" y1="${topMargin}" x2="${(i * stepX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`
                 ).join('');
                 const baseline = `<line x1="0" y1="${topMargin + height}" x2="${width}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`;
-                const today = new Date();
+                const highlightIdx = window.getTrendGraphHighlightIdx(year, isNDA, window._futureTrendMonthKey);
                 let currentMonthBand = '';
-                if (year === today.getFullYear()) {
-                    let highlightIdx = today.getMonth();
-                    if (isNDA) {
-                        const m = today.getMonth() + 1;
-                        highlightIdx = m === 1 ? 11 : m - 2;
-                    }
+                if (highlightIdx !== null && highlightIdx >= 0) {
                     const bandX = (highlightIdx * stepX + xOffset - stepX / 2).toFixed(1);
                     currentMonthBand = `<rect x="${bandX}" y="${topMargin}" width="${stepX.toFixed(1)}" height="${height}" fill="${color}" fill-opacity="0.18"/>`;
                 }
-                const sectionTitle = opts.sectionTitle
-                    ? `<div style="margin-top:${opts.sectionTitleMarginTop || 0}px; margin-bottom:8px; text-align:center; font-size:14px; font-weight:900; color:var(--text);">${opts.sectionTitle}</div>`
-                    : '';
+                const sectionTitle = opts.headerHtml
+                    ? opts.headerHtml
+                    : (opts.sectionTitle
+                        ? `<div style="margin-top:${opts.sectionTitleMarginTop || 0}px; margin-bottom:8px; text-align:center; font-size:14px; font-weight:900; color:var(--text);">${opts.sectionTitle}</div>`
+                        : '');
                 return `
                     ${sectionTitle}
                     <div style="position:relative; border-radius:12px; border:1px solid var(--border); padding:10px 6px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">
@@ -14867,11 +14894,10 @@
                     <div style="margin-top:8px; margin-bottom:${opts.compactBottom ? '6px' : '14px'}; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>`;
             }
 
-            const compareLabel = t('trend_compare_actual', 'Compare Actual');
-            const compareToggleHtml = `
-                <div style="display:flex; justify-content:center; margin-bottom:12px;">
-                    <button onclick="window.switchTrendFutureCompare()" type="button" style="margin:0; padding:8px 14px; font-size:11px; font-weight:800; border-radius:20px; background:${compareOn ? 'var(--blue-fill)' : 'var(--input-bg)'}; color:${compareOn ? 'white' : 'var(--text-muted)'}; border:1px solid var(--border); box-shadow:none;">${compareLabel}</button>
-                </div>`;
+            const compareLabel = t('trend_compare_actual', 'Compare to Actual');
+            const compareBtnStyle = compareOn
+                ? 'margin:0 !important; flex-shrink:0; max-width:none; color:white !important; background:var(--blue-fill) !important; border-color:var(--blue-fill) !important;'
+                : 'margin:0 !important; flex-shrink:0; max-width:none;';
 
             const projectedTitle = isNDA
                 ? t('trend_graph_projected_nda', 'Projected NDA')
@@ -14879,8 +14905,13 @@
             const actualTitle = isNDA
                 ? t('trend_graph_actual_nda', 'Actual NDA')
                 : t('trend_graph_actual_ta', 'Actual TA');
+            const projectedHeaderHtml = `
+                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
+                    <div style="font-size:14px; font-weight:900; color:var(--text); flex:1; min-width:0;">${projectedTitle}</div>
+                    <button onclick="window.switchTrendFutureCompare()" type="button" class="add-signon-link-btn subtle-pill-banner" style="${compareBtnStyle}">${compareLabel}</button>
+                </div>`;
 
-            let html = compareToggleHtml;
+            let html = '';
             if (isNDA) {
                 window._trendFutureNdaMetric = window._trendFutureNdaMetric || 'hours';
                 const metric = window._trendFutureNdaMetric;
@@ -14895,13 +14926,13 @@
                 const projColor = metric === 'hours' ? 'var(--blue)' : 'var(--green)';
                 const projSuffix = metric === 'hours' ? 'h' : '₹';
                 const projAvgKey = metric === 'hours' ? 'trend_graph_avg_nda_hrs' : 'trend_graph_avg_nda_money';
-                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { sectionTitle: projectedTitle, compactBottom: compareOn });
+                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { headerHtml: projectedHeaderHtml, compactBottom: compareOn });
                 if (compareOn && actualValues) {
                     const actVals = metric === 'hours' ? actualValues.hourValues : actualValues.moneyValues;
                     html += buildFutureGraph(actVals, 'var(--text-muted)', projSuffix, projAvgKey, null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, compactBottom: true });
                 }
             } else {
-                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: projectedTitle, compactBottom: compareOn });
+                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { headerHtml: projectedHeaderHtml, compactBottom: compareOn });
                 if (compareOn && actualValues) {
                     html += buildFutureGraph(actualValues.moneyValues, 'var(--text-muted)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, compactBottom: true });
                 }
@@ -15244,7 +15275,7 @@
                 values.push(r ? r.total : 0);
             }
             wrap.innerHTML = buildSalaryGraph(values, y, m - 1, title) + `
-                <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('salary_projected_hint', 'TA and NDA amounts are taken from your roster link programme and train timings (projected duties), including DDU shuttle dummy trains where applicable.')}</p>`;
+                <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('salary_projected_hint', 'Projected salary graph is shown using your projected TA and NDA from roster link programme and train timings.')}</p>`;
         });
     };
 
