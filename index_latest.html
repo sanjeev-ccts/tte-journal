@@ -1212,15 +1212,32 @@
             // Point: the sync icon itself uses fixed colors (light mode's own values) regardless
             // of theme, unlike statusColor above (which stays theme-adaptive for the text uses) -
             // requested so the cloud icon looks identical in dark and light mode for every state.
-            const iconColor = window._isSyncing
-                ? "#3b82f6"
-                : (repeatedlyFailing
-                    ? "#ef4444"
-                    : (window._firebaseConnected
-                        ? "#ffffff"
-                        : (hasPending
-                            ? "#f97316"
-                            : "#ef4444")));
+            // When the brief "Synced" mini-label is visible, tint the cloud blue/green (theme-wise);
+            // once the label fades, connected state returns to normal white.
+            window.refreshSyncIconColor = function(syncIconState) {
+                const dashSyncIcon = document.getElementById('dash-sync-icon');
+                if (!dashSyncIcon) return;
+                const state = syncIconState || window._lastSyncIconState || 'offline';
+                const labelActive = !!window._syncMiniLabelActive;
+                let pending = false;
+                try { pending = !!window.currentUid && localStorage.getItem('tte_pending_write_' + window.currentUid) !== null; } catch (e) {}
+                const failing = (window._syncFailCount || 0) >= FAIL_THRESHOLD;
+                let iconColor;
+                if (labelActive && (state === 'synced' || state === 'online')) {
+                    iconColor = document.body.classList.contains('green-theme') ? '#22c55e' : '#3b82f6';
+                } else if (window._isSyncing) {
+                    iconColor = '#3b82f6';
+                } else if (failing) {
+                    iconColor = '#ef4444';
+                } else if (window._firebaseConnected) {
+                    iconColor = '#ffffff';
+                } else if (pending) {
+                    iconColor = '#f97316';
+                } else {
+                    iconColor = '#ef4444';
+                }
+                dashSyncIcon.style.color = iconColor;
+            };
             const backupStatus = document.getElementById('backup-sync-status');
             if (backupStatus) {
                 backupStatus.innerText = statusText;
@@ -1247,7 +1264,7 @@
             const dashSyncSymbol = document.getElementById('dash-sync-symbol-path');
             if (dashSyncIcon && dashSyncSymbol) {
                 dashSyncSymbol.setAttribute('d', SYNC_SYMBOL_PATHS[syncIconState]);
-                dashSyncIcon.style.color = iconColor;
+                window.refreshSyncIconColor(syncIconState);
                 dashSyncIcon.classList.toggle('sync-icon-spin', syncIconState === 'syncing');
             }
             window._syncRepeatedlyFailing = repeatedlyFailing;
@@ -1285,9 +1302,15 @@
             el.style.padding = '0';
             el.style.borderRadius = '0';
             el.style.opacity = labelText ? '1' : '0';
+            window._syncMiniLabelActive = !!labelText;
+            if (window.refreshSyncIconColor) window.refreshSyncIconColor(state);
             clearTimeout(window._syncMiniLabelTimer);
-            if (state === 'synced') {
-                window._syncMiniLabelTimer = setTimeout(() => { el.style.opacity = '0'; }, 3000);
+            if (state === 'synced' || state === 'online') {
+                window._syncMiniLabelTimer = setTimeout(() => {
+                    el.style.opacity = '0';
+                    window._syncMiniLabelActive = false;
+                    if (window.refreshSyncIconColor) window.refreshSyncIconColor(window._lastSyncIconState);
+                }, 3000);
             }
         };
 
@@ -7916,6 +7939,23 @@
         return window.isLegNdaOriginatingFromHq(firstTrip) ? 45 : 30;
     };
 
+    window.getNdaSignOnFirstTrip = function(duty) {
+        if (!duty || !duty.length) return null;
+        const sorted = [...duty].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
+        const dummyUp = sorted.find(t => t.isDummyShuttle && t.shuttleDir === 'up');
+        if (dummyUp) return dummyUp;
+        const taClaimedNearby = window.getTaClaimedNearbyUpper();
+        const hqGroup = window.getHqGroupUpper();
+        const hq = (window.appState.profile.hq || 'BSB').trim().toUpperCase();
+        const first = sorted[0];
+        const firstDep = (first.depStn || '').trim().toUpperCase();
+        if (taClaimedNearby.includes(firstDep) && !hqGroup.includes(firstDep)) {
+            const bsbDep = addMinutesToLegDateTime(first.depDate, first.depTime, -PROJECTED_TA_CLAIMED_MARGIN_MINS);
+            return { ...first, depStn: hq, depDate: bsbDep.date, depTime: bsbDep.time };
+        }
+        return first;
+    };
+
     // Point 8 (v5.6): Destination & Diversion Stations popup
     // Point 5-iii: This modal now has its own independent Edit/Save state, separate from the main
     // Profile page's lock state — defaults to locked every time it's opened.
@@ -9563,7 +9603,7 @@
         const periodCap = new Date(ndaEnd.getTime() + 1000);
         dutyLegs.forEach(duty => {
             if (!duty.length) return;
-            const firstTrip = duty[0];
+            const firstTrip = window.getNdaSignOnFirstTrip(duty);
             const lastTrip = duty[duty.length - 1];
             const depMargin = window.getNdaDepMarginMins ? window.getNdaDepMarginMins(firstTrip) : 30;
             let defaultSignOn = new Date(`${firstTrip.depDate}T${firstTrip.depTime}:00`);
@@ -13774,13 +13814,14 @@
 
         dutyLegs.forEach(duty => { 
             if(duty.length === 0) return; 
-            let firstTrip = duty[0]; let lastTrip = duty[duty.length - 1]; 
+            let firstTrip = window.getNdaSignOnFirstTrip(duty);
+            let lastTrip = duty[duty.length - 1]; 
             const depMargin = window.getNdaDepMarginMins ? window.getNdaDepMarginMins(firstTrip) : 30;
             let defaultSignOn = new Date(`${firstTrip.depDate}T${firstTrip.depTime}:00`); defaultSignOn.setMinutes(defaultSignOn.getMinutes() - depMargin); 
             let signOff = new Date(`${lastTrip.arrDate}T${lastTrip.arrTime}:00`); signOff.setMinutes(signOff.getMinutes() + 30); 
             
             if (signOff <= ndaStart || defaultSignOn >= periodCap) return;
-            const rowKey = 'train:' + firstTrip.id;
+            const rowKey = 'train:' + duty[0].id;
             const defaultSignOnStr = `${String(defaultSignOn.getHours()).padStart(2,'0')}:${String(defaultSignOn.getMinutes()).padStart(2,'0')}`;
             const signOnStr = window.getNdaSignOnOverride(mo, rowKey, defaultSignOnStr);
             const signOn = window.applySignOnTimeOverride(defaultSignOn, signOnStr);
@@ -14787,13 +14828,9 @@
                 const dots = values.map((v, i) => {
                     const x = (i * stepX + xOffset).toFixed(1);
                     const y = toY(v).toFixed(1);
-                    const labelY = opts.labelsBelow
-                        ? Math.min(topMargin + height - 4, toY(v) + 14).toFixed(1)
-                        : Math.max(10, toY(v) - 9).toFixed(1);
-                    const anchor = opts.labelsBelow ? 'middle' : 'start';
-                    const rotate = opts.labelsBelow ? '' : ` transform="rotate(-90 ${x} ${labelY})"`;
+                    const labelY = Math.max(10, toY(v) - 9).toFixed(1);
                     return `<circle cx="${x}" cy="${y}" r="5" fill="${color}" stroke="var(--card)" stroke-width="1.5"></circle>
-                        ${v > 0 ? `<text x="${x}" y="${labelY}" font-size="10.5" font-weight="700" fill="${isDark ? '#FFFFFF' : '#000000'}" text-anchor="${anchor}"${rotate}>${v}</text>` : ''}`;
+                        ${v > 0 ? `<text x="${x}" y="${labelY}" font-size="10.5" font-weight="700" fill="${isDark ? '#FFFFFF' : '#000000'}" text-anchor="start" transform="rotate(-90 ${x} ${labelY})">${v}</text>` : ''}`;
                 }).join('');
                 const labelNames = isNDA ? [...MONTH_SHORT, MONTH_SHORT[0]] : MONTH_SHORT;
                 const monthLabels = labelNames.map((name, i) =>
@@ -14858,15 +14895,15 @@
                 const projColor = metric === 'hours' ? 'var(--blue)' : 'var(--green)';
                 const projSuffix = metric === 'hours' ? 'h' : '₹';
                 const projAvgKey = metric === 'hours' ? 'trend_graph_avg_nda_hrs' : 'trend_graph_avg_nda_money';
-                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { sectionTitle: projectedTitle, labelsBelow: compareOn, compactBottom: compareOn });
+                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { sectionTitle: projectedTitle, compactBottom: compareOn });
                 if (compareOn && actualValues) {
                     const actVals = metric === 'hours' ? actualValues.hourValues : actualValues.moneyValues;
-                    html += buildFutureGraph(actVals, 'var(--text-muted)', projSuffix, projAvgKey, null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, labelsBelow: true, compactBottom: true });
+                    html += buildFutureGraph(actVals, 'var(--text-muted)', projSuffix, projAvgKey, null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, compactBottom: true });
                 }
             } else {
-                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: projectedTitle, labelsBelow: compareOn, compactBottom: compareOn });
+                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: projectedTitle, compactBottom: compareOn });
                 if (compareOn && actualValues) {
-                    html += buildFutureGraph(actualValues.moneyValues, 'var(--text-muted)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, labelsBelow: true, compactBottom: true });
+                    html += buildFutureGraph(actualValues.moneyValues, 'var(--text-muted)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, compactBottom: true });
                 }
             }
             area.innerHTML = html;
@@ -15174,7 +15211,7 @@
             const r = window.getSalaryForMonth(mo);
             values.push(r ? r.total : 0);
         }
-        wrap.innerHTML = buildSalaryGraph(values, y, m - 1, t('salary_graph_actual', 'Actual Salary'));
+        wrap.innerHTML = buildSalaryGraph(values, y, m - 1, t('salary_graph_expected', 'Expected Salary'));
     };
 
     window.renderSalaryProjectedYearGraph = function() {
@@ -15206,7 +15243,8 @@
                 const r = window.calculateProjectedSalary(mo, projectedLegs);
                 values.push(r ? r.total : 0);
             }
-            wrap.innerHTML = buildSalaryGraph(values, y, m - 1, title);
+            wrap.innerHTML = buildSalaryGraph(values, y, m - 1, title) + `
+                <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('salary_projected_hint', 'TA and NDA amounts are taken from your roster link programme and train timings (projected duties), including DDU shuttle dummy trains where applicable.')}</p>`;
         });
     };
 
