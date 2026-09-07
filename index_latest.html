@@ -2665,8 +2665,8 @@
                 <h1 id="trend-screen-title" style="width:100%;">Travelling Allowances</h1>
             </div>
             <div style="display:flex; width:100%;">
-                <button id="trend-tab-graph-btn" class="header-tab active" onclick="window.switchTrendViewTab('graph')" data-i18n="trend_tab_graph">Graph View</button>
-                <button id="trend-tab-future-btn" class="header-tab" onclick="window.switchTrendViewTab('future')" data-i18n="trend_tab_future">Future Trends</button>
+                <button id="trend-tab-graph-btn" class="header-tab active" onclick="window.switchTrendViewTab('graph')">Actual TA</button>
+                <button id="trend-tab-future-btn" class="header-tab" onclick="window.switchTrendViewTab('future')">Projected TA</button>
                 <button id="trend-tab-signon-btn" class="header-tab hidden" onclick="window.switchTrendViewTab('signon')" data-i18n="trend_tab_signon">Sign On Time</button>
             </div>
         </div>
@@ -2711,6 +2711,7 @@
             <div id="salary-month-nav-wrap" style="margin-bottom:14px;"></div>
             <div id="salary-breakdown-body"></div>
             <div id="salary-graph-wrap" style="margin-top:34px;"></div>
+            <div id="salary-projected-graph-wrap" style="margin-top:34px;"></div>
         </div>
     </div>
 
@@ -6668,8 +6669,9 @@
             if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
             else window.renderYearlyLineGraph();
         }
-        if (!document.getElementById('screen-salary').classList.contains('hidden') && window.renderSalaryYearGraph) {
-            window.renderSalaryYearGraph();
+        if (!document.getElementById('screen-salary').classList.contains('hidden')) {
+            if (window.renderSalaryYearGraph) window.renderSalaryYearGraph();
+            if (window.renderSalaryProjectedYearGraph) window.renderSalaryProjectedYearGraph();
         }
         window.broadcastSettingToRoster('THEME_CHANGED', isDark);
         updateThemeColorMeta();
@@ -6717,9 +6719,14 @@
             if (trendTitleEl && window.i18n) {
                 trendTitleEl.innerText = currentTab === 'nda' ? window.i18n.t('trend_title_nda') : window.i18n.t('trend_title_ta');
             }
+            window.updateTrendViewTabLabels();
             if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
             else if (window._trendActiveView === 'signon') window.renderNdaSignOnTable();
             else window.renderYearlyLineGraph();
+        }
+        if (!document.getElementById('screen-salary').classList.contains('hidden')) {
+            if (window.renderSalaryYearGraph) window.renderSalaryYearGraph();
+            if (window.renderSalaryProjectedYearGraph) window.renderSalaryProjectedYearGraph();
         }
         // Same reasoning - the Generate button's TA/NDA-specific text is set via JS in
         // switchTab()/updateReportUI(), not a data-i18n tag.
@@ -13850,7 +13857,12 @@
             document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.t('nda_total_row') : "Total NDA");
         }
         animateTabSwitch(document.getElementById('report-summary-card'), direction);
-        updateReportUI(); 
+        updateReportUI();
+        if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
+            window.updateTrendViewTabLabels();
+            if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
+            else if (window._trendActiveView === 'graph') window.renderYearlyLineGraph();
+        }
     }
     
     window.setReportMonthFromPicker = function() {
@@ -13912,6 +13924,7 @@
                 ? (window.i18n ? window.i18n.t('trend_title_nda') : 'Night Duty Allowances')
                 : (window.i18n ? window.i18n.t('trend_title_ta') : 'Travelling Allowances');
         }
+        window.updateTrendViewTabLabels();
         window.navTo('screen-yearly-trend');
     }
 
@@ -13956,6 +13969,15 @@
         return rowGroups;
     };
 
+    window.updateTrendViewTabLabels = function() {
+        const graphBtn = document.getElementById('trend-tab-graph-btn');
+        const futureBtn = document.getElementById('trend-tab-future-btn');
+        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const isNda = currentTab === 'nda';
+        if (graphBtn) graphBtn.textContent = isNda ? t('trend_tab_actual_nda', 'Actual NDA') : t('trend_tab_actual_ta', 'Actual TA');
+        if (futureBtn) futureBtn.textContent = isNda ? t('trend_tab_projected_nda', 'Projected NDA') : t('trend_tab_projected_ta', 'Projected TA');
+    };
+
     window.switchTrendViewTab = function(view) {
         const isNda = currentTab === 'nda';
         if (view === 'signon' && !isNda) view = 'graph';
@@ -13979,6 +14001,7 @@
         if (futureMonthNav) futureMonthNav.classList.toggle('hidden', view !== 'future');
         if (futureDetail) futureDetail.classList.toggle('hidden', view !== 'future');
         if (signonArea) signonArea.classList.toggle('hidden', view !== 'signon');
+        window.updateTrendViewTabLabels();
         if (view === 'graph') window.renderYearlyLineGraph();
         else if (view === 'future') window.renderYearlyFutureTrendGraph();
         else if (view === 'signon') window.renderNdaSignOnTable();
@@ -14283,29 +14306,69 @@
             return `<p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px;">${t('future_trends_no_duties', 'No projected duties for this month.')}</p>`;
         }
 
-        const formatLegLine = (train, depStn, depTime, arrStn, arrTime, isDummy) => {
-            const dummyStyle = isDummy ? 'color:var(--orange); font-style:italic;' : '';
-            return `<span style="${dummyStyle}"><b>${train}</b> ${depStn} ${depTime} → ${arrStn} ${arrTime}</span>`;
+        const formatLegLine = (dateStr, train, depStn, depTime, arrStn, arrTime, isDummy) => {
+            const dummyStyle = isDummy ? 'color:var(--orange);' : '';
+            const dateLabel = dateStr ? `<span style="color:var(--text); font-weight:700; margin-right:6px;">${formatDateShort(dateStr)}</span>` : '';
+            return `<span style="${dummyStyle}">${dateLabel}<b>${train}</b> ${depStn} ${depTime} → ${arrStn} ${arrTime}</span>`;
+        };
+
+        const renderGroupedRows = (groups) => {
+            let html = '';
+            groups.forEach((group, gi) => {
+                group.rows.forEach((row, idx) => {
+                    const isLastInGroup = idx === group.rows.length - 1;
+                    const isLastGroup = gi === groups.length - 1;
+                    const borderStyle = (isLastInGroup && !isLastGroup) ? 'border-bottom:1px dashed var(--border);' : '';
+                    const line = formatLegLine(row.date, row.train, row.depStn, row.depTime, row.arrStn, row.arrTime, row.isDummy);
+                    const right = row.rightLabel || '';
+                    html += `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; ${borderStyle} font-size:12px;"><span style="color:var(--text-muted); flex:1; min-width:0;"><span style="margin-right:6px;">›</span>${line}</span>${right}</div>`;
+                });
+            });
+            return html;
         };
 
         let rowsHtml = '';
+        let footerHtml = '';
+
         if (isNDA) {
-            const { ndaData } = extractProjectedNDALegs(moKey, projectedLegs);
+            const { ndaData, totalNdaMinutes } = extractProjectedNDALegs(moKey, projectedLegs);
             if (!ndaData.length) {
                 return `<p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px;">${t('future_trends_no_nda', 'No projected night duties in this NDA period.')}</p>`;
             }
             const hrsSuffix = t('hrs_suffix', 'Hrs');
-            ndaData.forEach(entry => {
+            const groups = ndaData.map(entry => {
                 const h = Math.floor(entry.mins / 60);
                 const min = Math.round(entry.mins % 60);
                 const spellLabel = `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')} ${hrsSuffix}`;
-                entry.trips.forEach((trip, idx) => {
-                    const isDummy = trip.isDummyShuttle;
-                    const line = formatLegLine(trip.train, trip.depStn, trip.depTime, trip.arrStn, trip.arrTime, isDummy);
-                    const right = idx === 0 ? `<span style="font-weight:800; color:var(--blue);">${spellLabel}</span>` : '';
-                    rowsHtml += `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px dashed var(--border); font-size:12px;"><span style="color:var(--text-muted); flex:1; min-width:0;"><span style="margin-right:6px;">›</span>${line}</span>${right}</div>`;
-                });
+                return {
+                    rows: entry.trips.map((trip, idx) => ({
+                        date: trip.depDate,
+                        train: trip.train,
+                        depStn: trip.depStn,
+                        depTime: trip.depTime,
+                        arrStn: trip.arrStn,
+                        arrTime: trip.arrTime,
+                        isDummy: trip.isDummyShuttle,
+                        rightLabel: idx === 0 ? `<span style="font-weight:800; color:var(--blue);">${spellLabel}</span>` : ''
+                    }))
+                };
             });
+            rowsHtml = renderGroupedRows(groups);
+            const totalH = Math.floor(totalNdaMinutes / 60);
+            const totalM = Math.round(totalNdaMinutes % 60);
+            let ndaMoney = 0;
+            const p = window.appState.profile;
+            if (p && p.empType !== 'Gazetted' && totalNdaMinutes > 0) {
+                const bp = parseFloat(p.basicpay) || 0;
+                const cappedBp = bp > 43600 ? 43600 : bp;
+                const da = parseFloat(p.da) || 0;
+                const rate = (cappedBp + (cappedBp * da / 100)) / 200;
+                ndaMoney = Math.round((Math.floor(totalNdaMinutes / 60) / 6) * rate);
+            }
+            footerHtml = `<div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; color:var(--blue); background:var(--input-bg); border-radius:12px; padding:10px;">
+                <span>${t('future_trends_total_nda', 'Total NDA')}</span>
+                <span>${String(totalH).padStart(2, '0')}:${String(totalM).padStart(2, '0')} ${hrsSuffix}${ndaMoney > 0 ? ` · ₹${ndaMoney}` : ''}</span>
+            </div>`;
         } else {
             const cycles = buildCycles([...projectedLegs]);
             const detailRows = [];
@@ -14327,12 +14390,14 @@
                     const orig = item.originalLeg || item;
                     detailRows.push({
                         sortKey: new Date(`${item.date}T${item.depTime !== '-' ? item.depTime : (item.arrTime !== '-' ? item.arrTime : '00:00')}`),
+                        date: item.date,
                         train: item.train,
                         depStn: item.depStn !== '-' ? item.depStn : orig.depStn,
                         depTime: item.depTime !== '-' ? item.depTime : orig.depTime,
                         arrStn: item.arrStn !== '-' ? item.arrStn : orig.arrStn,
                         arrTime: item.arrTime !== '-' ? item.arrTime : orig.arrTime,
                         isDummy: orig.isDummyShuttle,
+                        groupKey: item.date + '_' + (matchingTA ? matchingTA.pct : '0'),
                         pct: (isLastOfDay && matchingTA) ? matchingTA.pct : null,
                         rate: (isLastOfDay && matchingTA) ? matchingTA.rate : null
                     });
@@ -14342,13 +14407,46 @@
             if (!detailRows.length) {
                 return `<p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px;">${t('future_trends_no_duties', 'No projected duties for this month.')}</p>`;
             }
+            const groups = [];
+            let currentGroup = null;
             detailRows.forEach(row => {
-                const line = formatLegLine(row.train, row.depStn, row.depTime, row.arrStn, row.arrTime, row.isDummy);
-                const right = row.pct != null
-                    ? `<span style="font-weight:800; color:var(--blue);">${row.pct}%</span>`
-                    : '';
-                rowsHtml += `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; border-bottom:1px dashed var(--border); font-size:12px;"><span style="color:var(--text-muted); flex:1; min-width:0;"><span style="margin-right:6px;">›</span>${line}</span>${right}</div>`;
+                if (!currentGroup || currentGroup.key !== row.groupKey) {
+                    currentGroup = { key: row.groupKey, rows: [] };
+                    groups.push(currentGroup);
+                }
+                currentGroup.rows.push({
+                    date: row.date,
+                    train: row.train,
+                    depStn: row.depStn,
+                    depTime: row.depTime,
+                    arrStn: row.arrStn,
+                    arrTime: row.arrTime,
+                    isDummy: row.isDummy,
+                    rightLabel: row.pct != null ? `<span style="font-weight:800; color:var(--blue);">${row.pct}%</span>` : ''
+                });
             });
+            rowsHtml = renderGroupedRows(groups);
+
+            const monthTaResults = [];
+            cycles.forEach(cycle => {
+                calculateProjectedCycleTA(cycle).forEach(r => {
+                    if (r.date.startsWith(moKey) && r.rate > 0) monthTaResults.push(r);
+                });
+            });
+            const counts = { 30: 0, 70: 0, 100: 0 };
+            let totalMoney = 0;
+            monthTaResults.forEach(r => {
+                counts[r.pct] = (counts[r.pct] || 0) + 1;
+                totalMoney += r.rate || 0;
+            });
+            const pctParts = [30, 70, 100].filter(p => counts[p] > 0).map(p => `${p}% × ${counts[p]}`).join(' · ');
+            footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:800; color:var(--blue); background:var(--input-bg); border-radius:12px; padding:10px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>${t('future_trends_total_ta', 'Total TA')}</span>
+                    <span>₹${Math.floor(totalMoney)}</span>
+                </div>
+                ${pctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${pctParts}</div>` : ''}
+            </div>`;
         }
 
         const heading = isNDA
@@ -14356,7 +14454,8 @@
             : t('future_trends_detail_ta', 'Projected Duties & TA %');
         return `
             <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; margin-bottom:8px; text-align:center;">${heading}</div>
-            <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:4px 12px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">${rowsHtml}</div>`;
+            <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:4px 12px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">${rowsHtml}${footerHtml}</div>
+            <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. For DDU (Nearby HQ-TA Claimed), dummy trains XXXXX/YYYYY cover BSB↔DDU travel — BSB departure is taken 3 hours before the DDU train, with 1 hour shuttle time to DDU.')}</p>`;
     };
 
     window.renderFutureTrendDetailList = function(projectedLegs) {
@@ -14465,11 +14564,8 @@
             </div>`;
     };
 
-    window.renderYearlyLineGraph = function() {
-        if (!window.appState.legs || !window.appState.profile) return;
-        const isNDA = currentTab === 'nda';
-        const year = window._trendCurrentYear;
-        const dutyOnly = window.appState.legs.filter(l => !l.isNonDuty);
+    window.computeActualTrendMonthlyValues = function(year, isNDA) {
+        const dutyOnly = (window.appState.legs || []).filter(l => !l.isNonDuty);
         const cycles = buildCycles([...dutyOnly].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`)));
         let taResultsAll = [];
         if (!isNDA) cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
@@ -14478,23 +14574,17 @@
         for (let i = 0; i < 12; i++) {
             let mo;
             if (isNDA) {
-                // Point (redesign): point i now represents the (i+1)-to-(i+2) calendar month NDA
-                // cycle (Jan-Feb for i=0, ..., Dec-Jan for i=11, wrapping into next year) instead
-                // of the (i)-to-(i+1) cycle previously used — this lines it up with a trailing
-                // 13th "Jan" gridline representing the wrap into next year, so all 12 of this
-                // year's NDA cycles (starting from Jan-Feb) are visible in one line.
                 let monthNum = i + 2, yr = year;
                 if (monthNum > 12) { monthNum -= 12; yr += 1; }
-                mo = `${yr}-${String(monthNum).padStart(2,'0')}`;
+                mo = `${yr}-${String(monthNum).padStart(2, '0')}`;
             } else {
-                mo = `${year}-${String(i + 1).padStart(2,'0')}`;
+                mo = `${year}-${String(i + 1).padStart(2, '0')}`;
             }
             if (isNDA) {
                 const { totalNdaMinutes } = extractNDALegs(mo);
                 const stationMins = extractStationDutyNDA(mo).totalMins;
                 const totalMins = totalNdaMinutes + stationMins;
-                const hrs = totalMins / 60;
-                hourValues.push(parseFloat(hrs.toFixed(1)));
+                hourValues.push(parseFloat((totalMins / 60).toFixed(1)));
                 let ndaMoney = 0;
                 const p = window.appState.profile;
                 if (p && p.empType !== 'Gazetted' && totalMins > 0) {
@@ -14502,12 +14592,7 @@
                     const cappedBp = bp > 43600 ? 43600 : bp;
                     const da = parseFloat(p.da) || 0;
                     const rate = (cappedBp + (cappedBp * da / 100)) / 200;
-                    // Point (fix): money must use FLOORED whole hours, matching the Dashboard's
-                    // Live Tracker card and the List view exactly — this was using the raw decimal
-                    // hours instead, which silently produced a slightly different (higher) money
-                    // figure than the other two views for the same underlying data.
-                    const flooredHrs = Math.floor(totalMins / 60);
-                    ndaMoney = Math.round((flooredHrs / 6) * rate);
+                    ndaMoney = Math.round((Math.floor(totalMins / 60) / 6) * rate);
                 }
                 moneyValues.push(ndaMoney);
             } else {
@@ -14515,6 +14600,14 @@
                 moneyValues.push(Math.floor(moResults.reduce((s, r) => s + (r.rate || 0), 0)));
             }
         }
+        return { hourValues, moneyValues };
+    };
+
+    window.renderYearlyLineGraph = function() {
+        if (!window.appState.legs || !window.appState.profile) return;
+        const isNDA = currentTab === 'nda';
+        const year = window._trendCurrentYear;
+        const { hourValues, moneyValues } = window.computeActualTrendMonthlyValues(year, isNDA);
 
         const MONTH_SHORT = trendLocalizedMonthShorts(year);
         const isDark = document.body.classList.contains('dark-mode');
@@ -14670,7 +14763,12 @@
             const isDark = document.body.classList.contains('dark-mode');
             const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
 
-            function buildFutureGraph(values, color, unitSuffix, avgLabelKey, overlayHtml) {
+            window._trendFutureCompareActual = window._trendFutureCompareActual || false;
+            const compareOn = window._trendFutureCompareActual;
+            const actualValues = compareOn ? window.computeActualTrendMonthlyValues(year, isNDA) : null;
+
+            function buildFutureGraph(values, color, unitSuffix, avgLabelKey, overlayHtml, opts) {
+                opts = opts || {};
                 const loggedVals = values.filter(v => v > 0);
                 const avg = loggedVals.length > 0 ? (loggedVals.reduce((a, b) => a + b, 0) / loggedVals.length) : 0;
                 const avgVal = unitSuffix === '₹' ? Math.round(avg) : avg.toFixed(1);
@@ -14689,9 +14787,13 @@
                 const dots = values.map((v, i) => {
                     const x = (i * stepX + xOffset).toFixed(1);
                     const y = toY(v).toFixed(1);
-                    const labelY = Math.max(10, toY(v) - 9).toFixed(1);
+                    const labelY = opts.labelsBelow
+                        ? Math.min(topMargin + height - 4, toY(v) + 14).toFixed(1)
+                        : Math.max(10, toY(v) - 9).toFixed(1);
+                    const anchor = opts.labelsBelow ? 'middle' : 'start';
+                    const rotate = opts.labelsBelow ? '' : ` transform="rotate(-90 ${x} ${labelY})"`;
                     return `<circle cx="${x}" cy="${y}" r="5" fill="${color}" stroke="var(--card)" stroke-width="1.5"></circle>
-                        ${v > 0 ? `<text x="${x}" y="${labelY}" font-size="10.5" font-weight="700" fill="${isDark ? '#FFFFFF' : '#000000'}" text-anchor="start" transform="rotate(-90 ${x} ${labelY})">${v}</text>` : ''}`;
+                        ${v > 0 ? `<text x="${x}" y="${labelY}" font-size="10.5" font-weight="700" fill="${isDark ? '#FFFFFF' : '#000000'}" text-anchor="${anchor}"${rotate}>${v}</text>` : ''}`;
                 }).join('');
                 const labelNames = isNDA ? [...MONTH_SHORT, MONTH_SHORT[0]] : MONTH_SHORT;
                 const monthLabels = labelNames.map((name, i) =>
@@ -14712,7 +14814,11 @@
                     const bandX = (highlightIdx * stepX + xOffset - stepX / 2).toFixed(1);
                     currentMonthBand = `<rect x="${bandX}" y="${topMargin}" width="${stepX.toFixed(1)}" height="${height}" fill="${color}" fill-opacity="0.18"/>`;
                 }
+                const sectionTitle = opts.sectionTitle
+                    ? `<div style="margin-top:${opts.sectionTitleMarginTop || 0}px; margin-bottom:8px; text-align:center; font-size:14px; font-weight:900; color:var(--text);">${opts.sectionTitle}</div>`
+                    : '';
                 return `
+                    ${sectionTitle}
                     <div style="position:relative; border-radius:12px; border:1px solid var(--border); padding:10px 6px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">
                         ${overlayHtml || ''}
                         <svg width="100%" height="${topMargin + height + 26}" viewBox="0 0 ${width} ${topMargin + height + 26}" style="display:block;">
@@ -14721,11 +14827,23 @@
                             ${dots}${monthLabels}
                         </svg>
                     </div>
-                    <div style="margin-top:8px; margin-bottom:6px; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>
-                    <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:0 0 14px; padding:0 8px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. DDU shuttle legs use dummy trains XXXXX (up) and YYYYY (down) with BSB↔DDU timing.')}</p>`;
+                    <div style="margin-top:8px; margin-bottom:${opts.compactBottom ? '6px' : '14px'}; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>`;
             }
 
-            let html;
+            const compareLabel = t('trend_compare_actual', 'Compare Actual');
+            const compareToggleHtml = `
+                <div style="display:flex; justify-content:center; margin-bottom:12px;">
+                    <button onclick="window.switchTrendFutureCompare()" type="button" style="margin:0; padding:8px 14px; font-size:11px; font-weight:800; border-radius:20px; background:${compareOn ? 'var(--blue-fill)' : 'var(--input-bg)'}; color:${compareOn ? 'white' : 'var(--text-muted)'}; border:1px solid var(--border); box-shadow:none;">${compareLabel}</button>
+                </div>`;
+
+            const projectedTitle = isNDA
+                ? t('trend_graph_projected_nda', 'Projected NDA')
+                : t('trend_graph_projected_ta', 'Projected TA');
+            const actualTitle = isNDA
+                ? t('trend_graph_actual_nda', 'Actual NDA')
+                : t('trend_graph_actual_ta', 'Actual TA');
+
+            let html = compareToggleHtml;
             if (isNDA) {
                 window._trendFutureNdaMetric = window._trendFutureNdaMetric || 'hours';
                 const metric = window._trendFutureNdaMetric;
@@ -14736,15 +14854,29 @@
                         <button onclick="window.switchTrendFutureNdaMetric('hours')" style="margin:0; padding:3px 8px; font-size:10px; font-weight:700; border-radius:8px; background:${metric === 'hours' ? 'var(--blue-fill)' : 'transparent'}; color:${metric === 'hours' ? 'white' : 'var(--text-muted)'}; box-shadow:none;">${hrsLabel}</button>
                         <button onclick="window.switchTrendFutureNdaMetric('money')" style="margin:0; padding:3px 8px; font-size:10px; font-weight:700; border-radius:8px; background:${metric === 'money' ? 'var(--green)' : 'transparent'}; color:${metric === 'money' ? 'white' : 'var(--text-muted)'}; box-shadow:none;">${moneyLabel}</button>
                     </div>`;
-                html = (metric === 'hours'
-                    ? buildFutureGraph(hourValues, 'var(--blue)', 'h', 'trend_graph_avg_nda_hrs', toggleHtml)
-                    : buildFutureGraph(moneyValues, 'var(--green)', '₹', 'trend_graph_avg_nda_money', toggleHtml));
+                const projVals = metric === 'hours' ? hourValues : moneyValues;
+                const projColor = metric === 'hours' ? 'var(--blue)' : 'var(--green)';
+                const projSuffix = metric === 'hours' ? 'h' : '₹';
+                const projAvgKey = metric === 'hours' ? 'trend_graph_avg_nda_hrs' : 'trend_graph_avg_nda_money';
+                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { sectionTitle: projectedTitle, labelsBelow: compareOn, compactBottom: compareOn });
+                if (compareOn && actualValues) {
+                    const actVals = metric === 'hours' ? actualValues.hourValues : actualValues.moneyValues;
+                    html += buildFutureGraph(actVals, 'var(--text-muted)', projSuffix, projAvgKey, null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, labelsBelow: true, compactBottom: true });
+                }
             } else {
-                html = buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta');
+                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: projectedTitle, labelsBelow: compareOn, compactBottom: compareOn });
+                if (compareOn && actualValues) {
+                    html += buildFutureGraph(actualValues.moneyValues, 'var(--text-muted)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, labelsBelow: true, compactBottom: true });
+                }
             }
             area.innerHTML = html;
             window.renderFutureTrendDetailList(projectedLegs);
         });
+    };
+
+    window.switchTrendFutureCompare = function() {
+        window._trendFutureCompareActual = !window._trendFutureCompareActual;
+        window.renderYearlyFutureTrendGraph();
     };
 
     window.switchTrendFutureNdaMetric = function(metric) {
@@ -14956,7 +15088,39 @@
     // buildOneGraph, since that function relies on closure variables (isNDA, year, isDark, etc.)
     // from renderYearlyLineGraph() that aren't available here. Highlights whichever month is
     // currently selected in the picker, not necessarily today's actual month.
-    function buildSalaryGraph(values, year, highlightMonthIdx) {
+    window.getProjectedTaNdaForMonth = function(moKey, projectedLegs) {
+        const [yr] = moKey.split('-');
+        const legs = projectedLegs || window.buildProjectedDutyLegsForYear(parseInt(yr));
+        const cycles = buildCycles([...legs]);
+        let taResultsAll = [];
+        cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateProjectedCycleTA(cycle)); });
+        const taThisMonth = Math.floor(taResultsAll.filter(r => r.date.startsWith(moKey)).reduce((s, r) => s + (r.rate || 0), 0));
+        let ndaMoney = 0;
+        const p = window.appState.profile;
+        if (p && p.empType !== 'Gazetted') {
+            const { totalNdaMinutes } = extractProjectedNDALegs(moKey, legs);
+            if (totalNdaMinutes > 0) {
+                const bp = parseFloat(p.basicpay) || 0;
+                const cappedBp = bp > 43600 ? 43600 : bp;
+                const da = parseFloat(p.da) || 0;
+                const rate = (cappedBp + (cappedBp * da / 100)) / 200;
+                ndaMoney = Math.round((Math.floor(totalNdaMinutes / 60) / 6) * rate);
+            }
+        }
+        return { taThisMonth, ndaMoney, projectedLegs: legs };
+    };
+
+    window.calculateProjectedSalary = function(targetMonthKey, projectedLegs) {
+        const base = calculateExpectedSalary(targetMonthKey);
+        if (!base) return null;
+        const proj = window.getProjectedTaNdaForMonth(targetMonthKey, projectedLegs);
+        const total = base.basicPay + base.daAmount + base.hraAmount + base.tptAmount + proj.taThisMonth + proj.ndaMoney + base.nhaMoney + base.dressAmount + base.plbAmount - base.relsAmount - base.npsAmount;
+        return { ...base, taThisMonth: proj.taThisMonth, ndaMoney: proj.ndaMoney, total: Math.round(total) };
+    };
+
+    function buildSalaryGraph(values, year, highlightMonthIdx, sectionTitle) {
+        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const title = sectionTitle || '';
         const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const isDark = document.body.classList.contains('dark-mode');
         const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
@@ -14988,6 +15152,7 @@
             highlightBand = `<rect x="${bandX}" y="${topMargin}" width="${stepX.toFixed(1)}" height="${height}" fill="${color}" fill-opacity="0.18"/>`;
         }
         return `
+            ${title ? `<div style="font-size:14px; font-weight:900; text-align:center; color:var(--text); margin-bottom:10px;">${title}</div>` : ''}
             <div style="position:relative; border-radius:12px; border:1px solid var(--border); padding:10px 6px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">
                 <svg width="100%" height="${topMargin + height + 26}" viewBox="0 0 ${width} ${topMargin + height + 26}" style="display:block;">
                     ${highlightBand}${vGridLines}${baseline}
@@ -15001,6 +15166,7 @@
     window.renderSalaryYearGraph = function() {
         const wrap = document.getElementById('salary-graph-wrap');
         if (!wrap) return;
+        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
         const [y, m] = window._salaryCurrentMonthKey.split('-').map(Number);
         const values = [];
         for (let mm = 1; mm <= 12; mm++) {
@@ -15008,7 +15174,40 @@
             const r = window.getSalaryForMonth(mo);
             values.push(r ? r.total : 0);
         }
-        wrap.innerHTML = buildSalaryGraph(values, y, m - 1);
+        wrap.innerHTML = buildSalaryGraph(values, y, m - 1, t('salary_graph_actual', 'Actual Salary'));
+    };
+
+    window.renderSalaryProjectedYearGraph = function() {
+        const wrap = document.getElementById('salary-projected-graph-wrap');
+        if (!wrap) return;
+        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const [y, m] = window._salaryCurrentMonthKey.split('-').map(Number);
+        const title = t('salary_graph_projected', 'Projected Salary');
+
+        if (!window.isBsbRosterHq() || !localStorage.getItem('roster_my_team')) {
+            wrap.innerHTML = `<div style="font-size:14px; font-weight:900; text-align:center; color:var(--text); margin-bottom:10px;">${title}</div>
+                <p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px; line-height:1.5;">${t('salary_projected_unavailable', 'Projected salary needs BSB roster and your Team No. set in Roster.')}</p>`;
+            return;
+        }
+
+        wrap.innerHTML = `<div style="font-size:14px; font-weight:900; text-align:center; color:var(--text); margin-bottom:10px;">${title}</div>
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; padding:20px;"><div style="width:18px; height:18px; border:3px solid color-mix(in srgb, var(--text) 25%, transparent); border-top-color:var(--green); border-radius:50%; animation:splashSpin 0.8s linear infinite;"></div><span style="font-size:12px; color:var(--text-muted);">${t('future_trends_loading', 'Loading roster schedule…')}</span></div>`;
+
+        window.ensureRosterDataForTrends((ok) => {
+            if (!ok || !window.rosterData) {
+                wrap.innerHTML = `<div style="font-size:14px; font-weight:900; text-align:center; color:var(--text); margin-bottom:10px;">${title}</div>
+                    <p style="padding:12px; text-align:center; color:var(--red); font-size:12px;">${t('future_trends_load_failed', 'Could not load roster data. Connect once online to cache it.')}</p>`;
+                return;
+            }
+            const projectedLegs = window.buildProjectedDutyLegsForYear(y);
+            const values = [];
+            for (let mm = 1; mm <= 12; mm++) {
+                const mo = `${y}-${String(mm).padStart(2,'0')}`;
+                const r = window.calculateProjectedSalary(mo, projectedLegs);
+                values.push(r ? r.total : 0);
+            }
+            wrap.innerHTML = buildSalaryGraph(values, y, m - 1, title);
+        });
     };
 
     window.renderSalaryMonthNav = function() {
@@ -15084,6 +15283,7 @@
             </div>`;
         window.renderSalaryMonthNav();
         window.renderSalaryYearGraph();
+        window.renderSalaryProjectedYearGraph();
         window.navTo('screen-salary');
     };
 
