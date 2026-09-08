@@ -15632,7 +15632,7 @@
                     : (avgLabelKey === 'trend_graph_avg_nda_hrs'
                         ? `Projected avg : ${avgVal} hrs/month`
                         : `Projected avg : ₹${avgVal}/month`);
-                const labelNames = isNDA ? [...MONTH_SHORT, MONTH_SHORT[0]] : MONTH_SHORT;
+                const labelNames = MONTH_SHORT;
                 const gridlineCount = isNDA ? 13 : 12;
                 const stepX = 320 / (gridlineCount - 1);
                 const xOffset = isNDA ? stepX / 2 : 0;
