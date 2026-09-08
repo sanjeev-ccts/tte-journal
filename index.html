@@ -1589,7 +1589,7 @@
                 const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
                     (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                     '</p>' +
-                    '<button onclick="window._tripFormDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window._tripFormDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
                     '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
                 showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
@@ -1607,7 +1607,7 @@
                 const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
                     (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                     '</p>' +
-                    '<button onclick="window._sheetDiscardAndLeaveFromBack()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window._sheetDiscardAndLeaveFromBack()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
                     '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
                 showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
@@ -4876,7 +4876,7 @@
     // initial UI check once the page loads, in case beforeinstallprompt already fired early.
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./service-worker.js?v=2.4').catch(() => {});
+            navigator.serviceWorker.register('./service-worker.js?v=2.5').catch(() => {});
         });
     }
     document.addEventListener('DOMContentLoaded', () => window.updatePWAInstallUI());
@@ -4951,7 +4951,7 @@
         if (!container) return;
         const items = Object.entries(window.adminAnnouncements || {}).sort((a,b) => ((b[1].createdAt||0)-(a[1].createdAt||0)));
         if (!items.length) {
-            container.innerHTML = `<p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:8px 0;">${window.i18n ? window.i18n.tOr('no_active_announcements', 'No active announcements.'}</p>`) : 'No active announcements.'}</p>`;
+            container.innerHTML = `<p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:8px 0;">${window.i18n ? window.i18n.tOr('no_active_announcements', 'No active announcements.') : 'No active announcements.'}</p>`;
             return;
         }
         container.innerHTML = items.map(([id, a]) => `
@@ -4993,7 +4993,7 @@
         if (!container) return;
         const items = Object.entries(window.dashboardAnnouncements || {}).sort((a,b) => (b[1].createdAt||0)-(a[1].createdAt||0));
         if (!items.length) {
-            container.innerHTML = `<p style="font-size:12px; color:var(--text-muted); text-align:center; margin:10px 0;">${window.i18n ? window.i18n.tOr('no_dashboard_announcements', 'No dashboard announcements yet.'}</p>`) : 'No dashboard announcements yet.'}</p>`;
+            container.innerHTML = `<p style="font-size:12px; color:var(--text-muted); text-align:center; margin:10px 0;">${window.i18n ? window.i18n.tOr('no_dashboard_announcements', 'No dashboard announcements yet.') : 'No dashboard announcements yet.'}</p>`;
             return;
         }
         container.innerHTML = items.map(([id, a]) => `
@@ -6812,7 +6812,7 @@
             ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
             : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
         const themeLabel = document.getElementById('theme-toggle-label');
-        if (themeLabel) themeLabel.innerText = window.i18n ? window.i18n.tOr(isDark ? 'light' : 'dark', (isDark ) : (isDark ? 'Light' : 'Dark');
+        if (themeLabel) themeLabel.innerText = window.i18n ? window.i18n.tOr(isDark ? 'light' : 'dark', isDark ? 'Light' : 'Dark') : (isDark ? 'Light' : 'Dark');
         
         if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
         if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
@@ -6931,7 +6931,7 @@
             if(tt) tt.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
         }
         const themeLabelOnLoad = document.getElementById('theme-toggle-label');
-        if (themeLabelOnLoad) themeLabelOnLoad.innerText = window.i18n ? window.i18n.tOr(isDarkOnLoad ? 'light' : 'dark', (isDarkOnLoad ) : (isDarkOnLoad ? 'Light' : 'Dark');
+        if (themeLabelOnLoad) themeLabelOnLoad.innerText = window.i18n ? window.i18n.tOr(isDarkOnLoad ? 'light' : 'dark', isDarkOnLoad ? 'Light' : 'Dark') : (isDarkOnLoad ? 'Light' : 'Dark');
         updateThemeColorMeta();
         const langLabelOnLoad = document.getElementById('language-toggle-label');
         if (langLabelOnLoad) langLabelOnLoad.innerText = (window.i18n && window.i18n.getLang() === 'hi') ? 'English' : 'Hindi';
@@ -7345,7 +7345,7 @@
                 const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
                     (window.i18n ? window.i18n.tOr('profile_unsaved_message', "You haven't saved these profile changes yet. If you leave now, they will be discarded.") : "You haven't saved these profile changes yet. If you leave now, they will be discarded.") +
                     '</p>' +
-                    '<button onclick="window._profileDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window._profileDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
                     '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
                 showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
@@ -7363,7 +7363,7 @@
                 const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
                     (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                     '</p>' +
-                    '<button onclick="window._sheetDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window._sheetDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
                     '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
                 showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
@@ -10468,7 +10468,7 @@
             const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
                 (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                 '</p>' +
-                '<button onclick="window._sheetDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                '<button onclick="window._sheetDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
                 '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                 '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
             showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
@@ -11215,7 +11215,7 @@
             const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
                 (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                 '</p>' +
-                '<button onclick="window._sheetDiscardActiveRowByRowId(' + pending.rowId + ')" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                '<button onclick="window._sheetDiscardActiveRowByRowId(' + pending.rowId + ')" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
                 '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                 '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
             showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
@@ -11228,7 +11228,7 @@
             const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
                 (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                 '</p>' +
-                '<button onclick="window._sheetDiscardRowEditByRowId(' + pending.rowId + ')" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                '<button onclick="window._sheetDiscardRowEditByRowId(' + pending.rowId + ')" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
                 '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                 '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
             showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
@@ -11295,8 +11295,8 @@
     // "confirmation" above happens too late to catch a mis-tap, so this asks first.
     window.sheetSaveEditedRows = function() {
         showModal(
-            window.i18n ? window.i18n.tOr('sheet_save_confirm_title', 'Save Changes) : 'Save Changes?',
-            window.i18n ? window.i18n.tOr('sheet_save_edited_confirm_msg', 'Save the changes you made to these entries) : 'Save the changes you made to these entries?',
+            window.i18n ? window.i18n.tOr('sheet_save_confirm_title', 'Save Changes?') : 'Save Changes?',
+            window.i18n ? window.i18n.tOr('sheet_save_edited_confirm_msg', 'Save the changes you made to these entries?') : 'Save the changes you made to these entries?',
             'info', true,
             (confirmed) => { if (confirmed) sheetSaveEditedRowsConfirmed(); }
         );
@@ -11320,8 +11320,8 @@
         const activeRow = window._sheetRows[window._sheetRows.length - 1];
         if (!activeRow || activeRow.locked || !sheetRowHasAnyData(activeRow)) return;
         showModal(
-            window.i18n ? window.i18n.tOr('sheet_add_confirm_title', 'Add Journey) : 'Add Journey?',
-            window.i18n ? window.i18n.tOr('sheet_add_confirm_msg', 'Add this journey entry) : 'Add this journey entry?',
+            window.i18n ? window.i18n.tOr('sheet_add_confirm_title', 'Add Journey?') : 'Add Journey?',
+            window.i18n ? window.i18n.tOr('sheet_add_confirm_msg', 'Add this journey entry?') : 'Add this journey entry?',
             'info', true,
             (confirmed) => { if (confirmed) window.sheetSaveRow(activeRow.rowId); }
         );
@@ -12434,7 +12434,7 @@
                     ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
                     : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
                 const themeLabelEl = document.getElementById('theme-toggle-label');
-                if (themeLabelEl) themeLabelEl.innerText = window.i18n ? window.i18n.tOr(isDark ? 'light' : 'dark', (isDark ) : (isDark ? 'Light' : 'Dark');
+                if (themeLabelEl) themeLabelEl.innerText = window.i18n ? window.i18n.tOr(isDark ? 'light' : 'dark', isDark ? 'Light' : 'Dark') : (isDark ? 'Light' : 'Dark');
                 if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
                 if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
             }
@@ -12863,7 +12863,7 @@
             .filter(item => tokens.every(tok => item.haystack.includes(tok)))
             .slice(0, 45);
         if (!matches.length) {
-            resultsEl.innerHTML = `<div class="dash-global-search-empty">${window.i18n ? window.i18n.tOr('global_search_no_results', 'No matches found'}</div>`) : 'No matches found'}</div>`;
+            resultsEl.innerHTML = `<div class="dash-global-search-empty">${window.i18n ? window.i18n.tOr('global_search_no_results', 'No matches found') : 'No matches found'}</div>`;
             resultsEl.classList.remove('hidden');
             return;
         }
@@ -13703,7 +13703,7 @@
     };
     
     function deleteLeg(id) { 
-        showModal("WARNING", (window.i18n ? window.i18n.tOr('delete_entry_warning', "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete) : "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?"), "warning", true, (proceed) => {
+        showModal("WARNING", (window.i18n ? window.i18n.tOr('delete_entry_warning', "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?") : "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?"), "warning", true, (proceed) => {
             if(proceed) {
                 pushUndoState(); window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); window.renderAllLogs(); window.updateDashboardUI();
                 if (window._sheetModeActive && window._sheetModeDeleteCallback) window._sheetModeDeleteCallback(id);
@@ -16600,8 +16600,8 @@
                 }
             }
             if(document.getElementById('rep-nda-trains')) document.getElementById('rep-nda-trains').innerText = nightTrainCount;
-            if(document.getElementById('rep-nda-hours')) document.getElementById('rep-nda-hours').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} ${window.i18n ? window.i18n.tOr('hrs_suffix', 'Hrs'}`) : 'Hrs'}`;
-            if(document.getElementById('rep-nda-units')) document.getElementById('rep-nda-units').innerText = `${ndaUnits} ${window.i18n ? window.i18n.tOr('report_units_suffix', 'units'}`) : 'units'}`;
+            if(document.getElementById('rep-nda-hours')) document.getElementById('rep-nda-hours').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} ${window.i18n ? window.i18n.tOr('hrs_suffix', 'Hrs') : 'Hrs'}`;
+            if(document.getElementById('rep-nda-units')) document.getElementById('rep-nda-units').innerText = `${ndaUnits} ${window.i18n ? window.i18n.tOr('report_units_suffix', 'units') : 'units'}`;
             document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
         }
         renderTaJournalSummary(mo);
