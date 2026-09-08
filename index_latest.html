@@ -2447,7 +2447,7 @@
             }
         });
     </script>
-<script src="./i18n.js?v=1.3"></script>
+<script src="./i18n.js?v=1.4"></script>
     <!-- Point: PDF.js renders PDF pages onto a canvas ourselves, instead of relying on the browser's
          native inline PDF support — Android Chrome doesn't reliably render PDFs inside an <iframe>,
          instead showing a native "open with..." placeholder. This works identically everywhere. -->
@@ -6876,8 +6876,16 @@
             else window.renderYearlyLineGraph();
         }
         if (!document.getElementById('screen-salary').classList.contains('hidden')) {
-            if (window.renderSalaryYearGraph) window.renderSalaryYearGraph();
-            if (window.renderSalaryProjectedYearGraph) window.renderSalaryProjectedYearGraph();
+            if (window._salaryCurrentMonthKey && window.showSalaryBreakdown) {
+                window.showSalaryBreakdown(window._salaryCurrentMonthKey);
+            } else {
+                if (window.renderSalaryYearGraph) window.renderSalaryYearGraph();
+                if (window.renderSalaryProjectedYearGraph) window.renderSalaryProjectedYearGraph();
+            }
+            if (window.i18n && window.i18n.applyTranslations) {
+                const salaryScreen = document.getElementById('screen-salary');
+                if (salaryScreen) window.i18n.applyTranslations(salaryScreen);
+            }
         }
         // Same reasoning - the Generate button's TA/NDA-specific text is set via JS in
         // switchTab()/updateReportUI(), not a data-i18n tag.
@@ -12627,7 +12635,7 @@
     ];
 
     window._globalSearchMonthEntries = function() {
-        const label = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const label = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const months = [
             { en: 'January', hi: 'जनवरी', abbr: 'jan' },
             { en: 'February', hi: 'फ़रवरी', abbr: 'feb' },
@@ -12666,7 +12674,7 @@
 
     window.buildGlobalSearchIndex = function() {
         const items = [];
-        const label = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const label = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const featureEntries = [
             { labelKey: 'nav_all_journey', fallback: 'Journeys', aliases: ['journey', 'journeys', 'train', 'all journey', 'logs', 'history', 'यात्रा', 'सभी यात्राएं'], run: () => window.navTo('screen-all') },
             { labelKey: 'page_title_add_journey', fallback: 'Add Journey', aliases: ['add', 'quick add', 'new journey', 'duty', 'यात्रा जोड़ें'], run: () => { window.switchAddTab('duty'); window.navTo('screen-add'); } },
@@ -14267,7 +14275,7 @@
     window.updateTrendViewTabLabels = function() {
         const graphBtn = document.getElementById('trend-tab-graph-btn');
         const futureBtn = document.getElementById('trend-tab-future-btn');
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const isNda = currentTab === 'nda';
         if (graphBtn) graphBtn.textContent = isNda ? t('trend_tab_actual_nda', 'Actual NDA') : t('trend_tab_actual_ta', 'Actual TA');
         if (futureBtn) futureBtn.textContent = isNda ? t('trend_tab_projected_nda', 'Projected NDA') : t('trend_tab_projected_ta', 'Projected TA');
@@ -14365,7 +14373,7 @@
         const body = document.getElementById('nda-signon-table-body');
         const header = document.getElementById('nda-signon-table-header');
         if (!body || !header) return;
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         header.innerHTML = `
             <th style="padding:7px 4px; font-size:9px; color:var(--all-header-text);">${t('nda_signon_col_date', 'Date')}</th>
             <th style="padding:6px 2px; font-size:9px; color:var(--all-header-text); border-left:1px solid rgba(255,255,255,0.2);">${t('nda_signon_col_train', 'Train')}</th>
@@ -14540,7 +14548,7 @@
             }
         }
 
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const headerCols = isNDA
             ? `<th style="padding:8px; font-size:11px; text-align:center;">${t('trend_col_month', 'Month')}</th><th style="padding:8px; font-size:11px; text-align:center;">${t('trend_col_hours', 'Hours')}</th><th style="padding:8px; font-size:11px; text-align:center;">${t('trend_col_nda_amt', '₹ NDA')}</th>`
             : `<th style="padding:8px; font-size:11px; text-align:center;">${t('trend_col_month', 'Month')}</th><th colspan="2" style="padding:8px; font-size:11px; text-align:center;">${t('trend_col_ta_amt', '₹ TA')}</th>`;
@@ -14559,7 +14567,7 @@
     };
 
     window.buildMonthlyBreakdownSectionHtml = function() {
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         return `<div style="margin-top:16px;">
             <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; margin-bottom:8px; text-align:center;">${t('trend_list_heading', 'Monthly Breakdown')}</div>
             ${window.buildYearlyTrendTableHtml()}
@@ -14574,7 +14582,7 @@
     };
 
     window.buildActualNdaDetailHtml = function(moKey) {
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const { ndaData, totalNdaMinutes } = extractNDALegs(moKey);
         const stationMins = extractStationDutyNDA(moKey).totalMins;
         const totalMins = totalNdaMinutes + stationMins;
@@ -14615,7 +14623,7 @@
     };
 
     window.buildActualTrendDetailHtml = function(moKey, skipOuterHeading) {
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const dutyOnly = (window.appState.legs || []).filter(l => !l.isNonDuty);
         const { byDate, monthTotal, counts } = window.buildTrendTaDayIndex(moKey, dutyOnly, false);
 
@@ -15158,7 +15166,7 @@
     };
 
     window.buildFutureTrendDetailHtml = function(moKey, projectedLegs) {
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const isNDA = currentTab === 'nda';
         const compareOn = !!window._trendFutureCompareActual;
         if (!projectedLegs || !projectedLegs.length) {
@@ -15363,7 +15371,7 @@
     // have a fixed daily target the way calories do). TA's value basis is money (₹); NDA's is
     // explicitly HOURS, not money, per the request — the ₹ conversion still exists in List View.
     window.buildTaDaReferenceHtml = function() {
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const pctRows = [
             [t('ta_da_pct_row1', 'Not exceeding 6 hours'), '30%'],
             [t('ta_da_pct_row2', 'Between 6 to 12 hours'), '70%'],
@@ -15416,7 +15424,7 @@
     };
 
     window.buildNdaReferenceHtml = function() {
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const ruleRows = [
             [t('nda_ref_col_rule', 'Rule'), t('nda_ref_col_details', 'Details')],
             [t('nda_ref_row_night_hours', 'Night Duty Hours'), t('nda_ref_val_night_hours', '22:00 to 06:00')],
@@ -15626,7 +15634,7 @@
             const stepX = 320 / (gridlineCount - 1);
             const xOffset = isNDA ? stepX / 2 : 0;
             const highlightIdx = window.getTrendGraphHighlightIdx(year, isNDA, highlightMonthKey);
-            const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+            const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
             const title = graphTitle || (isNDA
                 ? (unitSuffix === 'h' ? t('trend_graph_actual_nda', 'Actual NDA') : t('trend_graph_actual_nda', 'Actual NDA'))
                 : t('trend_graph_actual_ta', 'Actual TA'));
@@ -15679,7 +15687,7 @@
         const futureDetail = document.getElementById('trend-future-detail-wrap');
         if (listBelow) listBelow.classList.add('hidden');
         if (!area) return;
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         window.ensureFutureTrendMonthKey();
         window.renderFutureTrendMonthNav();
 
@@ -16032,7 +16040,7 @@
 
     function buildSalaryGraph(values, year, highlightMonthIdx, sectionTitle, opts) {
         opts = opts || {};
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const MONTH_SHORT = trendLocalizedMonthShorts(year);
         const color = opts.color || (document.body.classList.contains('green-theme') ? 'var(--green)' : 'var(--blue)');
         const loggedVals = values.filter(v => v > 0);
@@ -16049,7 +16057,7 @@
 
     window.buildSalaryBreakdownHtml = function(result, opts) {
         opts = opts || {};
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const isProjected = !!opts.isProjected;
         const compareExpected = !!opts.compareExpected;
         const expectedResult = opts.expectedResult;
@@ -16132,7 +16140,7 @@
     window.renderSalaryProjectedBreakdown = function() {
         const body = document.getElementById('salary-projected-breakdown-body');
         if (!body) return;
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const moKey = window._salaryCurrentMonthKey;
         const expectedResult = window.getSalaryForMonth(moKey);
         if (!window.isBsbRosterHq() || !localStorage.getItem('roster_my_team')) {
@@ -16160,7 +16168,7 @@
     window.renderSalaryYearGraph = function() {
         const wrap = document.getElementById('salary-graph-wrap');
         if (!wrap) return;
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const [y, m] = window._salaryCurrentMonthKey.split('-').map(Number);
         const values = [];
         for (let mm = 1; mm <= 12; mm++) {
@@ -16174,7 +16182,7 @@
     window.renderSalaryProjectedYearGraph = function() {
         const wrap = document.getElementById('salary-projected-graph-wrap');
         if (!wrap) return;
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
         const [y, m] = window._salaryCurrentMonthKey.split('-').map(Number);
         const compareOn = !!window._salaryCompareExpected;
 
@@ -16255,6 +16263,10 @@
         document.getElementById('salary-breakdown-body').innerHTML = window.buildSalaryBreakdownHtml(result, { isProjected: false });
         window.renderSalaryMonthNav();
         window.switchSalaryTab(window._salaryActiveTab);
+        if (window.i18n && window.i18n.applyTranslations) {
+            const salaryScreen = document.getElementById('screen-salary');
+            if (salaryScreen) window.i18n.applyTranslations(salaryScreen);
+        }
         const salaryEl = document.getElementById('screen-salary');
         if (salaryEl && salaryEl.classList.contains('hidden')) window.navTo('screen-salary');
     };

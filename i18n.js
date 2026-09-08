@@ -1081,6 +1081,12 @@
         return (DICT[lang] && DICT[lang][key]) || DICT.en[key] || key;
     }
 
+    // Like t(), but returns fallback when the key is missing instead of showing the raw key.
+    function tOr(key, fallback) {
+        const v = t(key);
+        return v === key && fallback !== undefined ? fallback : v;
+    }
+
     // Like t(), but substitutes {placeholders} with dynamic values (station codes,
     // dates, times, train numbers etc.) that must stay as-is regardless of language.
     function tf(key, vars) {
@@ -1106,7 +1112,10 @@
     function applyTranslations(root) {
         root = root || document;
         root.querySelectorAll('[data-i18n]').forEach(el => {
-            el.textContent = t(el.getAttribute('data-i18n'));
+            const key = el.getAttribute('data-i18n');
+            const v = t(key);
+            // Keep the HTML fallback text when a key is missing — never show raw keys like salary_row_basic.
+            if (v !== key) el.textContent = v;
         });
         root.querySelectorAll('[data-i18n-title]').forEach(el => {
             el.title = t(el.getAttribute('data-i18n-title'));
@@ -1127,7 +1136,7 @@
         }
     };
 
-    window.i18n = { t, tf, translateTitle, applyTranslations, getLang, setLang, LANG_KEY };
+    window.i18n = { t, tOr, tf, translateTitle, applyTranslations, getLang, setLang, LANG_KEY };
 
     document.addEventListener('DOMContentLoaded', function () {
         applyTranslations();
