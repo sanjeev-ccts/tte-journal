@@ -4876,7 +4876,7 @@
     // initial UI check once the page loads, in case beforeinstallprompt already fired early.
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./service-worker.js?v=1.7').catch(() => {});
+            navigator.serviceWorker.register('./service-worker.js?v=2.4').catch(() => {});
         });
     }
     document.addEventListener('DOMContentLoaded', () => window.updatePWAInstallUI());

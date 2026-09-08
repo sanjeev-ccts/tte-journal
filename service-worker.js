@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tte-tracker-v1.9';
+const CACHE_NAME = 'tte-tracker-v2.4';
 const CORE_ASSETS = [
     './index.html',
     './roster.html',
@@ -91,6 +91,17 @@ function isManagedRequest(url) {
     return EXTERNAL_ASSETS.includes(url.href.split('?')[0]) || EXTERNAL_ASSETS.includes(url.href);
 }
 
+// Cache stores bare paths (e.g. ./i18n.js) but pages may request versioned URLs (i18n.js?v=1.5).
+function matchCached(request) {
+    return caches.match(request).then((cached) => {
+        if (cached) return cached;
+        const url = new URL(request.url);
+        if (url.origin !== self.location.origin) return null;
+        const barePath = url.pathname;
+        return caches.match(barePath).then((bareCached) => bareCached || caches.match('.' + barePath));
+    });
+}
+
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
@@ -100,7 +111,7 @@ self.addEventListener('fetch', (event) => {
 
     event.respondWith(
         Promise.race([fetch(event.request), timeoutAfter(FETCH_TIMEOUT_MS)]).catch(() => {
-            return caches.match(event.request).then((cached) => {
+            return matchCached(event.request).then((cached) => {
                 if (cached) return cached;
                 if (event.request.mode === 'navigate') return caches.match('./index.html');
                 return Response.error();
