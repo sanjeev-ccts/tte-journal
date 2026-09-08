@@ -599,13 +599,15 @@
         body:not(.green-theme) #trend-future-month-nav-wrap .month-nav-arrow-btn--green { color: var(--blue); border-color: var(--blue); }
         .trend-compare-scroll { overflow-x: auto; overflow-y: visible; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; touch-action: auto; margin: 0 -4px; padding: 0 2px; }
         .trend-compare-inner { min-width: 680px; }
-        .trend-compare-head { display: flex; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); padding: 6px 0 4px; border-bottom: 1px solid var(--border); }
+        .trend-compare-head { display: flex; align-items: stretch; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); padding: 6px 0 4px; border-bottom: 1px solid var(--border); }
         .trend-compare-head-proj { flex: 1; min-width: 0; padding-right: 8px; text-align: left; }
         .trend-compare-head-act { flex: 1; min-width: 0; padding-left: 8px; text-align: right; }
         .trend-compare-pair { display: flex; align-items: stretch; gap: 0; padding: 9px 0; font-size: 12px; }
         .trend-compare-pair.dashed-below { border-bottom: 1px dashed var(--border); }
         .trend-compare-col { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; }
-        .trend-compare-divider { width: 1px; background: var(--border); flex-shrink: 0; align-self: stretch; margin: 0 2px; }
+        .trend-compare-divider { width: 2px; background: var(--border); flex-shrink: 0; align-self: stretch; margin: 0 2px; }
+        .trend-compare-head-divider { width: 2px; background: var(--border); flex-shrink: 0; align-self: stretch; margin: 0 2px; }
+        .trend-compare-actual-only .trend-compare-journey { color: var(--purple) !important; }
         .trend-compare-proj { padding-right: 8px; color: var(--text-muted); justify-content: flex-start; }
         .trend-compare-proj .trend-compare-journey { flex: 1; min-width: 0; }
         .trend-compare-proj .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--blue); min-width: 40px; text-align: right; }
@@ -614,8 +616,10 @@
         .trend-compare-act .trend-compare-journey { flex: 1; min-width: 0; text-align: right; }
         .trend-compare-act .trend-compare-date { flex-shrink: 0; font-weight: 700; color: var(--text); margin-left: 4px; }
         .trend-compare-empty { color: var(--text-muted); opacity: 0.45; }
-        .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 10px 6px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow: hidden; }
-        .trend-graph-title { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 2; font-size: 14px; font-weight: 900; color: var(--text); text-align: center; white-space: nowrap; pointer-events: none; max-width: 92%; overflow: hidden; text-overflow: ellipsis; }
+        .trend-graph-heading { text-align: center; font-size: 14px; font-weight: 900; color: var(--text); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 0; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow: hidden; }
+        .trend-graph-plot-wrap { position: relative; padding: 0 6px 6px; }
+        .trend-graph-highlight { position: absolute; top: 0; bottom: 0; z-index: 0; pointer-events: none; }
         .trend-compare-fab { color: #fff; margin: 0; max-width: none; padding: 0; }
         .trend-compare-fab svg { width: 26px; height: 22px; display: block; }
         .trend-compare-fab.active { filter: brightness(0.72); box-shadow: inset 0 2px 8px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.35); }
@@ -2751,10 +2755,10 @@
                 </div>
                 <button onclick="window.saveNdaSignOnTable()" style="background:var(--blue-fill); margin-top:12px; margin-bottom:70px;" data-i18n="save_nda_signon_btn">💾 Save Sign On Times</button>
             </div>
-            <button id="trend-compare-fab" class="circ-fab-3d circ-fab-right trend-compare-fab hidden" type="button" onclick="window.switchTrendFutureCompare()" aria-label="Compare">
-                <svg viewBox="0 0 122.88 102.72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M65.61,20.91v72.74h35.63c0.38,0,0.68,0.31,0.68,0.69v7.7c0,0.38-0.31,0.69-0.68,0.69H22.84 c-0.38,0-0.69-0.31-0.69-0.69v-7.7c0-0.38,0.31-0.69,0.69-0.69h35.63l0-72.71c-3.1-1.08-5.56-3.53-6.64-6.63H29.3v3.43 c0,0.38-0.31,0.68-0.68,0.68h-5.78c-0.38,0-0.69-0.31-0.69-0.68v-3.43h-5.73c-0.44,0-0.8-0.31-0.8-0.68V7.84 c0-0.38,0.36-0.69,0.8-0.69h35.43C53.33,2.99,57.31,0,61.99,0c4.68,0,8.66,2.99,10.14,7.16h35.53c0.44,0,0.8,0.31,0.8,0.69v5.78 c0,0.38-0.36,0.68-0.8,0.68h-6.46v3.43c0,0.38-0.31,0.68-0.68,0.68h-5.78c-0.38,0-0.69-0.31-0.69-0.68v-3.43H72.16 C71.09,17.38,68.67,19.81,65.61,20.91L65.61,20.91z M99.66,22.3l22.91,40.48c0.2,0.35,0.29,0.73,0.28,1.1h0.02c0,0.05,0,0.1,0,0.15 c0,9.64-11.35,17.46-25.35,17.46c-13.85,0-25.1-7.65-25.34-17.15c-0.04-0.16-0.06-0.34-0.06-0.51c0,0.44,0.14-0.86,0.37-1.2 l23.43-40.43c0.59-1.02,1.89-1.37,2.91-0.78C99.2,21.65,99.48,21.95,99.66,22.3L99.66,22.3z M99.75,31.11v30.6h17.32L99.75,31.11 L99.75,31.11z M95.67,61.7V31.16L77.96,61.7H95.67L95.67,61.7z M27.54,22.3l22.91,40.48c0.2,0.35,0.29,0.73,0.28,1.1h0.02 c0,0.05,0,0.1,0,0.15c0,9.64-11.35,17.46-25.35,17.46c-13.85,0-25.1-7.65-25.34-17.15C0.02,64.19,0,64.02,0,63.84 c0-0.44,0.14-0.86,0.37-1.2L23.8,22.21c0.59-1.02,1.89-1.37,2.91-0.78C27.08,21.65,27.36,21.95,27.54,22.3L27.54,22.3z M27.63,31.11v30.6h17.32L27.63,31.11L27.63,31.11z M23.54,61.7V31.16L5.84,61.7H23.54L23.54,61.7z M61.99,6.07 c2.59,0,4.69,2.1,4.69,4.69c0,2.59-2.1,4.69-4.69,4.69c-2.59,0-4.69-2.1-4.69-4.69C57.3,8.17,59.4,6.07,61.99,6.07L61.99,6.07z"/></svg>
-            </button>
         </div>
+        <button id="trend-compare-fab" class="circ-fab-3d circ-fab-right trend-compare-fab hidden" type="button" onclick="window.switchTrendFutureCompare()" aria-label="Compare">
+            <svg viewBox="0 0 122.88 102.72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M65.61,20.91v72.74h35.63c0.38,0,0.68,0.31,0.68,0.69v7.7c0,0.38-0.31,0.69-0.68,0.69H22.84 c-0.38,0-0.69-0.31-0.69-0.69v-7.7c0-0.38,0.31-0.69,0.69-0.69h35.63l0-72.71c-3.1-1.08-5.56-3.53-6.64-6.63H29.3v3.43 c0,0.38-0.31,0.68-0.68,0.68h-5.78c-0.38,0-0.69-0.31-0.69-0.68v-3.43h-5.73c-0.44,0-0.8-0.31-0.8-0.68V7.84 c0-0.38,0.36-0.69,0.8-0.69h35.43C53.33,2.99,57.31,0,61.99,0c4.68,0,8.66,2.99,10.14,7.16h35.53c0.44,0,0.8,0.31,0.8,0.69v5.78 c0,0.38-0.36,0.68-0.8,0.68h-6.46v3.43c0,0.38-0.31,0.68-0.68,0.68h-5.78c-0.38,0-0.69-0.31-0.69-0.68v-3.43H72.16 C71.09,17.38,68.67,19.81,65.61,20.91L65.61,20.91z M99.66,22.3l22.91,40.48c0.2,0.35,0.29,0.73,0.28,1.1h0.02c0,0.05,0,0.1,0,0.15 c0,9.64-11.35,17.46-25.35,17.46c-13.85,0-25.1-7.65-25.34-17.15c-0.04-0.16-0.06-0.34-0.06-0.51c0,0.44,0.14-0.86,0.37-1.2 l23.43-40.43c0.59-1.02,1.89-1.37,2.91-0.78C99.2,21.65,99.48,21.95,99.66,22.3L99.66,22.3z M99.75,31.11v30.6h17.32L99.75,31.11 L99.75,31.11z M95.67,61.7V31.16L77.96,61.7H95.67L95.67,61.7z M27.54,22.3l22.91,40.48c0.2,0.35,0.29,0.73,0.28,1.1h0.02 c0,0.05,0,0.1,0,0.15c0,9.64-11.35,17.46-25.35,17.46c-13.85,0-25.1-7.65-25.34-17.15C0.02,64.19,0,64.02,0,63.84 c0-0.44,0.14-0.86,0.37-1.2L23.8,22.21c0.59-1.02,1.89-1.37,2.91-0.78C27.08,21.65,27.36,21.95,27.54,22.3L27.54,22.3z M27.63,31.11v30.6h17.32L27.63,31.11L27.63,31.11z M23.54,61.7V31.16L5.84,61.7H23.54L23.54,61.7z M61.99,6.07 c2.59,0,4.69,2.1,4.69,4.69c0,2.59-2.1,4.69-4.69,4.69c-2.59,0-4.69-2.1-4.69-4.69C57.3,8.17,59.4,6.07,61.99,6.07L61.99,6.07z"/></svg>
+        </button>
     </div>
 
     <div id="screen-salary" class="hidden">
@@ -3810,7 +3814,7 @@
             <div style="margin-top: 12px; margin-bottom: 10px;">
                 <div class="grid-2">
                     <div class="nav-card" onclick="window.switchTab('ta'); window.showYearlyTrendOnly();">
-                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 24 24" style="width:27px; height:27px;"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M12.052 1.25H11.948C11.0495 1.24997 10.3003 1.24995 9.70552 1.32991C9.07773 1.41432 8.51093 1.59999 8.05546 2.05546C7.59999 2.51093 7.41432 3.07773 7.32991 3.70552C7.27259 4.13189 7.25637 5.15147 7.25179 6.02566C5.22954 6.09171 4.01536 6.32778 3.17157 7.17157C2 8.34315 2 10.2288 2 14C2 17.7712 2 19.6569 3.17157 20.8284C4.34314 22 6.22876 22 9.99998 22H14C17.7712 22 19.6569 22 20.8284 20.8284C22 19.6569 22 17.7712 22 14C22 10.2288 22 8.34315 20.8284 7.17157C19.9846 6.32778 18.7705 6.09171 16.7482 6.02566C16.7436 5.15147 16.7274 4.13189 16.6701 3.70552C16.5857 3.07773 16.4 2.51093 15.9445 2.05546C15.4891 1.59999 14.9223 1.41432 14.2945 1.32991C13.6997 1.24995 12.9505 1.24997 12.052 1.25ZM15.2479 6.00188C15.2434 5.15523 15.229 4.24407 15.1835 3.9054C15.1214 3.44393 15.0142 3.24644 14.8839 3.11612C14.7536 2.9858 14.5561 2.87858 14.0946 2.81654C13.6116 2.7516 12.964 2.75 12 2.75C11.036 2.75 10.3884 2.7516 9.90539 2.81654C9.44393 2.87858 9.24644 2.9858 9.11612 3.11612C8.9858 3.24644 8.87858 3.44393 8.81654 3.9054C8.771 4.24407 8.75661 5.15523 8.75208 6.00188C9.1435 6 9.55885 6 10 6H14C14.4412 6 14.8565 6 15.2479 6.00188ZM12 9.25C12.4142 9.25 12.75 9.58579 12.75 10V10.0102C13.8388 10.2845 14.75 11.143 14.75 12.3333C14.75 12.7475 14.4142 13.0833 14 13.0833C13.5858 13.0833 13.25 12.7475 13.25 12.3333C13.25 11.9493 12.8242 11.4167 12 11.4167C11.1758 11.4167 10.75 11.9493 10.75 12.3333C10.75 12.7174 11.1758 13.25 12 13.25C13.3849 13.25 14.75 14.2098 14.75 15.6667C14.75 16.857 13.8388 17.7155 12.75 17.9898V18C12.75 18.4142 12.4142 18.75 12 18.75C11.5858 18.75 11.25 18.4142 11.25 18V17.9898C10.1612 17.7155 9.25 16.857 9.25 15.6667C9.25 15.2525 9.58579 14.9167 10 14.9167C10.4142 14.9167 10.75 15.2525 10.75 15.6667C10.75 16.0507 11.1758 16.5833 12 16.5833C12.8242 16.5833 13.25 16.0507 13.25 15.6667C13.25 15.2826 12.8242 14.75 12 14.75C10.6151 14.75 9.25 13.7903 9.25 12.3333C9.25 11.143 10.1612 10.2845 11.25 10.0102V10C11.25 9.58579 11.5858 9.25 12 9.25Z"/></svg></div>
+                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 122.88 111.04" style="width:24px; height:22px;"><path fill="currentColor" fill-rule="evenodd" d="M19.1,70v39.24A1.8,1.8,0,0,1,17.3,111H1.8A1.8,1.8,0,0,1,0,109.25V70ZM41,0a20.6,20.6,0,1,1-20.6,20.59A20.59,20.59,0,0,1,41,0ZM39.24,10.62V8.55h2.85v2c.35,0,.7,0,1,.09.73.08,1.41.17,2,.29s1.22.23,1.73.35v4.06c-.81-.07-1.72-.13-2.73-.17s-1.93-.07-2.75-.07a7.49,7.49,0,0,0-1.32.11,1.62,1.62,0,0,0-.89.42,1.21,1.21,0,0,0-.32.92v.27a1.22,1.22,0,0,0,.42,1,2,2,0,0,0,1.29.34h1.74a6.09,6.09,0,0,1,3.07.7,4.57,4.57,0,0,1,1.85,1.9,5.83,5.83,0,0,1,.61,2.72v.87A6.92,6.92,0,0,1,47,28.18,4.27,4.27,0,0,1,44.54,30a11.48,11.48,0,0,1-2.45.41v2.27H39.24V30.38H39c-.55,0-1.1-.09-1.63-.16s-1-.15-1.54-.24-1-.19-1.43-.31V25.6c.6,0,1.25.1,1.94.13s1.4.06,2.11.08l2,0a7.26,7.26,0,0,0,1.45-.13,1.86,1.86,0,0,0,.87-.42,1.11,1.11,0,0,0,.29-.8v-.31a1,1,0,0,0-.41-.87,1.58,1.58,0,0,0-1-.29h-1.4a7,7,0,0,1-4.64-1.35q-1.58-1.34-1.58-4.5V16.3A5.31,5.31,0,0,1,35.79,12a6.66,6.66,0,0,1,3.45-1.34ZM0,57.19,21.17,38.67l.84.88h0a26.83,26.83,0,0,0,12.64,7.11L22.78,57.19ZM58.9,40.52c3,3.22,5.92,6.38,8.91,9.33L100.54,17,90,6.42l32.88-2.48L121,37.44,110.92,27.33c-7.26,7.35-24.43,23.56-31.69,30.83-9.19,9.18-13.57,9.35-22.76.16L46.2,46.89a26.87,26.87,0,0,0,12.7-6.37Zm53.75,7v61.74a1.8,1.8,0,0,1-1.8,1.79H95.35a1.81,1.81,0,0,1-1.8-1.79V62.57c3-2.87,6.41-6.2,9.93-9.59l7.34-7.07.31.29a12.65,12.65,0,0,0,1.52,1.31ZM81.47,73.45v35.8a1.81,1.81,0,0,1-1.8,1.79H64.17a1.8,1.8,0,0,1-1.8-1.79v-32A23.12,23.12,0,0,0,68,77.9a23.64,23.64,0,0,0,13.46-4.45Zm-31.19-2.9v38.7a1.8,1.8,0,0,1-1.8,1.79H33a1.81,1.81,0,0,1-1.8-1.79v-42c.32-.23.62-.48.92-.74l7.75-6.87,6.24,6.94.48.51c1.26,1.26,2.5,2.42,3.71,3.46Z"/></svg></div>
                         <div class="nav-main-text" id="dash-ta-val" style="color: var(--ta-accent);">₹0</div>
                         <div class="nav-sub-text" id="dash-ta-lbl">TA this month</div>
                     </div>
@@ -5420,7 +5424,7 @@
     // PDF preview page is explicitly excluded entirely, per its own separate complaint.
     document.addEventListener('click', (e) => {
         if (e.target.closest('#preview-wrapper')) return;
-        if (e.target.closest('button, .nav-card, .nav-fab, .bottom-icon, .squeeze-ball, .earnings-title-pill, [onclick*="manageLeg"], [onclick*="manageNonDuty"]')) window.hapticTap();
+        if (e.target.closest('button, .nav-card, .nav-fab, .bottom-icon, .squeeze-ball, .earnings-title-pill, [onclick*="manageLeg"], [onclick*="manageNonDuty"], .sidebar-item, #dash-sync-cluster, .dash-link-row, .header-tab, .circ-fab-3d, #trend-compare-fab, .dash-hamburger-btn, .back-btn, .month-nav-arrow-btn')) window.hapticTap();
     });
 
     // Point (Circulars merge fix): .circ-circular-card wraps its content in a real <a href> anchor
@@ -7460,6 +7464,7 @@
             }
             window.renderPayRateTable();
         }
+        if (window.updateTrendCompareFab) window.updateTrendCompareFab();
     }
 
     // Point 4: Open the Pay Rate Table as a popup modal
@@ -14200,9 +14205,11 @@
     window.updateTrendCompareFab = function() {
         const fab = document.getElementById('trend-compare-fab');
         if (!fab) return;
+        const trendScreen = document.getElementById('screen-yearly-trend');
+        const trendVisible = trendScreen && !trendScreen.classList.contains('hidden');
         const onFuture = window._trendActiveView === 'future';
         const rosterOk = window.isBsbRosterHq() && localStorage.getItem('roster_my_team');
-        fab.classList.toggle('hidden', !onFuture || !rosterOk);
+        fab.classList.toggle('hidden', !trendVisible || !onFuture || !rosterOk);
         fab.classList.toggle('active', !!window._trendFutureCompareActual);
     };
 
@@ -14843,7 +14850,7 @@
         return `<div class="trend-compare-col trend-compare-proj"><span style="margin-right:4px;flex-shrink:0;">›</span>${journey}${metric}</div>`;
     };
 
-    window.formatTrendCompareActRow = function(row, projRow) {
+    window.formatTrendCompareActRow = function(row, projRow, isActualOnly) {
         if (!row) {
             const date = projRow ? projRow.date : null;
             const nonDuty = date ? window.findNonDutyLabelForDate(date) : null;
@@ -14855,6 +14862,7 @@
             return `<div class="trend-compare-col trend-compare-act">${metric}${journey}${dateLabel}</div>`;
         }
         const dummyStyle = row.isDummy ? 'color:var(--orange);' : '';
+        const actualOnlyStyle = isActualOnly ? 'color:var(--purple);' : '';
         let metric = '<span class="trend-compare-metric trend-compare-empty">—</span>';
         if (row.nonDutyLabel) metric = `<span class="trend-compare-metric" style="font-size:10px; font-weight:700;">${window.escapeHtml(row.nonDutyLabel)}</span>`;
         else if (row.pct != null) metric = `<span class="trend-compare-metric">${row.pct}%</span>`;
@@ -14864,9 +14872,10 @@
         }
         const journey = row.nonDutyLabel
             ? `<span class="trend-compare-journey trend-compare-empty">—</span>`
-            : `<span class="trend-compare-journey" style="${dummyStyle}"><b>${row.train}</b> ${row.depStn || ''} ${row.depTime || ''} → ${row.arrStn || ''} ${row.arrTime || ''}</span>`;
+            : `<span class="trend-compare-journey" style="${dummyStyle}${actualOnlyStyle}"><b>${row.train}</b> ${row.depStn || ''} ${row.depTime || ''} → ${row.arrStn || ''} ${row.arrTime || ''}</span>`;
         const dateLabel = row.date ? `<span class="trend-compare-date">${formatDateShort(row.date)}</span>` : '';
-        return `<div class="trend-compare-col trend-compare-act">${metric}${journey}${dateLabel}</div>`;
+        const actualOnlyClass = isActualOnly ? ' trend-compare-actual-only' : '';
+        return `<div class="trend-compare-col trend-compare-act${actualOnlyClass}">${metric}${journey}${dateLabel}</div>`;
     };
 
     window.renderTrendCompareSideBySideHtml = function(pairs, isNda) {
@@ -14874,16 +14883,18 @@
         let html = `<div class="trend-compare-scroll"><div class="trend-compare-inner">
             <div class="trend-compare-head">
                 <div class="trend-compare-head-proj">${t('trend_col_proj_short', 'Projected')}</div>
+                <div class="trend-compare-head-divider"></div>
                 <div class="trend-compare-head-act">${t('trend_col_actual_short', 'Actual')}</div>
             </div>`;
         pairs.forEach((pair, i) => {
             let dashed = false;
             if (isNda) dashed = !!pair.spellEnd;
             else if (pair.proj && pairs[i + 1] && pairs[i + 1].proj) dashed = pair.proj.groupKey !== pairs[i + 1].proj.groupKey;
-            html += `<div class="trend-compare-pair${dashed ? ' dashed-below' : ''}">
+            const isActualOnly = !pair.proj && pair.actual;
+            html += `<div class="trend-compare-pair${dashed ? ' dashed-below' : ''}${isActualOnly ? ' trend-compare-actual-only' : ''}">
                 ${window.formatTrendCompareProjRow(pair.proj)}
                 <div class="trend-compare-divider"></div>
-                ${window.formatTrendCompareActRow(pair.actual, pair.proj)}
+                ${window.formatTrendCompareActRow(pair.actual, pair.proj, isActualOnly)}
             </div>`;
         });
         html += '</div></div>';
@@ -15072,7 +15083,7 @@
                 ndaCompare = window.buildTrendNdaComparePairs(ndaData, actualNda.ndaData);
                 rowsHtml = window.renderTrendCompareSideBySideHtml(ndaCompare.pairs, true);
                 if (ndaCompare.actualOnly.length) {
-                    actualOnlyNote = `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_nda', '+{n} actual night duty spell(s) not in roster').replace('{n}', ndaCompare.actualOnly.length)}</p>`;
+                    actualOnlyNote = `<p style="font-size:11px; color:var(--purple); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_nda', '+{n} actual night duty spell(s) not in roster').replace('{n}', ndaCompare.actualOnly.length)}</p>`;
                 }
             } else {
                 const groups = ndaData.map(entry => {
@@ -15110,12 +15121,12 @@
                     const rate = (cappedBp + (cappedBp * da / 100)) / 200;
                     actNdaMoney = Math.round((Math.floor(actualNdaTotal / 60) / 6) * rate);
                 }
-                footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:800; background:var(--input-bg); border-radius:12px; padding:10px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; color:var(--blue);">
+                footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; color:var(--blue); background:var(--input-bg); border-radius:12px; padding:10px;">
                         <span>${t('future_trends_total_projected_nda', 'Total Projected NDA')}</span>
                         <span>${String(totalH).padStart(2, '0')}:${String(totalM).padStart(2, '0')} ${hrsSuffix}${ndaMoney > 0 ? ` · ₹${ndaMoney}` : ''}</span>
                     </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; color:var(--text-muted);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; color:var(--text-muted); background:var(--input-bg); border-radius:12px; padding:10px;">
                         <span>${t('trend_actual_total_nda', 'Total Actual NDA')}</span>
                         <span>${String(actH).padStart(2, '0')}:${String(actM).padStart(2, '0')} ${hrsSuffix}${actNdaMoney > 0 ? ` · ₹${actNdaMoney}` : ''}</span>
                     </div>
@@ -15141,7 +15152,7 @@
                 const projectedDates = new Set(projRows.map(r => r.date));
                 const actualOnlyDates = Object.keys(actualIndex.byDate).filter(d => d.startsWith(moKey) && !projectedDates.has(d) && actualIndex.byDate[d].hasDuty);
                 if (actualOnlyDates.length) {
-                    actualOnlyNote = `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_days', '+{n} actual duty day(s) not in roster').replace('{n}', actualOnlyDates.length)}</p>`;
+                    actualOnlyNote = `<p style="font-size:11px; color:var(--purple); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_days', '+{n} actual duty day(s) not in roster').replace('{n}', actualOnlyDates.length)}</p>`;
                 }
             } else {
                 const groups = [];
@@ -15177,17 +15188,21 @@
             if (compareOn && actualIndex) {
                 const actCounts = actualIndex.counts;
                 const actPctParts = [30, 70, 100].filter(pct => actCounts[pct] > 0).map(pct => `${pct}% × ${actCounts[pct]}`).join(' · ');
-                footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:800; background:var(--input-bg); border-radius:12px; padding:10px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; color:var(--blue);">
-                        <span>${t('future_trends_total_projected_ta', 'Total Projected TA')}</span>
-                        <span>₹${Math.floor(totalMoney)}</span>
+                footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; flex-direction:column; gap:4px; font-size:13px; font-weight:800; color:var(--blue); background:var(--input-bg); border-radius:12px; padding:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>${t('future_trends_total_projected_ta', 'Total Projected TA')}</span>
+                            <span>₹${Math.floor(totalMoney)}</span>
+                        </div>
+                        ${pctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${pctParts}</div>` : ''}
                     </div>
-                    ${pctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${pctParts}</div>` : ''}
-                    <div style="display:flex; justify-content:space-between; align-items:center; color:var(--text-muted); margin-top:4px;">
-                        <span>${t('trend_actual_total_ta', 'Total Actual TA')}</span>
-                        <span>₹${actualIndex.monthTotal}</span>
+                    <div style="display:flex; flex-direction:column; gap:4px; font-size:13px; font-weight:800; color:var(--text-muted); background:var(--input-bg); border-radius:12px; padding:10px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>${t('trend_actual_total_ta', 'Total Actual TA')}</span>
+                            <span>₹${actualIndex.monthTotal}</span>
+                        </div>
+                        ${actPctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${actPctParts}</div>` : ''}
                     </div>
-                    ${actPctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${actPctParts}</div>` : ''}
                 </div>`;
             } else {
                 footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:800; color:var(--blue); background:var(--input-bg); border-radius:12px; padding:10px;">
@@ -15348,7 +15363,7 @@
         const avgDisplay = opts.avgDisplay || '';
         const overlayHtml = opts.overlayHtml || '';
         const graphTitle = opts.graphTitle || '';
-        const topMargin = overlayHtml || graphTitle ? 46 : 34;
+        const topMargin = overlayHtml ? 34 : 28;
         const height = 150;
         const width = 320;
         const gridlineCount = opts.gridlineCount || 12;
@@ -15379,7 +15394,7 @@
             const dotColor = isHl ? highlightColor : color;
             const textFill = isHl ? highlightColor : defaultText;
             return `<circle cx="${dotX}" cy="${y}" r="5" fill="${dotColor}" stroke="var(--card)" stroke-width="1.5"></circle>
-                ${v > 0 ? `<text x="${gridX}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="start" transform="rotate(-90 ${gridX} ${labelY})">${formatValueLabel(v)}</text>` : ''}`;
+                ${v > 0 ? `<text x="${gridX}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="middle" transform="rotate(-90 ${gridX} ${labelY})">${formatValueLabel(v)}</text>` : ''}`;
         }).join('');
         const monthLabels = monthLabelNames.map((name, i) =>
             `<text x="${(plotPadX + i * stepX).toFixed(1)}" y="${topMargin + height + 18}" font-size="9.5" fill="var(--text-muted)" text-anchor="middle">${name}</text>`
@@ -15388,25 +15403,26 @@
             `<line x1="${(plotPadX + i * stepX).toFixed(1)}" y1="${topMargin}" x2="${(plotPadX + i * stepX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`
         ).join('');
         const baseline = `<line x1="${plotPadX.toFixed(1)}" y1="${topMargin + height}" x2="${(width - plotPadX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`;
-        let highlightBandSvg = '';
+        let highlightOverlayHtml = '';
         if (highlightIdx !== null && highlightIdx !== undefined && highlightIdx >= 0) {
-            const gridX = plotPadX + highlightIdx * stepX;
-            const bandX = gridX - stepX / 2;
-            const bandW = stepX;
-            const bandH = topMargin + height;
-            highlightBandSvg = `<rect x="${bandX.toFixed(1)}" y="0" width="${bandW.toFixed(1)}" height="${bandH}" fill="${highlightColor}" fill-opacity="0.18"/>`;
+            const bandLeftPct = ((plotPadX + highlightIdx * stepX - stepX / 2) / width * 100).toFixed(2);
+            const bandWidthPct = (stepX / width * 100).toFixed(2);
+            highlightOverlayHtml = `<div class="trend-graph-highlight" style="left:${bandLeftPct}%; width:${bandWidthPct}%; background:${highlightColor}; opacity:0.18;"></div>`;
         }
-        const titleHtml = graphTitle ? `<div class="trend-graph-title">${graphTitle}</div>` : '';
+        const titleHtml = graphTitle ? `<div class="trend-graph-heading">${graphTitle}</div>` : '';
         const svgH = topMargin + height + 26;
         return `
+            ${titleHtml}
             <div class="trend-graph-box">
-                ${titleHtml}
-                ${overlayHtml}
-                <svg class="trend-graph-svg" width="100%" viewBox="0 0 ${width} ${svgH}" preserveAspectRatio="xMidYMid meet">
-                    ${highlightBandSvg}${vGridLines}${baseline}
-                    <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>
-                    ${dots}${monthLabels}
-                </svg>
+                <div class="trend-graph-plot-wrap">
+                    ${highlightOverlayHtml}
+                    ${overlayHtml}
+                    <svg class="trend-graph-svg" width="100%" viewBox="0 0 ${width} ${svgH}" preserveAspectRatio="xMidYMid meet">
+                        ${vGridLines}${baseline}
+                        <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>
+                        ${dots}${monthLabels}
+                    </svg>
+                </div>
             </div>
             ${avgDisplay ? `<div style="margin-top:8px; margin-bottom:${opts.compactBottom ? '6px' : '14px'}; text-align:center; font-size:13px; font-weight:800; color:${color}; background:var(--input-bg); border-radius:12px; padding:10px; white-space:nowrap;">${avgDisplay}</div>` : ''}`;
     };
