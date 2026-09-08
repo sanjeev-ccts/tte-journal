@@ -485,7 +485,18 @@
         input:not([type="checkbox"]):not([type="radio"]), select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 30px; margin-top: 4px; font-size: 14.5px; font-weight: 500; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; box-sizing: border-box; -webkit-appearance: none; appearance: none; }
         input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; text-transform: none; }
         select { padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-position: calc(100% - 12px) center; background-size: 14px 14px; background-repeat: no-repeat; }
-        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year { text-align: center; text-align-last: center; }
+        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel, #report-month-sel, #report-year-sel { text-align: center; text-align-last: center; }
+        .month-year-picker,
+        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel, #report-month-sel, #report-year-sel {
+            border: 1.5px solid color-mix(in srgb, var(--blue) 55%, var(--border)) !important;
+            background-color: var(--card) !important;
+            border-radius: 22px !important;
+            font-weight: 700;
+        }
+        #nda-from-box, #nda-to-box {
+            border: 1.5px solid color-mix(in srgb, var(--blue) 55%, var(--border)) !important;
+        }
+        .period-picker-shell { display:flex; align-items:center; justify-content:center; gap:14px; width:fit-content; margin:0 auto; background:var(--card); border-radius:22px; padding:5px 10px; border:1.5px solid color-mix(in srgb, var(--blue) 55%, var(--border)); box-shadow:0 1px 4px rgba(15,23,42,0.06); }
         input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; -webkit-appearance: checkbox; appearance: auto; }
         input:disabled, select:disabled { background-color: var(--input-disabled); color: var(--text-muted); border-style: dashed; opacity: 0.75; -webkit-text-fill-color: var(--text-muted); }
         .profile-lbl { font-size: 13px; font-weight: 800; color: var(--blue); display: block; margin-bottom: 2px; }
@@ -551,18 +562,28 @@
         .all-journey-row:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px; }
         .all-journey-row--expanded { border-radius: 10px 10px 4px 4px !important; }
         .all-journey-action-row {
-            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-            padding: 8px; margin: -4px 0 8px; border: 1px solid var(--border);
-            border-top: none; border-radius: 0 0 10px 10px; background: var(--input-bg);
-            box-shadow: inset 0 -2px 3px rgba(0,0,0,0.08);
+            display: flex; align-items: center; gap: 6px; flex-wrap: nowrap;
+            padding: 6px 8px; margin: -2px 0 6px; border: 1px solid var(--border);
+            border-top: none; border-radius: 0 0 10px 10px; background: var(--card);
+            box-shadow: 0 1px 4px rgba(15,23,42,0.06);
         }
-        .all-journey-action-row button {
-            flex: 1 1 0; min-width: 110px; min-height: 40px; margin: 0;
-            padding: 9px 12px; border-radius: 9px; font-size: 13px;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+        .all-journey-action-row button,
+        .sheet-action-row button {
+            width: auto !important; min-width: 0 !important; flex: 1 1 0;
+            min-height: 32px !important; height: auto !important; margin: 0 !important;
+            padding: 5px 10px !important; border-radius: 8px !important;
+            font-size: 12px !important; font-weight: 700 !important; line-height: 1 !important;
+            display: inline-flex !important; flex-direction: row !important;
+            align-items: center !important; justify-content: center !important;
+            gap: 5px !important; box-shadow: none !important;
         }
-        .all-journey-action-edit svg, .sheet-action-edit svg, .manage-action-edit svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
-        .all-journey-action-delete svg, .sheet-action-delete svg, .manage-action-delete svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
+        .all-journey-action-row .all-journey-action-cancel,
+        .sheet-action-row .sheet-action-cancel {
+            flex: 0 0 36px !important; min-width: 36px !important; padding: 5px !important;
+        }
+        .all-journey-action-edit svg, .sheet-action-edit svg, .manage-action-edit svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
+        .all-journey-action-delete svg, .sheet-action-delete svg, .manage-action-delete svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
+        .sheet-action-cancel svg, .all-journey-action-cancel svg { width: 14px; height: 14px; flex-shrink: 0; display: block; }
         .circ-icon-action svg { width: 16px; height: 16px; fill: currentColor; display: block; }
         .ui-icon-only-btn svg { width: 14px; height: 14px; fill: currentColor; display: block; }
         .all-journey-action-delete { background: var(--red) !important; }
@@ -572,7 +593,7 @@
             border: none !important; box-shadow: none !important;
         }
         .sheet-action-row td {
-            padding: 6px 8px; background: var(--input-bg); border: 1px solid var(--border);
+            padding: 4px 6px; background: var(--card); border: 1px solid var(--border);
             border-top: none; text-align: center;
         }
         .sheet-row-action-selected td {
@@ -586,8 +607,8 @@
             box-shadow: inset -2px 0 0 rgba(249,115,22,0.8), inset 0 2px 0 rgba(249,115,22,0.8), inset 0 -2px 0 rgba(249,115,22,0.8);
         }
         .sheet-action-row button {
-            width: auto; min-width: 120px; margin: 0; padding: 8px 14px;
-            border-radius: 9px; font-size: 12px; font-weight: 800;
+            width: auto; min-width: 0; margin: 0; padding: 5px 10px;
+            border-radius: 8px; font-size: 12px; font-weight: 700;
         }
         .sheet-action-edit { background: var(--blue-fill) !important; }
         .sheet-action-delete { background: var(--red) !important; }
@@ -618,7 +639,7 @@
         .trend-compare-scroll { overflow-x: auto; overflow-y: visible; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; touch-action: auto; margin: 0 -4px; padding: 0 2px; }
         .trend-compare-inner { min-width: 680px; position: relative; }
         .trend-compare-vline { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--border); pointer-events: none; z-index: 1; }
-        .trend-compare-head { display: flex; align-items: stretch; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); padding: 6px 0 4px; border-bottom: 1px solid var(--border); position: relative; z-index: 2; }
+        .trend-compare-head { display: flex; align-items: stretch; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text); padding: 6px 0 4px; border-bottom: 1px solid var(--border); position: relative; z-index: 2; }
         .trend-compare-head-proj { flex: 1; min-width: 0; padding-right: 8px; text-align: left; }
         .trend-compare-head-act { flex: 1; min-width: 0; padding-left: 8px; text-align: right; }
         .trend-compare-pair { display: flex; align-items: stretch; gap: 0; padding: 9px 0; font-size: 12px; position: relative; z-index: 2; }
@@ -636,7 +657,11 @@
         .trend-compare-act .trend-compare-date { flex-shrink: 0; font-weight: 700; color: var(--text); margin-left: 4px; }
         .trend-compare-empty { color: var(--text-muted); opacity: 0.45; }
         .trend-graph-heading { text-align: center; font-size: 14px; font-weight: 900; color: var(--text); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 0; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow: hidden; }
+        .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 0; background: var(--card); box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08); overflow: hidden; }
+        body.dark-mode .trend-graph-box { box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); }
+        .aj-select-circle { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; border:2px solid color-mix(in srgb, var(--blue) 35%, var(--border)); background:var(--card); flex-shrink:0; margin-right:8px; box-sizing:border-box; }
+        .aj-select-circle--on { border-color:var(--blue-fill); background:var(--blue-fill); color:#fff; }
+        .aj-select-circle--on svg { width:14px; height:14px; display:block; fill:currentColor; }
         .trend-graph-plot-wrap { position: relative; padding: 0 6px 6px; }
         .trend-graph-highlight { position: absolute; top: 0; bottom: 0; z-index: 0; pointer-events: none; }
         .trend-summary-box { background: var(--summary-box-bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px; }
@@ -3813,7 +3838,7 @@
                 <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:start; gap:8px; margin-top:16px;">
                     <div style="display:flex; gap:8px; justify-self:start;">
                         <div style="display:flex; flex-direction:column; align-items:center; gap:4px;">
-                            <button onclick="window.sheetToggleEditMode()" id="sheet-edit-toggle-btn" title="Edit" style="margin:0; width:30px; height:30px; min-width:30px; padding:0; background:var(--card); border:1px solid var(--border); border-radius:50%; box-shadow:0 2px 4px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+                            <button onclick="window.sheetToggleEditMode()" id="sheet-edit-toggle-btn" title="Edit" style="margin:0; width:30px; height:30px; min-width:30px; padding:0; background:var(--card); border:1px solid var(--border); border-radius:50%; box-shadow:0 2px 4px rgba(0,0,0,0.25); display:flex; align-items:center; justify-content:center; flex-shrink:0;"><svg viewBox="0 0 121.48 122.88" fill="var(--blue)" style="width:15px; height:15px;"><path fill-rule="evenodd" clip-rule="evenodd" d="M96.84,2.22l22.42,22.42c2.96,2.96,2.96,7.8,0,10.76l-12.4,12.4L73.68,14.62l12.4-12.4 C89.04-0.74,93.88-0.74,96.84,2.22L96.84,2.22z M70.18,52.19L70.18,52.19l0,0.01c0.92,0.92,1.38,2.14,1.38,3.34 c0,1.2-0.46,2.41-1.38,3.34v0.01l-0.01,0.01L40.09,88.99l0,0h-0.01c-0.26,0.26-0.55,0.48-0.84,0.67h-0.01 c-0.3,0.19-0.61,0.34-0.93,0.45c-1.66,0.58-3.59,0.2-4.91-1.12h-0.01l0,0v-0.01c-0.26-0.26-0.48-0.55-0.67-0.84v-0.01 c-0.19-0.3-0.34-0.61-0.45-0.93c-0.58-1.66-0.2-3.59,1.11-4.91v-0.01l30.09-30.09l0,0h0.01c0.92-0.92,2.14-1.38,3.34-1.38 c1.2,0,2.41,0.46,3.34,1.38L70.18,52.19L70.18,52.19L70.18,52.19z M45.48,109.11c-8.98,2.78-17.95,5.55-26.93,8.33 C-2.55,123.97-2.46,128.32,3.3,108l9.07-32v0l-0.03-0.03L67.4,20.9l33.18,33.18l-55.07,55.07L45.48,109.11L45.48,109.11z M18.03,81.66l21.79,21.79c-5.9,1.82-11.8,3.64-17.69,5.45c-13.86,4.27-13.8,7.13-10.03-6.22L18.03,81.66L18.03,81.66z"/></svg></button>
                             <span style="font-size:8px; font-weight:600; color:var(--text-muted); line-height:1;">Edit</span>
                         </div>
                         <div id="sheet-save-edited-wrap" class="hidden" style="display:flex; flex-direction:column; align-items:center; gap:4px;">
@@ -4117,12 +4142,12 @@
         <div class="screen-content">
             <div style="display:flex; gap:8px; margin-bottom:15px; align-items:center;">
                 <button onclick="window.shiftAllLogsMonth(-1)" class="squeeze-ball month-nav-arrow-btn prev" type="button">‹</button>
-                <select id="all-logs-month" onchange="window.renderAllLogs()" style="margin: 0; width: auto; flex: 1.2; background-color:var(--card);">
+                <select id="all-logs-month" class="month-year-picker" onchange="window.renderAllLogs()" style="margin: 0; width: auto; flex: 1.2;">
                     <option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option>
                     <option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option>
                     <option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>
                 </select>
-                <select id="all-logs-year" onchange="window.renderAllLogs()" style="margin: 0; width: auto; flex: 1; background-color:var(--card);">
+                <select id="all-logs-year" class="month-year-picker" onchange="window.renderAllLogs()" style="margin: 0; width: auto; flex: 1;">
                     <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
                     <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option>
                 </select>
@@ -4727,6 +4752,16 @@
         size = size || 14;
         color = color || 'currentColor';
         return '<svg viewBox="0 0 110.61 122.88" width="' + size + '" height="' + size + '" fill="' + color + '" aria-hidden="true" style="display:block;"><path d="M39.27,58.64a4.74,4.74,0,1,1,9.47,0V93.72a4.74,4.74,0,1,1-9.47,0V58.64Zm63.6-19.86L98,103a22.29,22.29,0,0,1-6.33,14.1,19.41,19.41,0,0,1-13.88,5.78h-45a19.4,19.4,0,0,1-13.86-5.78l0,0A22.31,22.31,0,0,1,12.59,103L7.74,38.78H0V25c0-3.32,1.63-4.58,4.84-4.58H27.58V10.79A10.82,10.82,0,0,1,38.37,0H72.24A10.82,10.82,0,0,1,83,10.79v9.62h23.35a6.19,6.19,0,0,1,1,.06A3.86,3.86,0,0,1,110.59,24c0,.2,0,.38,0,.57V38.78Zm-9.5.17H17.24L22,102.3a12.82,12.82,0,0,0,3.57,8.1l0,0a10,10,0,0,0,7.19,3h45a10.06,10.06,0,0,0,7.19-3,12.8,12.8,0,0,0,3.59-8.1L93.37,39ZM71,20.41V12.05H39.64v8.36ZM61.87,58.64a4.74,4.74,0,1,1,9.47,0V93.72a4.74,4.74,0,1,1-9.47,0V58.64Z"/></svg>';
+    };
+    window.svgCrossIcon = function(size, color) {
+        size = size || 14;
+        color = color || 'currentColor';
+        return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="display:block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    };
+    window.allJourneySelectMark = function(checked) {
+        return checked
+            ? '<span class="aj-select-circle aj-select-circle--on" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>'
+            : '<span class="aj-select-circle" aria-hidden="true"></span>';
     }; 
     window.lastManualBackup = localStorage.getItem('lastManualBackup') || 'Never';
     window.lastRestoreTime = localStorage.getItem('lastRestoreTime') || 'Never';
@@ -7406,6 +7441,16 @@
         if(screenId === 'screen-reports') {
             window.resetReportMonthToCurrent();
         }
+
+        const dashLeaving = document.getElementById('screen-dashboard');
+        if (dashLeaving && !dashLeaving.classList.contains('hidden') && screenId !== 'screen-dashboard') {
+            window._sheetActionRowId = null;
+            if (window._sheetRowUnlocked) window._sheetRowUnlocked.clear();
+        }
+        const allLeaving = document.getElementById('screen-all');
+        if (allLeaving && !allLeaving.classList.contains('hidden') && screenId !== 'screen-all') {
+            window._allJourneyExpandedId = null;
+        }
         
         ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
         const shownScreenEl = document.getElementById(screenId);
@@ -7453,6 +7498,7 @@
             // subsequent tap toggle selection instead of opening the Manage Entry modal.
             window._allJourneyMultiSelectMode = false;
             if (window._allJourneySelected) window._allJourneySelected.clear();
+            window._allJourneyExpandedId = null;
             const upBtn = document.getElementById('legend-up-btn');
             const dnBtn = document.getElementById('legend-down-btn');
             if(upBtn) upBtn.style.opacity = '1';
@@ -10890,6 +10936,7 @@
         const row = window._sheetRows.find(r => r.rowId === rowId);
         if (!row) return;
         if (!window._sheetRowUnlocked) window._sheetRowUnlocked = new Set();
+        window._sheetRowUnlocked.clear();
         window._sheetRowUnlocked.add(rowId);
         window._sheetActionRowId = null;
         row.locked = false;
@@ -10964,7 +11011,9 @@
     window.sheetOpenActionRow = function(rowId) {
         const row = (window._sheetRows || []).find(r => r.rowId === rowId);
         if (!row || !row.locked || row.isChainBreakRow || !row.legId || window._sheetEditModeActive) return;
-        window._sheetActionRowId = (window._sheetActionRowId === rowId) ? null : rowId;
+        const opening = window._sheetActionRowId !== rowId;
+        window._sheetActionRowId = opening ? rowId : null;
+        if (opening && window._sheetRowUnlocked) window._sheetRowUnlocked.clear();
         renderSheetRows();
     };
 
@@ -10977,7 +11026,7 @@
                 <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
                     <button type="button" class="sheet-action-edit" onclick="event.stopPropagation(); ${editCall}">${window.svgEditIcon(14, '#fff')} Edit</button>
                     <button type="button" class="sheet-action-delete" onclick="event.stopPropagation(); window.sheetDeleteRow(${row.rowId})">${window.svgTrashIcon(14, '#fff')} Delete</button>
-                    <button type="button" class="sheet-action-cancel" onclick="event.stopPropagation(); window.sheetCancelActionRow(${row.rowId})">Cancel</button>
+                    <button type="button" class="sheet-action-cancel" onclick="event.stopPropagation(); window.sheetCancelActionRow(${row.rowId})" aria-label="Cancel">${window.svgCrossIcon(14, '#fff')}</button>
                 </div>
             </td>
         </tr>`;
@@ -11016,6 +11065,7 @@
         if (!row || !row.locked || row.isNonDutyRow || row.isChainBreakRow) return;
         window._sheetLastTapTime[rowId] = 0;
         window._sheetActionRowId = null;
+        window._sheetRowUnlocked.clear();
         window._sheetRowUnlocked.add(rowId);
         renderSheetRows();
         // Point: focus the train field right away so a long-press flows straight into typing.
@@ -11187,6 +11237,8 @@
             return;
         }
         window._sheetEditModeActive = true;
+        window._sheetActionRowId = null;
+        if (window._sheetRowUnlocked) window._sheetRowUnlocked.clear();
         const editedBtn = document.getElementById('sheet-save-edited-wrap');
         if (editedBtn) editedBtn.classList.remove('hidden');
         renderSheetRows();
@@ -11604,7 +11656,7 @@
         return `<div class="all-journey-action-row" data-action-for="${id}">
             <button type="button" class="all-journey-action-edit" aria-label="${isMultiDayLeave ? 'Edit complete leave period' : 'Edit entry'}" onclick="event.stopPropagation(); window.editAllJourneyEntry('${id}')">${window.svgEditIcon(14, '#fff')} Edit</button>
             <button type="button" class="all-journey-action-delete" aria-label="${isMultiDayLeave ? 'Delete complete leave period' : 'Delete entry'}" onclick="event.stopPropagation(); window.deleteAllJourneyEntry('${id}')">${window.svgTrashIcon(14, '#fff')} Delete</button>
-            <button type="button" class="all-journey-action-cancel" aria-label="Cancel" onclick="event.stopPropagation(); window.toggleAllJourneyExpand('${id}')">Cancel</button>
+            <button type="button" class="all-journey-action-cancel" aria-label="Cancel" onclick="event.stopPropagation(); window.toggleAllJourneyExpand('${id}')">${window.svgCrossIcon(14, '#fff')}</button>
         </div>`;
     }
 
@@ -11720,7 +11772,7 @@
                 const isCocl = leg.dutyType === 'COCL';
                 const nonDutyRowClass = getNonDutyRowClass(leg.dutyType);
                 const nonDutyChecked = window._allJourneySelected.has(String(leg.id));
-                const nonDutyCheckbox = window._allJourneyMultiSelectMode ? `<span style="margin-right:8px; flex-shrink:0;">${nonDutyChecked ? '<span style="color:var(--red); font-weight:900; font-size:16px;">✔</span>' : '⬜'}</span>` : '';
+                const nonDutyCheckbox = window._allJourneyMultiSelectMode ? window.allJourneySelectMark(nonDutyChecked) : '';
 
                 let cursor = new Date(leg.fromDate + 'T00:00:00');
                 const endD = new Date((leg.toDate || leg.fromDate) + 'T00:00:00');
@@ -11746,7 +11798,7 @@
                 let shortDep = formatDateShort(leg.depDate); 
                 let shortArr = formatDateShort(leg.arrDate);
                 const dutyChecked = window._allJourneySelected.has(String(leg.id));
-                const dutyCheckboxCol = window._allJourneyMultiSelectMode ? `<span style="margin-right:8px; flex-shrink:0;">${dutyChecked ? '<span style="color:var(--red); font-weight:900; font-size:16px;">✔</span>' : '⬜'}</span>` : '';
+                const dutyCheckboxCol = window._allJourneyMultiSelectMode ? window.allJourneySelectMark(dutyChecked) : '';
                 
                 const isExpanded = !window._allJourneyMultiSelectMode && String(window._allJourneyExpandedId) === String(leg.id);
                 if (isExpanded) htmlElements.push(buildAllJourneyActionRow(leg));
@@ -11783,7 +11835,7 @@
         // already position:relative), shown only while in multi-select mode.
         const selectionBarHtml = window._allJourneyMultiSelectMode ? `
             <div id="all-journey-selection-bar" style="position:fixed; top:60px; left:0; right:0; display:flex; gap:10px; padding:10px; background:var(--card); border-bottom:2px solid var(--border); z-index:20;">
-                <button onclick="window.cancelAllJourneySelection()" style="flex:1; margin:0; background:var(--input-bg); color:var(--text-muted); border:1.5px solid var(--border); box-shadow:none; font-size:13px; padding:10px;">Cancel</button>
+                <button onclick="window.cancelAllJourneySelection()" aria-label="Cancel" style="flex:0 0 44px; margin:0; background:#64748b; color:#fff; border:none; box-shadow:none; font-size:13px; padding:10px; display:inline-flex; align-items:center; justify-content:center;">${window.svgCrossIcon(16, '#fff')}</button>
                 <button onclick="window.deleteSelectedAllJourneyEntries()" style="flex:1; margin:0; background:var(--red); font-size:13px; padding:10px; display:inline-flex; align-items:center; justify-content:center; gap:6px;">${window.svgTrashIcon(14, '#fff')} Delete (<span id="all-journey-selected-count">${window._allJourneySelected.size}</span>)</button>
             </div>` : '';
         container.innerHTML = headerHTML + htmlElements.reverse().join('') + selectionBarHtml;
@@ -11892,6 +11944,10 @@
         const key = String(legId);
         if (window._allJourneySelected.has(key)) window._allJourneySelected.delete(key);
         else window._allJourneySelected.add(key);
+        if (window._allJourneySelected.size === 0) {
+            window._allJourneyMultiSelectMode = false;
+            if (window.consumeBackState) window.consumeBackState();
+        }
         window.renderAllLogs();
     };
 
@@ -14298,7 +14354,7 @@
         const currD = new Date(y, m - 1, 15);
         const label = `${formatDateShort(`${prevD.getFullYear()}-${String(prevD.getMonth()+1).padStart(2,'0')}-${String(prevD.getDate()).padStart(2,'0')}`)} – ${formatDateShort(`${currD.getFullYear()}-${String(currD.getMonth()+1).padStart(2,'0')}-${String(currD.getDate()).padStart(2,'0')}`)}`;
         wrap.innerHTML = `
-            <div style="display:flex; align-items:center; justify-content:center; gap:14px; width:fit-content; margin:0 auto; background:var(--input-bg); border-radius:22px; padding:5px 10px; border:1px solid var(--border);">
+            <div class="period-picker-shell">
                 <button onclick="window.shiftNdaSignOnPeriod(-1)" class="month-nav-arrow-btn prev" type="button">‹</button>
                 <span style="font-size:13px; font-weight:900; color:var(--text); white-space:nowrap;">${label}</span>
                 <button onclick="window.shiftNdaSignOnPeriod(1)" class="month-nav-arrow-btn next" type="button">›</button>
@@ -14436,9 +14492,9 @@
             yearOptions.push(`<option value="${y}" ${y === year ? 'selected' : ''}>${y}</option>`);
         }
         wrap.innerHTML = `
-            <div style="display:flex; align-items:center; justify-content:center; gap:14px; width:fit-content; margin:0 auto; background:var(--input-bg); border-radius:22px; padding:5px 10px; border:1px solid var(--border);">
+            <div class="period-picker-shell">
                 <button onclick="window.changeTrendYearBy(-1)" class="month-nav-arrow-btn prev" type="button">‹</button>
-                <select onchange="window.changeTrendYearTo(this.value)" style="font-size:15px; font-weight:900; color:var(--text); min-width:38px; text-align:center; text-align-last:center; background:transparent; border:none; box-shadow:none; margin:0; padding:0; width:auto;">${yearOptions.join('')}</select>
+                <select onchange="window.changeTrendYearTo(this.value)" class="month-year-picker" style="font-size:15px; font-weight:900; color:var(--text); min-width:38px; text-align:center; text-align-last:center; margin:0; padding:4px 8px; width:auto; box-shadow:none;">${yearOptions.join('')}</select>
                 <button onclick="window.changeTrendYearBy(1)" class="month-nav-arrow-btn next" type="button">›</button>
             </div>`;
     }
@@ -15026,8 +15082,8 @@
         wrap.innerHTML = `
             <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
                 <button onclick="${prevFn}" class="${arrowClass} prev" type="button">‹</button>
-                <select onchange="${monthFn}" style="flex:1; padding:9px 28px 9px 12px; border-radius:22px; font-size:14px; font-weight:700; background-color:var(--card); border:1px solid var(--border); text-align:center; text-align-last:center;">${monthOptions.join('')}</select>
-                <select onchange="${yearFn}" style="flex:1; padding:9px 28px 9px 12px; border-radius:22px; font-size:14px; font-weight:700; background-color:var(--card); border:1px solid var(--border); text-align:center; text-align-last:center;">${yearOptions.join('')}</select>
+                <select onchange="${monthFn}" class="month-year-picker" style="flex:1; padding:9px 28px 9px 12px; font-size:14px; text-align:center; text-align-last:center;">${monthOptions.join('')}</select>
+                <select onchange="${yearFn}" class="month-year-picker" style="flex:1; padding:9px 28px 9px 12px; font-size:14px; text-align:center; text-align-last:center;">${yearOptions.join('')}</select>
                 <button onclick="${nextFn}" class="${arrowClass} next" type="button">›</button>
             </div>`;
     };
@@ -16169,8 +16225,8 @@
         wrap.innerHTML = `
             <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
                 <button onclick="window.changeSalaryMonthBy(-1)" class="month-nav-arrow-btn month-nav-arrow-btn--green prev" type="button">‹</button>
-                <select onchange="window.changeSalaryMonthTo(this.value, null)" style="flex:1; padding:9px 28px 9px 12px; border-radius:22px; font-size:14px; font-weight:700; background-color:var(--card); border:1px solid var(--border); text-align:center; text-align-last:center;">${monthOptions.join('')}</select>
-                <select onchange="window.changeSalaryMonthTo(null, this.value)" style="flex:1; padding:9px 28px 9px 12px; border-radius:22px; font-size:14px; font-weight:700; background-color:var(--card); border:1px solid var(--border); text-align:center; text-align-last:center;">${yearOptions.join('')}</select>
+                <select onchange="window.changeSalaryMonthTo(this.value, null)" class="month-year-picker" style="flex:1; padding:9px 28px 9px 12px; font-size:14px; text-align:center; text-align-last:center;">${monthOptions.join('')}</select>
+                <select onchange="window.changeSalaryMonthTo(null, this.value)" class="month-year-picker" style="flex:1; padding:9px 28px 9px 12px; font-size:14px; text-align:center; text-align-last:center;">${yearOptions.join('')}</select>
                 <button onclick="window.changeSalaryMonthBy(1)" class="month-nav-arrow-btn month-nav-arrow-btn--green next" type="button">›</button>
             </div>`;
     };
