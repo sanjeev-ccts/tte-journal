@@ -597,6 +597,23 @@
         .month-nav-arrow-btn--green { color: var(--green); border-color: var(--green); }
         body:not(.green-theme) #screen-salary .month-nav-arrow-btn--green,
         body:not(.green-theme) #trend-future-month-nav-wrap .month-nav-arrow-btn--green { color: var(--blue); border-color: var(--blue); }
+        .trend-compare-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 -4px; padding: 0 2px; }
+        .trend-compare-inner { min-width: 680px; }
+        .trend-compare-head { display: flex; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); padding: 6px 0 4px; border-bottom: 1px solid var(--border); }
+        .trend-compare-head-proj { flex: 1; min-width: 0; padding-right: 8px; text-align: left; }
+        .trend-compare-head-act { flex: 1; min-width: 0; padding-left: 8px; text-align: right; }
+        .trend-compare-pair { display: flex; align-items: center; gap: 0; padding: 9px 0; font-size: 12px; }
+        .trend-compare-pair.dashed-below { border-bottom: 1px dashed var(--border); }
+        .trend-compare-col { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; }
+        .trend-compare-proj { padding-right: 10px; color: var(--text-muted); justify-content: flex-start; }
+        .trend-compare-proj .trend-compare-journey { flex: 1; min-width: 0; }
+        .trend-compare-proj .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--blue); min-width: 36px; text-align: right; }
+        .trend-compare-act { padding-left: 10px; border-left: 1px solid var(--border); color: var(--text-muted); justify-content: flex-end; text-align: right; }
+        .trend-compare-act .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--text-muted); min-width: 36px; text-align: left; }
+        .trend-compare-act .trend-compare-journey { flex: 1; min-width: 0; text-align: right; }
+        .trend-compare-act .trend-compare-date { flex-shrink: 0; font-weight: 700; color: var(--text); margin-left: 4px; }
+        .trend-compare-act.mismatch { background: color-mix(in srgb, var(--orange) 8%, transparent); border-radius: 6px; margin: -2px 0; padding: 11px 10px 11px 10px; }
+        .trend-compare-empty { color: var(--text-muted); opacity: 0.45; font-style: italic; }
         #screen-salary .salary-accent { color: var(--blue); }
         body.green-theme #screen-salary .salary-accent { color: var(--green); }
         .month-nav-arrow-btn.prev { padding-right: 2px !important; }
@@ -14521,8 +14538,6 @@
         }
     };
 
-    window._trendCompareSpellCache = {};
-
     window.buildTrendTaDayIndex = function(moKey, legs, useProjectedCalc) {
         const empty = { byDate: {}, monthResults: [], monthTotal: 0, counts: { 30: 0, 70: 0, 100: 0 } };
         if (!legs || !legs.length || !window.appState.profile) return empty;
@@ -14606,44 +14621,167 @@
         return true;
     };
 
-    window.buildTrendCompareActualLabel = function(dateKey, actualEntry, projectedPct, projectedTrains) {
-        if (!actualEntry || !actualEntry.hasDuty || actualEntry.pct == null) {
-            return `<span style="min-width:40px; text-align:center; font-weight:700; color:var(--text-muted);">—</span>`;
+    window.buildTrendTaLegRows = function(moKey, legs, useProjectedCalc) {
+        if (!legs || !legs.length || !window.appState.profile) return [];
+        const calcFn = useProjectedCalc ? calculateProjectedCycleTA : calculateCycleTA;
+        const sorted = [...legs].sort((a, b) => new Date(`${a.depDate}T${a.depTime || '00:00'}`) - new Date(`${b.depDate}T${b.depTime || '00:00'}`));
+        const cycles = buildCycles(sorted);
+        const detailRows = [];
+        cycles.forEach(cycle => {
+            const cycleTouchesMonth = cycle.some(leg => leg.depDate.startsWith(moKey) || leg.arrDate.startsWith(moKey));
+            if (!cycleTouchesMonth) return;
+            const cycleTAResults = calcFn(cycle);
+            const splitCycle = getSplitLegs(cycle);
+            const legsByDate = {};
+            splitCycle.forEach(pl => { if (!legsByDate[pl.date]) legsByDate[pl.date] = []; legsByDate[pl.date].push(pl); });
+            splitCycle.forEach(item => {
+                if (!item.date.startsWith(moKey)) return;
+                const lastLegForDate = legsByDate[item.date][legsByDate[item.date].length - 1];
+                const isLastOfDay = lastLegForDate.id === item.id;
+                const matchingTA = cycleTAResults.find(r => r.date === item.date);
+                const orig = item.originalLeg || item;
+                detailRows.push({
+                    sortKey: new Date(`${item.date}T${item.depTime !== '-' ? item.depTime : (item.arrTime !== '-' ? item.arrTime : '00:00')}`),
+                    date: item.date,
+                    train: item.train,
+                    depStn: item.depStn !== '-' ? item.depStn : orig.depStn,
+                    depTime: item.depTime !== '-' ? item.depTime : orig.depTime,
+                    arrStn: item.arrStn !== '-' ? item.arrStn : orig.arrStn,
+                    arrTime: item.arrTime !== '-' ? item.arrTime : orig.arrTime,
+                    isDummy: !!orig.isDummyShuttle,
+                    groupKey: item.date + '_' + (matchingTA ? matchingTA.pct : '0'),
+                    pct: (isLastOfDay && matchingTA) ? matchingTA.pct : null,
+                    rate: (isLastOfDay && matchingTA) ? matchingTA.rate : null
+                });
+            });
+        });
+        if (!useProjectedCalc) {
+            const existingDates = new Set(detailRows.map(r => r.date));
+            const [moY, moM] = moKey.split('-').map(Number);
+            const daysInMonth = new Date(moY, moM, 0).getDate();
+            let taResultsAll = [];
+            cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calcFn(cycle)); });
+            getMelaDutyTA(moKey).forEach(r => { if (!taResultsAll.find(x => x.date === r.date)) taResultsAll.push(r); });
+            for (let d = 1; d <= daysInMonth; d++) {
+                const dateStr = `${moY}-${String(moM).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                if (existingDates.has(dateStr)) continue;
+                const special = findSpecialDutyForDate(dateStr);
+                if (!special) continue;
+                const matchingTA = taResultsAll.find(r => r.date === dateStr);
+                detailRows.push({
+                    sortKey: new Date(`${dateStr}T00:00`),
+                    date: dateStr, train: '-', depStn: '-', depTime: '-', arrStn: '-', arrTime: '-',
+                    isDummy: false, groupKey: dateStr + '_special',
+                    pct: matchingTA ? matchingTA.pct : null, rate: matchingTA ? matchingTA.rate : null
+                });
+            }
         }
-        const pct = actualEntry.pct;
-        const trainMatch = window.trainsMatchForCompare(projectedTrains, actualEntry.trains);
-        const pctMatch = projectedPct == null || pct === projectedPct;
-        const mismatch = !trainMatch || !pctMatch;
-        const cacheId = 'ta-' + dateKey.replace(/-/g, '');
-        window._trendCompareSpellCache[cacheId] = { type: 'ta', date: dateKey, legs: actualEntry.legs, pct, rate: actualEntry.rate, projectedPct, projectedTrains };
-        const color = mismatch ? 'var(--orange)' : 'var(--text-muted)';
-        const border = mismatch ? '1.5px solid var(--orange)' : '1px solid var(--border)';
-        const label = `${pct}%${mismatch ? '*' : ''}`;
-        if (mismatch) {
-            return `<button type="button" onclick="window.showTrendCompareJourneyModal('${cacheId}')" style="min-width:40px; margin:0; padding:3px 6px; font-size:11px; font-weight:800; color:${color}; background:var(--input-bg); border:${border}; border-radius:8px; cursor:pointer; box-shadow:none;">${label}</button>`;
-        }
-        return `<span style="min-width:40px; text-align:center; font-weight:800; color:${color};">${label}</span>`;
+        detailRows.sort((a, b) => a.sortKey - b.sortKey);
+        return detailRows;
     };
 
-    window.buildTrendNdaCompareActualLabel = function(spellKey, actualMins, projectedMins, actualTrips, projectedTrips) {
+    window.pairTaCompareRows = function(projRows, actRows) {
+        const actByDate = {};
+        (actRows || []).forEach(r => {
+            if (!actByDate[r.date]) actByDate[r.date] = [];
+            actByDate[r.date].push({ row: r, used: false });
+        });
+        const pairs = (projRows || []).map(proj => {
+            const list = actByDate[proj.date] || [];
+            const slot = list.find(s => !s.used);
+            if (slot) slot.used = true;
+            return { proj, actual: slot ? slot.row : null };
+        });
+        Object.keys(actByDate).forEach(date => {
+            actByDate[date].filter(s => !s.used).forEach(s => pairs.push({ proj: null, actual: s.row }));
+        });
+        return pairs;
+    };
+
+    window.buildTrendNdaComparePairs = function(projNdaData, actualNdaData) {
         const hrsSuffix = window.i18n ? window.i18n.t('hrs_suffix') : 'Hrs';
-        if (!actualMins || actualMins <= 0) {
-            return `<span style="min-width:48px; text-align:center; font-weight:700; color:var(--text-muted);">—</span>`;
+        const matched = window.matchNdaSpellsForCompare(projNdaData, actualNdaData);
+        const pairs = [];
+        const tripToRow = (trip, spellMins) => ({
+            date: trip.depDate, train: trip.train, depStn: trip.depStn, depTime: trip.depTime,
+            arrStn: trip.arrStn, arrTime: trip.arrTime, isDummy: trip.isDummyShuttle,
+            spellMins, hrsSuffix
+        });
+        matched.pairs.forEach(({ projected, actual }) => {
+            const pTrips = projected.trips || [];
+            const aTrips = (actual && actual.trips) || [];
+            const maxLen = Math.max(pTrips.length, aTrips.length, 1);
+            for (let i = 0; i < maxLen; i++) {
+                pairs.push({
+                    proj: pTrips[i] ? tripToRow(pTrips[i], i === 0 ? projected.mins : null) : null,
+                    actual: aTrips[i] ? tripToRow(aTrips[i], i === 0 && actual ? actual.mins : null) : null,
+                    spellEnd: i === maxLen - 1
+                });
+            }
+        });
+        matched.actualOnly.forEach(actual => {
+            (actual.trips || []).forEach((trip, i) => {
+                pairs.push({
+                    proj: null,
+                    actual: tripToRow(trip, i === 0 ? actual.mins : null),
+                    spellEnd: i === actual.trips.length - 1
+                });
+            });
+        });
+        return { pairs, actualOnly: matched.actualOnly };
+    };
+
+    window.formatTrendCompareProjRow = function(row) {
+        if (!row) return '<div class="trend-compare-col trend-compare-proj"><span class="trend-compare-empty">—</span></div>';
+        const dummyStyle = row.isDummy ? 'color:var(--orange);' : '';
+        const dateLabel = row.date ? `<span style="color:var(--text);font-weight:700;margin-right:4px;">${formatDateShort(row.date)}</span>` : '';
+        const journey = `<span class="trend-compare-journey" style="${dummyStyle}">${dateLabel}<b>${row.train}</b> ${row.depStn || ''} ${row.depTime || ''} → ${row.arrStn || ''} ${row.arrTime || ''}</span>`;
+        let metric = '<span class="trend-compare-metric"></span>';
+        if (row.pct != null) metric = `<span class="trend-compare-metric">${row.pct}%</span>`;
+        else if (row.spellMins != null) {
+            const h = Math.floor(row.spellMins / 60), m = Math.round(row.spellMins % 60);
+            metric = `<span class="trend-compare-metric">${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}${row.hrsSuffix ? ` <span style="font-size:9px;">${row.hrsSuffix}</span>` : ''}</span>`;
         }
-        const h = Math.floor(actualMins / 60);
-        const min = Math.round(actualMins % 60);
-        const spellLabel = `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
-        const actTrains = (actualTrips || []).map(t => t.train).filter(Boolean);
-        const projTrains = (projectedTrips || []).map(t => t.train).filter(t => t && !/^[XY]{5}$/.test(String(t).trim()));
-        const mismatch = Math.abs(actualMins - (projectedMins || 0)) > 1 || !window.trainsMatchForCompare(projTrains, actTrains);
-        const cacheId = 'nda-' + String(spellKey).replace(/[^a-zA-Z0-9]/g, '');
-        window._trendCompareSpellCache[cacheId] = { type: 'nda', legs: actualTrips, mins: actualMins, projectedMins };
-        const color = mismatch ? 'var(--orange)' : 'var(--text-muted)';
-        const border = mismatch ? '1.5px solid var(--orange)' : '1px solid var(--border)';
-        if (mismatch) {
-            return `<button type="button" onclick="window.showTrendCompareJourneyModal('${cacheId}')" style="min-width:48px; margin:0; padding:3px 6px; font-size:11px; font-weight:800; color:${color}; background:var(--input-bg); border:${border}; border-radius:8px; cursor:pointer; box-shadow:none;">${spellLabel}*<span style="font-size:8px;"> ${hrsSuffix}</span></button>`;
+        return `<div class="trend-compare-col trend-compare-proj"><span style="margin-right:4px;flex-shrink:0;">›</span>${journey}${metric}</div>`;
+    };
+
+    window.formatTrendCompareActRow = function(row, projRow) {
+        if (!row) return '<div class="trend-compare-col trend-compare-act"><span class="trend-compare-empty">—</span></div>';
+        const normTrain = (tr) => tr && tr !== '-' && !/^[XY]{5}$/.test(String(tr).trim());
+        const mismatch = !!(projRow && (
+            (normTrain(row.train) && normTrain(projRow.train) && row.train !== projRow.train) ||
+            (row.pct != null && projRow.pct != null && row.pct !== projRow.pct) ||
+            (row.spellMins != null && projRow.spellMins != null && Math.abs(row.spellMins - projRow.spellMins) > 1)
+        ));
+        const dummyStyle = row.isDummy ? 'color:var(--orange);' : '';
+        let metric = '<span class="trend-compare-metric"></span>';
+        if (row.pct != null) metric = `<span class="trend-compare-metric">${row.pct}%</span>`;
+        else if (row.spellMins != null) {
+            const h = Math.floor(row.spellMins / 60), m = Math.round(row.spellMins % 60);
+            metric = `<span class="trend-compare-metric">${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}${row.hrsSuffix ? ` <span style="font-size:9px;">${row.hrsSuffix}</span>` : ''}</span>`;
         }
-        return `<span style="min-width:48px; text-align:center; font-weight:800; color:${color};">${spellLabel} <span style="font-size:9px;">${hrsSuffix}</span></span>`;
+        const journey = `<span class="trend-compare-journey" style="${dummyStyle}"><b>${row.train}</b> ${row.depStn || ''} ${row.depTime || ''} → ${row.arrStn || ''} ${row.arrTime || ''}</span>`;
+        const dateLabel = row.date ? `<span class="trend-compare-date">${formatDateShort(row.date)}</span>` : '';
+        return `<div class="trend-compare-col trend-compare-act${mismatch ? ' mismatch' : ''}">${metric}${journey}${dateLabel}</div>`;
+    };
+
+    window.renderTrendCompareSideBySideHtml = function(pairs, isNda) {
+        const t = (key, fb) => (window.i18n ? window.i18n.t(key) : fb);
+        let html = `<div class="trend-compare-scroll"><div class="trend-compare-inner">
+            <div class="trend-compare-head">
+                <div class="trend-compare-head-proj">${t('trend_col_proj_short', 'Projected')}</div>
+                <div class="trend-compare-head-act">${t('trend_col_actual_short', 'Actual')}</div>
+            </div>`;
+        pairs.forEach((pair, i) => {
+            let dashed = false;
+            if (isNda) dashed = !!pair.spellEnd;
+            else if (pair.proj && pairs[i + 1] && pairs[i + 1].proj) dashed = pair.proj.groupKey !== pairs[i + 1].proj.groupKey;
+            html += `<div class="trend-compare-pair${dashed ? ' dashed-below' : ''}">
+                ${window.formatTrendCompareProjRow(pair.proj)}
+                ${window.formatTrendCompareActRow(pair.actual, pair.proj)}
+            </div>`;
+        });
+        return html + '</div></div>';
     };
 
     window.matchNdaSpellsForCompare = function(projectedSpells, actualSpells) {
@@ -14666,32 +14804,6 @@
             if (!used.has(ai)) actualOnly.push(act);
         });
         return { pairs, actualOnly };
-    };
-
-    window.showTrendCompareJourneyModal = function(cacheId) {
-        const data = (window._trendCompareSpellCache || {})[cacheId];
-        if (!data) return;
-        const t = (key, fb) => (window.i18n ? window.i18n.t(key) : fb);
-        const formatLeg = (leg) => {
-            const dateLabel = leg.date ? formatDateShort(leg.date) + ' ' : '';
-            const train = leg.train && leg.train !== '-' ? `<b>${window.escapeHtml(leg.train)}</b> ` : '';
-            return `${dateLabel}${train}${window.escapeHtml(leg.depStn || '')} ${window.escapeHtml(leg.depTime || '')} → ${window.escapeHtml(leg.arrStn || '')} ${window.escapeHtml(leg.arrTime || '')}`;
-        };
-        let title, body;
-        if (data.type === 'nda') {
-            title = t('trend_compare_actual_nda_title', 'Actual Night Duty');
-            const hrsSuffix = t('hrs_suffix', 'Hrs');
-            const h = Math.floor(data.mins / 60);
-            const min = Math.round(data.mins % 60);
-            const legsHtml = (data.legs || []).map(trip => `<div style="font-size:12px; margin-bottom:6px;">${formatLeg({ date: trip.depDate, train: trip.train, depStn: trip.depStn, depTime: trip.depTime, arrStn: trip.arrStn, arrTime: trip.arrTime })}</div>`).join('');
-            body = `<div style="text-align:left;">${legsHtml}<div style="margin-top:10px; font-weight:800; color:var(--blue);">${t('future_trends_total_nda', 'Total NDA')}: ${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')} ${hrsSuffix}</div></div>`;
-        } else {
-            title = t('trend_compare_actual_journey_title', 'Actual Journey') + (data.date ? ' — ' + formatDate(data.date) : '');
-            const legsHtml = (data.legs || []).map(leg => `<div style="font-size:12px; margin-bottom:6px;">${formatLeg(leg)}</div>`).join('');
-            const pctLine = data.pct ? `<div style="margin-top:10px; font-weight:800; color:var(--blue);">${t('trend_compare_actual_ta', 'Actual TA')}: ${data.pct}%${data.rate ? ` · ₹${data.rate}` : ''}</div>` : '';
-            body = `<div style="text-align:left;">${legsHtml || '<p style="color:var(--text-muted);">' + t('trend_compare_no_legs', 'No logged legs for this date.') + '</p>'}${pctLine}</div>`;
-        }
-        showModal(title, body, 'default', false, null, null, true);
     };
 
     window.ensureFutureTrendMonthKey = function() {
@@ -14794,25 +14906,15 @@
             return `<span style="${dummyStyle}">${dateLabel}<b>${train}</b> ${depStn} ${depTime} → ${arrStn} ${arrTime}</span>`;
         };
 
-        const colHeader = compareOn
-            ? `<div style="display:flex; gap:6px; flex-shrink:0; margin-bottom:4px; justify-content:flex-end;">
-                <span style="min-width:44px; text-align:center; font-size:9px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">${t('trend_col_actual_short', 'Act')}</span>
-                <span style="min-width:44px; text-align:center; font-size:9px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">${t('trend_col_proj_short', 'Proj')}</span>
-               </div>`
-            : '';
-
         const renderGroupedRows = (groups) => {
-            let html = compareOn ? colHeader : '';
+            let html = '';
             groups.forEach((group, gi) => {
                 group.rows.forEach((row, idx) => {
                     const isLastInGroup = idx === group.rows.length - 1;
                     const isLastGroup = gi === groups.length - 1;
                     const borderStyle = (isLastInGroup && !isLastGroup) ? 'border-bottom:1px dashed var(--border);' : '';
                     const line = formatLegLine(row.date, row.train, row.depStn, row.depTime, row.arrStn, row.arrTime, row.isDummy);
-                    const right = compareOn
-                        ? `<div style="display:flex; gap:6px; align-items:center; flex-shrink:0;">${row.actualLabel || ''}${row.rightLabel || ''}</div>`
-                        : (row.rightLabel || '');
-                    html += `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; ${borderStyle} font-size:12px;"><span style="color:var(--text-muted); flex:1; min-width:0;"><span style="margin-right:6px;">›</span>${line}</span>${right}</div>`;
+                    html += `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:9px 0; ${borderStyle} font-size:12px;"><span style="color:var(--text-muted); flex:1; min-width:0;"><span style="margin-right:6px;">›</span>${line}</span>${row.rightLabel || ''}</div>`;
                 });
             });
             return html;
@@ -14821,6 +14923,7 @@
         let rowsHtml = '';
         let footerHtml = '';
         let actualOnlyNote = '';
+        const p = window.appState.profile;
 
         if (isNDA) {
             const { ndaData, totalNdaMinutes } = extractProjectedNDALegs(moKey, projectedLegs);
@@ -14828,43 +14931,35 @@
                 return `<p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px;">${t('future_trends_no_nda', 'No projected night duties in this NDA period.')}</p>`;
             }
             const hrsSuffix = t('hrs_suffix', 'Hrs');
-            let ndaPairs = null;
             let actualNdaTotal = 0;
+            let ndaCompare = null;
             if (compareOn) {
                 const actualNda = extractNDALegs(moKey);
                 const stationMins = extractStationDutyNDA(moKey).totalMins;
                 actualNdaTotal = actualNda.totalNdaMinutes + stationMins;
-                ndaPairs = window.matchNdaSpellsForCompare(ndaData, actualNda.ndaData);
+                ndaCompare = window.buildTrendNdaComparePairs(ndaData, actualNda.ndaData);
+                rowsHtml = window.renderTrendCompareSideBySideHtml(ndaCompare.pairs, true);
+                if (ndaCompare.actualOnly.length) {
+                    actualOnlyNote = `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_nda', '+{n} actual night duty spell(s) not in roster').replace('{n}', ndaCompare.actualOnly.length)}</p>`;
+                }
+            } else {
+                const groups = ndaData.map(entry => {
+                    const h = Math.floor(entry.mins / 60);
+                    const min = Math.round(entry.mins % 60);
+                    const spellLabel = `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')} ${hrsSuffix}`;
+                    return {
+                        rows: entry.trips.map((trip, idx) => ({
+                            date: trip.depDate, train: trip.train, depStn: trip.depStn, depTime: trip.depTime,
+                            arrStn: trip.arrStn, arrTime: trip.arrTime, isDummy: trip.isDummyShuttle,
+                            rightLabel: idx === 0 ? `<span style="font-weight:800; color:var(--blue);">${spellLabel}</span>` : ''
+                        }))
+                    };
+                });
+                rowsHtml = renderGroupedRows(groups);
             }
-            const groups = ndaData.map((entry, ei) => {
-                const h = Math.floor(entry.mins / 60);
-                const min = Math.round(entry.mins % 60);
-                const spellLabel = `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')} ${hrsSuffix}`;
-                const pair = ndaPairs ? ndaPairs.pairs[ei] : null;
-                const actualSpell = pair ? pair.actual : null;
-                const spellKey = pair ? pair.spellKey : ('p' + ei);
-                return {
-                    rows: entry.trips.map((trip, idx) => ({
-                        date: trip.depDate,
-                        train: trip.train,
-                        depStn: trip.depStn,
-                        depTime: trip.depTime,
-                        arrStn: trip.arrStn,
-                        arrTime: trip.arrTime,
-                        isDummy: trip.isDummyShuttle,
-                        actualLabel: (compareOn && idx === 0) ? window.buildTrendNdaCompareActualLabel(spellKey, actualSpell ? actualSpell.mins : 0, entry.mins, actualSpell ? actualSpell.trips : [], entry.trips) : '',
-                        rightLabel: idx === 0 ? `<span style="font-weight:800; color:var(--blue); min-width:44px; text-align:center;">${spellLabel}</span>` : ''
-                    }))
-                };
-            });
-            if (compareOn && ndaPairs && ndaPairs.actualOnly.length) {
-                actualOnlyNote = `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_nda', '+{n} actual night duty spell(s) not in roster').replace('{n}', ndaPairs.actualOnly.length)}</p>`;
-            }
-            rowsHtml = renderGroupedRows(groups);
             const totalH = Math.floor(totalNdaMinutes / 60);
             const totalM = Math.round(totalNdaMinutes % 60);
             let ndaMoney = 0;
-            const p = window.appState.profile;
             if (p && p.empType !== 'Gazetted' && totalNdaMinutes > 0) {
                 const bp = parseFloat(p.basicpay) || 0;
                 const cappedBp = bp > 43600 ? 43600 : bp;
@@ -14900,81 +14995,40 @@
                 </div>`;
             }
         } else {
-            const dutyOnly = (window.appState.legs || []).filter(l => !l.isNonDuty);
-            const actualIndex = compareOn ? window.buildTrendTaDayIndex(moKey, dutyOnly, false) : null;
-            const projectedDates = new Set();
-            const cycles = buildCycles([...projectedLegs]);
-            const detailRows = [];
-            cycles.forEach(cycle => {
-                const cycleTouchesMonth = cycle.some(leg => leg.depDate.startsWith(moKey) || leg.arrDate.startsWith(moKey));
-                if (!cycleTouchesMonth) return;
-                const cycleTAResults = calculateProjectedCycleTA(cycle);
-                const splitCycle = getSplitLegs(cycle);
-                const legsByDate = {};
-                splitCycle.forEach(pl => {
-                    if (!legsByDate[pl.date]) legsByDate[pl.date] = [];
-                    legsByDate[pl.date].push(pl);
-                });
-                splitCycle.forEach(item => {
-                    if (!item.date.startsWith(moKey)) return;
-                    projectedDates.add(item.date);
-                    const lastLegForDate = legsByDate[item.date][legsByDate[item.date].length - 1];
-                    const isLastOfDay = lastLegForDate.id === item.id;
-                    const matchingTA = cycleTAResults.find(r => r.date === item.date);
-                    const orig = item.originalLeg || item;
-                    const dayTrains = legsByDate[item.date].filter(l => l.train && l.train !== '-').map(l => l.train);
-                    detailRows.push({
-                        sortKey: new Date(`${item.date}T${item.depTime !== '-' ? item.depTime : (item.arrTime !== '-' ? item.arrTime : '00:00')}`),
-                        date: item.date,
-                        train: item.train,
-                        depStn: item.depStn !== '-' ? item.depStn : orig.depStn,
-                        depTime: item.depTime !== '-' ? item.depTime : orig.depTime,
-                        arrStn: item.arrStn !== '-' ? item.arrStn : orig.arrStn,
-                        arrTime: item.arrTime !== '-' ? item.arrTime : orig.arrTime,
-                        isDummy: orig.isDummyShuttle,
-                        groupKey: item.date + '_' + (matchingTA ? matchingTA.pct : '0'),
-                        pct: (isLastOfDay && matchingTA) ? matchingTA.pct : null,
-                        rate: (isLastOfDay && matchingTA) ? matchingTA.rate : null,
-                        trains: dayTrains
-                    });
-                });
-            });
-            detailRows.sort((a, b) => a.sortKey - b.sortKey);
-            if (!detailRows.length) {
+            const projRows = window.buildTrendTaLegRows(moKey, projectedLegs, true);
+            if (!projRows.length) {
                 return `<p style="padding:12px; text-align:center; color:var(--text-muted); font-size:12px;">${t('future_trends_no_duties', 'No projected duties for this month.')}</p>`;
             }
-            const groups = [];
-            let currentGroup = null;
-            detailRows.forEach(row => {
-                if (!currentGroup || currentGroup.key !== row.groupKey) {
-                    currentGroup = { key: row.groupKey, rows: [] };
-                    groups.push(currentGroup);
-                }
-                const actualEntry = (compareOn && actualIndex) ? actualIndex.byDate[row.date] : null;
-                const projLabel = row.pct != null ? `<span style="font-weight:800; color:var(--blue); min-width:44px; text-align:center;">${row.pct}%</span>` : '';
-                const actLabel = compareOn
-                    ? (row.pct != null ? window.buildTrendCompareActualLabel(row.date, actualEntry, row.pct, row.trains) : '')
-                    : '';
-                currentGroup.rows.push({
-                    date: row.date,
-                    train: row.train,
-                    depStn: row.depStn,
-                    depTime: row.depTime,
-                    arrStn: row.arrStn,
-                    arrTime: row.arrTime,
-                    isDummy: row.isDummy,
-                    actualLabel: actLabel,
-                    rightLabel: projLabel
-                });
-            });
-            if (compareOn && actualIndex) {
+            let actualIndex = null;
+            if (compareOn) {
+                const dutyOnly = (window.appState.legs || []).filter(l => !l.isNonDuty);
+                const actRows = window.buildTrendTaLegRows(moKey, dutyOnly, false);
+                actualIndex = window.buildTrendTaDayIndex(moKey, dutyOnly, false);
+                const pairs = window.pairTaCompareRows(projRows, actRows);
+                rowsHtml = window.renderTrendCompareSideBySideHtml(pairs, false);
+                const projectedDates = new Set(projRows.map(r => r.date));
                 const actualOnlyDates = Object.keys(actualIndex.byDate).filter(d => d.startsWith(moKey) && !projectedDates.has(d) && actualIndex.byDate[d].hasDuty);
                 if (actualOnlyDates.length) {
                     actualOnlyNote = `<p style="font-size:11px; color:var(--orange); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_days', '+{n} actual duty day(s) not in roster').replace('{n}', actualOnlyDates.length)}</p>`;
                 }
+            } else {
+                const groups = [];
+                let currentGroup = null;
+                projRows.forEach(row => {
+                    if (!currentGroup || currentGroup.key !== row.groupKey) {
+                        currentGroup = { key: row.groupKey, rows: [] };
+                        groups.push(currentGroup);
+                    }
+                    currentGroup.rows.push({
+                        date: row.date, train: row.train, depStn: row.depStn, depTime: row.depTime,
+                        arrStn: row.arrStn, arrTime: row.arrTime, isDummy: row.isDummy,
+                        rightLabel: row.pct != null ? `<span style="font-weight:800; color:var(--blue);">${row.pct}%</span>` : ''
+                    });
+                });
+                rowsHtml = renderGroupedRows(groups);
             }
-            rowsHtml = renderGroupedRows(groups);
 
+            const cycles = buildCycles([...projectedLegs]);
             const monthTaResults = [];
             cycles.forEach(cycle => {
                 calculateProjectedCycleTA(cycle).forEach(r => {
@@ -14987,10 +15041,10 @@
                 counts[r.pct] = (counts[r.pct] || 0) + 1;
                 totalMoney += r.rate || 0;
             });
-            const pctParts = [30, 70, 100].filter(p => counts[p] > 0).map(p => `${p}% × ${counts[p]}`).join(' · ');
+            const pctParts = [30, 70, 100].filter(pct => counts[pct] > 0).map(pct => `${pct}% × ${counts[pct]}`).join(' · ');
             if (compareOn && actualIndex) {
                 const actCounts = actualIndex.counts;
-                const actPctParts = [30, 70, 100].filter(p => actCounts[p] > 0).map(p => `${p}% × ${actCounts[p]}`).join(' · ');
+                const actPctParts = [30, 70, 100].filter(pct => actCounts[pct] > 0).map(pct => `${pct}% × ${actCounts[pct]}`).join(' · ');
                 footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:800; background:var(--input-bg); border-radius:12px; padding:10px;">
                     <div style="display:flex; justify-content:space-between; align-items:center; color:var(--blue);">
                         <span>${t('future_trends_total_ta', 'Total TA')} (${t('trend_col_proj_short', 'Proj')})</span>
@@ -15015,10 +15069,12 @@
         }
 
         const heading = isNDA
-            ? t('future_trends_detail_nda', 'Projected Night Duties')
-            : t('future_trends_detail_ta', 'Projected Duties & TA %');
+            ? (compareOn ? t('trend_compare_heading_nda', 'Projected vs Actual Night Duties') : t('future_trends_detail_nda', 'Projected Night Duties'))
+            : (compareOn ? t('trend_compare_heading_ta', 'Projected vs Actual Duties') : t('future_trends_detail_ta', 'Projected Duties & TA %'));
+        const compareHint = compareOn ? `<p style="font-size:10px; color:var(--text-muted); text-align:center; margin:0 0 8px;">${t('trend_compare_scroll_hint', 'Swipe horizontally to compare projected (left) and actual (right).')}</p>` : '';
         return `
             <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; margin-bottom:8px; text-align:center;">${heading}</div>
+            ${compareHint}
             <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:4px 12px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">${rowsHtml}${footerHtml}</div>
             ${actualOnlyNote}
             <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. For DDU (Nearby HQ-TA Claimed), dummy trains XXXXX/YYYYY cover BSB↔DDU travel — BSB departure is taken 3 hours before the DDU train, with 1 hour shuttle time to DDU.')}</p>`;
