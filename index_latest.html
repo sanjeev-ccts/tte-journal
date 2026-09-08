@@ -170,7 +170,8 @@
         body.green-theme .circ-dash-icon-badge { color: var(--blue); }
         body.green-theme .circ-circular-icon { background: color-mix(in srgb, var(--blue) 12%, transparent); }
         body.green-theme .circ-fab-right { background: radial-gradient(circle at center, #4ade80 0%, #15803d 55%, #14532d 100%); }
-        body.green-theme #btn-clear-inputs svg { stroke: #ea580c !important; }
+        body.green-theme #btn-clear-inputs svg { stroke: var(--red) !important; }
+        #btn-clear-inputs svg { stroke: var(--red) !important; }
         body.green-theme .profile-lbl,
         body.dark-mode.green-theme .profile-lbl { color: var(--blue); }
         body.green-theme #sidebar-user-name { color: var(--blue) !important; }
@@ -490,14 +491,18 @@
         .profile-station-hq-block input { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
         .profile-stations-rows { margin-left: -15px; margin-right: -15px; }
         .profile-station-divider { border-top: 1px solid var(--border); margin: 0; }
+        .profile-station-block.expanded { background: color-mix(in srgb, var(--blue) 18%, var(--card)); }
+        body:not(.dark-mode) .profile-station-block.expanded { background: color-mix(in srgb, var(--blue) 14%, var(--input-bg)); }
+        .profile-station-block.expanded .profile-station-divider { border-top-color: transparent; }
+        .profile-station-block.expanded + .profile-station-block .profile-station-divider { border-top-color: transparent; }
         .profile-station-help { margin: 6px 0 0; }
         .profile-station-help summary { font-size: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; list-style: none; }
         .profile-station-help summary::-webkit-details-marker { display: none; }
         .profile-station-help p { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
         .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 15px; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
         .profile-station-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
-        .profile-station-row.expanded { padding-bottom: 0; background: color-mix(in srgb, var(--blue) 10%, var(--card)); }
-        .profile-station-row.expanded + .profile-station-expand:not(.hidden) { background: color-mix(in srgb, var(--blue) 10%, var(--card)); margin: 0; padding: 0 15px 14px; }
+        .profile-station-block.expanded .profile-station-row { padding-bottom: 0; }
+        .profile-station-block.expanded .profile-station-expand:not(.hidden) { margin: 0; padding: 0 15px 14px; }
         .profile-station-row-main { flex: 1; min-width: 0; }
         .profile-station-row-title { display: block; font-size: 12.5px; font-weight: 800; color: var(--blue); line-height: 1.25; }
         .profile-station-row-value { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -510,6 +515,7 @@
         .profile-station-row-chevron { flex-shrink: 0; color: var(--text-muted); display: flex; align-items: center; justify-content: center; line-height: 1; transition: transform 0.15s; opacity: 0.9; }
         .profile-station-row-chevron svg { width: 28px; height: 28px; stroke-width: 2.5; }
         .profile-station-row.expanded .profile-station-row-chevron { color: var(--blue); transform: rotate(90deg); }
+        .profile-station-block.expanded .profile-station-row-chevron { color: var(--blue); transform: rotate(90deg); }
         .profile-station-expand { padding: 0 15px 14px; }
         .profile-station-expand .profile-station-help { margin-bottom: 8px; }
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
@@ -626,8 +632,8 @@
         .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 0; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow: hidden; }
         .trend-graph-plot-wrap { position: relative; padding: 0 6px 6px; }
         .trend-graph-highlight { position: absolute; top: 0; bottom: 0; z-index: 0; pointer-events: none; }
-        .compare-pill-fab { position: fixed; bottom: 90px; right: 18px; z-index: 3000; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px dashed color-mix(in srgb, var(--blue) 38%, var(--border)); background: color-mix(in srgb, var(--blue) 10%, var(--card)); color: var(--text-muted); font-size: 12px; font-weight: 700; line-height: 1; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.35); max-width: none; margin: 0; width: auto; height: auto; }
-        body:not(.dark-mode) .compare-pill-fab { background: color-mix(in srgb, var(--blue) 12%, var(--input-bg)); border-color: color-mix(in srgb, var(--blue) 42%, var(--border)); }
+        .compare-pill-fab { position: fixed; bottom: 90px; right: 18px; z-index: 3000; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px dashed color-mix(in srgb, var(--blue) 48%, var(--border)); background: color-mix(in srgb, var(--blue) 22%, var(--card)); color: var(--text-muted); font-size: 12px; font-weight: 700; line-height: 1; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.35); max-width: none; margin: 0; width: auto; height: auto; }
+        body:not(.dark-mode) .compare-pill-fab { background: color-mix(in srgb, var(--blue) 24%, var(--input-bg)); border-color: color-mix(in srgb, var(--blue) 52%, var(--border)); }
         .compare-pill-fab svg { width: 20px; height: 17px; display: block; flex-shrink: 0; }
         .compare-pill-fab.active { color: #fff !important; background: var(--blue-fill) !important; border-color: var(--blue-fill) !important; border-style: solid; filter: none; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2), 0 6px 16px rgba(0,0,0,0.35); }
         .compare-pill-fab:active { opacity: 0.9; transform: translateY(1px); }
@@ -1895,8 +1901,8 @@
             if (genericOverlay) genericOverlay.classList.add('hidden');
             const spinnerOverlay = document.createElement('div');
             spinnerOverlay.id = 'roster-deeplink-spinner-overlay';
-            spinnerOverlay.style.cssText = 'position:absolute; top:60px; left:0; width:100%; bottom:0; background:var(--bg); z-index:11; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;';
-            spinnerOverlay.innerHTML = `<div style="width:40px; height:40px; border:4px solid color-mix(in srgb, var(--text) 25%, transparent); border-top-color:var(--blue); border-radius:50%; animation:splashSpin 0.8s linear infinite;"></div><div style="color:var(--text); font-weight:700; font-size:14px;">${label || 'Opening…'}</div>`;
+            spinnerOverlay.style.cssText = 'position:absolute; top:60px; left:0; width:100%; bottom:0; background:#0a0a0a; z-index:11; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px;';
+            spinnerOverlay.innerHTML = `<div style="width:40px; height:40px; border:4px solid rgba(255,255,255,0.15); border-top-color:#fff; border-radius:50%; animation:splashSpin 0.8s linear infinite;"></div><div style="color:#fff; font-weight:700; font-size:14px;">${label || 'Opening…'}</div>`;
             document.getElementById('roster-iframe-modal').appendChild(spinnerOverlay);
             const iframe = document.getElementById('roster-iframe');
             const send = () => {
@@ -3321,117 +3327,124 @@
                 </div>
 
                 <div class="profile-stations-rows">
-                    <div class="profile-station-divider" aria-hidden="true"></div>
-                    <div class="profile-station-row" data-profile-section="nearby" onclick="window.toggleProfileStationSection('nearby')">
-                        <div class="profile-station-row-main">
-                            <span class="profile-station-row-title" data-i18n="profile_nearby_no_ta_short">Nearby HQ · no TA</span>
-                            <span id="profile-summary-nearby" class="profile-station-row-value">Not set</span>
-                        </div>
-                        <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                    </div>
-                    <div id="profile-section-nearby" class="profile-station-expand hidden">
-                        <details class="profile-station-help">
-                            <summary data-i18n="profile_whats_this">What's this?</summary>
-                            <p data-i18n="profile_nearby_hq_desc">This is a nearby HQ station your journey sometimes starts from, other than your Main HQ — you do NOT claim TA for travel within this group.</p>
-                        </details>
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <input type="text" id="reg-nearby-input" placeholder="e.g. BCY, BNRS" style="text-transform: uppercase; margin:0; flex:1;">
-                            <button type="button" onclick="event.stopPropagation(); window.addNearbyHQ()" class="profile-inline-add-btn">Add</button>
-                        </div>
-                        <div id="reg-nearby-chips" class="profile-chip-row" data-empty-label="No stations added"></div>
-                    </div>
-
-                    <div class="profile-station-divider" aria-hidden="true"></div>
-                    <div class="profile-station-row" data-profile-section="nearby-ta" onclick="window.toggleProfileStationSection('nearby-ta')">
-                        <div class="profile-station-row-main">
-                            <span class="profile-station-row-title" data-i18n="profile_nearby_ta_short">Nearby HQ · TA claimed</span>
-                            <span id="profile-summary-nearby-ta" class="profile-station-row-value">Not set</span>
-                        </div>
-                        <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                    </div>
-                    <div id="profile-section-nearby-ta" class="profile-station-expand hidden">
-                        <details class="profile-station-help">
-                            <summary data-i18n="profile_whats_this">What's this?</summary>
-                            <p data-i18n="profile_diversion_stn_desc">It is the station from which a journey starts, other than your Main or Nearby HQ, with TA Claimed — e.g. DDU for BSB HQ.</p>
-                        </details>
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <input type="text" id="reg-nearby-ta-input" placeholder="e.g. DDU" style="text-transform: uppercase; margin:0; flex:1;">
-                            <button type="button" onclick="event.stopPropagation(); window.addNearbyTaClaimedHQ()" class="profile-inline-add-btn">Add</button>
-                        </div>
-                        <div id="reg-nearby-ta-chips" class="profile-chip-row" data-empty-label="No stations added"></div>
-                    </div>
-
-                    <div class="profile-station-divider" aria-hidden="true"></div>
-                    <div class="profile-station-row" data-profile-section="originating" onclick="window.toggleProfileStationSection('originating')">
-                        <div class="profile-station-row-main">
-                            <span class="profile-station-row-title" data-i18n="profile_originating_trains_toggle">Originating Trains (NDA)</span>
-                            <span id="profile-summary-originating" class="profile-station-row-value">Not set</span>
-                        </div>
-                        <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                    </div>
-                    <div id="profile-section-originating" class="profile-station-expand hidden">
-                        <details class="profile-station-help">
-                            <summary data-i18n="profile_whats_this">What's this?</summary>
-                            <p data-i18n="profile_originating_trains_desc">Optional — add only if you have originating trains. These get a 45-minute NDA sign-on margin (30 minutes for all others). Only hours between 22:00 and 06:00 count toward NDA.</p>
-                        </details>
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <input type="text" id="reg-originating-input" placeholder="e.g. 13239" style="margin:0; flex:1;" oninput="window.filterNumericOnly(this)" maxlength="5">
-                            <button type="button" onclick="event.stopPropagation(); window.addOriginatingTrain()" class="profile-inline-add-btn">Add</button>
-                        </div>
-                        <div id="reg-originating-chips" class="profile-chip-row" data-empty-label="No trains added"></div>
-                    </div>
-
-                    <div class="profile-station-divider" aria-hidden="true"></div>
-                    <div class="profile-station-row" data-profile-section="dest" onclick="window.toggleProfileStationSection('dest')">
-                        <div class="profile-station-row-main">
-                            <span class="profile-station-row-title" data-i18n="profile_destinations_short">Outward Destinations</span>
-                            <span id="profile-summary-destinations" class="profile-station-row-value">Not set</span>
-                        </div>
-                        <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                    </div>
-                    <div id="profile-section-dest" class="profile-station-expand hidden">
-                        <details class="profile-station-help">
-                            <summary data-i18n="profile_whats_this">What's this?</summary>
-                            <p data-i18n="profile_dest_stations_desc">Set your usual outward destination stations — helps the app auto-recognize your journeys correctly.</p>
-                        </details>
-                        <div style="display:flex; gap:8px; margin-top:8px;">
-                            <input type="text" id="reg-dest-input" placeholder="e.g. LKO PRYJ" style="text-transform: uppercase; margin:0; flex:1;">
-                            <button type="button" onclick="event.stopPropagation(); window.addDestStation()" class="profile-inline-add-btn">Add</button>
-                        </div>
-                        <div id="reg-dest-chips" class="profile-chip-row" data-empty-label="No stations added"></div>
-                    </div>
-
-                    <div class="profile-station-divider" aria-hidden="true"></div>
-                    <div class="profile-station-row" data-profile-section="diversion" onclick="window.toggleProfileStationSection('diversion')">
-                        <div class="profile-station-row-main">
-                            <span class="profile-station-row-title" data-i18n="profile_diversion_short">Diversion Stations</span>
-                            <span id="profile-summary-diversion" class="profile-station-row-value">Not set</span>
-                        </div>
-                        <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                    </div>
-                    <div id="profile-section-diversion" class="profile-station-expand hidden">
-                        <details class="profile-station-help">
-                            <summary data-i18n="profile_whats_this">What's this?</summary>
-                            <p data-i18n="dest_diversion_stations_desc">For trains that sometimes divert away from a major destination station to a nearby one (e.g. LKO trains diverting via AMG). Optional — only add if you know of specific diversions on your usual routes.</p>
-                        </details>
-                        <div id="reg-diversion-major-wrap" style="display:flex; gap:8px; margin-top:8px; margin-bottom:8px;">
-                            <select id="reg-diversion-major" style="margin:0; flex:1;">
-                                <option value="">-- Select major station --</option>
-                            </select>
-                        </div>
-                        <div id="reg-diversion-major-custom-wrap" class="hidden" style="display:flex; gap:8px; margin-bottom:8px;">
-                            <input type="text" id="reg-diversion-major-custom" placeholder="Type major station code" style="text-transform: uppercase; margin:0; flex:1;">
-                            <button type="button" onclick="event.stopPropagation(); window.confirmCustomMajorStation()" class="profile-inline-add-btn">Use</button>
-                        </div>
-                        <div id="reg-diversion-editor" class="hidden">
-                            <div style="font-size:12px; font-weight:800; color:var(--blue); margin-bottom:6px;" id="reg-diversion-editor-title"></div>
-                            <div style="display:flex; gap:8px; margin-bottom:8px;">
-                                <input type="text" id="reg-diversion-sub-input" placeholder="e.g. AMG UTR" style="text-transform: uppercase; margin:0; flex:1;">
-                                <button type="button" onclick="event.stopPropagation(); window.addDiversionSubStation()" class="profile-inline-add-btn">Add</button>
+                    <div class="profile-station-block" data-profile-block="nearby">
+                        <div class="profile-station-divider" aria-hidden="true"></div>
+                        <div class="profile-station-row" data-profile-section="nearby" onclick="window.toggleProfileStationSection('nearby')">
+                            <div class="profile-station-row-main">
+                                <span class="profile-station-row-title" data-i18n="profile_nearby_no_ta_short">Nearby HQ · no TA (optional)</span>
+                                <span id="profile-summary-nearby" class="profile-station-row-value">Not set</span>
                             </div>
-                            <div id="reg-diversion-sub-chips" class="profile-chip-row"></div>
+                            <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
                         </div>
-                        <div id="reg-diversion-summary" style="margin-top:10px;"></div>
+                        <div id="profile-section-nearby" class="profile-station-expand hidden">
+                            <details class="profile-station-help">
+                                <summary data-i18n="profile_whats_this">What's this?</summary>
+                                <p data-i18n="profile_nearby_hq_desc">This is a nearby HQ station your journey sometimes starts from, other than your Main HQ — you do NOT claim TA for travel within this group.</p>
+                            </details>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <input type="text" id="reg-nearby-input" placeholder="e.g. BCY, BNRS" style="text-transform: uppercase; margin:0; flex:1;">
+                                <button type="button" onclick="event.stopPropagation(); window.addNearbyHQ()" class="profile-inline-add-btn">Add</button>
+                            </div>
+                            <div id="reg-nearby-chips" class="profile-chip-row" data-empty-label="No stations added"></div>
+                        </div>
+                    </div>
+
+                    <div class="profile-station-block" data-profile-block="nearby-ta">
+                        <div class="profile-station-divider" aria-hidden="true"></div>
+                        <div class="profile-station-row" data-profile-section="nearby-ta" onclick="window.toggleProfileStationSection('nearby-ta')">
+                            <div class="profile-station-row-main">
+                                <span class="profile-station-row-title" data-i18n="profile_nearby_ta_short">Nearby Station · TA claimed (optional)</span>
+                                <span id="profile-summary-nearby-ta" class="profile-station-row-value">Not set</span>
+                            </div>
+                            <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+                        </div>
+                        <div id="profile-section-nearby-ta" class="profile-station-expand hidden">
+                            <p class="profile-station-help-static" data-i18n="profile_diversion_stn_desc">This is the station from which a journey starts with TA claimed, other than your Main or Nearby HQ — e.g. DDU for BSB HQ staff. It is primarily for BSB HQ staff. Staff at other HQs rarely use this, because BSB staff often travel far from their HQ to start or end journeys at DDU and claim proper TA and continuous NDA for those journeys.</p>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <input type="text" id="reg-nearby-ta-input" placeholder="e.g. DDU" style="text-transform: uppercase; margin:0; flex:1;">
+                                <button type="button" onclick="event.stopPropagation(); window.addNearbyTaClaimedHQ()" class="profile-inline-add-btn">Add</button>
+                            </div>
+                            <div id="reg-nearby-ta-chips" class="profile-chip-row" data-empty-label="No stations added"></div>
+                        </div>
+                    </div>
+
+                    <div class="profile-station-block" data-profile-block="originating">
+                        <div class="profile-station-divider" aria-hidden="true"></div>
+                        <div class="profile-station-row" data-profile-section="originating" onclick="window.toggleProfileStationSection('originating')">
+                            <div class="profile-station-row-main">
+                                <span class="profile-station-row-title" data-i18n="profile_originating_trains_toggle">Originating Trains (NDA) (optional)</span>
+                                <span id="profile-summary-originating" class="profile-station-row-value">Not set</span>
+                            </div>
+                            <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+                        </div>
+                        <div id="profile-section-originating" class="profile-station-expand hidden">
+                            <details class="profile-station-help">
+                                <summary data-i18n="profile_whats_this">What's this?</summary>
+                                <p data-i18n="profile_originating_trains_desc">Optional — add only if you have originating trains. These get a 45-minute NDA sign-on margin (30 minutes for all others). Only hours between 22:00 and 06:00 count toward NDA.</p>
+                            </details>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <input type="text" id="reg-originating-input" placeholder="e.g. 13239" style="margin:0; flex:1;" oninput="window.filterNumericOnly(this)" maxlength="5">
+                                <button type="button" onclick="event.stopPropagation(); window.addOriginatingTrain()" class="profile-inline-add-btn">Add</button>
+                            </div>
+                            <div id="reg-originating-chips" class="profile-chip-row" data-empty-label="No trains added"></div>
+                        </div>
+                    </div>
+
+                    <div class="profile-station-block" data-profile-block="dest">
+                        <div class="profile-station-divider" aria-hidden="true"></div>
+                        <div class="profile-station-row" data-profile-section="dest" onclick="window.toggleProfileStationSection('dest')">
+                            <div class="profile-station-row-main">
+                                <span class="profile-station-row-title" data-i18n="profile_destinations_short">Outward Destinations (optional)</span>
+                                <span id="profile-summary-destinations" class="profile-station-row-value">Not set</span>
+                            </div>
+                            <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+                        </div>
+                        <div id="profile-section-dest" class="profile-station-expand hidden">
+                            <details class="profile-station-help">
+                                <summary data-i18n="profile_whats_this">What's this?</summary>
+                                <p data-i18n="profile_dest_stations_desc">Set your usual outward destination stations and any known diversion routes (e.g. LKO trains sometimes diverting via AMG) — helps the app auto-recognize your journeys correctly.</p>
+                            </details>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <input type="text" id="reg-dest-input" placeholder="e.g. LKO PRYJ" style="text-transform: uppercase; margin:0; flex:1;">
+                                <button type="button" onclick="event.stopPropagation(); window.addDestStation()" class="profile-inline-add-btn">Add</button>
+                            </div>
+                            <div id="reg-dest-chips" class="profile-chip-row" data-empty-label="No stations added"></div>
+                        </div>
+                    </div>
+
+                    <div class="profile-station-block" data-profile-block="diversion">
+                        <div class="profile-station-divider" aria-hidden="true"></div>
+                        <div class="profile-station-row" data-profile-section="diversion" onclick="window.toggleProfileStationSection('diversion')">
+                            <div class="profile-station-row-main">
+                                <span class="profile-station-row-title" data-i18n="profile_diversion_short">Diversion Stations (optional)</span>
+                                <span id="profile-summary-diversion" class="profile-station-row-value">Not set</span>
+                            </div>
+                            <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+                        </div>
+                        <div id="profile-section-diversion" class="profile-station-expand hidden">
+                            <details class="profile-station-help">
+                                <summary data-i18n="profile_whats_this">What's this?</summary>
+                                <p data-i18n="dest_diversion_stations_desc">For trains that sometimes divert away from a major destination station to a nearby one (e.g. LKO trains diverting via AMG). Optional — only add if you know of specific diversions on your usual routes.</p>
+                            </details>
+                            <div id="reg-diversion-major-wrap" style="display:flex; gap:8px; margin-top:8px; margin-bottom:8px;">
+                                <select id="reg-diversion-major" style="margin:0; flex:1;">
+                                    <option value="">-- Select major station --</option>
+                                </select>
+                            </div>
+                            <div id="reg-diversion-major-custom-wrap" class="hidden" style="display:flex; gap:8px; margin-bottom:8px;">
+                                <input type="text" id="reg-diversion-major-custom" placeholder="Type major station code" style="text-transform: uppercase; margin:0; flex:1;">
+                                <button type="button" onclick="event.stopPropagation(); window.confirmCustomMajorStation()" class="profile-inline-add-btn">Use</button>
+                            </div>
+                            <div id="reg-diversion-editor" class="hidden">
+                                <div style="font-size:12px; font-weight:800; color:var(--blue); margin-bottom:6px;" id="reg-diversion-editor-title"></div>
+                                <div style="display:flex; gap:8px; margin-bottom:8px;">
+                                    <input type="text" id="reg-diversion-sub-input" placeholder="e.g. AMG UTR" style="text-transform: uppercase; margin:0; flex:1;">
+                                    <button type="button" onclick="event.stopPropagation(); window.addDiversionSubStation()" class="profile-inline-add-btn">Add</button>
+                                </div>
+                                <div id="reg-diversion-sub-chips" class="profile-chip-row"></div>
+                            </div>
+                            <div id="reg-diversion-summary" style="margin-top:10px;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3827,7 +3840,7 @@
             <div style="margin-top: 12px; margin-bottom: 10px;">
                 <div class="grid-2">
                     <div class="nav-card" onclick="window.switchTab('ta'); window.showYearlyTrendOnly();">
-                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 122.88 120.05" style="width:24px; height:23px;"><path fill="currentColor" fill-rule="evenodd" d="M90.54,38.25c2.23-.75,4.58.44,6.13,2.3h18.46a.51.51,0,0,1,.51.51v4.86a.51.51,0,0,1-.51.51H111.9V62.62h-3.73V46.43H98.11a9.11,9.11,0,0,1-2.36,3.36V62.62H92V52.41a57.27,57.27,0,0,1-8,3.38,84.35,84.35,0,0,1-9,2.79,18,18,0,0,1-15.71-4,41.48,41.48,0,0,1-3.49-3.35l-.34-.36-3,17.75a62.39,62.39,0,0,0,7.2,4.17c7.78,3.63,14.18,6.63,15.55,18.85.25,2.14.14,14.68,0,20.84H86a1.8,1.8,0,0,1-.67-1.43v-1.89a4.77,4.77,0,0,1-4.71-4.76v-36a4.78,4.78,0,0,1,4.76-4.76h1.09a.91.91,0,0,0,0,.23l1.19,4.54a7.4,7.4,0,0,0,1.79,3.38A4.22,4.22,0,0,0,92.58,73h4.77v2.55c0,.41,1.92.73,2.32.73H106a.72.72,0,0,0,.73-.72V73h5a4.36,4.36,0,0,0,3.16-1.32,6.81,6.81,0,0,0,1.72-3.4l1-4.48a1,1,0,0,0,0-.24h.51a4.78,4.78,0,0,1,4.76,4.76v36.05a4.77,4.77,0,0,1-4.71,4.76V111a1.8,1.8,0,0,1-.67,1.43h5.38v7.58H0v-7.58H19.83c1.41-3.79,2.86-7.83,4.28-11.89,2.93-8.39,5.74-17,7.8-23.84a22,22,0,0,1-3.21-5.06A11.33,11.33,0,0,1,27.82,65l4.33-21.82c-1.55-.08-3.34-.54-4.8.1-2.83,1.24-7,6.52-9.47,9l-3.31,3.35c-2.55,2.58-4.25,5.44-8.15,5.13-4.84-.38-8.3-5.76-4.89-9.89l7.63-7.72c3.67-3.73,7.16-8.12,11.69-10.68C24.49,30.41,28.45,29,35,29.28c2.4,0,4.94.27,7.34.5l2.8.24c11,.71,16.12,6.5,20.12,11,1.77,2,3.29,3.7,4.94,4.49.78.37,2-.15,3.39-.73L83.76,41l6.78-2.72ZM61.15,112.47c.14-6.94.29-16.73.18-18.62-.09-1.35-1-4.92-2.42-5.57a59.35,59.35,0,0,0-5.83-2.17c-2.75-.91-5-1.83-7.72-2.58-2,6.58-4.68,14.52-7.57,22.09l-2.73,6.85Zm52.87,0H89.49a1.77,1.77,0,0,0,.67-1.43v-1.89h23.19V111a1.77,1.77,0,0,0,.67,1.43ZM88.91,100.24a.88.88,0,0,1,0-1.76h25.82a.88.88,0,0,1,0,1.76Zm0-8.51a.88.88,0,0,1,0-1.76h25.82a.88.88,0,1,1,0,1.76Zm0-8.51a.88.88,0,0,1,0-1.76h25.82a.88.88,0,1,1,0,1.76Zm26.73-18.75H88.5l.9,3.43a5.63,5.63,0,0,0,1.34,2.58,2.49,2.49,0,0,0,1.83.78h19.17a2.65,2.65,0,0,0,1.92-.81,5.09,5.09,0,0,0,1.24-2.51l.74-3.47ZM44.82.71a13.17,13.17,0,1,1-7.56,6.66A13.13,13.13,0,0,1,44.82.71Z"/></svg></div>
+                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 122.88 120.01" style="width:24px; height:23px;"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M110.97,1.27L70.02,42.73l10.67,10.36l41.25-41.56C125.58,3.7,117.92-2.85,110.97,1.27L110.97,1.27z M54.04,46.81c0.4-0.31,0.81-0.58,1.22-0.81l0.15-0.08c2.35-1.28,4.81-1.24,7.39,0.53l7.17,6.98l0.11,0.11l6.6,6.42 c2.73,2.78,3.34,5.88,1.83,9.31l-19.35,50.75C24.02,112.99-0.34,87.94,0,49.73C19.23,55.35,37.75,57.19,54.04,46.81L54.04,46.81z"/></svg></div>
                         <div class="nav-main-text" id="dash-ta-val" style="color: var(--ta-accent);">₹0</div>
                         <div class="nav-sub-text" id="dash-ta-lbl">TA this month</div>
                     </div>
@@ -4033,7 +4046,7 @@
                     <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center;">Quick Add</span>
                 </div>
                 <div style="display:flex; flex-direction:column; align-items:center; gap:5px; width:66px;">
-                    <button id="btn-clear-inputs" class="squeeze-ball" onclick="window.clearDutyInputs()" style="background: var(--card); border: 1px solid var(--border); box-shadow: 0 3px 8px rgba(0,0,0,0.25); width:57px; height:57px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; transition:transform 0.1s, box-shadow 0.15s;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:30px; height:30px;"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+                    <button id="btn-clear-inputs" class="squeeze-ball" onclick="window.clearDutyInputs()" style="background: var(--card); border: 1px solid var(--border); box-shadow: 0 3px 8px rgba(0,0,0,0.25); width:57px; height:57px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; transition:transform 0.1s, box-shadow 0.15s;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:30px; height:30px;"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
                     <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center;">Clear Inputs</span>
                 </div>
                 <div style="display:flex; flex-direction:column; align-items:center; gap:5px; width:66px;">
@@ -4214,9 +4227,9 @@
             <h1 style="color:white;" data-i18n="page_title_duty_roster">Duty Roster</h1>
         </div>
         <iframe id="roster-iframe" src="" style="flex:1; width:100%; border:none; background:var(--bg);"></iframe>
-        <div id="roster-loading-overlay" class="hidden" style="position:absolute; top:60px; left:0; width:100%; bottom:0; background:var(--bg); z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; transition:opacity 0.2s ease-out;">
-            <div style="width:56px; height:56px; border:5px solid color-mix(in srgb, var(--text) 20%, transparent); border-top-color:var(--blue); border-radius:50%; animation:splashSpin 0.9s linear infinite;"></div>
-            <div style="font-size:18px; font-weight:800; color:var(--purple);">Roster</div>
+        <div id="roster-loading-overlay" class="hidden" style="position:absolute; top:60px; left:0; width:100%; bottom:0; background:#0a0a0a; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; transition:opacity 0.2s ease-out;">
+            <div style="width:56px; height:56px; border:5px solid rgba(255,255,255,0.15); border-top-color:#fff; border-radius:50%; animation:splashSpin 0.9s linear infinite;"></div>
+            <div style="font-size:18px; font-weight:800; color:#fff; letter-spacing:1px;">Roster</div>
         </div>
     </div>
 
@@ -7897,11 +7910,13 @@
     window.toggleProfileStationSection = function(sectionId) {
         const panel = document.getElementById('profile-section-' + sectionId);
         const row = document.querySelector('[data-profile-section="' + sectionId + '"]');
+        const block = document.querySelector('[data-profile-block="' + sectionId + '"]');
         if (!panel || !row) return;
         const opening = panel.classList.contains('hidden');
         panel.classList.toggle('hidden');
         row.classList.toggle('expanded', opening);
         panel.classList.toggle('expanded', opening);
+        if (block) block.classList.toggle('expanded', opening);
         if (opening) {
             const help = panel.querySelector('.profile-station-help');
             if (help) {
@@ -11699,8 +11714,11 @@
                         : isCocl ? `COCL : ${dateStr}`
                         : `${dateStr} — ${label}`;
                     const isExpanded = !window._allJourneyMultiSelectMode && String(window._allJourneyExpandedId) === String(leg.id);
+                    const rowBorder = isCocl
+                        ? 'border: 1px solid color-mix(in srgb, #9333ea 42%, var(--border) 58%);'
+                        : 'border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%);';
                     if (isExpanded && isFirstDisplayedDay) htmlElements.push(buildAllJourneyActionRow(leg));
-                    htmlElements.push(`<div class="all-journey-row all-journey-row--nonduty ${nonDutyRowClass}${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="true" style="border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%); border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;">${nonDutyCheckbox}<div class="all-journey-row-body">${contentStr}</div>${allJourneyChevronHtml()}</div>`);
+                    htmlElements.push(`<div class="all-journey-row all-journey-row--nonduty ${nonDutyRowClass}${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="true" style="${rowBorder} border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;">${nonDutyCheckbox}<div class="all-journey-row-body">${contentStr}</div>${allJourneyChevronHtml()}</div>`);
                     isFirstDisplayedDay = false;
                     cursor.setDate(cursor.getDate() + 1);
                 }
@@ -15392,8 +15410,8 @@
         const avgDisplay = opts.avgDisplay || '';
         const overlayHtml = opts.overlayHtml || '';
         const graphTitle = opts.graphTitle || '';
-        const topMargin = overlayHtml ? 34 : 28;
-        const height = 150;
+        const topMargin = overlayHtml ? 48 : 28;
+        const height = overlayHtml ? 165 : 150;
         const width = 320;
         const gridlineCount = opts.gridlineCount || 12;
         const xOffset = opts.xOffset || 0;
