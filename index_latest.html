@@ -598,15 +598,16 @@
         body:not(.green-theme) #screen-salary .month-nav-arrow-btn--green,
         body:not(.green-theme) #trend-future-month-nav-wrap .month-nav-arrow-btn--green { color: var(--blue); border-color: var(--blue); }
         .trend-compare-scroll { overflow-x: auto; overflow-y: visible; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; touch-action: auto; margin: 0 -4px; padding: 0 2px; }
-        .trend-compare-inner { min-width: 680px; }
-        .trend-compare-head { display: flex; align-items: stretch; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); padding: 6px 0 4px; border-bottom: 1px solid var(--border); }
+        .trend-compare-inner { min-width: 680px; position: relative; }
+        .trend-compare-vline { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--border); pointer-events: none; z-index: 1; }
+        .trend-compare-head { display: flex; align-items: stretch; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); padding: 6px 0 4px; border-bottom: 1px solid var(--border); position: relative; z-index: 2; }
         .trend-compare-head-proj { flex: 1; min-width: 0; padding-right: 8px; text-align: left; }
         .trend-compare-head-act { flex: 1; min-width: 0; padding-left: 8px; text-align: right; }
-        .trend-compare-pair { display: flex; align-items: stretch; gap: 0; padding: 9px 0; font-size: 12px; }
+        .trend-compare-pair { display: flex; align-items: stretch; gap: 0; padding: 9px 0; font-size: 12px; position: relative; z-index: 2; }
         .trend-compare-pair.dashed-below { border-bottom: 1px dashed var(--border); }
         .trend-compare-col { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; }
-        .trend-compare-divider { width: 2px; background: var(--border); flex-shrink: 0; align-self: stretch; margin: 0 2px; }
-        .trend-compare-head-divider { width: 2px; background: var(--border); flex-shrink: 0; align-self: stretch; margin: 0 2px; }
+        .trend-compare-divider { display: none; }
+        .trend-compare-head-divider { display: none; }
         .trend-compare-actual-only .trend-compare-journey { color: var(--purple) !important; }
         .trend-compare-proj { padding-right: 8px; color: var(--text-muted); justify-content: flex-start; }
         .trend-compare-proj .trend-compare-journey { flex: 1; min-width: 0; }
@@ -620,9 +621,11 @@
         .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 0; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow: hidden; }
         .trend-graph-plot-wrap { position: relative; padding: 0 6px 6px; }
         .trend-graph-highlight { position: absolute; top: 0; bottom: 0; z-index: 0; pointer-events: none; }
-        .trend-compare-fab { color: #fff; margin: 0; max-width: none; padding: 0; }
-        .trend-compare-fab svg { width: 26px; height: 22px; display: block; }
-        .trend-compare-fab.active { filter: brightness(0.72); box-shadow: inset 0 2px 8px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.35); }
+        .compare-pill-fab { position: fixed; bottom: 90px; right: 18px; z-index: 3000; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; border: 1px dashed color-mix(in srgb, var(--blue) 38%, var(--border)); background: color-mix(in srgb, var(--blue) 10%, var(--card)); color: var(--text-muted); font-size: 12px; font-weight: 700; line-height: 1; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.35); max-width: none; margin: 0; width: auto; height: auto; }
+        body:not(.dark-mode) .compare-pill-fab { background: color-mix(in srgb, var(--blue) 12%, var(--input-bg)); border-color: color-mix(in srgb, var(--blue) 42%, var(--border)); }
+        .compare-pill-fab svg { width: 20px; height: 17px; display: block; flex-shrink: 0; }
+        .compare-pill-fab.active { color: #fff !important; background: var(--blue-fill) !important; border-color: var(--blue-fill) !important; border-style: solid; filter: none; box-shadow: inset 0 2px 8px rgba(0,0,0,0.2), 0 6px 16px rgba(0,0,0,0.35); }
+        .compare-pill-fab:active { opacity: 0.9; transform: translateY(1px); }
         .trend-graph-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
         .salary-occasional { color: var(--purple) !important; }
         #screen-salary .header-tab.active { color: #ffffff; border-bottom: 3px solid var(--blue); }
@@ -2756,8 +2759,9 @@
                 <button onclick="window.saveNdaSignOnTable()" style="background:var(--blue-fill); margin-top:12px; margin-bottom:70px;" data-i18n="save_nda_signon_btn">💾 Save Sign On Times</button>
             </div>
         </div>
-        <button id="trend-compare-fab" class="circ-fab-3d circ-fab-right trend-compare-fab hidden" type="button" onclick="window.switchTrendFutureCompare()" aria-label="Compare">
+        <button id="trend-compare-fab" class="compare-pill-fab hidden" type="button" onclick="window.switchTrendFutureCompare()" aria-label="Compare">
             <svg viewBox="0 0 122.88 102.72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M65.61,20.91v72.74h35.63c0.38,0,0.68,0.31,0.68,0.69v7.7c0,0.38-0.31,0.69-0.68,0.69H22.84 c-0.38,0-0.69-0.31-0.69-0.69v-7.7c0-0.38,0.31-0.69,0.69-0.69h35.63l0-72.71c-3.1-1.08-5.56-3.53-6.64-6.63H29.3v3.43 c0,0.38-0.31,0.68-0.68,0.68h-5.78c-0.38,0-0.69-0.31-0.69-0.68v-3.43h-5.73c-0.44,0-0.8-0.31-0.8-0.68V7.84 c0-0.38,0.36-0.69,0.8-0.69h35.43C53.33,2.99,57.31,0,61.99,0c4.68,0,8.66,2.99,10.14,7.16h35.53c0.44,0,0.8,0.31,0.8,0.69v5.78 c0,0.38-0.36,0.68-0.8,0.68h-6.46v3.43c0,0.38-0.31,0.68-0.68,0.68h-5.78c-0.38,0-0.69-0.31-0.69-0.68v-3.43H72.16 C71.09,17.38,68.67,19.81,65.61,20.91L65.61,20.91z M99.66,22.3l22.91,40.48c0.2,0.35,0.29,0.73,0.28,1.1h0.02c0,0.05,0,0.1,0,0.15 c0,9.64-11.35,17.46-25.35,17.46c-13.85,0-25.1-7.65-25.34-17.15c-0.04-0.16-0.06-0.34-0.06-0.51c0,0.44,0.14-0.86,0.37-1.2 l23.43-40.43c0.59-1.02,1.89-1.37,2.91-0.78C99.2,21.65,99.48,21.95,99.66,22.3L99.66,22.3z M99.75,31.11v30.6h17.32L99.75,31.11 L99.75,31.11z M95.67,61.7V31.16L77.96,61.7H95.67L95.67,61.7z M27.54,22.3l22.91,40.48c0.2,0.35,0.29,0.73,0.28,1.1h0.02 c0,0.05,0,0.1,0,0.15c0,9.64-11.35,17.46-25.35,17.46c-13.85,0-25.1-7.65-25.34-17.15C0.02,64.19,0,64.02,0,63.84 c0-0.44,0.14-0.86,0.37-1.2L23.8,22.21c0.59-1.02,1.89-1.37,2.91-0.78C27.08,21.65,27.36,21.95,27.54,22.3L27.54,22.3z M27.63,31.11v30.6h17.32L27.63,31.11L27.63,31.11z M23.54,61.7V31.16L5.84,61.7H23.54L23.54,61.7z M61.99,6.07 c2.59,0,4.69,2.1,4.69,4.69c0,2.59-2.1,4.69-4.69,4.69c-2.59,0-4.69-2.1-4.69-4.69C57.3,8.17,59.4,6.07,61.99,6.07L61.99,6.07z"/></svg>
+            <span data-i18n="trend_compare_fab">Compare</span>
         </button>
     </div>
 
@@ -2779,11 +2783,15 @@
                 <div id="salary-graph-wrap" style="margin-top:34px;"></div>
             </div>
             <div id="salary-projected-panel" class="hidden">
-                <div id="salary-projected-header-row"></div>
+                <div id="salary-projected-header-row" class="hidden"></div>
                 <div id="salary-projected-breakdown-body"></div>
                 <div id="salary-projected-graph-wrap" style="margin-top:34px;"></div>
             </div>
         </div>
+        <button id="salary-compare-fab" class="compare-pill-fab hidden" type="button" onclick="window.switchSalaryCompareExpected()" aria-label="Compare">
+            <svg viewBox="0 0 122.88 102.72" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M65.61,20.91v72.74h35.63c0.38,0,0.68,0.31,0.68,0.69v7.7c0,0.38-0.31,0.69-0.68,0.69H22.84 c-0.38,0-0.69-0.31-0.69-0.69v-7.7c0-0.38,0.31-0.69,0.69-0.69h35.63l0-72.71c-3.1-1.08-5.56-3.53-6.64-6.63H29.3v3.43 c0,0.38-0.31,0.68-0.68,0.68h-5.78c-0.38,0-0.69-0.31-0.69-0.68v-3.43h-5.73c-0.44,0-0.8-0.31-0.8-0.68V7.84 c0-0.38,0.36-0.69,0.8-0.69h35.43C53.33,2.99,57.31,0,61.99,0c4.68,0,8.66,2.99,10.14,7.16h35.53c0.44,0,0.8,0.31,0.8,0.69v5.78 c0,0.38-0.36,0.68-0.8,0.68h-6.46v3.43c0,0.38-0.31,0.68-0.68,0.68h-5.78c-0.38,0-0.69-0.31-0.69-0.68v-3.43H72.16 C71.09,17.38,68.67,19.81,65.61,20.91L65.61,20.91z M99.66,22.3l22.91,40.48c0.2,0.35,0.29,0.73,0.28,1.1h0.02c0,0.05,0,0.1,0,0.15 c0,9.64-11.35,17.46-25.35,17.46c-13.85,0-25.1-7.65-25.34-17.15c-0.04-0.16-0.06-0.34-0.06-0.51c0,0.44,0.14-0.86,0.37-1.2 l23.43-40.43c0.59-1.02,1.89-1.37,2.91-0.78C99.2,21.65,99.48,21.95,99.66,22.3L99.66,22.3z M99.75,31.11v30.6h17.32L99.75,31.11 L99.75,31.11z M95.67,61.7V31.16L77.96,61.7H95.67L95.67,61.7z M27.54,22.3l22.91,40.48c0.2,0.35,0.29,0.73,0.28,1.1h0.02 c0,0.05,0,0.1,0,0.15c0,9.64-11.35,17.46-25.35,17.46c-13.85,0-25.1-7.65-25.34-17.15C0.02,64.19,0,64.02,0,63.84 c0-0.44,0.14-0.86,0.37-1.2L23.8,22.21c0.59-1.02,1.89-1.37,2.91-0.78C27.08,21.65,27.36,21.95,27.54,22.3L27.54,22.3z M27.63,31.11v30.6h17.32L27.63,31.11L27.63,31.11z M23.54,61.7V31.16L5.84,61.7H23.54L23.54,61.7z M61.99,6.07 c2.59,0,4.69,2.1,4.69,4.69c0,2.59-2.1,4.69-4.69,4.69c-2.59,0-4.69-2.1-4.69-4.69C57.3,8.17,59.4,6.07,61.99,6.07L61.99,6.07z"/></svg>
+            <span data-i18n="trend_compare_fab">Compare</span>
+        </button>
     </div>
 
     <!-- DESTINATION & DIVERSION: inline on Profile page (profile-section-dest / profile-section-diversion) -->
@@ -5424,7 +5432,7 @@
     // PDF preview page is explicitly excluded entirely, per its own separate complaint.
     document.addEventListener('click', (e) => {
         if (e.target.closest('#preview-wrapper')) return;
-        if (e.target.closest('button, .nav-card, .nav-fab, .bottom-icon, .squeeze-ball, .earnings-title-pill, [onclick*="manageLeg"], [onclick*="manageNonDuty"], .sidebar-item, #dash-sync-cluster, .dash-link-row, .header-tab, .circ-fab-3d, #trend-compare-fab, .dash-hamburger-btn, .back-btn, .month-nav-arrow-btn')) window.hapticTap();
+        if (e.target.closest('button, .nav-card, .nav-fab, .bottom-icon, .squeeze-ball, .earnings-title-pill, [onclick*="manageLeg"], [onclick*="manageNonDuty"], .sidebar-item, #dash-sync-cluster, .dash-link-row, .header-tab, .circ-fab-3d, .compare-pill-fab, #trend-compare-fab, #salary-compare-fab, .dash-hamburger-btn, .back-btn, .month-nav-arrow-btn')) window.hapticTap();
     });
 
     // Point (Circulars merge fix): .circ-circular-card wraps its content in a real <a href> anchor
@@ -6902,7 +6910,7 @@
         document.addEventListener('touchstart', e => {
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
-            window._swipeBlockTabSwitch = !!e.target.closest('.trend-compare-scroll, #trend-future-detail-wrap, #trend-compare-fab');
+            window._swipeBlockTabSwitch = !!e.target.closest('.trend-compare-scroll, #trend-future-detail-wrap, #trend-compare-fab, #salary-compare-fab');
         }, {passive: true});
         document.addEventListener('touchend', e => { 
             if (e.target.closest('#preview-wrapper')) return;
@@ -6915,7 +6923,7 @@
                     if (diff < 0 && currentTab === 'ta') switchTab('nda', 'left');
                     else if (diff > 0 && currentTab === 'nda') switchTab('ta', 'right');
                 } else if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
-                    if (window._swipeBlockTabSwitch || e.target.closest('.trend-compare-scroll, #trend-future-detail-wrap, #trend-compare-fab')) return;
+                    if (window._swipeBlockTabSwitch || e.target.closest('.trend-compare-scroll, #trend-future-detail-wrap, #trend-compare-fab, #salary-compare-fab')) return;
                     // Point: same swipe-to-switch convenience as the Generate PDF page's TA/NDA
                     // tabs, applied here to this page's own Graph View / List View tabs.
                     window.hapticTap();
@@ -7465,6 +7473,7 @@
             window.renderPayRateTable();
         }
         if (window.updateTrendCompareFab) window.updateTrendCompareFab();
+        if (window.updateSalaryCompareFab) window.updateSalaryCompareFab();
     }
 
     // Point 4: Open the Pay Rate Table as a popup modal
@@ -14213,6 +14222,17 @@
         fab.classList.toggle('active', !!window._trendFutureCompareActual);
     };
 
+    window.updateSalaryCompareFab = function() {
+        const fab = document.getElementById('salary-compare-fab');
+        if (!fab) return;
+        const salaryScreen = document.getElementById('screen-salary');
+        const salaryVisible = salaryScreen && !salaryScreen.classList.contains('hidden');
+        const onProjected = window._salaryActiveTab === 'projected';
+        const rosterOk = window.isBsbRosterHq() && localStorage.getItem('roster_my_team');
+        fab.classList.toggle('hidden', !salaryVisible || !onProjected || !rosterOk);
+        fab.classList.toggle('active', !!window._salaryCompareExpected);
+    };
+
     window.shiftNdaSignOnPeriod = function(delta) {
         if (!window._ndaSignOnMonthKey) window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
         let [y, m] = window._ndaSignOnMonthKey.split('-').map(Number);
@@ -14881,6 +14901,7 @@
     window.renderTrendCompareSideBySideHtml = function(pairs, isNda) {
         const t = (key, fb) => (window.i18n ? window.i18n.t(key) : fb);
         let html = `<div class="trend-compare-scroll"><div class="trend-compare-inner">
+            <div class="trend-compare-vline"></div>
             <div class="trend-compare-head">
                 <div class="trend-compare-head-proj">${t('trend_col_proj_short', 'Projected')}</div>
                 <div class="trend-compare-head-divider"></div>
@@ -15378,6 +15399,7 @@
         const plotWidth = width - 2 * plotPadX;
         const stepX = plotWidth / (gridlineCount - 1);
         const xAt = (i) => plotPadX + i * stepX + xOffset;
+        const gridLineX = (i) => plotPadX + i * stepX + xOffset;
         const toY = (v) => topMargin + height - (v / maxVal * height);
         const formatValueLabel = (v) => {
             if (unitSuffix === '₹') return `₹${v}`;
@@ -15386,26 +15408,29 @@
         };
         const points = values.map((v, i) => `${xAt(i).toFixed(1)},${toY(v).toFixed(1)}`).join(' ');
         const dots = values.map((v, i) => {
-            const gridX = (plotPadX + i * stepX).toFixed(1);
+            const gridX = gridLineX(i).toFixed(1);
             const dotX = xAt(i).toFixed(1);
             const y = toY(v).toFixed(1);
             const labelY = Math.max(10, toY(v) - 9).toFixed(1);
             const isHl = highlightIdx !== null && highlightIdx !== undefined && i === highlightIdx;
             const dotColor = isHl ? highlightColor : color;
             const textFill = isHl ? highlightColor : defaultText;
+            const labelText = formatValueLabel(v);
+            const labelHalf = labelText.length * 3.1;
             return `<circle cx="${dotX}" cy="${y}" r="5" fill="${dotColor}" stroke="var(--card)" stroke-width="1.5"></circle>
-                ${v > 0 ? `<text x="${gridX}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="middle" transform="rotate(-90 ${gridX} ${labelY})">${formatValueLabel(v)}</text>` : ''}`;
+                ${v > 0 ? `<text x="${gridX}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="start" transform="rotate(-90 ${gridX} ${labelY}) translate(0, ${(-labelHalf).toFixed(1)})">${labelText}</text>` : ''}`;
         }).join('');
         const monthLabels = monthLabelNames.map((name, i) =>
-            `<text x="${(plotPadX + i * stepX).toFixed(1)}" y="${topMargin + height + 18}" font-size="9.5" fill="var(--text-muted)" text-anchor="middle">${name}</text>`
+            `<text x="${gridLineX(i).toFixed(1)}" y="${topMargin + height + 18}" font-size="9.5" fill="var(--text-muted)" text-anchor="middle">${name}</text>`
         ).join('');
         const vGridLines = monthLabelNames.map((name, i) =>
-            `<line x1="${(plotPadX + i * stepX).toFixed(1)}" y1="${topMargin}" x2="${(plotPadX + i * stepX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`
+            `<line x1="${gridLineX(i).toFixed(1)}" y1="${topMargin}" x2="${gridLineX(i).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`
         ).join('');
         const baseline = `<line x1="${plotPadX.toFixed(1)}" y1="${topMargin + height}" x2="${(width - plotPadX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`;
         let highlightOverlayHtml = '';
         if (highlightIdx !== null && highlightIdx !== undefined && highlightIdx >= 0) {
-            const bandLeftPct = ((plotPadX + highlightIdx * stepX - stepX / 2) / width * 100).toFixed(2);
+            const gridX = gridLineX(highlightIdx);
+            const bandLeftPct = ((gridX - stepX / 2) / width * 100).toFixed(2);
             const bandWidthPct = (stepX / width * 100).toFixed(2);
             highlightOverlayHtml = `<div class="trend-graph-highlight" style="left:${bandLeftPct}%; width:${bandWidthPct}%; background:${highlightColor}; opacity:0.18;"></div>`;
         }
@@ -15988,35 +16013,24 @@
         if (expectedPanel) expectedPanel.classList.toggle('hidden', tab !== 'expected');
         if (projectedPanel) projectedPanel.classList.toggle('hidden', tab !== 'projected');
         if (tab === 'projected') {
-            window.renderSalaryProjectedHeader();
             window.renderSalaryProjectedBreakdown();
             window.renderSalaryProjectedYearGraph();
         } else {
             window.renderSalaryYearGraph();
         }
+        window.updateSalaryCompareFab();
     };
 
     window.switchSalaryCompareExpected = function() {
         window._salaryCompareExpected = !window._salaryCompareExpected;
-        window.renderSalaryProjectedHeader();
+        window.updateSalaryCompareFab();
         window.renderSalaryProjectedBreakdown();
         window.renderSalaryProjectedYearGraph();
     };
 
     window.renderSalaryProjectedHeader = function() {
         const wrap = document.getElementById('salary-projected-header-row');
-        if (!wrap) return;
-        const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
-        const compareOn = !!window._salaryCompareExpected;
-        const compareLabel = t('salary_compare_expected', 'Compare to Expected');
-        const compareBtnStyle = compareOn
-            ? 'margin:0 !important; flex-shrink:0; max-width:none; color:white !important; background:var(--blue-fill) !important; border-color:var(--blue-fill) !important;'
-            : 'margin:0 !important; flex-shrink:0; max-width:none;';
-        wrap.innerHTML = `
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px;">
-                <div style="font-size:14px; font-weight:900; color:var(--text); flex:1; min-width:0;">${t('salary_tab_projected', 'Projected Salary')}</div>
-                <button onclick="window.switchSalaryCompareExpected()" type="button" class="add-signon-link-btn subtle-pill-banner" style="${compareBtnStyle}">${compareLabel}</button>
-            </div>`;
+        if (wrap) wrap.innerHTML = '';
     };
 
     window.renderSalaryProjectedBreakdown = function() {
