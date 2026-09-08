@@ -658,7 +658,7 @@
         .trend-compare-empty { color: var(--text-muted); opacity: 0.45; }
         .trend-graph-heading { text-align: center; font-size: 14px; font-weight: 900; color: var(--text); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 0; background: var(--card); box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08); overflow: hidden; }
-        body.dark-mode .trend-graph-box { box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); }
+        body.dark-mode .trend-graph-box { background: var(--summary-box-bg); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); }
         .aj-select-circle { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; border:2px solid color-mix(in srgb, var(--blue) 35%, var(--border)); background:var(--card); flex-shrink:0; margin-right:8px; box-sizing:border-box; }
         .aj-select-circle--on { border-color:var(--blue-fill); background:var(--blue-fill); color:#fff; }
         .aj-select-circle--on svg { width:14px; height:14px; display:block; fill:currentColor; }
@@ -6982,7 +6982,7 @@
         document.addEventListener('touchstart', e => {
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
-            window._swipeBlockTabSwitch = !!e.target.closest('.trend-compare-scroll, #trend-future-detail-wrap, #trend-compare-fab, #salary-compare-fab');
+            window._swipeBlockTabSwitch = !!e.target.closest('.trend-compare-scroll, #trend-compare-fab, #salary-compare-fab');
         }, {passive: true});
         document.addEventListener('touchend', e => { 
             if (e.target.closest('#preview-wrapper')) return;
@@ -6995,7 +6995,7 @@
                     if (diff < 0 && currentTab === 'ta') switchTab('nda', 'left');
                     else if (diff > 0 && currentTab === 'nda') switchTab('ta', 'right');
                 } else if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
-                    if (window._swipeBlockTabSwitch || e.target.closest('.trend-compare-scroll, #trend-future-detail-wrap, #trend-compare-fab, #salary-compare-fab')) return;
+                    if (window._swipeBlockTabSwitch || e.target.closest('.trend-compare-scroll, #trend-compare-fab, #salary-compare-fab')) return;
                     // Point: same swipe-to-switch convenience as the Generate PDF page's TA/NDA
                     // tabs, applied here to this page's own Graph View / List View tabs.
                     window.hapticTap();
