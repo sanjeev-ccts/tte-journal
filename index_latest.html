@@ -170,6 +170,7 @@
         body.green-theme .circ-dash-icon-badge { color: var(--blue); }
         body.green-theme .circ-circular-icon { background: color-mix(in srgb, var(--blue) 12%, transparent); }
         body.green-theme .circ-fab-right { background: radial-gradient(circle at center, #4ade80 0%, #15803d 55%, #14532d 100%); }
+        body.green-theme #btn-clear-inputs svg { stroke: #ea580c !important; }
         body.green-theme .profile-lbl,
         body.dark-mode.green-theme .profile-lbl { color: var(--blue); }
         body.green-theme #sidebar-user-name { color: var(--blue) !important; }
@@ -495,13 +496,17 @@
         .profile-station-help p { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
         .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 15px; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
         .profile-station-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
-        .profile-station-row.expanded,
-        .profile-station-row.expanded + .profile-station-expand:not(.hidden) { background: color-mix(in srgb, var(--blue) 10%, var(--card)); }
-        .profile-station-row.expanded + .profile-station-expand:not(.hidden) { margin: 0; padding-left: 15px; padding-right: 15px; }
+        .profile-station-row.expanded { padding-bottom: 0; background: color-mix(in srgb, var(--blue) 10%, var(--card)); }
+        .profile-station-row.expanded + .profile-station-expand:not(.hidden) { background: color-mix(in srgb, var(--blue) 10%, var(--card)); margin: 0; padding: 0 15px 14px; }
         .profile-station-row-main { flex: 1; min-width: 0; }
-        .profile-station-row-title { display: block; font-size: 12.5px; font-weight: 800; color: var(--text); line-height: 1.25; }
+        .profile-station-row-title { display: block; font-size: 12.5px; font-weight: 800; color: var(--blue); line-height: 1.25; }
         .profile-station-row-value { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .profile-station-row-value.has-data { color: var(--blue); font-weight: 800; }
+        .profile-station-row-value.has-data { color: var(--purple); font-weight: 800; }
+        .profile-station-hq-block input { color: var(--purple); font-weight: 800; }
+        .profile-stations-card .profile-station-expand input { color: var(--purple); font-weight: 800; }
+        .profile-stations-card .station-chip { background: color-mix(in srgb, var(--purple) 12%, transparent); border-color: var(--purple); color: var(--purple); }
+        .profile-stations-card .station-chip .chip-remove { background: var(--purple); }
+        .profile-station-help-static { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
         .profile-station-row-chevron { flex-shrink: 0; color: var(--text-muted); display: flex; align-items: center; justify-content: center; line-height: 1; transition: transform 0.15s; opacity: 0.9; }
         .profile-station-row-chevron svg { width: 28px; height: 28px; stroke-width: 2.5; }
         .profile-station-row.expanded .profile-station-row-chevron { color: var(--blue); transform: rotate(90deg); }
@@ -845,6 +850,9 @@
         .all-journey-row--nonduty { font-weight: 700; color: var(--text); }
         .all-journey-row--rest { background: color-mix(in srgb, var(--green) 14%, var(--card) 86%) !important; }
         .all-journey-row--leave { background: color-mix(in srgb, #f59e0b 16%, var(--card) 84%) !important; }
+        .all-journey-row--cocl { background: color-mix(in srgb, #9333ea 18%, var(--card) 82%) !important; color: var(--text); }
+        body.dark-mode .all-journey-row--cocl { background: color-mix(in srgb, #a855f7 22%, var(--card) 78%) !important; }
+        body:not(.dark-mode) .all-journey-row--cocl { background: color-mix(in srgb, #9333ea 14%, #f8fafc 86%) !important; border-color: color-mix(in srgb, #9333ea 35%, var(--border) 65%) !important; }
         .all-journey-row--station { background: color-mix(in srgb, var(--blue) 14%, var(--card) 86%) !important; }
         .all-journey-row--mela { background: color-mix(in srgb, #a855f7 14%, var(--card) 86%) !important; }
         .all-journey-row--others { background: color-mix(in srgb, var(--text-muted) 12%, var(--card) 88%) !important; }
@@ -910,7 +918,7 @@
         #nda-signon-table .nda-signon-locked-cell { padding: 6px 5px !important; font-size: 9.5px !important; line-height: 1.3; }
         #nda-signon-table thead th { padding: 7px 5px !important; font-size: 9px !important; }
         #nda-signon-table .nda-signon-signon-col { padding: 3px 2px !important; }
-        #nda-signon-info-box { font-size: 10.5px; color: var(--text-muted); margin: 0 0 10px 0; line-height: 1.5; padding: 10px 12px; background: color-mix(in srgb, var(--blue) 8%, var(--card)); border: 1px solid color-mix(in srgb, var(--blue) 22%, var(--border)); border-radius: 10px; }
+        #nda-signon-info-box { font-size: 10.5px; color: var(--text-muted); margin: 0 0 12px 0; line-height: 1.5; padding: 0; background: none; border: none; border-radius: 0; }
         #nda-signon-scroll-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: visible; }
         .subtle-pill-banner { color: var(--text-muted) !important; background: color-mix(in srgb, var(--blue) 10%, var(--card)) !important; border: 1px dashed color-mix(in srgb, var(--blue) 38%, var(--border)) !important; border-radius: 20px !important; box-shadow: none !important; font-size: 11px !important; font-weight: 700; line-height: 1.45; }
         body:not(.dark-mode) .subtle-pill-banner { background: color-mix(in srgb, var(--blue) 12%, var(--input-bg)) !important; border-color: color-mix(in srgb, var(--blue) 42%, var(--border)) !important; }
@@ -2737,7 +2745,7 @@
             <div id="trend-future-detail-wrap" class="hidden" style="margin-top:16px;"></div>
             <div id="trend-list-below-graph" class="hidden" style="margin-top:16px;"></div>
             <div id="trend-signon-area" class="hidden">
-                <div id="nda-signon-info-box" data-i18n="nda_signon_hint">Enter your actual sign-on time for night duties to calculate NDA more accurately. Use this for delayed trains, or to apply a 45-minute margin for originating trains not listed in your profile. If left blank, the app uses the default 30-minute margin (45 minutes for originating trains).</div>
+                <div id="nda-signon-info-box" data-i18n="nda_signon_hint">Enter your actual sign-on time for night duties to calculate NDA more accurately. Use this for delayed trains, or to apply a 45-minute margin for originating trains not listed in your profile. If left blank, the app uses the default 30-minute margin (45 minutes for originating trains, if originating trains are added in Profile page).</div>
                 <div id="nda-signon-scroll-wrap" style="border:1px solid var(--border); border-radius:10px;">
                     <table id="nda-signon-table" style="width:100%; border-collapse:collapse; font-size:10px; table-layout:fixed;">
                         <colgroup>
@@ -3309,10 +3317,7 @@
                 <div class="profile-station-hq-block">
                     <label class="profile-lbl">Main HQ Station</label>
                     <input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;" oninput="window.filterAlphaOnly(this); window.renderProfileStationSummaries && window.renderProfileStationSummaries();">
-                    <details class="profile-station-help">
-                        <summary data-i18n="profile_whats_this">What's this?</summary>
-                        <p data-i18n="profile_main_hq_desc">This is your main posting station.</p>
-                    </details>
+                    <p class="profile-station-help-static" data-i18n="profile_main_hq_desc">This is your main posting station.</p>
                 </div>
 
                 <div class="profile-stations-rows">
@@ -3435,7 +3440,7 @@
         </div>
         <div id="profile-action-bar">
             <div style="display: flex; gap: 10px;">
-                <button id="btn-save-profile" type="button" onclick="window.saveProfile()" data-i18n="save_profile" style="flex: 1; background: var(--green);">Save Profile</button>
+                <button id="btn-save-profile" type="button" onclick="window.saveProfile()" data-i18n="save_profile" style="flex: 1; background: var(--blue-fill);">Save Profile</button>
             </div>
         </div>
     </div>
@@ -11611,6 +11616,7 @@
     function getNonDutyRowClass(dutyType) {
         if (dutyType === 'Rest') return 'all-journey-row--rest';
         if (dutyType === 'Leave') return 'all-journey-row--leave';
+        if (dutyType === 'COCL') return 'all-journey-row--cocl';
         if (dutyType === 'Station Duty') return 'all-journey-row--station';
         if (dutyType === 'Mela Duty') return 'all-journey-row--mela';
         return 'all-journey-row--others';
@@ -11677,6 +11683,7 @@
 
                 const isRest = leg.dutyType === 'Rest';
                 const isLeave = leg.dutyType === 'Leave';
+                const isCocl = leg.dutyType === 'COCL';
                 const nonDutyRowClass = getNonDutyRowClass(leg.dutyType);
                 const nonDutyChecked = window._allJourneySelected.has(String(leg.id));
                 const nonDutyCheckbox = window._allJourneyMultiSelectMode ? `<span style="margin-right:8px; flex-shrink:0;">${nonDutyChecked ? '<span style="color:var(--red); font-weight:900; font-size:16px;">✔</span>' : '⬜'}</span>` : '';
@@ -11689,6 +11696,7 @@
                     const dateStr = formatDateShort(`${y}-${m}-${d}`);
                     const contentStr = isRest ? `REST : ${dateStr}`
                         : isLeave ? `Leave: ${dateStr}${leg.leaveType ? ' (' + leg.leaveType + ')' : ''}`
+                        : isCocl ? `COCL : ${dateStr}`
                         : `${dateStr} — ${label}`;
                     const isExpanded = !window._allJourneyMultiSelectMode && String(window._allJourneyExpandedId) === String(leg.id);
                     if (isExpanded && isFirstDisplayedDay) htmlElements.push(buildAllJourneyActionRow(leg));
@@ -15245,7 +15253,7 @@
             ${compareHint}
             <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:4px 12px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">${rowsHtml}${footerHtml}</div>
             ${actualOnlyNote}
-            <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. For DDU (Nearby HQ-TA Claimed), dummy trains XXXXX/YYYYY cover BSB↔DDU travel — BSB departure is taken 3 hours before the DDU train, with 1 hour shuttle time to DDU.')}</p>`;
+            <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. For DDU (Nearby Station · TA claimed), dummy trains XXXXX/YYYYY cover BSB↔DDU travel — BSB departure is taken 3 hours before the DDU train, with 1 hour shuttle time to reach DDU.')}</p>`;
     };
 
     window.renderFutureTrendDetailList = function(projectedLegs) {
