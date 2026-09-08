@@ -20,7 +20,7 @@
     <style>
         :root { 
             --connectivity-bar-h: 21px;
-            --bg: #e8ecf1; 
+            --bg: #d2dae5; 
             --card: #ffffff; 
             --border: #b6c2d1; 
             --shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.6);
@@ -170,8 +170,8 @@
         body.green-theme .circ-dash-icon-badge { color: var(--blue); }
         body.green-theme .circ-circular-icon { background: color-mix(in srgb, var(--blue) 12%, transparent); }
         body.green-theme .circ-fab-right { background: radial-gradient(circle at center, #4ade80 0%, #15803d 55%, #14532d 100%); }
-        body.green-theme #btn-clear-inputs svg { stroke: var(--red) !important; }
-        #btn-clear-inputs svg { stroke: var(--red) !important; }
+        body.green-theme #btn-clear-inputs svg { color: #64748b !important; }
+        #btn-clear-inputs svg { color: #64748b; }
         body.green-theme .profile-lbl,
         body.dark-mode.green-theme .profile-lbl { color: var(--blue); }
         body.green-theme #sidebar-user-name { color: var(--blue) !important; }
@@ -403,6 +403,7 @@
         @keyframes cardWave { 0% { transform: scale(0.97) rotate(0deg); } 25% { transform: scale(0.97) rotate(-1.5deg); } 50% { transform: scale(0.97) rotate(1.5deg); } 75% { transform: scale(0.97) rotate(-1deg); } 100% { transform: scale(1) rotate(0deg); } }
         .nav-card.card-wave { animation: cardWave 0.35s ease; }
         .card, .nav-card { background: var(--card); border: none; box-shadow: none; }
+        body:not(.dark-mode) .card, body:not(.dark-mode) .nav-card, body:not(.dark-mode) .dash-link-card { box-shadow: 0 2px 10px rgba(15, 23, 42, 0.09); }
         body.card-shadow-on:not(.dark-mode) .card, body.card-shadow-on:not(.dark-mode) .nav-card, body.card-shadow-on:not(.dark-mode) .circ-dash-card, body.card-shadow-on:not(.dark-mode) .circ-circular-card { box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.55); }
         body.dark-mode.card-shadow-on .card, body.dark-mode.card-shadow-on .nav-card, body.dark-mode.card-shadow-on .circ-dash-card, body.dark-mode.card-shadow-on .circ-circular-card { box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07); }
         
@@ -504,7 +505,8 @@
         .profile-station-block.expanded .profile-station-row { padding-bottom: 0; }
         .profile-station-block.expanded .profile-station-expand:not(.hidden) { margin: 0; padding: 0 15px 14px; }
         .profile-station-row-main { flex: 1; min-width: 0; }
-        .profile-station-row-title { display: block; font-size: 12.5px; font-weight: 800; color: var(--blue); line-height: 1.25; }
+        .profile-station-row-title { display: block; font-size: 13px; font-weight: 800; color: var(--blue); line-height: 1.25; }
+        .profile-station-opt { color: var(--text-muted); font-weight: 400; font-size: 10px; margin-left: 4px; }
         .profile-station-row-value { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .profile-station-row-value.has-data { color: var(--purple); font-weight: 800; }
         .profile-station-hq-block input { color: var(--purple); font-weight: 800; }
@@ -3331,7 +3333,7 @@
                         <div class="profile-station-divider" aria-hidden="true"></div>
                         <div class="profile-station-row" data-profile-section="nearby" onclick="window.toggleProfileStationSection('nearby')">
                             <div class="profile-station-row-main">
-                                <span class="profile-station-row-title" data-i18n="profile_nearby_no_ta_short">Nearby HQ · no TA (optional)</span>
+                                <span class="profile-station-row-title"><span data-i18n="profile_nearby_no_ta_short">Nearby HQ · no TA</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
                                 <span id="profile-summary-nearby" class="profile-station-row-value">Not set</span>
                             </div>
                             <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
@@ -3353,7 +3355,7 @@
                         <div class="profile-station-divider" aria-hidden="true"></div>
                         <div class="profile-station-row" data-profile-section="nearby-ta" onclick="window.toggleProfileStationSection('nearby-ta')">
                             <div class="profile-station-row-main">
-                                <span class="profile-station-row-title" data-i18n="profile_nearby_ta_short">Nearby Station · TA claimed (optional)</span>
+                                <span class="profile-station-row-title"><span data-i18n="profile_nearby_ta_short">Nearby Station · TA claimed</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
                                 <span id="profile-summary-nearby-ta" class="profile-station-row-value">Not set</span>
                             </div>
                             <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
@@ -3372,7 +3374,7 @@
                         <div class="profile-station-divider" aria-hidden="true"></div>
                         <div class="profile-station-row" data-profile-section="originating" onclick="window.toggleProfileStationSection('originating')">
                             <div class="profile-station-row-main">
-                                <span class="profile-station-row-title" data-i18n="profile_originating_trains_toggle">Originating Trains (NDA) (optional)</span>
+                                <span class="profile-station-row-title"><span data-i18n="profile_originating_trains_toggle">Originating Trains (NDA)</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
                                 <span id="profile-summary-originating" class="profile-station-row-value">Not set</span>
                             </div>
                             <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
@@ -3394,7 +3396,7 @@
                         <div class="profile-station-divider" aria-hidden="true"></div>
                         <div class="profile-station-row" data-profile-section="dest" onclick="window.toggleProfileStationSection('dest')">
                             <div class="profile-station-row-main">
-                                <span class="profile-station-row-title" data-i18n="profile_destinations_short">Outward Destinations (optional)</span>
+                                <span class="profile-station-row-title"><span data-i18n="profile_destinations_short">Outward Destinations</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
                                 <span id="profile-summary-destinations" class="profile-station-row-value">Not set</span>
                             </div>
                             <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
@@ -3416,7 +3418,7 @@
                         <div class="profile-station-divider" aria-hidden="true"></div>
                         <div class="profile-station-row" data-profile-section="diversion" onclick="window.toggleProfileStationSection('diversion')">
                             <div class="profile-station-row-main">
-                                <span class="profile-station-row-title" data-i18n="profile_diversion_short">Diversion Stations (optional)</span>
+                                <span class="profile-station-row-title"><span data-i18n="profile_diversion_short">Diversion Stations</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
                                 <span id="profile-summary-diversion" class="profile-station-row-value">Not set</span>
                             </div>
                             <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
@@ -3840,7 +3842,7 @@
             <div style="margin-top: 12px; margin-bottom: 10px;">
                 <div class="grid-2">
                     <div class="nav-card" onclick="window.switchTab('ta'); window.showYearlyTrendOnly();">
-                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 122.88 120.01" style="width:24px; height:23px;"><path fill="currentColor" fill-rule="evenodd" clip-rule="evenodd" d="M110.97,1.27L70.02,42.73l10.67,10.36l41.25-41.56C125.58,3.7,117.92-2.85,110.97,1.27L110.97,1.27z M54.04,46.81c0.4-0.31,0.81-0.58,1.22-0.81l0.15-0.08c2.35-1.28,4.81-1.24,7.39,0.53l7.17,6.98l0.11,0.11l6.6,6.42 c2.73,2.78,3.34,5.88,1.83,9.31l-19.35,50.75C24.02,112.99-0.34,87.94,0,49.73C19.23,55.35,37.75,57.19,54.04,46.81L54.04,46.81z"/></svg></div>
+                        <div class="nav-icon" style="color:var(--ta-accent);"><svg viewBox="0 0 122.88 120.05" style="width:24px; height:23px;"><path fill="currentColor" fill-rule="evenodd" d="M90.54,38.25c2.23-.75,4.58.44,6.13,2.3h18.46a.51.51,0,0,1,.51.51v4.86a.51.51,0,0,1-.51.51H111.9V62.62h-3.73V46.43H98.11a9.11,9.11,0,0,1-2.36,3.36V62.62H92V52.41a57.27,57.27,0,0,1-8,3.38,84.35,84.35,0,0,1-9,2.79,18,18,0,0,1-15.71-4,41.48,41.48,0,0,1-3.49-3.35l-.34-.36-3,17.75a62.39,62.39,0,0,0,7.2,4.17c7.78,3.63,14.18,6.63,15.55,18.85.25,2.14.14,14.68,0,20.84H86a1.8,1.8,0,0,1-.67-1.43v-1.89a4.77,4.77,0,0,1-4.71-4.76v-36a4.78,4.78,0,0,1,4.76-4.76h1.09a.91.91,0,0,0,0,.23l1.19,4.54a7.4,7.4,0,0,0,1.79,3.38A4.22,4.22,0,0,0,92.58,73h4.77v2.55c0,.41,1.92.73,2.32.73H106a.72.72,0,0,0,.73-.72V73h5a4.36,4.36,0,0,0,3.16-1.32,6.81,6.81,0,0,0,1.72-3.4l1-4.48a1,1,0,0,0,0-.24h.51a4.78,4.78,0,0,1,4.76,4.76v36.05a4.77,4.77,0,0,1-4.71,4.76V111a1.8,1.8,0,0,1-.67,1.43h5.38v7.58H0v-7.58H19.83c1.41-3.79,2.86-7.83,4.28-11.89,2.93-8.39,5.74-17,7.8-23.84a22,22,0,0,1-3.21-5.06A11.33,11.33,0,0,1,27.82,65l4.33-21.82c-1.55-.08-3.34-.54-4.8.1-2.83,1.24-7,6.52-9.47,9l-3.31,3.35c-2.55,2.58-4.25,5.44-8.15,5.13-4.84-.38-8.3-5.76-4.89-9.89l7.63-7.72c3.67-3.73,7.16-8.12,11.69-10.68C24.49,30.41,28.45,29,35,29.28c2.4,0,4.94.27,7.34.5l2.8.24c11,.71,16.12,6.5,20.12,11,1.77,2,3.29,3.7,4.94,4.49.78.37,2-.15,3.39-.73L83.76,41l6.78-2.72ZM61.15,112.47c.14-6.94.29-16.73.18-18.62-.09-1.35-1-4.92-2.42-5.57a59.35,59.35,0,0,0-5.83-2.17c-2.75-.91-5-1.83-7.72-2.58-2,6.58-4.68,14.52-7.57,22.09l-2.73,6.85Zm52.87,0H89.49a1.77,1.77,0,0,0,.67-1.43v-1.89h23.19V111a1.77,1.77,0,0,0,.67,1.43ZM88.91,100.24a.88.88,0,0,1,0-1.76h25.82a.88.88,0,0,1,0,1.76Zm0-8.51a.88.88,0,0,1,0-1.76h25.82a.88.88,0,1,1,0,1.76Zm0-8.51a.88.88,0,0,1,0-1.76h25.82a.88.88,0,1,1,0,1.76Zm26.73-18.75H88.5l.9,3.43a5.63,5.63,0,0,0,1.34,2.58,2.49,2.49,0,0,0,1.83.78h19.17a2.65,2.65,0,0,0,1.92-.81,5.09,5.09,0,0,0,1.24-2.51l.74-3.47ZM44.82.71a13.17,13.17,0,1,1-7.56,6.66A13.13,13.13,0,0,1,44.82.71Z"/></svg></div>
                         <div class="nav-main-text" id="dash-ta-val" style="color: var(--ta-accent);">₹0</div>
                         <div class="nav-sub-text" id="dash-ta-lbl">TA this month</div>
                     </div>
@@ -4046,7 +4048,7 @@
                     <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center;">Quick Add</span>
                 </div>
                 <div style="display:flex; flex-direction:column; align-items:center; gap:5px; width:66px;">
-                    <button id="btn-clear-inputs" class="squeeze-ball" onclick="window.clearDutyInputs()" style="background: var(--card); border: 1px solid var(--border); box-shadow: 0 3px 8px rgba(0,0,0,0.25); width:57px; height:57px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; transition:transform 0.1s, box-shadow 0.15s;"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:30px; height:30px;"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+                    <button id="btn-clear-inputs" class="squeeze-ball" onclick="window.clearDutyInputs()" style="background: var(--card); border: 1px solid var(--border); box-shadow: 0 3px 8px rgba(0,0,0,0.25); width:57px; height:57px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; transition:transform 0.1s, box-shadow 0.15s;"><svg viewBox="0 0 122.88 120.01" fill="currentColor" style="width:28px; height:27px;"><path fill-rule="evenodd" clip-rule="evenodd" d="M110.97,1.27L70.02,42.73l10.67,10.36l41.25-41.56C125.58,3.7,117.92-2.85,110.97,1.27L110.97,1.27z M54.04,46.81c0.4-0.31,0.81-0.58,1.22-0.81l0.15-0.08c2.35-1.28,4.81-1.24,7.39,0.53l7.17,6.98l0.11,0.11l6.6,6.42 c2.73,2.78,3.34,5.88,1.83,9.31l-19.35,50.75C24.02,112.99-0.34,87.94,0,49.73C19.23,55.35,37.75,57.19,54.04,46.81L54.04,46.81z"/></svg></button>
                     <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center;">Clear Inputs</span>
                 </div>
                 <div style="display:flex; flex-direction:column; align-items:center; gap:5px; width:66px;">
