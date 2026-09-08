@@ -15408,7 +15408,6 @@
         };
         const points = values.map((v, i) => `${xAt(i).toFixed(1)},${toY(v).toFixed(1)}`).join(' ');
         const dots = values.map((v, i) => {
-            const gridX = gridLineX(i).toFixed(1);
             const dotX = xAt(i).toFixed(1);
             const y = toY(v).toFixed(1);
             const labelY = Math.max(10, toY(v) - 9).toFixed(1);
@@ -15416,9 +15415,8 @@
             const dotColor = isHl ? highlightColor : color;
             const textFill = isHl ? highlightColor : defaultText;
             const labelText = formatValueLabel(v);
-            const labelHalf = labelText.length * 3.1;
             return `<circle cx="${dotX}" cy="${y}" r="5" fill="${dotColor}" stroke="var(--card)" stroke-width="1.5"></circle>
-                ${v > 0 ? `<text x="${gridX}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="start" transform="rotate(-90 ${gridX} ${labelY}) translate(0, ${(-labelHalf).toFixed(1)})">${labelText}</text>` : ''}`;
+                ${v > 0 ? `<text x="${dotX}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="start" transform="rotate(-90 ${dotX} ${labelY})">${labelText}</text>` : ''}`;
         }).join('');
         const monthLabels = monthLabelNames.map((name, i) =>
             `<text x="${gridLineX(i).toFixed(1)}" y="${topMargin + height + 18}" font-size="9.5" fill="var(--text-muted)" text-anchor="middle">${name}</text>`
@@ -15427,12 +15425,10 @@
             `<line x1="${gridLineX(i).toFixed(1)}" y1="${topMargin}" x2="${gridLineX(i).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`
         ).join('');
         const baseline = `<line x1="${plotPadX.toFixed(1)}" y1="${topMargin + height}" x2="${(width - plotPadX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`;
-        let highlightOverlayHtml = '';
+        let highlightBandSvg = '';
         if (highlightIdx !== null && highlightIdx !== undefined && highlightIdx >= 0) {
-            const gridX = gridLineX(highlightIdx);
-            const bandLeftPct = ((gridX - stepX / 2) / width * 100).toFixed(2);
-            const bandWidthPct = (stepX / width * 100).toFixed(2);
-            highlightOverlayHtml = `<div class="trend-graph-highlight" style="left:${bandLeftPct}%; width:${bandWidthPct}%; background:${highlightColor}; opacity:0.18;"></div>`;
+            const cx = gridLineX(highlightIdx);
+            highlightBandSvg = `<rect x="${(cx - stepX / 2).toFixed(1)}" y="${topMargin}" width="${stepX.toFixed(1)}" height="${height}" fill="${highlightColor}" fill-opacity="0.18"/>`;
         }
         const titleHtml = graphTitle ? `<div class="trend-graph-heading">${graphTitle}</div>` : '';
         const svgH = topMargin + height + 26;
@@ -15440,10 +15436,9 @@
             ${titleHtml}
             <div class="trend-graph-box">
                 <div class="trend-graph-plot-wrap">
-                    ${highlightOverlayHtml}
                     ${overlayHtml}
                     <svg class="trend-graph-svg" width="100%" viewBox="0 0 ${width} ${svgH}" preserveAspectRatio="xMidYMid meet">
-                        ${vGridLines}${baseline}
+                        ${highlightBandSvg}${vGridLines}${baseline}
                         <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>
                         ${dots}${monthLabels}
                     </svg>
