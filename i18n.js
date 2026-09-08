@@ -1076,21 +1076,32 @@
         localStorage.setItem('tte_lang_chosen', '1');
     }
 
-    function t(key) {
+    function humanizeKey(key) {
+        if (!key || typeof key !== 'string') return key;
+        if (!key.includes('_')) return key;
+        return key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+    }
+
+    function lookup(key) {
         const lang = getLang();
-        return (DICT[lang] && DICT[lang][key]) || DICT.en[key] || key;
+        return (DICT[lang] && DICT[lang][key]) || DICT.en[key] || null;
+    }
+
+    function t(key) {
+        return lookup(key) || humanizeKey(key);
     }
 
     // Like t(), but returns fallback when the key is missing instead of showing the raw key.
     function tOr(key, fallback) {
-        const v = t(key);
-        return v === key && fallback !== undefined ? fallback : v;
+        const v = lookup(key);
+        if (v) return v;
+        return fallback !== undefined ? fallback : humanizeKey(key);
     }
 
     // Like t(), but substitutes {placeholders} with dynamic values (station codes,
     // dates, times, train numbers etc.) that must stay as-is regardless of language.
     function tf(key, vars) {
-        let s = t(key);
+        let s = lookup(key) || humanizeKey(key);
         if (vars) {
             Object.keys(vars).forEach(k => {
                 s = s.split('{' + k + '}').join(vars[k]);
@@ -1113,18 +1124,24 @@
         root = root || document;
         root.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            const v = t(key);
+            const v = lookup(key);
             // Keep the HTML fallback text when a key is missing — never show raw keys like salary_row_basic.
-            if (v !== key) el.textContent = v;
+            if (v) el.textContent = v;
         });
         root.querySelectorAll('[data-i18n-title]').forEach(el => {
-            el.title = t(el.getAttribute('data-i18n-title'));
+            const key = el.getAttribute('data-i18n-title');
+            const v = lookup(key);
+            if (v) el.title = v;
         });
         root.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-            el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+            const key = el.getAttribute('data-i18n-placeholder');
+            const v = lookup(key);
+            if (v) el.placeholder = v;
         });
         root.querySelectorAll('[data-i18n-html]').forEach(el => {
-            el.innerHTML = t(el.getAttribute('data-i18n-html'));
+            const key = el.getAttribute('data-i18n-html');
+            const v = lookup(key);
+            if (v) el.innerHTML = v;
         });
     }
 

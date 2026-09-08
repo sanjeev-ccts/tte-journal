@@ -1265,7 +1265,7 @@
 
             const FAIL_THRESHOLD = 3;
             const repeatedlyFailing = (window._syncFailCount || 0) >= FAIL_THRESHOLD;
-            const t = (k, fb) => window.i18n ? window.i18n.t(k) : fb;
+            const t = (k, fb) => window.i18n ? window.i18n.tOr(k, fb) : fb;
 
             // Point (fix): the "(offline — not yet synced)" / "(unsaved changes pending)" suffixes
             // were redundant — the status heading right above already says the same thing. This
@@ -1372,12 +1372,12 @@
                 return;
             }
             const labelText = {
-                synced: window.i18n ? window.i18n.t('sync_mini_synced') : 'Synced',
-                online: window.i18n ? window.i18n.t('sync_mini_online') : 'Online',
-                syncing: window.i18n ? window.i18n.t('sync_mini_syncing') : 'Syncing',
-                offline: window.i18n ? window.i18n.t('sync_mini_offline') : 'Offline',
-                failing: window.i18n ? window.i18n.t('sync_mini_offline') : 'Offline',
-                pending: window.i18n ? window.i18n.t('sync_mini_pending') : 'Pending',
+                synced: window.i18n ? window.i18n.tOr('sync_mini_synced', 'Synced') : 'Synced',
+                online: window.i18n ? window.i18n.tOr('sync_mini_online', 'Online') : 'Online',
+                syncing: window.i18n ? window.i18n.tOr('sync_mini_syncing', 'Syncing') : 'Syncing',
+                offline: window.i18n ? window.i18n.tOr('sync_mini_offline', 'Offline') : 'Offline',
+                failing: window.i18n ? window.i18n.tOr('sync_mini_offline', 'Offline') : 'Offline',
+                pending: window.i18n ? window.i18n.tOr('sync_mini_pending', 'Pending') : 'Pending',
             }[state] || '';
             el.innerText = labelText;
             el.style.color = '#ffffff';
@@ -1587,12 +1587,12 @@
             const addScreenEl = document.getElementById('screen-add');
             if (addScreenEl && !addScreenEl.classList.contains('hidden') && window.tripFormHasUnsavedWork && window.tripFormHasUnsavedWork()) {
                 const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
-                    (window.i18n ? window.i18n.t('sheet_unsaved_message') : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
+                    (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                     '</p>' +
-                    '<button onclick="window._tripFormDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.t('sheet_unsaved_discard_btn') : 'Discard &amp; Leave') + '</button>' +
-                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.t('sheet_unsaved_keep_btn') : 'Keep Editing') + '</button>' +
+                    '<button onclick="window._tripFormDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
-                showModal((window.i18n ? window.i18n.t('sheet_unsaved_title') : 'Unsaved Changes'), msg, 'warning', false);
+                showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
                 return;
             }
             const dashboardEl = document.getElementById('screen-dashboard');
@@ -1605,12 +1605,12 @@
             // active row, since sheetHasUnsavedWork() already checks both.
             if (window.sheetHasUnsavedWork && window.sheetHasUnsavedWork()) {
                 const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
-                    (window.i18n ? window.i18n.t('sheet_unsaved_message') : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
+                    (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                     '</p>' +
-                    '<button onclick="window._sheetDiscardAndLeaveFromBack()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.t('sheet_unsaved_discard_btn') : 'Discard &amp; Leave') + '</button>' +
-                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.t('sheet_unsaved_keep_btn') : 'Keep Editing') + '</button>' +
+                    '<button onclick="window._sheetDiscardAndLeaveFromBack()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
-                showModal((window.i18n ? window.i18n.t('sheet_unsaved_title') : 'Unsaved Changes'), msg, 'warning', false);
+                showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
                 return;
             }
             // Nothing left that we're tracking, and already on the dashboard - our virtual stack
@@ -1928,7 +1928,7 @@
         // instead (same visual pattern as circShowOpeningSpinner), removed once the deep-link
         // message is actually sent to the iframe.
         window.openRosterDeepLink = function(messageType, label) {
-            const feature = window.i18n ? window.i18n.t('nav_roster') : 'Roster';
+            const feature = window.i18n ? window.i18n.tOr('nav_roster', 'Roster') : 'Roster';
             if (!window.requireBsbRosterAccess(feature)) return;
             window.openRosterModal();
             const genericOverlay = document.getElementById('roster-loading-overlay');
@@ -1974,7 +1974,7 @@
         // appears, showing just a spinner then the resulting Hrs value inline.
         window.showIdealSleepHrs = function() {
             const resultEl = document.getElementById('sleep-ideal-result');
-            const t = (key) => window.i18n ? window.i18n.t(key) : null;
+            const t = (key) => window.i18n ? window.i18n.tOr(key, null) : null;
             const connectingMsg = t('sleep_ideal_connecting') || 'Connecting to Roster (first time may take a moment)…';
             const fetchingMsg = t('sleep_ideal_fetching') || 'Fetching ideal figure…';
             resultEl.innerHTML = `<div style="display:flex; align-items:center; justify-content:center; gap:8px; padding:10px;"><div style="width:18px; height:18px; border:3px solid color-mix(in srgb, var(--text) 25%, transparent); border-top-color:var(--blue); border-radius:50%; animation:splashSpin 0.8s linear infinite;"></div><span style="font-size:12.5px; color:var(--text-muted);">${window._rosterDataReady ? fetchingMsg : connectingMsg}</span></div>`;
@@ -2002,7 +2002,7 @@
         // default pill-shaped (perfectly rounded) button style automatically.
         window.openSignOutDialog = function() {
             const email = window.currentUserEmail || '';
-            const t = (k, fb) => window.i18n ? window.i18n.t(k) : fb;
+            const t = (k, fb) => window.i18n ? window.i18n.tOr(k, fb) : fb;
             const msg = '<p style="margin:0 0 14px; color:var(--text); font-size:14px; line-height:1.5;">' + t('sign_out_confirm_msg', 'Sign out of TTE LOGS on this device?') + '</p>' +
                 '<p style="margin:0 0 3px; color:var(--text-muted); font-size:12px; font-weight:600;">' + t('signed_in_as', 'Signed in as') + '</p>' +
                 '<p style="margin:0 0 18px; color:var(--blue); font-size:14px; font-weight:700; word-break:break-all;">' + email + '</p>' +
@@ -2044,7 +2044,7 @@
             // incorrectly sent back to the login screen despite being properly signed in.
             const splash = document.getElementById('app-splash-screen');
             if (splash) splash.remove();
-            const tOff = (k, fb) => window.i18n ? window.i18n.t(k) : fb;
+            const tOff = (k, fb) => window.i18n ? window.i18n.tOr(k, fb) : fb;
             window._offlineFallbackModalShown = true;
             if (window.currentUid) {
                 window.appState = window.appState || { profile: null, legs: [] };
@@ -2447,7 +2447,7 @@
             }
         });
     </script>
-<script src="./i18n.js?v=1.4"></script>
+<script src="./i18n.js?v=1.5"></script>
     <!-- Point: PDF.js renders PDF pages onto a canvas ourselves, instead of relying on the browser's
          native inline PDF support — Android Chrome doesn't reliably render PDFs inside an <iframe>,
          instead showing a native "open with..." placeholder. This works identically everywhere. -->
@@ -4951,7 +4951,7 @@
         if (!container) return;
         const items = Object.entries(window.adminAnnouncements || {}).sort((a,b) => ((b[1].createdAt||0)-(a[1].createdAt||0)));
         if (!items.length) {
-            container.innerHTML = `<p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:8px 0;">${window.i18n ? window.i18n.t('no_active_announcements') : 'No active announcements.'}</p>`;
+            container.innerHTML = `<p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:8px 0;">${window.i18n ? window.i18n.tOr('no_active_announcements', 'No active announcements.'}</p>`) : 'No active announcements.'}</p>`;
             return;
         }
         container.innerHTML = items.map(([id, a]) => `
@@ -4993,7 +4993,7 @@
         if (!container) return;
         const items = Object.entries(window.dashboardAnnouncements || {}).sort((a,b) => (b[1].createdAt||0)-(a[1].createdAt||0));
         if (!items.length) {
-            container.innerHTML = `<p style="font-size:12px; color:var(--text-muted); text-align:center; margin:10px 0;">${window.i18n ? window.i18n.t('no_dashboard_announcements') : 'No dashboard announcements yet.'}</p>`;
+            container.innerHTML = `<p style="font-size:12px; color:var(--text-muted); text-align:center; margin:10px 0;">${window.i18n ? window.i18n.tOr('no_dashboard_announcements', 'No dashboard announcements yet.'}</p>`) : 'No dashboard announcements yet.'}</p>`;
             return;
         }
         container.innerHTML = items.map(([id, a]) => `
@@ -5158,7 +5158,7 @@
     // Profile screen's install box, just triggered from Settings instead.
     window.handleSettingsInstallTap = function() {
         if (window.isStandaloneApp) {
-            showModal("Already Installed", (window.i18n ? window.i18n.t('app_already_installed') : "TTE LOGS is already installed on this device."), "success", false);
+            showModal("Already Installed", (window.i18n ? window.i18n.tOr('app_already_installed', "TTE LOGS is already installed on this device.") : "TTE LOGS is already installed on this device."), "success", false);
         } else if (window.isAndroidInstallable) {
             document.getElementById('settings-modal')?.classList.add('hidden');
             window.triggerPWAInstall();
@@ -5206,12 +5206,12 @@
         return false;
     };
     window.handleRosterCardClick = function() {
-        const feature = window.i18n ? window.i18n.t('nav_roster') : 'Roster';
+        const feature = window.i18n ? window.i18n.tOr('nav_roster', 'Roster') : 'Roster';
         if (!window.requireBsbRosterAccess(feature)) return;
         window.openRosterModal();
     };
     window.handleQuickAddClick = function() {
-        const feature = window.i18n ? window.i18n.t('quick_add') : 'Quick Add';
+        const feature = window.i18n ? window.i18n.tOr('quick_add', 'Quick Add') : 'Quick Add';
         if (!window.requireBsbRosterAccess(feature)) return;
         window._sheetModeQuickAddTargetRow = null;
         window.openQuickAddCalendar();
@@ -5300,13 +5300,13 @@
         try {
             const ok = await window.authenticateBiometricCredential();
             if (!ok) {
-                showModal("Unlock Failed", (window.i18n ? window.i18n.t('biometric_unlock_failed') : "Biometric verification failed. Please try again."), "warning", false);
+                showModal("Unlock Failed", (window.i18n ? window.i18n.tOr('biometric_unlock_failed', "Biometric verification failed. Please try again.") : "Biometric verification failed. Please try again."), "warning", false);
                 return;
             }
             window._biometricSessionUnlocked = true;
             window.hideBiometricLockOverlay();
         } catch (e) {
-            showModal("Unlock Failed", (window.i18n ? window.i18n.t('biometric_unlock_unavailable') : "Biometric unlock is not available on this device."), "warning", false);
+            showModal("Unlock Failed", (window.i18n ? window.i18n.tOr('biometric_unlock_unavailable', "Biometric unlock is not available on this device.") : "Biometric unlock is not available on this device."), "warning", false);
         }
     };
     window.toggleBiometricLockSetting = async function() {
@@ -5323,13 +5323,13 @@
                 } catch (e) { enrolled = false; }
             }
             if (!enrolled) {
-                showModal("Not Available", (window.i18n ? window.i18n.t('biometric_unlock_unavailable') : "Biometric unlock is not available on this device."), "warning", false);
+                showModal("Not Available", (window.i18n ? window.i18n.tOr('biometric_unlock_unavailable', "Biometric unlock is not available on this device.") : "Biometric unlock is not available on this device."), "warning", false);
                 return;
             }
             window.setBiometricLockEnabled(true);
             window._biometricSessionUnlocked = true;
             window.hideBiometricLockOverlay();
-            showModal("Enabled", (window.i18n ? window.i18n.t('biometric_enabled_msg') : "Biometric lock is now on. The app will ask for verification when you return."), "success", false, null, 1800);
+            showModal("Enabled", (window.i18n ? window.i18n.tOr('biometric_enabled_msg', "Biometric lock is now on. The app will ask for verification when you return.") : "Biometric lock is now on. The app will ask for verification when you return."), "success", false, null, 1800);
         } else {
             window.setBiometricLockEnabled(false);
         }
@@ -6654,7 +6654,7 @@
     window.submitUnarchiveRequest = () => {
         const textEl = document.getElementById('my-archive-request-text');
         const text = textEl.value.trim();
-        if (!text) return showModal("Error", (window.i18n ? window.i18n.t('unarchive_request_empty_error') : "Please describe which data you'd like restored before sending."), "error", false);
+        if (!text) return showModal("Error", (window.i18n ? window.i18n.tOr('unarchive_request_empty_error', "Please describe which data you'd like restored before sending.") : "Please describe which data you'd like restored before sending."), "error", false);
         const name = window.appState.profile ? window.appState.profile.name || 'Unknown' : 'Unknown';
         const pf = window.appState.profile ? window.appState.profile.pf || '' : '';
         const entry = { type: 'Unarchive Request', text, name, pf, uid: window.currentUid, ts: Date.now(), date: new Date().toLocaleDateString() };
@@ -6666,7 +6666,7 @@
         const newRef = window.firebasePush(window.firebaseRef(window.db, 'feedback'));
         Promise.race([window.firebaseSet(newRef, entry), timeoutPromise]).then(() => {
             textEl.value = '';
-            showModal("Sent!", (window.i18n ? window.i18n.t('unarchive_request_sent') : "Your request has been sent to the admin."), "success", false);
+            showModal("Sent!", (window.i18n ? window.i18n.tOr('unarchive_request_sent', "Your request has been sent to the admin.") : "Your request has been sent to the admin."), "success", false);
         }).catch(() => {
             showModal("Error", "Couldn't reach the server. Please check your connection and try again.", "error", false);
         });
@@ -6812,7 +6812,7 @@
             ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
             : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
         const themeLabel = document.getElementById('theme-toggle-label');
-        if (themeLabel) themeLabel.innerText = window.i18n ? window.i18n.t(isDark ? 'light' : 'dark') : (isDark ? 'Light' : 'Dark');
+        if (themeLabel) themeLabel.innerText = window.i18n ? window.i18n.tOr(isDark ? 'light' : 'dark', (isDark ) : (isDark ? 'Light' : 'Dark');
         
         if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
         if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
@@ -6836,7 +6836,7 @@
         const themeLabel = document.getElementById('theme-toggle-label');
         if (themeLabel && window.i18n) {
             const isDark = document.body.classList.contains('dark-mode');
-            themeLabel.innerText = window.i18n.t(isDark ? 'light' : 'dark');
+            themeLabel.innerText = window.i18n.tOr(isDark ? 'light' : 'dark', isDark ? 'Light' : 'Dark');
         }
         // Language label shows the language you'd SWITCH TO (not the current one) - same
         // convention as the theme toggle showing 🌙 while in light mode, meaning "tap to go dark".
@@ -6868,12 +6868,15 @@
         if (trendScreenEl && !trendScreenEl.classList.contains('hidden')) {
             const trendTitleEl = document.getElementById('trend-screen-title');
             if (trendTitleEl && window.i18n) {
-                trendTitleEl.innerText = currentTab === 'nda' ? window.i18n.t('trend_title_nda') : window.i18n.t('trend_title_ta');
+                trendTitleEl.innerText = currentTab === 'nda'
+                    ? window.i18n.tOr('trend_title_nda', 'Night Duty Allowances')
+                    : window.i18n.tOr('trend_title_ta', 'Travelling Allowances');
             }
             window.updateTrendViewTabLabels();
             if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
             else if (window._trendActiveView === 'signon') window.renderNdaSignOnTable();
             else window.renderYearlyLineGraph();
+            if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(trendScreenEl);
         }
         if (!document.getElementById('screen-salary').classList.contains('hidden')) {
             if (window._salaryCurrentMonthKey && window.showSalaryBreakdown) {
@@ -6904,7 +6907,7 @@
     function showNotifications() {
         let notifs = window.globalNotifications || [];
         if (notifs.length === 0) {
-            showModal("Notifications", (window.i18n ? window.i18n.t('notifications_all_caught_up') : "You are all caught up! No active warnings."), "success", false);
+            showModal("Notifications", (window.i18n ? window.i18n.tOr('notifications_all_caught_up', "You are all caught up! No active warnings.") : "You are all caught up! No active warnings."), "success", false);
         } else {
             let htmlList = `<div style="text-align:center; font-size:13px; line-height:1.6;">` + notifs.map(n => `• ${n}`).join('<br><br>') + `</div>`;
             showModal("Attention Required", htmlList, "warning", false);
@@ -6928,7 +6931,7 @@
             if(tt) tt.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
         }
         const themeLabelOnLoad = document.getElementById('theme-toggle-label');
-        if (themeLabelOnLoad) themeLabelOnLoad.innerText = window.i18n ? window.i18n.t(isDarkOnLoad ? 'light' : 'dark') : (isDarkOnLoad ? 'Light' : 'Dark');
+        if (themeLabelOnLoad) themeLabelOnLoad.innerText = window.i18n ? window.i18n.tOr(isDarkOnLoad ? 'light' : 'dark', (isDarkOnLoad ) : (isDarkOnLoad ? 'Light' : 'Dark');
         updateThemeColorMeta();
         const langLabelOnLoad = document.getElementById('language-toggle-label');
         if (langLabelOnLoad) langLabelOnLoad.innerText = (window.i18n && window.i18n.getLang() === 'hi') ? 'English' : 'Hindi';
@@ -7340,12 +7343,12 @@
             if (regEl && !regEl.classList.contains('hidden') && window.profileHasUnsavedChanges && window.profileHasUnsavedChanges()) {
                 window._pendingNavAfterProfileDiscard = screenId;
                 const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
-                    (window.i18n ? window.i18n.t('profile_unsaved_message') : "You haven't saved these profile changes yet. If you leave now, they will be discarded.") +
+                    (window.i18n ? window.i18n.tOr('profile_unsaved_message', "You haven't saved these profile changes yet. If you leave now, they will be discarded.") : "You haven't saved these profile changes yet. If you leave now, they will be discarded.") +
                     '</p>' +
-                    '<button onclick="window._profileDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.t('sheet_unsaved_discard_btn') : 'Discard &amp; Leave') + '</button>' +
-                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.t('sheet_unsaved_keep_btn') : 'Keep Editing') + '</button>' +
+                    '<button onclick="window._profileDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
-                showModal((window.i18n ? window.i18n.t('sheet_unsaved_title') : 'Unsaved Changes'), msg, 'warning', false);
+                showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
                 return;
             }
         }
@@ -7358,12 +7361,12 @@
             if (dashEl && !dashEl.classList.contains('hidden') && window.sheetHasUnsavedWork && window.sheetHasUnsavedWork()) {
                 window._pendingNavAfterDiscard = screenId;
                 const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
-                    (window.i18n ? window.i18n.t('sheet_unsaved_message') : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
+                    (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                     '</p>' +
-                    '<button onclick="window._sheetDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.t('sheet_unsaved_discard_btn') : 'Discard &amp; Leave') + '</button>' +
-                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.t('sheet_unsaved_keep_btn') : 'Keep Editing') + '</button>' +
+                    '<button onclick="window._sheetDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
-                showModal((window.i18n ? window.i18n.t('sheet_unsaved_title') : 'Unsaved Changes'), msg, 'warning', false);
+                showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
                 return;
             }
         }
@@ -7513,7 +7516,11 @@
             if(dnBtn) dnBtn.style.opacity = '1';
             renderAllLogs(); checkGlobalNotifications(); 
         }
-        if(screenId === 'screen-reports') updateReportUI();
+        if(screenId === 'screen-reports') {
+            updateReportUI();
+            const reportsEl = document.getElementById('screen-reports');
+            if (reportsEl && window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(reportsEl);
+        }
         if(screenId === 'screen-salary') {
             const salaryEl = document.getElementById('screen-salary');
             if (salaryEl && salaryEl.classList.contains('hidden')) window.showSalaryBreakdown();
@@ -7521,6 +7528,8 @@
         if(screenId === 'screen-yearly-trend') {
             window.resetTrendDateNavigation();
             window.switchTrendViewTab(window._trendActiveView || 'graph');
+            const trendEl = document.getElementById('screen-yearly-trend');
+            if (trendEl && window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(trendEl);
         }
         if(screenId === 'screen-backup') updateBackupUI(); 
         if(screenId === 'screen-register') {
@@ -7834,7 +7843,7 @@
         const btnOk = document.getElementById('modal-ok');
         if (btnOk) {
             btnOk.setAttribute('data-i18n', 'ok');
-            btnOk.innerText = window.i18n ? window.i18n.t('ok') : 'OK';
+            btnOk.innerText = window.i18n ? window.i18n.tOr('ok', 'OK') : 'OK';
         }
     }
 
@@ -7941,7 +7950,7 @@
     };
 
     window.renderProfileStationSummaries = function() {
-        const notSet = window.i18n ? window.i18n.t('profile_not_set') : 'Not set';
+        const notSet = window.i18n ? window.i18n.tOr('profile_not_set', 'Not set') : 'Not set';
         const setListSummary = (id, items) => {
             const el = document.getElementById(id);
             if (!el) return;
@@ -7971,11 +7980,11 @@
                 divEl.classList.add('has-data');
             }
         }
-        const emptyLabel = window.i18n ? window.i18n.t('profile_no_stations_added') : 'No stations added';
+        const emptyLabel = window.i18n ? window.i18n.tOr('profile_no_stations_added', 'No stations added') : 'No stations added';
         document.querySelectorAll('.profile-chip-row[data-empty-label]').forEach(el => {
             el.setAttribute('data-empty-label', emptyLabel);
         });
-        const trainsEmpty = window.i18n ? window.i18n.t('profile_no_trains_added') : 'No trains added';
+        const trainsEmpty = window.i18n ? window.i18n.tOr('profile_no_trains_added', 'No trains added') : 'No trains added';
         const origChips = document.getElementById('reg-originating-chips');
         if (origChips) origChips.setAttribute('data-empty-label', trainsEmpty);
     };
@@ -8059,7 +8068,7 @@
     window.addOriginatingTrain = function() {
         const input = document.getElementById('reg-originating-input');
         const val = (input.value || '').trim();
-        if (!/^\d{5}$/.test(val)) return showModal("Invalid Train", (window.i18n ? window.i18n.t('add_train_5digits', { train: val || '—' }) : "Train No. must be exactly 5 digits."), "warning", false);
+        if (!/^\d{5}$/.test(val)) return showModal("Invalid Train", (window.i18n ? window.i18n.tOr('add_train_5digits', { train: val || '—' }, "Train No. must be exactly 5 digits.") : "Train No. must be exactly 5 digits."), "warning", false);
         if (!window._originatingTrains.includes(val)) window._originatingTrains.push(val);
         input.value = '';
         window.renderOriginatingTrainChips();
@@ -8708,7 +8717,7 @@
         const monthLabel = new Date(selYear, selMonth - 1).toLocaleString('default', { month: 'long', year: 'numeric' });
         const fmtShortDate = (ds) => { const d = new Date(ds + 'T00:00:00'); return `${String(d.getDate()).padStart(2,'0')}-${d.toLocaleString('default',{month:'short'})}`; };
         const tf = (key, vars) => window.i18n ? window.i18n.tf(key, vars) : null;
-        const t = (key) => window.i18n ? window.i18n.t(key) : null;
+        const t = (key) => window.i18n ? window.i18n.tOr(key, null) : null;
 
         const now = new Date();
         const isCurrentMonth = (selYear === now.getFullYear() && selMonth === now.getMonth() + 1);
@@ -9230,7 +9239,7 @@
             initProfileEditing();
             checkProfileNotifications();
             navTo('screen-dashboard'); 
-            showModal("Success", (window.i18n ? window.i18n.t('profile_saved_synced') : "Profile Saved & Synced!"), "success", false, null, 1500); 
+            showModal("Success", (window.i18n ? window.i18n.tOr('profile_saved_synced', "Profile Saved & Synced!") : "Profile Saved & Synced!"), "success", false, null, 1500); 
         } catch(e) { 
             showModal("Save Error", e.message, "error", false); 
         } 
@@ -9383,17 +9392,17 @@
         
         if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrStn || !leg.arrDate) {
             window.markFieldsInvalid(['trip-dep-date', 'trip-train', 'trip-dep-stn', 'trip-dep-time', 'trip-arr-stn', 'trip-arr-date']);
-            return showModal("ERROR", (window.i18n ? window.i18n.t('add_mandatory_fields') : "Train No., Departure Date, Departure Time, Arrival Date, Station From and Station To are mandatory."), "error", false);
+            return showModal("ERROR", (window.i18n ? window.i18n.tOr('add_mandatory_fields', "Train No., Departure Date, Departure Time, Arrival Date, Station From and Station To are mandatory.") : "Train No., Departure Date, Departure Time, Arrival Date, Station From and Station To are mandatory."), "error", false);
         }
         if(!/^\d{5}$/.test(leg.train)) {
             return showModal("ERROR", (window.i18n ? window.i18n.tf('add_train_5digits', {train: leg.train}) : "Train No. must be exactly 5 digits.\n\nYou entered: " + leg.train), "error", false);
         }
         if(isPastDuty && !leg.arrTime) {
             window.markFieldsInvalid(['trip-arr-time']);
-            return showModal("ERROR", (window.i18n ? window.i18n.t('add_arrival_time_mandatory') : "Arrival Time is mandatory for past journeys.\n\nOnly today's or future duty entries can have arrival time filled later."), "error", false);
+            return showModal("ERROR", (window.i18n ? window.i18n.tOr('add_arrival_time_mandatory', "Arrival Time is mandatory for past journeys.\n\nOnly today's or future duty entries can have arrival time filled later.") : "Arrival Time is mandatory for past journeys.\n\nOnly today's or future duty entries can have arrival time filled later."), "error", false);
         }
-        if(leg.depStn === leg.arrStn) return showModal("ERROR", (window.i18n ? window.i18n.t('add_same_station') : "From and To stations cannot be same."), "error", false); 
-        if(!leg.inProgress && new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR", (window.i18n ? window.i18n.t('add_arrival_after_departure') : "Arrival must be after Departure."), "error", false); 
+        if(leg.depStn === leg.arrStn) return showModal("ERROR", (window.i18n ? window.i18n.tOr('add_same_station', "From and To stations cannot be same.") : "From and To stations cannot be same."), "error", false); 
+        if(!leg.inProgress && new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${leg.arrDate}T${leg.arrTime}`)) return showModal("ERROR", (window.i18n ? window.i18n.tOr('add_arrival_after_departure', "Arrival must be after Departure.") : "Arrival must be after Departure."), "error", false); 
         
         if(!window.appState.legs) window.appState.legs = []; 
         let testLegs = [...window.appState.legs]; 
@@ -9425,7 +9434,7 @@
             if(currDepDt < prevArrDt) { return showModal("TIME ERROR", (window.i18n ? window.i18n.tf('chain_time_error', {date: formatDate(prev.arrDate), time: prev.arrTime}) : `Departure time cannot be before previous arrival time (${formatDate(prev.arrDate)} ${prev.arrTime}).`), "error", false); }
 
             if(hqGroup.includes(prev.arrStn)) {
-                if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", (window.i18n ? window.i18n.t('chain_prev_ended_hq') : `Previous journey ended at HQ. New journey must start from HQ.`), "error", false);
+                if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", (window.i18n ? window.i18n.tOr('chain_prev_ended_hq', `Previous journey ended at HQ. New journey must start from HQ.`) : `Previous journey ended at HQ. New journey must start from HQ.`), "error", false);
                 const unclosed1 = findUnclosedOutsideDuty(leg.depDate, null);
                 if (unclosed1) return showModal("MISSING JOURNEY", (window.i18n ? window.i18n.tf('chain_missing_journey', {stn: unclosed1.dutyStn, date: formatDateShort(unclosed1.fromDate)}) : `Station Duty at ${unclosed1.dutyStn} (outside HQ, ${formatDateShort(unclosed1.fromDate)}) requires a return train FROM ${unclosed1.dutyStn} to HQ before this journey.\n\nPlease add that connecting journey first (Duty Journey tab).`), "error", false);
                 finalizeLegSave(leg, testLegs);
@@ -9449,7 +9458,7 @@
                 finalizeLegSave(leg, testLegs);
             }
         } else {
-            if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", (window.i18n ? window.i18n.t('chain_first_journey_hq') : `Your very first duty journey must start from HQ.`), "error", false);
+            if(!hqGroup.includes(leg.depStn)) return showModal("CHAIN ERROR", (window.i18n ? window.i18n.tOr('chain_first_journey_hq', `Your very first duty journey must start from HQ.`) : `Your very first duty journey must start from HQ.`), "error", false);
             const unclosed2 = findUnclosedOutsideDuty(leg.depDate, null);
             if (unclosed2) return showModal("MISSING JOURNEY", (window.i18n ? window.i18n.tf('chain_missing_journey', {stn: unclosed2.dutyStn, date: formatDateShort(unclosed2.fromDate)}) : `Station Duty at ${unclosed2.dutyStn} (outside HQ, ${formatDateShort(unclosed2.fromDate)}) requires a return train FROM ${unclosed2.dutyStn} to HQ before this journey.\n\nPlease add that connecting journey first (Duty Journey tab).`), "error", false);
             finalizeLegSave(leg, testLegs);
@@ -9888,11 +9897,11 @@
     window._qaddState = { year: null, month: null, teamNo: null };
 
     window.openQuickAddCalendar = function() {
-        const feature = window.i18n ? window.i18n.t('quick_add') : 'Quick Add';
+        const feature = window.i18n ? window.i18n.tOr('quick_add', 'Quick Add') : 'Quick Add';
         if (!window.requireBsbRosterAccess(feature)) return;
         const teamNo = localStorage.getItem('roster_my_team');
         if (!teamNo) {
-            return showModal("Team No. Not Set", (window.i18n ? window.i18n.t('quickadd_team_not_set') : "Open the Roster app, go to My Duty, select your Team No., and tap Save. Then come back and try Quick Add again."), "warning", false);
+            return showModal("Team No. Not Set", (window.i18n ? window.i18n.tOr('quickadd_team_not_set', "Open the Roster app, go to My Duty, select your Team No., and tap Save. Then come back and try Quick Add again.") : "Open the Roster app, go to My Duty, select your Team No., and tap Save. Then come back and try Quick Add again."), "warning", false);
         }
         window._qaddState.teamNo = teamNo;
 
@@ -10089,14 +10098,14 @@
 
         if (status.type === 'out') {
             const legs = (status.trip.outTrain || '').split('/').map(s => s.trim()).filter(Boolean);
-            if (!legs.length) return showModal("No Train Found", (window.i18n ? window.i18n.t('quickadd_no_train_out') : "This duty has no train number set in the Link Programme."), "error", false);
+            if (!legs.length) return showModal("No Train Found", (window.i18n ? window.i18n.tOr('quickadd_no_train_out', "This duty has no train number set in the Link Programme.") : "This duty has no train number set in the Link Programme."), "error", false);
             if (legs.length > 1) showQuickAddLegChoice(legs, (chosen) => quickFillOutLeg(dateStr, chosen));
             else quickFillOutLeg(dateStr, legs[0]);
             return;
         }
         if (status.type === 'in') {
             const legs = (status.trip.returnTrain || '').split('/').map(s => s.trim()).filter(Boolean);
-            if (!legs.length) return showModal("No Train Found", (window.i18n ? window.i18n.t('quickadd_no_train_return') : "This return duty has no train number set in the Link Programme."), "error", false);
+            if (!legs.length) return showModal("No Train Found", (window.i18n ? window.i18n.tOr('quickadd_no_train_return', "This return duty has no train number set in the Link Programme.") : "This return duty has no train number set in the Link Programme."), "error", false);
             if (legs.length > 1) showQuickAddLegChoice(legs, (chosen) => quickFillInLeg(status.trip, chosen));
             else quickFillInLeg(status.trip, legs[0]);
             return;
@@ -10457,12 +10466,12 @@
     window.closeSheetAddJourney = function() {
         if (window.sheetHasUnsavedWork()) {
             const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
-                (window.i18n ? window.i18n.t('sheet_unsaved_message') : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
+                (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                 '</p>' +
-                '<button onclick="window._sheetDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.t('sheet_unsaved_discard_btn') : 'Discard &amp; Leave') + '</button>' +
-                '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.t('sheet_unsaved_keep_btn') : 'Keep Editing') + '</button>' +
+                '<button onclick="window._sheetDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                 '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
-            showModal((window.i18n ? window.i18n.t('sheet_unsaved_title') : 'Unsaved Changes'), msg, 'warning', false);
+            showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
             return;
         }
         window.navTo('screen-dashboard');
@@ -11204,12 +11213,12 @@
             // dialog as the existing-row case now, just clearing back to blank on discard since
             // there's no prior saved state to revert to.
             const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
-                (window.i18n ? window.i18n.t('sheet_unsaved_message') : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
+                (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                 '</p>' +
-                '<button onclick="window._sheetDiscardActiveRowByRowId(' + pending.rowId + ')" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.t('sheet_unsaved_discard_btn') : 'Discard &amp; Leave') + '</button>' +
-                '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.t('sheet_unsaved_keep_btn') : 'Keep Editing') + '</button>' +
+                '<button onclick="window._sheetDiscardActiveRowByRowId(' + pending.rowId + ')" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                 '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
-            showModal((window.i18n ? window.i18n.t('sheet_unsaved_title') : 'Unsaved Changes'), msg, 'warning', false);
+            showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
         } else {
             // Editing an already-saved row - the hard error has no escape (can't dismiss without
             // filling the field back in), which traps someone who deliberately cleared something.
@@ -11217,12 +11226,12 @@
             // dialog. Discard reverts to row.values (the last genuinely-saved state, untouched by
             // any failed attempt) rather than forcing completion.
             const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
-                (window.i18n ? window.i18n.t('sheet_unsaved_message') : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
+                (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                 '</p>' +
-                '<button onclick="window._sheetDiscardRowEditByRowId(' + pending.rowId + ')" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.t('sheet_unsaved_discard_btn') : 'Discard &amp; Leave') + '</button>' +
-                '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.t('sheet_unsaved_keep_btn') : 'Keep Editing') + '</button>' +
+                '<button onclick="window._sheetDiscardRowEditByRowId(' + pending.rowId + ')" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp) : 'Discard &amp; Leave') + '</button>' +
+                '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                 '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
-            showModal((window.i18n ? window.i18n.t('sheet_unsaved_title') : 'Unsaved Changes'), msg, 'warning', false);
+            showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
         }
     }, true);
 
@@ -11240,7 +11249,7 @@
         // "✔ Save Edited" button (down in the same row as the main "✔ Save" button) becomes
         // visible, and THAT is what actually performs the save (see sheetSaveEditedRows below).
         if (window._sheetEditModeActive) {
-            const tEdit = (k, fb) => window.i18n ? window.i18n.t(k) : fb;
+            const tEdit = (k, fb) => window.i18n ? window.i18n.tOr(k, fb) : fb;
             showModal(tEdit('already_editing_title', "Already Editing"), tEdit('already_editing_msg', "Tap '✔ Save Edited' below the table to save your changes."), "info", false);
             return;
         }
@@ -11286,8 +11295,8 @@
     // "confirmation" above happens too late to catch a mis-tap, so this asks first.
     window.sheetSaveEditedRows = function() {
         showModal(
-            window.i18n ? window.i18n.t('sheet_save_confirm_title') : 'Save Changes?',
-            window.i18n ? window.i18n.t('sheet_save_edited_confirm_msg') : 'Save the changes you made to these entries?',
+            window.i18n ? window.i18n.tOr('sheet_save_confirm_title', 'Save Changes) : 'Save Changes?',
+            window.i18n ? window.i18n.tOr('sheet_save_edited_confirm_msg', 'Save the changes you made to these entries) : 'Save the changes you made to these entries?',
             'info', true,
             (confirmed) => { if (confirmed) sheetSaveEditedRowsConfirmed(); }
         );
@@ -11304,15 +11313,15 @@
     }
     window.sheetSaveActiveRow = function() {
         if (window._sheetEditModeActive) {
-            const tEdit = (k, fb) => window.i18n ? window.i18n.t(k) : fb;
+            const tEdit = (k, fb) => window.i18n ? window.i18n.tOr(k, fb) : fb;
             showModal(tEdit('already_editing_title', "Already Editing"), tEdit('already_editing_msg', "Tap '✔ Save Edited' below the table to save your changes."), "info", false);
             return;
         }
         const activeRow = window._sheetRows[window._sheetRows.length - 1];
         if (!activeRow || activeRow.locked || !sheetRowHasAnyData(activeRow)) return;
         showModal(
-            window.i18n ? window.i18n.t('sheet_add_confirm_title') : 'Add Journey?',
-            window.i18n ? window.i18n.t('sheet_add_confirm_msg') : 'Add this journey entry?',
+            window.i18n ? window.i18n.tOr('sheet_add_confirm_title', 'Add Journey) : 'Add Journey?',
+            window.i18n ? window.i18n.tOr('sheet_add_confirm_msg', 'Add this journey entry) : 'Add this journey entry?',
             'info', true,
             (confirmed) => { if (confirmed) window.sheetSaveRow(activeRow.rowId); }
         );
@@ -11498,9 +11507,9 @@
         let to = (type === 'Leave') ? document.getElementById('nonduty-to').value : from;
         if(!from || !to) {
             window.markFieldsInvalid(type === 'Leave' ? ['nonduty-from', 'nonduty-to'] : ['nonduty-from']);
-            return showModal("ERROR", (window.i18n ? (type === 'Leave' ? window.i18n.t('leave_dates_mandatory') : window.i18n.t('leave_date_mandatory')) : (type === 'Leave' ? "Dates are mandatory." : "Date is mandatory.")), "error", false);
+            return showModal("ERROR", (window.i18n ? (type === 'Leave' ? window.i18n.tOr('leave_dates_mandatory', 'Dates are mandatory.') : window.i18n.tOr('leave_date_mandatory', 'Date is mandatory.')) : (type === 'Leave' ? "Dates are mandatory." : "Date is mandatory.")), "error", false);
         }
-        if(new Date(from) > new Date(to)) return showModal("ERROR", (window.i18n ? window.i18n.t('leave_from_after_to') : "From Date cannot be after To Date."), "error", false);
+        if(new Date(from) > new Date(to)) return showModal("ERROR", (window.i18n ? window.i18n.tOr('leave_from_after_to', "From Date cannot be after To Date.") : "From Date cannot be after To Date."), "error", false);
 
         let dutyStn = '', locType = '', objective = '', othersLabel = '', shiftFrom = '', shiftTo = '', leaveType = '', nightDuty = false;
         if (type === 'Leave') {
@@ -11530,16 +11539,16 @@
                     if (!shiftFrom) invalidShiftFields.push('nonduty-shift-from');
                     if (!shiftTo) invalidShiftFields.push('nonduty-shift-to');
                     window.markFieldsInvalid(invalidShiftFields);
-                    return showModal("ERROR", (window.i18n ? window.i18n.t('leave_shift_mandatory') : "Fill both Shift Start and Shift End for Night Duty."), "error", false);
+                    return showModal("ERROR", (window.i18n ? window.i18n.tOr('leave_shift_mandatory', "Fill both Shift Start and Shift End for Night Duty.") : "Fill both Shift Start and Shift End for Night Duty."), "error", false);
                 }
             }
         } else if (type === 'Others') {
             othersLabel = document.getElementById('nonduty-others-text').value.trim();
-            if (!othersLabel) { window.markFieldsInvalid(['nonduty-others-text']); return showModal("ERROR", (window.i18n ? window.i18n.t('leave_custom_label_mandatory') : "Custom Label is mandatory for Others."), "error", false); }
+            if (!othersLabel) { window.markFieldsInvalid(['nonduty-others-text']); return showModal("ERROR", (window.i18n ? window.i18n.tOr('leave_custom_label_mandatory', "Custom Label is mandatory for Others.") : "Custom Label is mandatory for Others."), "error", false); }
         }
         
         // --- VALIDATION BLOCK ---
-        if (!window.appState.profile) return showModal("ERROR", (window.i18n ? window.i18n.t('leave_profile_not_loaded') : "Profile not loaded."), "error", false);
+        if (!window.appState.profile) return showModal("ERROR", (window.i18n ? window.i18n.tOr('leave_profile_not_loaded', "Profile not loaded.") : "Profile not loaded."), "error", false);
         const hqGrpV = [window.appState.profile.hq, ...(window.appState.profile.nearby||[])];
         let overlap = false;
         let fromD = new Date(`${from}T00:00:00`);
@@ -11645,12 +11654,12 @@
             } else {
                 switchAddTab('nonduty');
                 updateDashboardUI();
-                showModal("Saved!", (window.i18n ? window.i18n.t('leave_record_saved') : "Record saved successfully."), "success", false, null, 1500);
+                showModal("Saved!", (window.i18n ? window.i18n.tOr('leave_record_saved', "Record saved successfully.") : "Record saved successfully."), "success", false, null, 1500);
             }
         };
 
         if(overlap) {
-            showModal("WARNING", (window.i18n ? window.i18n.t('leave_dates_overlap') : "Warning: The selected dates overlap with an existing journey or leave!"), "warning", true, (proceed) => {
+            showModal("WARNING", (window.i18n ? window.i18n.tOr('leave_dates_overlap', "Warning: The selected dates overlap with an existing journey or leave!") : "Warning: The selected dates overlap with an existing journey or leave!"), "warning", true, (proceed) => {
                 if(proceed) finalizeSave();
             });
         } else {
@@ -12085,7 +12094,7 @@
         // letting an arrival time be saved earlier than the journey's own departure. Same rule,
         // same message, applied here too.
         if (new Date(`${leg.depDate}T${leg.depTime}`) >= new Date(`${arrDate}T${arrTime}`)) {
-            return showModal("ERROR", (window.i18n ? window.i18n.t('add_arrival_after_departure') : "Arrival must be after Departure."), "error", false);
+            return showModal("ERROR", (window.i18n ? window.i18n.tOr('add_arrival_after_departure', "Arrival must be after Departure.") : "Arrival must be after Departure."), "error", false);
         }
 
         window.appState.legs[legIdx].arrDate = arrDate;
@@ -12301,7 +12310,7 @@
     }
 
     window.openRosterModal = function() {
-        const feature = window.i18n ? window.i18n.t('nav_roster') : 'Roster';
+        const feature = window.i18n ? window.i18n.tOr('nav_roster', 'Roster') : 'Roster';
         if (!window.requireBsbRosterAccess(feature)) return;
         const iframe = document.getElementById('roster-iframe');
         const modal = document.getElementById('roster-iframe-modal');
@@ -12425,7 +12434,7 @@
                     ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
                     : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
                 const themeLabelEl = document.getElementById('theme-toggle-label');
-                if (themeLabelEl) themeLabelEl.innerText = window.i18n ? window.i18n.t(isDark ? 'light' : 'dark') : (isDark ? 'Light' : 'Dark');
+                if (themeLabelEl) themeLabelEl.innerText = window.i18n ? window.i18n.tOr(isDark ? 'light' : 'dark', (isDark ) : (isDark ? 'Light' : 'Dark');
                 if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
                 if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
             }
@@ -12446,7 +12455,7 @@
         // figure, unlike the Real feature which only needs actual logged journeys).
         if (event.data && event.data.type === 'IDEAL_SLEEP_HRS_RESULT') {
             const resultEl = document.getElementById('sleep-ideal-result');
-            const t = (key) => window.i18n ? window.i18n.t(key) : null;
+            const t = (key) => window.i18n ? window.i18n.tOr(key, null) : null;
             if (resultEl) {
                 if (event.data.noTeam) {
                     resultEl.innerHTML = `<p style="text-align:center; font-size:12px; color:var(--text-muted);">${t('sleep_ideal_no_team') || 'Select your team in Roster first to see the Ideal figure.'}</p>`;
@@ -12617,7 +12626,7 @@
     };
 
     window.openDashMandali = function() {
-        const label = window.i18n ? window.i18n.t('opening_mandali') : 'Opening Mandali…';
+        const label = window.i18n ? window.i18n.tOr('opening_mandali', 'Opening Mandali…') : 'Opening Mandali…';
         window.openRosterDeepLink('OPEN_MANDALI', label);
     };
 
@@ -12854,7 +12863,7 @@
             .filter(item => tokens.every(tok => item.haystack.includes(tok)))
             .slice(0, 45);
         if (!matches.length) {
-            resultsEl.innerHTML = `<div class="dash-global-search-empty">${window.i18n ? window.i18n.t('global_search_no_results') : 'No matches found'}</div>`;
+            resultsEl.innerHTML = `<div class="dash-global-search-empty">${window.i18n ? window.i18n.tOr('global_search_no_results', 'No matches found'}</div>`) : 'No matches found'}</div>`;
             resultsEl.classList.remove('hidden');
             return;
         }
@@ -13552,7 +13561,7 @@
         // through the same saveData() used everywhere else gets the same offline queueing,
         // timeout, and automatic reconnect-retry for free.
         window.saveData();
-        showModal("Saved!", (window.i18n ? window.i18n.t('earnings_saved_message') : "Earnings for this month have been saved."), "success", false, null, 1500);
+        showModal("Saved!", (window.i18n ? window.i18n.tOr('earnings_saved_message', "Earnings for this month have been saved.") : "Earnings for this month have been saved."), "success", false, null, 1500);
     };
 
     window.toggleCalendarView = function() {
@@ -13694,7 +13703,7 @@
     };
     
     function deleteLeg(id) { 
-        showModal("WARNING", (window.i18n ? window.i18n.t('delete_entry_warning') : "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?"), "warning", true, (proceed) => {
+        showModal("WARNING", (window.i18n ? window.i18n.tOr('delete_entry_warning', "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete) : "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?"), "warning", true, (proceed) => {
             if(proceed) {
                 pushUndoState(); window.appState.legs = window.appState.legs.filter(l => l.id !== id); saveData(); window.renderAllLogs(); window.updateDashboardUI();
                 if (window._sheetModeActive && window._sheetModeDeleteCallback) window._sheetModeDeleteCallback(id);
@@ -14101,7 +14110,9 @@
     window.updateGeneratePdfBtnLabel = function() {
         const genBtn = document.getElementById('generate-btn');
         if (!genBtn || !window.i18n) return;
-        genBtn.innerText = currentTab === 'nda' ? window.i18n.t('generate_nda_pdf_btn') : window.i18n.t('generate_ta_pdf_btn');
+        genBtn.innerText = currentTab === 'nda'
+            ? window.i18n.tOr('generate_nda_pdf_btn', 'Generate NDA PDF')
+            : window.i18n.tOr('generate_ta_pdf_btn', 'Generate TA PDF');
     };
 
     function switchTab(tab, direction) { 
@@ -14119,7 +14130,7 @@
             const today = new Date();
             document.getElementById('report-month-hidden').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,'0')}`;
             document.getElementById('rep-nda-row').classList.add('hidden');
-            document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.t('report_total_ta') : "Total Travelling Allowances");
+            document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.tOr('report_total_ta', "Total Travelling Allowances") : "Total Travelling Allowances");
         } else {
             tabNda.classList.add('active'); 
             tabTa.classList.remove('active'); 
@@ -14135,7 +14146,7 @@
             }
             document.getElementById('report-month-hidden').value = `${ndaY}-${String(ndaM).padStart(2,'0')}`;
             document.getElementById('rep-nda-row').classList.remove('hidden');
-            document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.t('nda_total_row') : "Total NDA");
+            document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.tOr('nda_total_row', "Total NDA") : "Total NDA");
         }
         animateTabSwitch(document.getElementById('report-summary-card'), direction);
         updateReportUI();
@@ -14223,8 +14234,8 @@
         const titleEl = document.getElementById('trend-screen-title');
         if (titleEl) {
             titleEl.innerText = currentTab === 'nda'
-                ? (window.i18n ? window.i18n.t('trend_title_nda') : 'Night Duty Allowances')
-                : (window.i18n ? window.i18n.t('trend_title_ta') : 'Travelling Allowances');
+                ? (window.i18n ? window.i18n.tOr('trend_title_nda', 'Night Duty Allowances') : 'Night Duty Allowances')
+                : (window.i18n ? window.i18n.tOr('trend_title_ta', 'Travelling Allowances') : 'Travelling Allowances');
         }
         window.updateTrendViewTabLabels();
         window.navTo('screen-yearly-trend');
@@ -14455,7 +14466,7 @@
         if (window._trendActiveView === 'signon') window.renderNdaSignOnTable();
         else if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
         else if (window._trendActiveView === 'graph') window.renderYearlyLineGraph();
-        showModal('Saved!', (window.i18n ? window.i18n.t('nda_signon_saved_message') : 'Sign On times for this NDA period have been saved.'), 'success', false, null, 1500);
+        showModal('Saved!', (window.i18n ? window.i18n.tOr('nda_signon_saved_message', 'Sign On times for this NDA period have been saved.') : 'Sign On times for this NDA period have been saved.'), 'success', false, null, 1500);
     };
 
     // Point 1: Dashboard TA/NDA cards open the trend modal
@@ -14516,7 +14527,7 @@
         let taResultsAll = [];
         if (!isNDA) cycles.forEach(cycle => { taResultsAll = taResultsAll.concat(calculateCycleTA(cycle)); });
 
-        const hrsSuffix = window.i18n ? window.i18n.t('hrs_suffix') : 'Hrs';
+        const hrsSuffix = window.i18n ? window.i18n.tOr('hrs_suffix', 'Hrs') : 'Hrs';
         let rows = '';
         for (let m = 1; m <= 12; m++) {
             const mo = `${year}-${String(m).padStart(2,'0')}`;
@@ -14933,7 +14944,7 @@
     };
 
     window.buildTrendNdaComparePairs = function(projNdaData, actualNdaData) {
-        const hrsSuffix = window.i18n ? window.i18n.t('hrs_suffix') : 'Hrs';
+        const hrsSuffix = window.i18n ? window.i18n.tOr('hrs_suffix', 'Hrs') : 'Hrs';
         const matched = window.matchNdaSpellsForCompare(projNdaData, actualNdaData);
         const pairs = [];
         const tripToRow = (trip, spellMins) => ({
@@ -15008,7 +15019,7 @@
     };
 
     window.renderTrendCompareSideBySideHtml = function(pairs, isNda) {
-        const t = (key, fb) => (window.i18n ? window.i18n.t(key) : fb);
+        const t = (key, fb) => (window.i18n ? window.i18n.tOr(key, fb) : fb);
         let html = `<div class="trend-compare-scroll"><div class="trend-compare-inner">
             <div class="trend-compare-vline"></div>
             <div class="trend-compare-head">
@@ -15657,8 +15668,8 @@
             // the graph's own top-left corner instead of a separate full-width row above it.
             window._trendNdaMetric = window._trendNdaMetric || 'hours';
             const metric = window._trendNdaMetric;
-            const hrsLabel = window.i18n ? window.i18n.t('trend_nda_hours') : 'Hours';
-            const moneyLabel = window.i18n ? window.i18n.t('trend_nda_money') : 'Money';
+            const hrsLabel = window.i18n ? window.i18n.tOr('trend_nda_hours', 'Hours') : 'Hours';
+            const moneyLabel = window.i18n ? window.i18n.tOr('trend_nda_money', 'Money') : 'Money';
             const toggleHtml = `
                 <div style="position:absolute; top:8px; left:8px; z-index:2; display:flex; background:var(--input-bg); border-radius:10px; padding:2px; border:1px solid var(--border);">
                     <button onclick="window.switchTrendNdaMetric('hours')" style="margin:0; padding:3px 8px; font-size:10px; font-weight:700; border-radius:8px; background:${metric === 'hours' ? 'var(--blue-fill)' : 'transparent'}; color:${metric === 'hours' ? 'white' : 'var(--text-muted)'}; box-shadow:none;">${hrsLabel}</button>
@@ -16589,8 +16600,8 @@
                 }
             }
             if(document.getElementById('rep-nda-trains')) document.getElementById('rep-nda-trains').innerText = nightTrainCount;
-            if(document.getElementById('rep-nda-hours')) document.getElementById('rep-nda-hours').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} ${window.i18n ? window.i18n.t('hrs_suffix') : 'Hrs'}`;
-            if(document.getElementById('rep-nda-units')) document.getElementById('rep-nda-units').innerText = `${ndaUnits} ${window.i18n ? window.i18n.t('report_units_suffix') : 'units'}`;
+            if(document.getElementById('rep-nda-hours')) document.getElementById('rep-nda-hours').innerText = `${String(totalEligibleHours).padStart(2,'0')}:${String(remainingMinutes).padStart(2,'0')} ${window.i18n ? window.i18n.tOr('hrs_suffix', 'Hrs'}`) : 'Hrs'}`;
+            if(document.getElementById('rep-nda-units')) document.getElementById('rep-nda-units').innerText = `${ndaUnits} ${window.i18n ? window.i18n.tOr('report_units_suffix', 'units'}`) : 'units'}`;
             document.getElementById('rep-nda-amt').innerText = `₹${Math.round(ndaAmt)}`;
         }
         renderTaJournalSummary(mo);
@@ -16621,10 +16632,10 @@
 
     function triggerGenerate() { 
         const mo = document.getElementById('report-month-hidden').value;
-        if(!window.appState || !window.appState.profile) return showModal("Loading", (window.i18n ? window.i18n.t('pdf_cloud_syncing') : "Cloud data is still syncing. Please wait a moment."), "warning", false);
+        if(!window.appState || !window.appState.profile) return showModal("Loading", (window.i18n ? window.i18n.tOr('pdf_cloud_syncing', "Cloud data is still syncing. Please wait a moment.") : "Cloud data is still syncing. Please wait a moment."), "warning", false);
         
         let dutyOnly = window.appState.legs ? window.appState.legs.filter(l => !l.isNonDuty) : [];
-        if(dutyOnly.length === 0) return showModal("Empty", (window.i18n ? window.i18n.t('pdf_no_entries') : "No entries to generate."), "warning", false);
+        if(dutyOnly.length === 0) return showModal("Empty", (window.i18n ? window.i18n.tOr('pdf_no_entries', "No entries to generate.") : "No entries to generate."), "warning", false);
 
         // Block generation entirely if any duty leg has pending arrival time
         const pendingLegs = dutyOnly.filter(l => l.inProgress);
@@ -16686,7 +16697,7 @@
 
     function proceedWithGeneration(mo) {
         if(currentTab === 'ta') { generateTAPDF(); } else { 
-            showModal("NOTICE", (window.i18n ? window.i18n.t('pdf_nda_16th_notice') : "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month."), "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
+            showModal("NOTICE", (window.i18n ? window.i18n.tOr('pdf_nda_16th_notice', "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month.") : "To generate complete NDA, ensure you filled Duty Journey from 16th of previous month."), "warning", true, (proceed) => { if(proceed) buildNDAPreview(mo); });
         } 
     }
 
