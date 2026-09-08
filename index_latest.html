@@ -597,7 +597,7 @@
         .month-nav-arrow-btn--green { color: var(--green); border-color: var(--green); }
         body:not(.green-theme) #screen-salary .month-nav-arrow-btn--green,
         body:not(.green-theme) #trend-future-month-nav-wrap .month-nav-arrow-btn--green { color: var(--blue); border-color: var(--blue); }
-        .trend-compare-scroll { overflow-x: auto; overflow-y: hidden; overscroll-behavior: contain; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; touch-action: pan-x pinch-zoom; margin: 0 -4px; padding: 0 2px; }
+        .trend-compare-scroll { overflow-x: auto; overflow-y: visible; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; touch-action: auto; margin: 0 -4px; padding: 0 2px; }
         .trend-compare-inner { min-width: 680px; }
         .trend-compare-head { display: flex; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; color: var(--text-muted); padding: 6px 0 4px; border-bottom: 1px solid var(--border); }
         .trend-compare-head-proj { flex: 1; min-width: 0; padding-right: 8px; text-align: left; }
@@ -614,8 +614,13 @@
         .trend-compare-act .trend-compare-journey { flex: 1; min-width: 0; text-align: right; }
         .trend-compare-act .trend-compare-date { flex-shrink: 0; font-weight: 700; color: var(--text); margin-left: 4px; }
         .trend-compare-empty { color: var(--text-muted); opacity: 0.45; }
-        #trend-future-detail-wrap.trend-compare-active { overflow: hidden; overscroll-behavior: contain; touch-action: pan-x; }
-        .trend-graph-svg { width: 100%; height: auto; display: block; }
+        .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 10px 6px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow: hidden; }
+        .trend-graph-hl-band { position: absolute; top: 0; bottom: 0; pointer-events: none; z-index: 0; border-radius: 12px; }
+        .trend-graph-title { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 2; font-size: 14px; font-weight: 900; color: var(--text); text-align: center; white-space: nowrap; pointer-events: none; max-width: 92%; overflow: hidden; text-overflow: ellipsis; }
+        .trend-compare-fab { position: fixed; right: 16px; bottom: 78px; z-index: 4500; padding: 12px 20px; border-radius: 28px; background: var(--blue-fill); color: #fff; font-weight: 800; font-size: 13px; border: 2px solid rgba(255,255,255,0.25); box-shadow: var(--shadow); cursor: pointer; margin: 0; max-width: none; }
+        .trend-compare-fab.active { background: var(--text-muted); }
+        body.green-theme .trend-compare-fab { background: var(--green); }
+        .trend-graph-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
         .salary-occasional { color: var(--purple) !important; }
         #screen-salary .header-tab.active { color: #ffffff; border-bottom: 3px solid var(--blue); }
         body.green-theme #screen-salary .header-tab.active { border-bottom-color: var(--green); }
@@ -2726,7 +2731,6 @@
             <div id="trend-future-detail-wrap" class="hidden" style="margin-top:16px;"></div>
             <div id="trend-list-below-graph" class="hidden" style="margin-top:16px;"></div>
             <div id="trend-signon-area" class="hidden">
-                <div id="nda-signon-period-nav" style="margin-bottom:12px;"></div>
                 <div id="nda-signon-info-box" data-i18n="nda_signon_hint">Enter your actual sign-on time for night duties to calculate NDA more accurately. Use this for delayed trains, or to apply a 45-minute margin for originating trains not listed in your profile. If left blank, the app uses the default 30-minute margin (45 minutes for originating trains).</div>
                 <div id="nda-signon-scroll-wrap" style="border:1px solid var(--border); border-radius:10px;">
                     <table id="nda-signon-table" style="width:100%; border-collapse:collapse; font-size:10px; table-layout:fixed;">
@@ -2748,6 +2752,7 @@
                 </div>
                 <button onclick="window.saveNdaSignOnTable()" style="background:var(--blue-fill); margin-top:12px; margin-bottom:70px;" data-i18n="save_nda_signon_btn">💾 Save Sign On Times</button>
             </div>
+            <button id="trend-compare-fab" class="trend-compare-fab hidden" type="button" onclick="window.switchTrendFutureCompare()" data-i18n="trend_compare_fab">Compare</button>
         </div>
     </div>
 
@@ -6888,9 +6893,11 @@
         // FIXED SWIPE ENGINE
         let startX = 0;
         let startY = 0;
+        window._swipeBlockTabSwitch = false;
         document.addEventListener('touchstart', e => {
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
+            window._swipeBlockTabSwitch = !!e.target.closest('.trend-compare-scroll, #trend-future-detail-wrap, #trend-compare-fab');
         }, {passive: true});
         document.addEventListener('touchend', e => { 
             if (e.target.closest('#preview-wrapper')) return;
@@ -6903,6 +6910,7 @@
                     if (diff < 0 && currentTab === 'ta') switchTab('nda', 'left');
                     else if (diff > 0 && currentTab === 'nda') switchTab('ta', 'right');
                 } else if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
+                    if (window._swipeBlockTabSwitch || e.target.closest('.trend-compare-scroll, #trend-future-detail-wrap, #trend-compare-fab')) return;
                     // Point: same swipe-to-switch convenience as the Generate PDF page's TA/NDA
                     // tabs, applied here to this page's own Graph View / List View tabs.
                     window.hapticTap();
@@ -6911,6 +6919,13 @@
                     const idx = Math.max(0, views.indexOf(cur));
                     if (diff < 0 && idx < views.length - 1) window.switchTrendViewTab(views[idx + 1]);
                     else if (diff > 0 && idx > 0) window.switchTrendViewTab(views[idx - 1]);
+                } else if (!document.getElementById('screen-salary').classList.contains('hidden')) {
+                    window.hapticTap();
+                    const tabs = ['expected', 'projected'];
+                    const cur = window._salaryActiveTab || 'expected';
+                    const idx = Math.max(0, tabs.indexOf(cur));
+                    if (diff < 0 && idx < tabs.length - 1) window.switchSalaryTab(tabs[idx + 1]);
+                    else if (diff > 0 && idx > 0) window.switchSalaryTab(tabs[idx - 1]);
                 }
             }
         }, {passive: true});
@@ -14089,6 +14104,7 @@
         }
         window.updateTrendViewTabLabels();
         window.navTo('screen-yearly-trend');
+        window.updateTrendCompareFab();
     }
 
     window.getCurrentNdaMonthKey = function() {
@@ -14144,6 +14160,9 @@
     window.switchTrendViewTab = function(view) {
         const isNda = currentTab === 'nda';
         if (view === 'signon' && !isNda) view = 'graph';
+        if (view !== 'future' && window._trendFutureCompareActual) {
+            window._trendFutureCompareActual = false;
+        }
         window._trendActiveView = view;
         const graphBtn = document.getElementById('trend-tab-graph-btn');
         const futureBtn = document.getElementById('trend-tab-future-btn');
@@ -14159,16 +14178,31 @@
         if (futureBtn) futureBtn.classList.toggle('active', view === 'future');
         if (signonBtn) signonBtn.classList.toggle('active', view === 'signon');
         if (chartArea) chartArea.classList.toggle('hidden', view === 'signon');
-        if (listBelow) listBelow.classList.toggle('hidden', view !== 'graph');
-        const showMonthNav = view === 'future' || view === 'graph';
-        if (yearNav) yearNav.classList.toggle('hidden', view === 'signon' || view === 'future' || showMonthNav);
-        if (futureMonthNav) futureMonthNav.classList.toggle('hidden', view === 'signon' || !showMonthNav);
+        if (listBelow) listBelow.classList.add('hidden');
+        const showMonthNav = view === 'future' || view === 'graph' || (isNda && view === 'signon');
+        if (yearNav) yearNav.classList.toggle('hidden', true);
+        if (futureMonthNav) futureMonthNav.classList.toggle('hidden', !showMonthNav);
         if (futureDetail) futureDetail.classList.toggle('hidden', view !== 'future');
         if (signonArea) signonArea.classList.toggle('hidden', view !== 'signon');
+        if (showMonthNav) {
+            if (view === 'signon') window.renderTrendMonthNav('signon');
+            else if (view === 'future') window.renderFutureTrendMonthNav();
+            else window.renderActualTrendMonthNav();
+        }
         window.updateTrendViewTabLabels();
+        window.updateTrendCompareFab();
         if (view === 'graph') window.renderYearlyLineGraph();
         else if (view === 'future') window.renderYearlyFutureTrendGraph();
         else if (view === 'signon') window.renderNdaSignOnTable();
+    };
+
+    window.updateTrendCompareFab = function() {
+        const fab = document.getElementById('trend-compare-fab');
+        if (!fab) return;
+        const onFuture = window._trendActiveView === 'future';
+        const rosterOk = window.isBsbRosterHq() && localStorage.getItem('roster_my_team');
+        fab.classList.toggle('hidden', !onFuture || !rosterOk);
+        fab.classList.toggle('active', !!window._trendFutureCompareActual);
     };
 
     window.shiftNdaSignOnPeriod = function(delta) {
@@ -14202,7 +14236,6 @@
         const body = document.getElementById('nda-signon-table-body');
         const header = document.getElementById('nda-signon-table-header');
         if (!body || !header) return;
-        window.renderNdaSignOnPeriodNav();
         const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
         header.innerHTML = `
             <th style="padding:7px 4px; font-size:9px; color:var(--all-header-text);">${t('nda_signon_col_date', 'Date')}</th>
@@ -14393,21 +14426,22 @@
     };
 
     window.renderTrendListBelowGraph = function() {
-        const wrap = document.getElementById('trend-list-below-graph');
-        if (!wrap) return;
+        return window.buildMonthlyBreakdownSectionHtml() + window.buildActualDetailSectionHtml();
+    };
+
+    window.buildMonthlyBreakdownSectionHtml = function() {
         const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+        return `<div style="margin-top:16px;">
+            <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; margin-bottom:8px; text-align:center;">${t('trend_list_heading', 'Monthly Breakdown')}</div>
+            ${window.buildYearlyTrendTableHtml()}
+        </div>`;
+    };
+
+    window.buildActualDetailSectionHtml = function() {
         const isNda = currentTab === 'nda';
         window.ensureActualTrendMonthKey();
         const moKey = window._trendActualMonthKey;
-        let html = `<div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; margin-bottom:8px; text-align:center;">${t('trend_list_heading', 'Monthly Breakdown')}</div>` + window.buildYearlyTrendTableHtml();
-        html += `<div style="margin-top:20px;">`;
-        if (isNda) {
-            html += window.buildActualNdaDetailHtml(moKey);
-        } else {
-            html += window.buildActualTrendDetailHtml(moKey, true);
-        }
-        html += `</div>`;
-        wrap.innerHTML = html;
+        return `<div style="margin-top:20px;">${isNda ? window.buildActualNdaDetailHtml(moKey) : window.buildActualTrendDetailHtml(moKey, false)}</div>`;
     };
 
     window.buildActualNdaDetailHtml = function(moKey) {
@@ -14557,8 +14591,7 @@
     };
 
     window.renderYearlyTrendTable = function() {
-        renderTrendYearNav(window._trendCurrentYear);
-        window.renderTrendListBelowGraph();
+        window.renderYearlyLineGraph();
     };
 
     window.changeTrendYearBy = function(delta) {
@@ -14892,9 +14925,11 @@
         const wrap = document.getElementById('trend-future-month-nav-wrap');
         if (!wrap) return;
         const isActual = mode === 'actual';
+        const isSignon = mode === 'signon';
         if (isActual) window.ensureActualTrendMonthKey();
+        else if (isSignon) window.ensureNdaSignOnMonthKey();
         else window.ensureFutureTrendMonthKey();
-        const monthKey = isActual ? window._trendActualMonthKey : window._futureTrendMonthKey;
+        const monthKey = isActual ? window._trendActualMonthKey : (isSignon ? window._ndaSignOnMonthKey : window._futureTrendMonthKey);
         const [y, m] = monthKey.split('-').map(Number);
         const monthOptions = [];
         for (let mm = 1; mm <= 12; mm++) {
@@ -14905,10 +14940,10 @@
         for (let yy = 2025; yy <= actualYear + 1; yy++) {
             yearOptions.push(`<option value="${yy}" ${yy === y ? 'selected' : ''}>${yy}</option>`);
         }
-        const prevFn = isActual ? 'window.changeActualTrendMonthBy(-1)' : 'window.changeFutureTrendMonthBy(-1)';
-        const nextFn = isActual ? 'window.changeActualTrendMonthBy(1)' : 'window.changeFutureTrendMonthBy(1)';
-        const monthFn = isActual ? 'window.changeActualTrendMonthTo(this.value, null)' : 'window.changeFutureTrendMonthTo(this.value, null)';
-        const yearFn = isActual ? 'window.changeActualTrendMonthTo(null, this.value)' : 'window.changeFutureTrendMonthTo(null, this.value)';
+        const prevFn = isActual ? 'window.changeActualTrendMonthBy(-1)' : (isSignon ? 'window.changeNdaSignOnMonthBy(-1)' : 'window.changeFutureTrendMonthBy(-1)');
+        const nextFn = isActual ? 'window.changeActualTrendMonthBy(1)' : (isSignon ? 'window.changeNdaSignOnMonthBy(1)' : 'window.changeFutureTrendMonthBy(1)');
+        const monthFn = isActual ? 'window.changeActualTrendMonthTo(this.value, null)' : (isSignon ? 'window.changeNdaSignOnMonthTo(this.value, null)' : 'window.changeFutureTrendMonthTo(this.value, null)');
+        const yearFn = isActual ? 'window.changeActualTrendMonthTo(null, this.value)' : (isSignon ? 'window.changeNdaSignOnMonthTo(null, this.value)' : 'window.changeFutureTrendMonthTo(null, this.value)');
         const arrowClass = isActual ? 'month-nav-arrow-btn' : 'month-nav-arrow-btn month-nav-arrow-btn--green';
         wrap.innerHTML = `
             <div style="display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -14925,6 +14960,29 @@
 
     window.renderActualTrendMonthNav = function() {
         window.renderTrendMonthNav('actual');
+    };
+
+    window.ensureNdaSignOnMonthKey = function() {
+        if (!window._ndaSignOnMonthKey) window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
+    };
+
+    window.changeNdaSignOnMonthBy = function(delta) {
+        window.ensureNdaSignOnMonthKey();
+        const [y, m] = window._ndaSignOnMonthKey.split('-').map(Number);
+        const d = new Date(y, m - 1 + delta, 1);
+        window._ndaSignOnMonthKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        window._trendCurrentYear = d.getFullYear();
+        window.renderNdaSignOnTable();
+    };
+
+    window.changeNdaSignOnMonthTo = function(newMonth, newYear) {
+        window.ensureNdaSignOnMonthKey();
+        const [y, m] = window._ndaSignOnMonthKey.split('-');
+        const finalY = newYear || y;
+        const finalM = newMonth ? String(newMonth).padStart(2, '0') : m;
+        window._ndaSignOnMonthKey = `${finalY}-${finalM}`;
+        window._trendCurrentYear = parseInt(finalY);
+        window.renderNdaSignOnTable();
     };
 
     window.changeFutureTrendMonthBy = function(delta) {
@@ -15158,8 +15216,8 @@
         if (!wrap) return;
         window.ensureFutureTrendMonthKey();
         wrap.innerHTML = window.buildFutureTrendDetailHtml(window._futureTrendMonthKey, projectedLegs);
-        wrap.classList.toggle('trend-compare-active', !!window._trendFutureCompareActual);
         wrap.classList.remove('hidden');
+        window.updateTrendCompareFab();
     };
 
     // Point (Task 3): Graph View — a full yearly line graph, adapted from the same SVG technique
@@ -15187,6 +15245,8 @@
             `<tr><td>${label}</td><td>${val}</td></tr>`
         ).join('');
         return `
+            <div style="margin-top:24px;">
+                <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; margin-bottom:8px; text-align:center;">${t('trend_definition_heading', 'Definition & Calculation')}</div>
             <div class="ta-da-info card" style="padding:14px;">
                 <p class="ta-da-info-intro">${t('ta_da_intro', 'Daily Allowance (DA), also known as Travelling Allowance (TA), is admissible for official journeys beyond a radius of <b>8 kilometers</b> from headquarters. It is calculated based on the <b>duration of absence</b> from headquarters, not the distance traveled.')}</p>
                 <div class="ta-da-info-section">
@@ -15214,7 +15274,7 @@
                     </div>
                     <p class="ta-da-info-note">${t('ta_da_rates_note', 'Effective from 1 January 2024')}</p>
                 </div>
-            </div>`;
+            </div></div>`;
     };
 
     window.buildNdaReferenceHtml = function() {
@@ -15234,6 +15294,8 @@
             `<tr><td>${label}</td><td>${val}</td></tr>`
         ).join('');
         return `
+            <div style="margin-top:24px;">
+                <div style="font-size:12px; font-weight:800; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.3px; margin-bottom:8px; text-align:center;">${t('trend_definition_heading', 'Definition & Calculation')}</div>
             <div class="ta-da-info nda-info card" style="padding:14px;">
                 <p class="ta-da-info-intro">${t('nda_ref_intro', 'Night Duty Allowance (NDA) is payable to eligible <b>non-gazetted</b> Railway employees for work performed between <b>22:00 and 06:00 hours</b>, as per 7th Central Pay Commission guidelines.')}</p>
                 <div class="ta-da-info-section">
@@ -15257,7 +15319,7 @@
                     <div class="ta-da-info-heading">${t('nda_ref_eligibility_heading', 'Eligibility (RBE No. 85/2022)')}</div>
                     <p class="ta-da-info-intro" style="margin-bottom:0;">${t('nda_ref_eligibility', 'Applicable to non-gazetted employees up to <b>Pay Level-7</b>, including those granted <b>MACP benefits in Pay Level-8</b>. Gazetted employees are not eligible for NDA.')}</p>
                 </div>
-            </div>`;
+            </div></div>`;
     };
 
     window.findNonDutyLabelForDate = function(dateStr) {
@@ -15284,7 +15346,8 @@
         const unitText = opts.unitText || (unitSuffix === '₹' ? '₹' : unitSuffix === 'h' ? ' hrs' : '');
         const avgDisplay = opts.avgDisplay || '';
         const overlayHtml = opts.overlayHtml || '';
-        const topMargin = overlayHtml ? 46 : 34;
+        const graphTitle = opts.graphTitle || '';
+        const topMargin = overlayHtml || graphTitle ? 46 : 34;
         const height = 150;
         const width = 320;
         const gridlineCount = opts.gridlineCount || 12;
@@ -15295,42 +15358,49 @@
         const gridColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.15)';
         const defaultText = isDark ? '#FFFFFF' : '#000000';
         const maxVal = Math.max(...values, 1) * 1.15;
-        const stepX = width / (gridlineCount - 1);
+        const plotPadX = (width / (gridlineCount - 1)) / 2;
+        const plotWidth = width - 2 * plotPadX;
+        const stepX = plotWidth / (gridlineCount - 1);
+        const xAt = (i) => plotPadX + i * stepX + xOffset;
         const toY = (v) => topMargin + height - (v / maxVal * height);
         const formatValueLabel = (v) => {
             if (unitSuffix === '₹') return `₹${v}`;
             if (unitSuffix === 'h') return `${v}${unitText || ' hrs'}`;
             return `${v}${unitText}`;
         };
-        const points = values.map((v, i) => `${(i * stepX + xOffset).toFixed(1)},${toY(v).toFixed(1)}`).join(' ');
+        const points = values.map((v, i) => `${xAt(i).toFixed(1)},${toY(v).toFixed(1)}`).join(' ');
         const dots = values.map((v, i) => {
-            const x = (i * stepX + xOffset).toFixed(1);
+            const x = xAt(i).toFixed(1);
             const y = toY(v).toFixed(1);
             const labelY = Math.max(10, toY(v) - 9).toFixed(1);
             const isHl = highlightIdx !== null && highlightIdx !== undefined && i === highlightIdx;
             const dotColor = isHl ? highlightColor : color;
             const textFill = isHl ? highlightColor : defaultText;
             return `<circle cx="${x}" cy="${y}" r="5" fill="${dotColor}" stroke="var(--card)" stroke-width="1.5"></circle>
-                ${v > 0 ? `<text x="${x}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="start" transform="rotate(-90 ${x} ${labelY})">${formatValueLabel(v)}</text>` : ''}`;
+                ${v > 0 ? `<text x="${x}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="middle" transform="rotate(-90 ${x} ${labelY})">${formatValueLabel(v)}</text>` : ''}`;
         }).join('');
         const monthLabels = monthLabelNames.map((name, i) =>
-            `<text x="${(i * stepX).toFixed(1)}" y="${topMargin + height + 18}" font-size="9.5" fill="var(--text-muted)" text-anchor="middle">${name}</text>`
+            `<text x="${(plotPadX + i * stepX).toFixed(1)}" y="${topMargin + height + 18}" font-size="9.5" fill="var(--text-muted)" text-anchor="middle">${name}</text>`
         ).join('');
         const vGridLines = monthLabelNames.map((name, i) =>
-            `<line x1="${(i * stepX).toFixed(1)}" y1="${topMargin}" x2="${(i * stepX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`
+            `<line x1="${(plotPadX + i * stepX).toFixed(1)}" y1="${topMargin}" x2="${(plotPadX + i * stepX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`
         ).join('');
-        const baseline = `<line x1="0" y1="${topMargin + height}" x2="${width}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`;
-        let currentMonthBand = '';
+        const baseline = `<line x1="${plotPadX.toFixed(1)}" y1="${topMargin + height}" x2="${(width - plotPadX).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`;
+        let highlightBandHtml = '';
         if (highlightIdx !== null && highlightIdx !== undefined && highlightIdx >= 0) {
-            const bandX = (highlightIdx * stepX + xOffset - stepX / 2).toFixed(1);
-            currentMonthBand = `<rect x="${bandX}" y="${topMargin}" width="${stepX.toFixed(1)}" height="${height}" fill="${highlightColor}" fill-opacity="0.18"/>`;
+            const bandX = xAt(highlightIdx) - stepX / 2;
+            const leftPct = Math.max(0, (bandX / width) * 100);
+            const widthPct = Math.min(100 - leftPct, (stepX / width) * 100);
+            highlightBandHtml = `<div class="trend-graph-hl-band" style="left:${leftPct.toFixed(2)}%; width:${widthPct.toFixed(2)}%; background:${highlightColor}; opacity:0.18;"></div>`;
         }
+        const titleHtml = graphTitle ? `<div class="trend-graph-title">${graphTitle}</div>` : '';
         const svgH = topMargin + height + 26;
         return `
-            <div style="position:relative; border-radius:12px; border:1px solid var(--border); padding:10px 6px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">
+            <div class="trend-graph-box">
+                ${highlightBandHtml}${titleHtml}
                 ${overlayHtml}
                 <svg class="trend-graph-svg" width="100%" viewBox="0 0 ${width} ${svgH}" preserveAspectRatio="xMidYMid meet">
-                    ${currentMonthBand}${vGridLines}${baseline}
+                    ${vGridLines}${baseline}
                     <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>
                     ${dots}${monthLabels}
                 </svg>
@@ -15346,24 +15416,10 @@
         el.dataset.bound = '1';
         el.addEventListener('wheel', (e) => {
             if (el.scrollWidth <= el.clientWidth) return;
-            const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-            if (delta !== 0) {
-                el.scrollLeft += delta;
-                e.preventDefault();
-                e.stopPropagation();
-            }
-        }, { passive: false });
-        let touchStartX = 0, touchStartY = 0;
-        el.addEventListener('touchstart', (e) => {
-            if (e.touches.length !== 1) return;
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        }, { passive: true });
-        el.addEventListener('touchmove', (e) => {
-            if (el.scrollWidth <= el.clientWidth || e.touches.length !== 1) return;
-            const dx = Math.abs(e.touches[0].clientX - touchStartX);
-            const dy = Math.abs(e.touches[0].clientY - touchStartY);
-            if (dx > dy) e.stopPropagation();
+            if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+            el.scrollLeft += e.deltaX;
+            e.preventDefault();
+            e.stopPropagation();
         }, { passive: false });
     };
 
@@ -15416,7 +15472,7 @@
 
         // Point (Task 1-v): reusable single-graph builder — TA calls this once (money), NDA calls
         // it once too now (whichever metric — hours or money — is currently toggled).
-        function buildOneGraph(values, color, unitSuffix, avgLabelKey, overlayHtml, highlightMonthKey) {
+        function buildOneGraph(values, color, unitSuffix, avgLabelKey, overlayHtml, highlightMonthKey, graphTitle) {
             const loggedVals = values.filter(v => v > 0);
             const avg = loggedVals.length > 0 ? (loggedVals.reduce((a,b)=>a+b,0) / loggedVals.length) : 0;
             const avgVal = unitSuffix === '₹' ? Math.round(avg) : avg.toFixed(1);
@@ -15430,8 +15486,12 @@
             const stepX = 320 / (gridlineCount - 1);
             const xOffset = isNDA ? stepX / 2 : 0;
             const highlightIdx = window.getTrendGraphHighlightIdx(year, isNDA, highlightMonthKey);
+            const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
+            const title = graphTitle || (isNDA
+                ? (unitSuffix === 'h' ? t('trend_graph_actual_nda', 'Actual NDA') : t('trend_graph_actual_nda', 'Actual NDA'))
+                : t('trend_graph_actual_ta', 'Actual TA'));
             return window.buildResponsiveTrendLineGraph({
-                values, color, highlightColor: color, unitSuffix, avgDisplay, overlayHtml,
+                values, color, highlightColor: color, unitSuffix, avgDisplay, overlayHtml, graphTitle: title,
                 gridlineCount, xOffset, highlightIdx, monthLabelNames: labelNames
             });
         }
@@ -15459,15 +15519,18 @@
             html = (metric === 'hours'
                 ? buildOneGraph(hourValues, 'var(--blue)', 'h', 'trend_graph_avg_nda_hrs', toggleHtml, highlightMonthKey)
                 : buildOneGraph(moneyValues, 'var(--green)', '₹', 'trend_graph_avg_nda_money', toggleHtml, highlightMonthKey));
+            html += window.buildMonthlyBreakdownSectionHtml();
+            html += window.buildActualDetailSectionHtml();
             html += window.buildNdaReferenceHtml();
         } else {
             html = buildOneGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, highlightMonthKey);
+            html += window.buildMonthlyBreakdownSectionHtml();
+            html += window.buildActualDetailSectionHtml();
             html += window.buildTaDaReferenceHtml();
         }
 
         const area = document.getElementById('trend-chart-area');
         if (area) area.innerHTML = html;
-        if (window._trendActiveView === 'graph') window.renderTrendListBelowGraph();
     };
 
     window.renderYearlyFutureTrendGraph = function() {
@@ -15537,21 +15600,11 @@
                 const highlightIdx = window.getTrendGraphHighlightIdx(year, isNDA, window._futureTrendMonthKey);
                 const graphHtml = window.buildResponsiveTrendLineGraph({
                     values, color, highlightColor: color, unitSuffix, avgDisplay, overlayHtml,
-                    gridlineCount, xOffset, highlightIdx, monthLabelNames: labelNames,
-                    compactBottom: opts.compactBottom
+                    graphTitle: opts.graphTitle || '', gridlineCount, xOffset, highlightIdx,
+                    monthLabelNames: labelNames, compactBottom: opts.compactBottom
                 });
-                const sectionTitle = opts.headerHtml
-                    ? opts.headerHtml
-                    : (opts.sectionTitle
-                        ? `<div style="margin-top:${opts.sectionTitleMarginTop || 0}px; margin-bottom:8px; text-align:left; font-size:14px; font-weight:900; color:var(--text);">${opts.sectionTitle}</div>`
-                        : '');
-                return `${sectionTitle}${graphHtml}`;
+                return (opts.marginTop ? `<div style="margin-top:${opts.marginTop}px;"></div>` : '') + graphHtml;
             }
-
-            const compareLabel = t('trend_compare_actual', 'Compare to Actual');
-            const compareBtnStyle = compareOn
-                ? 'margin:0 !important; flex-shrink:0; max-width:none; color:white !important; background:var(--blue-fill) !important; border-color:var(--blue-fill) !important;'
-                : 'margin:0 !important; flex-shrink:0; max-width:none;';
 
             const projectedTitle = isNDA
                 ? t('trend_graph_projected_nda', 'Projected NDA')
@@ -15559,11 +15612,6 @@
             const actualTitle = isNDA
                 ? t('trend_graph_actual_nda', 'Actual NDA')
                 : t('trend_graph_actual_ta', 'Actual TA');
-            const projectedHeaderHtml = `
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
-                    <div style="font-size:14px; font-weight:900; color:var(--text); flex:1; min-width:0;">${projectedTitle}</div>
-                    <button onclick="window.switchTrendFutureCompare()" type="button" class="add-signon-link-btn subtle-pill-banner" style="${compareBtnStyle}">${compareLabel}</button>
-                </div>`;
 
             let html = '';
             if (isNDA) {
@@ -15580,24 +15628,26 @@
                 const projColor = metric === 'hours' ? 'var(--blue)' : 'var(--green)';
                 const projSuffix = metric === 'hours' ? 'h' : '₹';
                 const projAvgKey = metric === 'hours' ? 'trend_graph_avg_nda_hrs' : 'trend_graph_avg_nda_money';
-                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { headerHtml: projectedHeaderHtml, compactBottom: compareOn });
+                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { graphTitle: projectedTitle, compactBottom: compareOn });
                 if (compareOn && actualValues) {
                     const actVals = metric === 'hours' ? actualValues.hourValues : actualValues.moneyValues;
-                    html += buildFutureGraph(actVals, 'var(--text-muted)', projSuffix, projAvgKey, null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, compactBottom: true });
+                    html += buildFutureGraph(actVals, 'var(--text-muted)', projSuffix, projAvgKey, null, { graphTitle: actualTitle, compactBottom: true, marginTop: 18 });
                 }
             } else {
-                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { headerHtml: projectedHeaderHtml, compactBottom: compareOn });
+                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { graphTitle: projectedTitle, compactBottom: compareOn });
                 if (compareOn && actualValues) {
-                    html += buildFutureGraph(actualValues.moneyValues, 'var(--text-muted)', '₹', 'trend_graph_avg_ta', null, { sectionTitle: actualTitle, sectionTitleMarginTop: 18, compactBottom: true });
+                    html += buildFutureGraph(actualValues.moneyValues, 'var(--text-muted)', '₹', 'trend_graph_avg_ta', null, { graphTitle: actualTitle, compactBottom: true, marginTop: 18 });
                 }
             }
             area.innerHTML = html;
             window.renderFutureTrendDetailList(projectedLegs);
+            window.updateTrendCompareFab();
         });
     };
 
     window.switchTrendFutureCompare = function() {
         window._trendFutureCompareActual = !window._trendFutureCompareActual;
+        window.updateTrendCompareFab();
         window.renderYearlyFutureTrendGraph();
     };
 
@@ -15843,18 +15893,18 @@
     function buildSalaryGraph(values, year, highlightMonthIdx, sectionTitle, opts) {
         opts = opts || {};
         const t = (key, fallback) => (window.i18n ? window.i18n.t(key) : fallback);
-        const title = sectionTitle || '';
         const MONTH_SHORT = trendLocalizedMonthShorts(year);
         const color = opts.color || (document.body.classList.contains('green-theme') ? 'var(--green)' : 'var(--blue)');
         const loggedVals = values.filter(v => v > 0);
         const avg = loggedVals.length > 0 ? (loggedVals.reduce((a,b)=>a+b,0) / loggedVals.length) : 0;
-        const avgDisplay = t('salary_graph_avg', 'Average : ₹{avg}/month').replace('{avg}', Math.round(avg).toLocaleString('en-IN'));
-        const graphHtml = window.buildResponsiveTrendLineGraph({
-            values, color, highlightColor: color, unitSuffix: '₹', avgDisplay,
+        const avgDisplay = (window.i18n && window.i18n.tf)
+            ? window.i18n.tf('salary_graph_avg', { avg: Math.round(avg).toLocaleString('en-IN') })
+            : t('salary_graph_avg', 'Average : ₹{avg}/month').replace('{avg}', Math.round(avg).toLocaleString('en-IN'));
+        return window.buildResponsiveTrendLineGraph({
+            values, color, highlightColor: color, unitSuffix: '₹', avgDisplay, graphTitle: sectionTitle || '',
             gridlineCount: 12, xOffset: 0, highlightIdx: highlightMonthIdx,
             monthLabelNames: MONTH_SHORT, compactBottom: opts.compactBottom
         });
-        return `${title ? `<div style="font-size:14px; font-weight:900; text-align:center; color:var(--text); margin-bottom:10px;">${title}</div>` : ''}${graphHtml}`;
     }
 
     window.buildSalaryBreakdownHtml = function(result, opts) {
@@ -16023,7 +16073,7 @@
             }
             let html = buildSalaryGraph(projectedValues, y, m - 1, t('salary_graph_projected', 'Projected Salary'), { compactBottom: compareOn });
             if (compareOn) {
-                html += buildSalaryGraph(expectedValues, y, m - 1, t('salary_graph_expected', 'Expected Salary'), { color: 'var(--text-muted)', compactBottom: true });
+                html += buildSalaryGraph(expectedValues, y, m - 1, t('salary_graph_expected', 'Expected Salary'), { color: 'var(--text-muted)', compactBottom: true, marginTop: 18 });
             }
             html += `<p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('salary_projected_hint', 'Projected salary graph is shown using your projected TA and NDA from roster link programme and train timings.')}</p>`;
             wrap.innerHTML = html;
