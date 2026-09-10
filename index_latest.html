@@ -24,6 +24,7 @@
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
             --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--safe-bottom));
+            --list-row-min-h: 48px;
             --text-title: 18px;
             --text-heading: 16px;
             --text-body: 15px;
@@ -338,8 +339,9 @@
         }
         #sidebar-overlay.open #sidebar-panel { transform: translateX(0); }
         .sidebar-item {
-            display: flex; align-items: center; gap: 12px; padding: 14px 18px;
-            font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer;
+            display: flex; align-items: center; gap: 12px; min-height: var(--list-row-min-h);
+            padding: 8px 18px; box-sizing: border-box;
+            font-size: var(--text-body); font-weight: 700; color: var(--text); cursor: pointer;
             border-bottom: 1px solid var(--border); transition: background 0.2s;
         }
         .sidebar-item:active { background: var(--input-bg); }
@@ -443,14 +445,16 @@
         body.card-shadow-on:not(.dark-mode) .dash-link-card { box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.55); }
         body.dark-mode.card-shadow-on .dash-link-card { box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07); }
         .dash-link-card .dash-link-row {
-            padding: 14px 16px; background: transparent; border-radius: 0;
+            min-height: var(--list-row-min-h); padding: 8px 16px; box-sizing: border-box;
+            background: transparent; border-radius: 0;
             box-shadow: none !important;
         }
         .dash-link-divider { border-top: 1px dashed var(--border); margin: 0 16px; }
         .dash-link-row {
             display: flex; align-items: center; justify-content: space-between; gap: 12px;
-            padding: 14px 16px; background: var(--card); border-radius: 14px;
-            cursor: pointer; font-size: 15px; font-weight: 700; color: var(--text);
+            min-height: var(--list-row-min-h); padding: 8px 16px; box-sizing: border-box;
+            background: var(--card); border-radius: 14px;
+            cursor: pointer; font-size: var(--text-body); font-weight: 700; color: var(--text);
             transition: transform 0.1s;
         }
         .ta-journal-summary-wrap { margin-top: 16px; display: flex; justify-content: center; }
@@ -538,7 +542,7 @@
         .profile-station-help summary { font-size: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; list-style: none; }
         .profile-station-help summary::-webkit-details-marker { display: none; }
         .profile-station-help p { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
-        .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 15px; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
+        .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: var(--list-row-min-h); padding: 8px 15px; box-sizing: border-box; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
         .profile-station-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
         .profile-station-block.expanded .profile-station-row { padding-bottom: 0; }
         .profile-station-block.expanded .profile-station-expand:not(.hidden) { margin: 0; padding: 0 15px 14px; }
@@ -760,10 +764,30 @@
         body.dark-mode .qadd-trip-wrapper { box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3); }
         .qadd-subday { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; cursor: pointer; padding: 2px; box-sizing: border-box; height: 100%; }
 
-        #custom-modal, #manage-modal, #help-modal, #roster-modal, #calendar-modal, #quick-add-cal-modal, #feedback-modal, #complete-arrival-modal, #complete-departure-modal, #cal-day-modal, #dest-diversion-modal, #pay-rate-modal, #hra-rate-modal, #nha-rate-modal, #admin-maintenance-modal, #admin-versiongate-modal, #admin-dapush-modal, #admin-sessions-modal, #admin-archive-modal, #admin-view-archives-modal, #admin-feedback-modal, #admin-announcement-modal, #admin-stationpush-modal, #suggest-circular-modal, #request-team-change-modal, #settings-modal, #nda-month-picker-modal, #ta-confirm-values-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 6000; }
+        #custom-modal, #manage-modal, #help-modal, #roster-modal, #calendar-modal, #quick-add-cal-modal, #feedback-modal, #complete-arrival-modal, #complete-departure-modal, #cal-day-modal, #dest-diversion-modal, #pay-rate-modal, #hra-rate-modal, #nha-rate-modal, #admin-maintenance-modal, #admin-versiongate-modal, #admin-dapush-modal, #admin-sessions-modal, #admin-archive-modal, #admin-view-archives-modal, #admin-feedback-modal, #admin-announcement-modal, #admin-stationpush-modal, #suggest-circular-modal, #request-team-change-modal, #nda-month-picker-modal, #ta-confirm-values-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 6000; }
         /* Point: Roster iframe sits at z-index 999000 — Settings must float above it when opened
            from inside Roster, without hiding the Roster layer underneath. */
-        #settings-modal.settings-over-roster { z-index: 1000010; }
+        #screen-settings.settings-over-roster { position: fixed; inset: 0; z-index: 1000010; background: var(--bg); min-height: 100vh; }
+        .settings-list { padding: 0; overflow: hidden; }
+        .settings-row {
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            min-height: var(--list-row-min-h); padding: 8px 16px; box-sizing: border-box;
+            border-bottom: 1px solid var(--border);
+        }
+        .settings-row:last-child { border-bottom: none; }
+        .settings-row-label {
+            font-size: var(--text-body); font-weight: var(--font-weight-medium);
+            display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
+        }
+        .settings-row-label svg { width: 16px; height: 16px; flex-shrink: 0; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
         #custom-modal { z-index: 7500; }
         /* Task 4: Settings comes up from the bottom edge as a sheet, not a centered dialog */
         @keyframes settings-sheet-slide-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -810,17 +834,17 @@
         @keyframes modalBackdropFadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes modalCardFadeScaleIn { from { opacity: 0; transform: translateY(8px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes modalCardFadeScaleOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(8px) scale(0.95); } }
-        #manage-modal, #help-modal, #roster-modal, #calendar-modal, #quick-add-cal-modal, #feedback-modal, #complete-arrival-modal, #complete-departure-modal, #cal-day-modal, #dest-diversion-modal, #pay-rate-modal, #hra-rate-modal, #nha-rate-modal, #admin-maintenance-modal, #admin-versiongate-modal, #admin-dapush-modal, #admin-sessions-modal, #admin-archive-modal, #admin-view-archives-modal, #admin-feedback-modal, #admin-announcement-modal, #admin-stationpush-modal, #suggest-circular-modal, #request-team-change-modal, #settings-modal, #nda-month-picker-modal, #ta-confirm-values-modal {
+        #manage-modal, #help-modal, #roster-modal, #calendar-modal, #quick-add-cal-modal, #feedback-modal, #complete-arrival-modal, #complete-departure-modal, #cal-day-modal, #dest-diversion-modal, #pay-rate-modal, #hra-rate-modal, #nha-rate-modal, #admin-maintenance-modal, #admin-versiongate-modal, #admin-dapush-modal, #admin-sessions-modal, #admin-archive-modal, #admin-view-archives-modal, #admin-feedback-modal, #admin-announcement-modal, #admin-stationpush-modal, #suggest-circular-modal, #request-team-change-modal, #nda-month-picker-modal, #ta-confirm-values-modal {
         }
-        body.page-anim-on #manage-modal, body.page-anim-on #help-modal, body.page-anim-on #roster-modal, body.page-anim-on #calendar-modal, body.page-anim-on #quick-add-cal-modal, body.page-anim-on #feedback-modal, body.page-anim-on #complete-arrival-modal, body.page-anim-on #complete-departure-modal, body.page-anim-on #cal-day-modal, body.page-anim-on #dest-diversion-modal, body.page-anim-on #pay-rate-modal, body.page-anim-on #hra-rate-modal, body.page-anim-on #nha-rate-modal, body.page-anim-on #admin-maintenance-modal, body.page-anim-on #admin-versiongate-modal, body.page-anim-on #admin-dapush-modal, body.page-anim-on #admin-sessions-modal, body.page-anim-on #admin-archive-modal, body.page-anim-on #admin-view-archives-modal, body.page-anim-on #admin-feedback-modal, body.page-anim-on #admin-announcement-modal, body.page-anim-on #admin-stationpush-modal, body.page-anim-on #suggest-circular-modal, body.page-anim-on #request-team-change-modal, body.page-anim-on #settings-modal, body.page-anim-on #nda-month-picker-modal, body.page-anim-on #ta-confirm-values-modal {
+        body.page-anim-on #manage-modal, body.page-anim-on #help-modal, body.page-anim-on #roster-modal, body.page-anim-on #calendar-modal, body.page-anim-on #quick-add-cal-modal, body.page-anim-on #feedback-modal, body.page-anim-on #complete-arrival-modal, body.page-anim-on #complete-departure-modal, body.page-anim-on #cal-day-modal, body.page-anim-on #dest-diversion-modal, body.page-anim-on #pay-rate-modal, body.page-anim-on #hra-rate-modal, body.page-anim-on #nha-rate-modal, body.page-anim-on #admin-maintenance-modal, body.page-anim-on #admin-versiongate-modal, body.page-anim-on #admin-dapush-modal, body.page-anim-on #admin-sessions-modal, body.page-anim-on #admin-archive-modal, body.page-anim-on #admin-view-archives-modal, body.page-anim-on #admin-feedback-modal, body.page-anim-on #admin-announcement-modal, body.page-anim-on #admin-stationpush-modal, body.page-anim-on #suggest-circular-modal, body.page-anim-on #request-team-change-modal, body.page-anim-on #nda-month-picker-modal, body.page-anim-on #ta-confirm-values-modal {
             animation: modalBackdropFadeIn 0.18s ease-out;
         }
-        #manage-modal > div, #help-modal > div, #roster-modal > div, #calendar-modal > div, #quick-add-cal-modal > div, #feedback-modal > div, #complete-arrival-modal > div, #complete-departure-modal > div, #cal-day-modal > div, #dest-diversion-modal > div, #pay-rate-modal > div, #hra-rate-modal > div, #nha-rate-modal > div, #admin-maintenance-modal > div, #admin-versiongate-modal > div, #admin-dapush-modal > div, #admin-sessions-modal > div, #admin-archive-modal > div, #admin-view-archives-modal > div, #admin-feedback-modal > div, #admin-announcement-modal > div, #admin-stationpush-modal > div, #suggest-circular-modal > div, #request-team-change-modal > div, #settings-modal > div, #nda-month-picker-modal > div, #ta-confirm-values-modal > div {
+        #manage-modal > div, #help-modal > div, #roster-modal > div, #calendar-modal > div, #quick-add-cal-modal > div, #feedback-modal > div, #complete-arrival-modal > div, #complete-departure-modal > div, #cal-day-modal > div, #dest-diversion-modal > div, #pay-rate-modal > div, #hra-rate-modal > div, #nha-rate-modal > div, #admin-maintenance-modal > div, #admin-versiongate-modal > div, #admin-dapush-modal > div, #admin-sessions-modal > div, #admin-archive-modal > div, #admin-view-archives-modal > div, #admin-feedback-modal > div, #admin-announcement-modal > div, #admin-stationpush-modal > div, #suggest-circular-modal > div, #request-team-change-modal > div, #nda-month-picker-modal > div, #ta-confirm-values-modal > div {
         }
-        body.page-anim-on #manage-modal > div, body.page-anim-on #help-modal > div, body.page-anim-on #roster-modal > div, body.page-anim-on #calendar-modal > div, body.page-anim-on #quick-add-cal-modal > div, body.page-anim-on #feedback-modal > div, body.page-anim-on #complete-arrival-modal > div, body.page-anim-on #complete-departure-modal > div, body.page-anim-on #cal-day-modal > div, body.page-anim-on #dest-diversion-modal > div, body.page-anim-on #pay-rate-modal > div, body.page-anim-on #hra-rate-modal > div, body.page-anim-on #nha-rate-modal > div, body.page-anim-on #admin-maintenance-modal > div, body.page-anim-on #admin-versiongate-modal > div, body.page-anim-on #admin-dapush-modal > div, body.page-anim-on #admin-sessions-modal > div, body.page-anim-on #admin-archive-modal > div, body.page-anim-on #admin-view-archives-modal > div, body.page-anim-on #admin-feedback-modal > div, body.page-anim-on #admin-announcement-modal > div, body.page-anim-on #admin-stationpush-modal > div, body.page-anim-on #suggest-circular-modal > div, body.page-anim-on #request-team-change-modal > div, body.page-anim-on #settings-modal > div, body.page-anim-on #nda-month-picker-modal > div, body.page-anim-on #ta-confirm-values-modal > div {
+        body.page-anim-on #manage-modal > div, body.page-anim-on #help-modal > div, body.page-anim-on #roster-modal > div, body.page-anim-on #calendar-modal > div, body.page-anim-on #quick-add-cal-modal > div, body.page-anim-on #feedback-modal > div, body.page-anim-on #complete-arrival-modal > div, body.page-anim-on #complete-departure-modal > div, body.page-anim-on #cal-day-modal > div, body.page-anim-on #dest-diversion-modal > div, body.page-anim-on #pay-rate-modal > div, body.page-anim-on #hra-rate-modal > div, body.page-anim-on #nha-rate-modal > div, body.page-anim-on #admin-maintenance-modal > div, body.page-anim-on #admin-versiongate-modal > div, body.page-anim-on #admin-dapush-modal > div, body.page-anim-on #admin-sessions-modal > div, body.page-anim-on #admin-archive-modal > div, body.page-anim-on #admin-view-archives-modal > div, body.page-anim-on #admin-feedback-modal > div, body.page-anim-on #admin-announcement-modal > div, body.page-anim-on #admin-stationpush-modal > div, body.page-anim-on #suggest-circular-modal > div, body.page-anim-on #request-team-change-modal > div, body.page-anim-on #nda-month-picker-modal > div, body.page-anim-on #ta-confirm-values-modal > div {
             animation: modalCardFadeScaleIn 0.22s ease-out;
         }
-        #manage-modal > div, #help-modal > div, #roster-modal > div, #calendar-modal > div, #quick-add-cal-modal > div, #feedback-modal > div, #complete-arrival-modal > div, #complete-departure-modal > div, #cal-day-modal > div, #dest-diversion-modal > div, #pay-rate-modal > div, #hra-rate-modal > div, #nha-rate-modal > div, #admin-maintenance-modal > div, #admin-versiongate-modal > div, #admin-dapush-modal > div, #admin-sessions-modal > div, #admin-archive-modal > div, #admin-view-archives-modal > div, #admin-feedback-modal > div, #admin-announcement-modal > div, #admin-stationpush-modal > div, #suggest-circular-modal > div, #request-team-change-modal > div, #settings-modal > div, #nda-month-picker-modal > div, #ta-confirm-values-modal > div {
+        #manage-modal > div, #help-modal > div, #roster-modal > div, #calendar-modal > div, #quick-add-cal-modal > div, #feedback-modal > div, #complete-arrival-modal > div, #complete-departure-modal > div, #cal-day-modal > div, #dest-diversion-modal > div, #pay-rate-modal > div, #hra-rate-modal > div, #nha-rate-modal > div, #admin-maintenance-modal > div, #admin-versiongate-modal > div, #admin-dapush-modal > div, #admin-sessions-modal > div, #admin-archive-modal > div, #admin-view-archives-modal > div, #admin-feedback-modal > div, #admin-announcement-modal > div, #admin-stationpush-modal > div, #suggest-circular-modal > div, #request-team-change-modal > div, #nda-month-picker-modal > div, #ta-confirm-values-modal > div {
             background: var(--modal-bg) !important; border: none !important;
         }
 
@@ -1562,6 +1586,11 @@
                 window.cancelAllJourneySelection(true);
                 return;
             }
+            const settingsOverlay = document.getElementById('screen-settings');
+            if (settingsOverlay && !settingsOverlay.classList.contains('hidden') && window._settingsOpenedFromRoster) {
+                window.closeSettingsModal(true);
+                return;
+            }
             // Point (back-button Stage 3): closes whichever specialized modal was opened MOST
             // RECENTLY (LIFO), not just the first match in some static list - correctly handles
             // any nesting (e.g. a day-detail modal opened from within a calendar modal) without
@@ -1751,7 +1780,7 @@
         // whether that toggle came from an inline onclick or a dedicated JS function. Reuses the
         // exact same id list already maintained for the shared CSS overlay-styling selectors, so
         // there's only one list to keep in sync when a new modal is added later.
-        const STAGE3_MODAL_IDS = ['manage-modal', 'help-modal', 'roster-modal', 'calendar-modal', 'quick-add-cal-modal', 'feedback-modal', 'complete-arrival-modal', 'complete-departure-modal', 'cal-day-modal', 'dest-diversion-modal', 'pay-rate-modal', 'hra-rate-modal', 'nha-rate-modal', 'admin-maintenance-modal', 'admin-versiongate-modal', 'admin-dapush-modal', 'admin-sessions-modal', 'admin-archive-modal', 'admin-view-archives-modal', 'admin-feedback-modal', 'admin-announcement-modal', 'admin-stationpush-modal', 'suggest-circular-modal', 'request-team-change-modal', 'roster-iframe-modal', 'preview-wrapper', 'circ-add-modal', 'circ-manage-modal', 'circ-file-viewer-modal', 'settings-modal', 'nda-month-picker-modal', 'ta-confirm-values-modal'];
+        const STAGE3_MODAL_IDS = ['manage-modal', 'help-modal', 'roster-modal', 'calendar-modal', 'quick-add-cal-modal', 'feedback-modal', 'complete-arrival-modal', 'complete-departure-modal', 'cal-day-modal', 'dest-diversion-modal', 'pay-rate-modal', 'hra-rate-modal', 'nha-rate-modal', 'admin-maintenance-modal', 'admin-versiongate-modal', 'admin-dapush-modal', 'admin-sessions-modal', 'admin-archive-modal', 'admin-view-archives-modal', 'admin-feedback-modal', 'admin-announcement-modal', 'admin-stationpush-modal', 'suggest-circular-modal', 'request-team-change-modal', 'roster-iframe-modal', 'preview-wrapper', 'circ-add-modal', 'circ-manage-modal', 'circ-file-viewer-modal', 'nda-month-picker-modal', 'ta-confirm-values-modal'];
         window._openStage3ModalStack = [];
         window._backButtonClosingModalId = null; // set right before OUR OWN back-triggered hide, so the observer below can recognize and skip it instead of double-consuming
         window._stage3ModalVisibility = {};
@@ -2722,100 +2751,100 @@
         </div>
     </div>
 
-    <div id="settings-modal" class="hidden" onclick="if(event.target === this) window.closeSettingsModal()">
-        <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 92%; max-width: 420px; max-height: 80vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); display:flex; flex-direction:column;">
-            <div style="position:relative; display:flex; align-items:center; margin-bottom:8px; flex-shrink:0;">
-                <span data-i18n="settings_title" style="width:100%; text-align:center; font-size:17px; font-weight:900; color:var(--blue);">SETTINGS</span>
-                <button type="button" class="modal-icon-close" onclick="window.closeSettingsModal()" style="position:absolute; right:0; top:50%; transform:translateY(-50%);" aria-label="Close settings">✕</button>
-            </div>
-            <div style="overflow-y:auto;">
+    <div id="screen-settings" class="hidden">
+        <div class="top-bar">
+            <button type="button" class="back-btn" onclick="window.closeSettingsModal()" aria-label="Back"><svg viewBox="0 0 512 512" style="width:20px; height:20px;" aria-hidden="true"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
+            <h1 data-i18n="settings_title">Settings</h1>
+        </div>
+        <div class="screen-content">
+            <div class="card settings-list">
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#6366f1;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="dark_theme_row">Dark Theme</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#6366f1;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="dark_theme_row">Dark Theme</span></span>
                 <div id="darktheme-toggle-switch" onclick="window.toggleTheme()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="darktheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#0ea5e9;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="hindi_language_row">Hindi Language</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#0ea5e9;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="hindi_language_row">Hindi Language</span></span>
                 <div id="settings-lang-toggle-switch" onclick="window.toggleSettingsLanguage()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="settings-lang-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 8v8"/><path d="M20 8v8"/></svg><span data-i18n="haptic_feedback_row">Haptic Feedback</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 8v8"/><path d="M20 8v8"/></svg><span data-i18n="haptic_feedback_row">Haptic Feedback</span></span>
                 <div id="haptic-toggle-switch" onclick="window.toggleHapticSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="haptic-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ef4444;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span data-i18n="floating_back_button_row">Floating Back Button</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ef4444;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span data-i18n="floating_back_button_row">Floating Back Button</span></span>
                 <div id="floatback-toggle-switch" onclick="window.toggleFloatingBackSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="floatback-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="#eab308" style="width:16px; height:16px; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="page_anim_row">Page Opening Animation</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="#eab308" style="width:16px; height:16px; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="page_anim_row">Page Opening Animation</span></span>
                 <div id="pageanim-toggle-switch" onclick="window.togglePageAnimSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="pageanim-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ec4899;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span data-i18n="close_anim_row">Dialog Close Animation</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ec4899;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span data-i18n="close_anim_row">Dialog Close Animation</span></span>
                 <div id="closeanim-toggle-switch" onclick="window.toggleCloseAnimSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="closeanim-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#10b981;"><polyline points="9 18 15 12 9 6"/></svg><span data-i18n="sidebar_handle_row">Sidebar Pull Handle</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#10b981;"><polyline points="9 18 15 12 9 6"/></svg><span data-i18n="sidebar_handle_row">Sidebar Pull Handle</span></span>
                 <div id="sidebarhandle-toggle-switch" onclick="window.toggleSidebarHandleSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="sidebarhandle-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="4" x2="8" y2="10"/></svg><span data-i18n="sheet_nonduty_row">Non-Duty Rows in Sheet</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="4" x2="8" y2="10"/></svg><span data-i18n="sheet_nonduty_row">Non-Duty Rows in Sheet</span></span>
                 <div id="sheetnonduty-toggle-switch" onclick="window.toggleSheetNonDutyVisibleSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="sheetnonduty-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#a855f7;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><span data-i18n="ta_autofill_row">Autofill Working Days &amp; Earnings</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#a855f7;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><span data-i18n="ta_autofill_row">Autofill Working Days &amp; Earnings</span></span>
                 <div id="taautofill-toggle-switch" onclick="window.toggleTaAutofillSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="taautofill-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><path d="M12 11V7a4 4 0 1 1 8 0v4"/><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="16" r="1"/></svg><span data-i18n="biometric_lock_row">Biometric Lock</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><path d="M12 11V7a4 4 0 1 1 8 0v4"/><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="16" r="1"/></svg><span data-i18n="biometric_lock_row">Biometric Lock</span></span>
                 <div id="biometric-toggle-switch" onclick="window.toggleBiometricLockSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="biometric-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#3b82f6;"><path d="M4 12c2-4 4-4 6 0s4 4 6 0 4-4 4 0"/></svg><span data-i18n="scroll_bounce_row">Scroll Stretch</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#3b82f6;"><path d="M4 12c2-4 4-4 6 0s4 4 6 0 4-4 4 0"/></svg><span data-i18n="scroll_bounce_row">Scroll Stretch</span></span>
                 <div id="scrollbounce-toggle-switch" onclick="window.toggleScrollBounceSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="scrollbounce-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><span data-i18n="green_theme_row">Green Theme</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><span data-i18n="green_theme_row">Green Theme</span></span>
                 <div id="greentheme-toggle-switch" onclick="window.toggleGreenThemeSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="greentheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 4px; border-bottom:1px solid var(--border);">
-                <span style="font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#06b6d4;"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/></svg><span data-i18n="card_shadow_row">Card Shadow</span></span>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#06b6d4;"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/></svg><span data-i18n="card_shadow_row">Card Shadow</span></span>
                 <div id="cardshadow-toggle-switch" onclick="window.toggleCardShadowSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="cardshadow-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
@@ -5120,7 +5149,11 @@
     // Task 7-ii: Floating Back Button toggle — default ON (matches existing always-on behavior),
     // can be switched off in Settings for anyone who prefers relying only on the in-header back
     // buttons and the bottom nav's Home icon.
+    window.prefersReducedMotion = function() {
+        return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    };
     window.isPageAnimEnabled = function() {
+        if (window.prefersReducedMotion()) return false;
         const v = localStorage.getItem('page_anim_enabled');
         return v === null ? true : v === 'true'; // default ON
     };
@@ -5233,7 +5266,7 @@
         if (window.isStandaloneApp) {
             showModal("Already Installed", (window.i18n ? window.i18n.tOr('app_already_installed', "TTE LOGS is already installed on this device.") : "TTE LOGS is already installed on this device."), "success", false);
         } else if (window.isAndroidInstallable) {
-            document.getElementById('settings-modal')?.classList.add('hidden');
+            document.getElementById('screen-settings')?.classList.add('hidden');
             window.triggerPWAInstall();
         } else if (window.isIOSDevice) {
             showModal("📥 Add to Home Screen", "1. Tap the Share icon (⬆️) in Safari's toolbar\n2. Scroll down and tap \"Add to Home Screen\"\n3. Tap Add — TTE LOGS will now open like a regular app.", "success", false);
@@ -5245,19 +5278,30 @@
     window.openSettingsModal = function() {
         try { window.updateSettingsToggleSwitches(); } catch (e) { console.error('updateSettingsToggleSwitches failed:', e); }
         const rosterEl = document.getElementById('roster-iframe-modal');
-        const settingsEl = document.getElementById('settings-modal');
         const fromRoster = rosterEl && !rosterEl.classList.contains('hidden');
         window._settingsOpenedFromRoster = fromRoster;
-        if (settingsEl) settingsEl.classList.toggle('settings-over-roster', fromRoster);
-        settingsEl.classList.remove('hidden');
+        if (fromRoster) {
+            const settingsEl = document.getElementById('screen-settings');
+            if (settingsEl) {
+                settingsEl.classList.add('settings-over-roster');
+                settingsEl.classList.remove('hidden');
+                window.pushBackState('screen:settings-overlay');
+            }
+        } else {
+            window.navTo('screen-settings');
+        }
     };
-    window.closeSettingsModal = function() {
-        const settingsEl = document.getElementById('settings-modal');
-        if (settingsEl) {
+    window.closeSettingsModal = function(fromBackButton) {
+        const settingsEl = document.getElementById('screen-settings');
+        if (!settingsEl) return;
+        if (window._settingsOpenedFromRoster) {
             settingsEl.classList.add('hidden');
             settingsEl.classList.remove('settings-over-roster');
+            window._settingsOpenedFromRoster = false;
+            if (fromBackButton && window._backStackDepth > 0) window.consumeBackState();
+        } else {
+            window.navTo('screen-dashboard', !!fromBackButton);
         }
-        window._settingsOpenedFromRoster = false;
     };
 
     window.getUserMainHq = function() {
@@ -5416,7 +5460,7 @@
     if (window.isBiometricLockEnabled()) window.showBiometricLockOverlay();
 
     window.openSuggestCircularModal = function() {
-        document.getElementById('settings-modal')?.classList.add('hidden');
+        document.getElementById('screen-settings')?.classList.add('hidden');
         document.getElementById('suggest-circular-modal').classList.remove('hidden');
     };
 
@@ -5496,7 +5540,7 @@
     };
 
     window.openRequestTeamChangeModal = function() {
-        document.getElementById('settings-modal')?.classList.add('hidden');
+        document.getElementById('screen-settings')?.classList.add('hidden');
         document.getElementById('request-team-change-modal').classList.remove('hidden');
     };
 
@@ -7430,13 +7474,13 @@
         // tap (via the shared .bottom-icon-wrap:active rule every bottom icon already gets).
         const profileWrap = document.getElementById('bottom-profile-wrap');
         if (profileWrap) profileWrap.classList.toggle('illuminated', screenId === 'screen-register');
-        // Point: Settings is now a floating modal, not a navTo() screen - no persistent
-        // illumination here, matching how other floating dialogs (Salary, National Holiday)
-        // don't keep their trigger icon lit either.
+        const settingsWrap = document.getElementById('bottom-settings-wrap');
+        if (settingsWrap) settingsWrap.classList.toggle('illuminated', screenId === 'screen-settings');
         const fabWrap = document.getElementById('bottom-fab-wrap');
         if (fabWrap) fabWrap.classList.toggle('illuminated', screenId === 'screen-add');
         const bottomNavCurrent = {
             'bottom-nav-profile': 'screen-register',
+            'bottom-nav-settings': 'screen-settings',
             'bottom-nav-home': 'screen-dashboard',
             'main-fab-btn': 'screen-add'
         };
@@ -7529,9 +7573,15 @@
             window._allJourneyExpandedId = null;
         }
         
-        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); }); 
+        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary', 'screen-settings'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
         const shownScreenEl = document.getElementById(screenId);
-        shownScreenEl.classList.remove('hidden'); 
+        if (!shownScreenEl) return;
+        shownScreenEl.classList.remove('hidden');
+        if (screenId === 'screen-settings') {
+            shownScreenEl.classList.remove('settings-over-roster');
+            window._settingsOpenedFromRoster = false;
+            try { window.updateSettingsToggleSwitches(); } catch (e) { console.error('updateSettingsToggleSwitches failed:', e); }
+        } 
         const pullHandle = document.getElementById('sidebar-pull-handle');
         if (pullHandle) {
             const shouldShow = screenId !== 'screen-login' && window.isSidebarHandleEnabled && window.isSidebarHandleEnabled();
@@ -11233,7 +11283,7 @@
         // stop - regardless of whatever else this function does or how it might be changed later.
         // Without this, a shown error dialog's own Close button could get swallowed by this same
         // listener and re-trigger itself, making the dialog permanently undismissable.
-        if (e.target.closest('#custom-modal, #manage-modal, #settings-modal, .modal-overlay, [id$="-modal"]')) return;
+        if (e.target.closest('#custom-modal, #manage-modal, .modal-overlay, [id$="-modal"]')) return;
         // Point: the dashboard action strip is deliberately invisible until a single tap. A tap
         // elsewhere closes it, while taps on the selected row or its action buttons are left alone.
         if (window._sheetActionRowId !== null && window._sheetActionRowId !== undefined) {
