@@ -715,7 +715,7 @@
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
-        button {
+        button:not(.bottom-icon):not(.nav-fab) {
             width: 100%; min-height: 48px; padding: 10px 24px; border: none;
             border-radius: var(--md-radius-full); font-weight: var(--font-weight-medium);
             cursor: pointer; font-size: var(--text-label); line-height: var(--line-height-tight);
@@ -1068,14 +1068,16 @@
         .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
         .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
         .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
-        .bottom-icon {
-            width: 48px; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
-            background: none;
-            border: none;
-            box-shadow: none;
+        .bottom-bar .bottom-icon {
+            width: 48px !important; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
+            min-height: 48px;
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
             display: flex; justify-content: center; align-items: center; font-size: 15px; color: var(--md-on-surface-variant); cursor: pointer; position: relative; flex-shrink: 0;
             transition: transform 0.1s;
-            padding: 0;
+            padding: 0 !important;
+            margin: 0;
             font: inherit;
             appearance: none;
             -webkit-appearance: none;
@@ -7977,6 +7979,7 @@
             animTarget.classList.add('page-open-anim');
             setTimeout(() => animTarget.classList.remove('page-open-anim'), 400);
         }
+        window._topBarElevated = false;
         window.scrollTo(0, 0);
         if (window.updateTopBarScrollState) window.updateTopBarScrollState();
         

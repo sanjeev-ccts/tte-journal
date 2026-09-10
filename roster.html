@@ -80,7 +80,7 @@
        shadow toward its practical ceiling AND strengthens the highlight further, since that's the
        cue that actually works well in dark mode (measured 2.27 contrast already) - compensating
        for what the shadow alone can't fully deliver. */
-    body.dark-mode button { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
+    body.dark-mode button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab) { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
     body:not(.card-shadow-on).dark-mode .admin-quick-card, body:not(.card-shadow-on).dark-mode .duty-box { background: var(--card); border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     .result-modal-box { background: var(--card); box-shadow: 0 -8px 30px rgba(0,0,0,0.5) !important; }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
@@ -491,12 +491,14 @@
     .bottom-nav-indicator.visible { opacity: 1; }
     .bottom-icon-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
     .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
-    .bottom-icon {
-        width: 48px; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
-        background: none; border: none; box-shadow: none; display: flex; justify-content: center; align-items: center;
+    .bottom-bar .bottom-icon {
+        width: 48px !important; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
+        background: transparent !important; border: none !important; box-shadow: none !important;
+        display: flex; justify-content: center; align-items: center;
         font-size: 15px; color: var(--md-on-surface-variant); cursor: pointer; position: relative; flex-shrink: 0;
-        transition: transform 0.1s; padding: 0; font: inherit; appearance: none; -webkit-appearance: none;
+        transition: transform 0.1s; padding: 0 !important; margin: 0; font: inherit; appearance: none; -webkit-appearance: none;
     }
+    body.dark-mode .bottom-bar .bottom-icon { box-shadow: none !important; background: transparent !important; }
     .bottom-icon svg { width: 27px; height: 27px; transition: color 0.15s; }
     .bottom-icon:active { transform: scale(0.85); }
     .bottom-icon-wrap:active .bottom-icon, .bottom-icon-wrap.illuminated .bottom-icon { color: var(--blue-fill); }
