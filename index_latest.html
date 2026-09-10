@@ -20,7 +20,9 @@
     <style>
         :root { 
             --connectivity-bar-h: 21px;
-            --bottom-bar-h: 84px;
+            --bottom-bar-h: 80px;
+            --nav-indicator-bg: rgba(37, 99, 235, 0.2);
+            --md-radius-input: 14px;
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
             --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--safe-bottom));
@@ -81,7 +83,7 @@
             --earnings-total-bg: #eff6ff;
             --top-bar-bg: var(--bg);
             --bottom-bar-bg: color-mix(in srgb, var(--md-surface-container) 86%, transparent);
-            --bottom-bar-glass: blur(24px) saturate(1.15);
+            --bottom-bar-glass: blur(16px) saturate(1.15);
             
             --row-up-bg: #ffffff;
             --row-down-bg: #cbd5e1; 
@@ -107,6 +109,7 @@
         }
 
         body.green-theme {
+            --nav-indicator-bg: rgba(22, 163, 74, 0.22);
             --blue: #16a34a;
             --blue-fill: #15803d;
             --row-blue-text: #166534;
@@ -125,17 +128,18 @@
         }
 
         body.dark-mode {
+            --nav-indicator-bg: rgba(37, 99, 235, 0.2);
             --md-primary: #8ab4ff;
             --md-on-primary: #002f6c;
             --md-primary-container: #004494;
             --md-on-primary-container: #d8e2ff;
-            --md-surface: #121212;
-            --md-surface-container: #1e1f25;
-            --md-surface-container-high: #282a31;
-            --md-on-surface: #e3e2e6;
-            --md-on-surface-variant: #c2c7cf;
-            --md-outline: #8e9199;
-            --md-outline-variant: #43474f;
+            --md-surface: #0b0f19;
+            --md-surface-container: #151c2c;
+            --md-surface-container-high: #1a2336;
+            --md-on-surface: #f8fafc;
+            --md-on-surface-variant: #94a3b8;
+            --md-outline: #64748b;
+            --md-outline-variant: #232d42;
             --md-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.25);
             --md-elevation-2: 0 2px 4px rgba(0, 0, 0, 0.40), 0 6px 16px rgba(0, 0, 0, 0.30);
             --md-elevation-3: 0 4px 8px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -160,10 +164,10 @@
             --nda-color: #f0c040;
             --journeys-icon-color: #f0c040;
             --roster-color: #ff7b72;
-            --input-bg: #242832;
+            --input-bg: #1a2336;
             --summary-box-bg: var(--input-bg);
-            --input-disabled: #1a1d24;
-            --modal-bg: #343840;
+            --input-disabled: #12182a;
+            --modal-bg: #151c2c;
             --earnings-total-bg: #16233d;
             --top-bar-bg: var(--bg);
             --bottom-bar-bg: color-mix(in srgb, var(--md-surface-container) 78%, transparent);
@@ -192,6 +196,7 @@
         }
 
         body.dark-mode.green-theme {
+            --nav-indicator-bg: rgba(74, 222, 128, 0.22);
             --blue: #4ade80;
             --blue-fill: #166534;
             --row-blue-text: #86efac;
@@ -334,7 +339,7 @@
             background: transparent;
             border: none;
             box-shadow: none;
-            font-size: 22px;
+            font-size: 28px;
             color: var(--text);
             cursor: pointer;
             z-index: 2001;
@@ -348,6 +353,7 @@
             appearance: none;
             -webkit-appearance: none;
         }
+        .dash-hamburger-btn svg { width: 28px; height: 28px; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
         #sidebar-overlay {
             position: fixed; inset: 0; z-index: 8000; background: rgba(0,0,0,0.5);
             opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
@@ -464,7 +470,7 @@
             transition: transform 0.1s, background 0.3s, border 0.3s, box-shadow 0.15s; position: relative; min-height: 80px;
             user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
         }
-        .nav-card:active { transform: translateY(3px); box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 2px 3px rgba(0,0,0,0.2); }
+        .nav-card:active { transform: scale(0.97); box-shadow: 0 2px 4px rgba(0,0,0,0.2), inset 0 2px 3px rgba(0,0,0,0.2); transition: transform 0.15s cubic-bezier(0.2, 0, 0, 1); }
         @keyframes cardWave { 0% { transform: scale(0.97) rotate(0deg); } 25% { transform: scale(0.97) rotate(-1.5deg); } 50% { transform: scale(0.97) rotate(1.5deg); } 75% { transform: scale(0.97) rotate(-1deg); } 100% { transform: scale(1) rotate(0deg); } }
         .nav-card.card-wave { animation: cardWave 0.35s ease; }
         body.card-shadow-on .card, body.card-shadow-on .nav-card, body.card-shadow-on .dash-link-card, body.card-shadow-on .circ-dash-card, body.card-shadow-on .circ-circular-card, body.card-shadow-on .settings-list { box-shadow: var(--md-elevation-2); }
@@ -544,7 +550,9 @@
         .nav-icon { font-size: 19px; margin-bottom: 2px; display: inline-block; }
         .nav-icon svg { width: 22px; height: 22px; }
         
-        input:not([type="checkbox"]):not([type="radio"]), select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 30px; margin-top: 4px; font-size: var(--text-body); font-weight: var(--font-weight-body); line-height: var(--line-height-body); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; box-sizing: border-box; -webkit-appearance: none; appearance: none; }
+        input:not([type="checkbox"]):not([type="radio"]), select, textarea { width: 100%; padding: 10px 14px; min-height: 44px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: var(--md-radius-input); margin-top: 4px; font-size: var(--text-body); font-weight: var(--font-weight-body); line-height: var(--line-height-body); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s, box-shadow 0.2s; box-sizing: border-box; -webkit-appearance: none; appearance: none; }
+        input:not([type="checkbox"]):not([type="radio"]):focus, select:focus, textarea:focus { outline: none; border-color: var(--blue-fill); box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-fill) 18%, transparent); }
+        body.green-theme input:not([type="checkbox"]):not([type="radio"]):focus, body.green-theme select:focus, body.green-theme textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 18%, transparent); }
         input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; text-transform: none; }
         select { padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-position: calc(100% - 12px) center; background-size: 14px 14px; background-repeat: no-repeat; }
         #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel, #report-month-sel, #report-year-sel { text-align: center; text-align-last: center; }
@@ -599,7 +607,7 @@
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
         button {
-            width: 100%; min-height: 40px; padding: 10px 24px; border: none;
+            width: 100%; min-height: 48px; padding: 10px 24px; border: none;
             border-radius: var(--md-radius-full); font-weight: var(--font-weight-medium);
             cursor: pointer; font-size: var(--text-label); line-height: var(--line-height-tight);
             color: var(--md-on-primary); background: var(--blue-fill);
@@ -906,13 +914,14 @@
         }
         body.dark-mode .bottom-bar { box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.35); }
         .bottom-nav-indicator {
-            position: absolute; top: 6px; left: 0; width: 64px; height: 32px;
-            border-radius: 16px; background: var(--md-primary-container);
+            position: absolute; top: 0; left: 0; width: 52px; height: 32px;
+            border-radius: 16px; background: var(--nav-indicator-bg);
             opacity: 0; pointer-events: none; z-index: 0;
-            transition: left 0.28s cubic-bezier(0.2, 0, 0, 1), width 0.28s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s;
+            transition: left 0.28s cubic-bezier(0.2, 0, 0, 1), top 0.28s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s;
         }
         .bottom-nav-indicator.visible { opacity: 1; }
-        .bottom-icon-wrap, .nav-fab-wrapper { position: relative; z-index: 1; }
+        .bottom-icon-wrap { position: relative; z-index: 1; }
+        .nav-fab-wrapper { position: relative; z-index: 2; }
         #pwa-install-banner { position: fixed; bottom: calc(55px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); width: 94%; max-width: 560px; background: linear-gradient(135deg, #1d4ed8, #1e40af); color: white; border-radius: 14px; padding: 12px 14px; z-index: 3999; box-shadow: 0 -4px 18px rgba(0,0,0,0.35); display: flex; align-items: center; gap: 10px; box-sizing: border-box; }
         #exit-toast { bottom: calc(96px + var(--safe-bottom)) !important; }
         .app-snackbar {
@@ -931,7 +940,7 @@
         .app-snackbar--error { background: #5f2120; color: #ffebee; }
         .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
         .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
-        .bottom-icon-label { font-size: var(--text-caption); font-weight: 500; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
+        .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
         .bottom-icon {
             width: 48px; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
             background: none;
@@ -974,6 +983,14 @@
         #sheet-add-table div:has(> input.field-invalid), #sheet-active-row-table div:has(> input.field-invalid) { background: transparent !important; }
         #sheet-add-table input.field-invalid ~ span, #sheet-active-row-table input.field-invalid ~ span { background: transparent !important; }
         .bell-badge { position: absolute; top: -3px; right: -3px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
+        .alerts-empty-state { text-align: center; padding: 48px 20px; color: var(--text-muted); }
+        .alerts-empty-state svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.45; }
+        .alerts-empty-title { font-size: var(--text-heading); font-weight: 700; color: var(--text); margin-bottom: 8px; }
+        .alerts-empty-desc { font-size: var(--text-body); line-height: var(--line-height-body); }
+        .alerts-item { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-bottom: 1px solid var(--border); min-height: var(--list-row-min-h); box-sizing: border-box; }
+        .alerts-item:last-child { border-bottom: none; }
+        .alerts-item-icon { flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: color-mix(in srgb, var(--orange) 18%, var(--card)); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .alerts-item-text { font-size: var(--text-body); line-height: var(--line-height-body); color: var(--text); flex: 1; }
         @keyframes bell-shake {
             0%, 100% { transform: rotate(0deg); }
             15% { transform: rotate(-12deg); }
@@ -1037,7 +1054,7 @@
         .all-journey-row--others { background: color-mix(in srgb, var(--text-muted) 12%, var(--card) 88%) !important; }
         
         .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; }
-        .nav-fab-label { position: static; transform: none; font-size: 10.5px; font-weight: 500; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
+        .nav-fab-label { position: static; transform: none; font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
         .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue-fill); font-weight: 700; }
         .nav-fab-ring { display: none; }
         .nav-fab {
@@ -1455,7 +1472,9 @@
                 } else if (failing) {
                     iconColor = '#ef4444';
                 } else if (window._firebaseConnected) {
-                    iconColor = '#ffffff';
+                    const isDark = document.body.classList.contains('dark-mode');
+                    const isGreen = document.body.classList.contains('green-theme');
+                    iconColor = isDark ? '#f8fafc' : (isGreen ? '#15803d' : '#2563eb');
                 } else if (pending) {
                     iconColor = '#f97316';
                 } else {
@@ -2783,7 +2802,7 @@
             <span class="bottom-icon-label" data-i18n="profile_label">Profile</span>
         </div>
         <div class="bottom-icon-wrap" id="bottom-alerts-wrap">
-            <button type="button" class="bottom-icon" id="bottom-bell-icon" onclick="window.showNotifications()" aria-label="Alerts" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="bell-badge hidden" id="bottom-bell-badge" style="top:6px; right:6px;" aria-hidden="true">0</div></button>
+            <button type="button" class="bottom-icon" id="bottom-bell-icon" onclick="window.navTo('screen-alerts')" aria-label="Alerts" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="bell-badge hidden" id="bottom-bell-badge" style="top:6px; right:6px;" aria-hidden="true">0</div></button>
             <span class="bottom-icon-label" data-i18n="notifications_label">Alerts</span>
         </div>
         <div class="nav-fab-wrapper" id="bottom-fab-wrap">
@@ -2810,6 +2829,16 @@
         </div>
         <div class="screen-content">
             <div id="national-holiday-body"></div>
+        </div>
+    </div>
+
+    <div id="screen-alerts" class="hidden">
+        <div class="top-bar">
+            <button type="button" class="back-btn" onclick="window.navTo('screen-dashboard')" aria-label="Back"><svg viewBox="0 0 512 512" style="width:20px; height:20px;" aria-hidden="true"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
+            <h1 data-i18n="notifications_label">Alerts</h1>
+        </div>
+        <div class="screen-content">
+            <div id="alerts-page-body" class="card settings-list"></div>
         </div>
     </div>
 
@@ -3551,7 +3580,10 @@
                             <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
                         </div>
                         <div id="profile-section-nearby-ta" class="profile-station-expand hidden">
-                            <p class="profile-station-help-static" data-i18n="profile_diversion_stn_desc">This is the station from which a journey starts with TA claimed, other than your Main or Nearby HQ — e.g. DDU for BSB HQ staff. It is primarily for BSB HQ staff. Staff at other HQs rarely use this, because BSB staff often travel far from their HQ to start or end journeys at DDU and claim proper TA and continuous NDA for those journeys.</p>
+                            <details class="profile-station-help">
+                                <summary data-i18n="profile_whats_this">What's this?</summary>
+                                <p data-i18n="profile_nearby_ta_desc">This is a nearby station (other than your Main HQ) from which you sometimes start journeys and claim TA — e.g. DDU for BSB HQ staff.</p>
+                            </details>
                             <div style="display:flex; gap:8px; margin-top:8px;">
                                 <input type="text" id="reg-nearby-ta-input" placeholder="e.g. DDU" style="text-transform: uppercase; margin:0; flex:1;">
                                 <button type="button" onclick="event.stopPropagation(); window.addNearbyTaClaimedHQ()" class="profile-inline-add-btn">Add</button>
@@ -3924,7 +3956,7 @@
     </div>
 
     <div id="screen-dashboard" class="hidden">
-        <button type="button" id="dash-hamburger-icon" class="dash-hamburger-btn" onclick="window.openSidebar()" aria-label="Menu">☰</button>
+        <button type="button" id="dash-hamburger-icon" class="dash-hamburger-btn" onclick="window.openSidebar()" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
         <div class="top-bar dash-header">
             <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
         </div>
@@ -4416,7 +4448,7 @@
     <div id="roster-iframe-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:999000; display:flex; flex-direction:column;" onclick="if(event.target === this) this.classList.add('hidden')">
         <div class="top-bar" style="position:relative; border-bottom:none; box-shadow:none;">
             <button class="back-btn" style="position:relative; top:0; left:0;" onclick="window.closeRosterModal()"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
-            <h1 style="color:white;" data-i18n="page_title_duty_roster">Duty Roster</h1>
+            <h1 data-i18n="page_title_duty_roster">Duty Roster</h1>
         </div>
         <iframe id="roster-iframe" src="" style="flex:1; width:100%; border:none; background:var(--bg);"></iframe>
         <div id="roster-loading-overlay" class="hidden" style="position:absolute; top:60px; left:0; width:100%; bottom:0; background:#0a0a0a; z-index:10; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; transition:opacity 0.2s ease-out;">
@@ -5343,7 +5375,7 @@
         if (!indicator || !bar || bar.classList.contains('hidden')) return;
         const wrapMap = {
             'screen-register': 'bottom-profile-wrap',
-            'screen-add': 'bottom-fab-wrap',
+            'screen-alerts': 'bottom-alerts-wrap',
             'screen-settings': 'bottom-settings-wrap',
             'screen-dashboard': 'bottom-home-wrap'
         };
@@ -5353,11 +5385,15 @@
             indicator.classList.remove('visible');
             return;
         }
+        const iconBtn = wrap.querySelector('.bottom-icon');
+        const targetRect = iconBtn ? iconBtn.getBoundingClientRect() : wrap.getBoundingClientRect();
         const barRect = bar.getBoundingClientRect();
-        const wrapRect = wrap.getBoundingClientRect();
-        const width = Math.min(72, Math.max(56, wrapRect.width - 8));
-        indicator.style.width = width + 'px';
-        indicator.style.left = (wrapRect.left - barRect.left + (wrapRect.width - width) / 2) + 'px';
+        const pillW = 52;
+        const pillH = 32;
+        indicator.style.width = pillW + 'px';
+        indicator.style.height = pillH + 'px';
+        indicator.style.left = (targetRect.left - barRect.left + (targetRect.width - pillW) / 2) + 'px';
+        indicator.style.top = (targetRect.top - barRect.top + (targetRect.height - pillH) / 2) + 'px';
         indicator.classList.add('visible');
     };
 
@@ -7048,6 +7084,7 @@
         // Expected Salary card's sub-label is rebuilt with the current month name by
         // updateExpectedSalaryBox(), so re-run it here to pick up the new language.
         if (typeof window.updateExpectedSalaryBox === 'function') window.updateExpectedSalaryBox();
+        if (typeof window.renderProfileStationSummaries === 'function') window.renderProfileStationSummaries();
         // Point: Sleep Ruined's results are built via innerHTML with i18n.t() baked in at render
         // time, not data-i18n tags - applyTranslations() can't refresh those automatically, so
         // only the one static top message (which IS data-i18n tagged) was updating live.
@@ -7097,14 +7134,25 @@
     }
     
     function showNotifications() {
-        let notifs = window.globalNotifications || [];
-        if (notifs.length === 0) {
-            showModal("Notifications", (window.i18n ? window.i18n.tOr('notifications_all_caught_up', "You are all caught up! No active warnings.") : "You are all caught up! No active warnings."), "success", false);
-        } else {
-            let htmlList = `<div style="text-align:center; font-size:13px; line-height:1.6;">` + notifs.map(n => `• ${n}`).join('<br><br>') + `</div>`;
-            showModal("Attention Required", htmlList, "warning", false);
-        }
+        window.navTo('screen-alerts');
     }
+
+    window.renderAlertsPage = function() {
+        const body = document.getElementById('alerts-page-body');
+        if (!body) return;
+        const notifs = window.globalNotifications || [];
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
+        if (notifs.length === 0) {
+            body.innerHTML = `<div class="alerts-empty-state">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <div class="alerts-empty-title">${t('notifications_all_caught_up', 'All caught up!')}</div>
+                <div class="alerts-empty-desc">${t('notifications_no_active', 'No active warnings right now.')}</div>
+            </div>`;
+        } else {
+            body.innerHTML = notifs.map(n => `<div class="alerts-item"><div class="alerts-item-icon" aria-hidden="true">⚠️</div><div class="alerts-item-text">${n}</div></div>`).join('');
+        }
+        if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(document.getElementById('screen-alerts'));
+    };
 
     window.onload = () => { 
         if (window.applyPageAnimBodyClass) window.applyPageAnimBodyClass();
@@ -7420,6 +7468,7 @@
         const btnSaveNonduty = document.getElementById('btn-save-nonduty');
         const tabDutyBtn = document.getElementById('tab-duty');
         const tabNonDutyBtn = document.getElementById('tab-nonduty');
+        const signonBtn = document.getElementById('btn-add-signon-time');
         
         if (tab === 'duty') {
             if (tabDutyBtn) tabDutyBtn.classList.add('active');
@@ -7434,6 +7483,7 @@
             const btnQuickAddWrap = document.getElementById('btn-quick-add-wrap');
             if (btnQuickAddWrap) btnQuickAddWrap.classList.remove('hidden');
             quickAddDesc.classList.remove('hidden');
+            if (signonBtn) signonBtn.classList.remove('hidden');
             btnSaveNonduty.classList.add('hidden');
             document.getElementById('recent-duty-title').innerText = "Recent Duty Entries";
             document.getElementById('nonduty-history-box').classList.add('hidden');
@@ -7451,6 +7501,7 @@
             btnSaveDuty.classList.add('hidden');
             quickAddRow.classList.add('hidden');
             quickAddDesc.classList.add('hidden');
+            if (signonBtn) signonBtn.classList.add('hidden');
             const ajTeamSheetRow2 = document.getElementById('add-journey-team-sheet-row');
             if (ajTeamSheetRow2) ajTeamSheetRow2.classList.add('hidden');
             const ajDutySheetWrap = document.getElementById('add-journey-duty-sheet-wrap');
@@ -7555,17 +7606,19 @@
                 return;
             }
         }
-        // Point: Home intentionally does NOT get persistent illumination like Profile/Settings/FAB -
-        // it should read as white/neutral by default, only flashing blue momentarily on the actual
-        // tap (via the shared .bottom-icon-wrap:active rule every bottom icon already gets).
         const profileWrap = document.getElementById('bottom-profile-wrap');
         if (profileWrap) profileWrap.classList.toggle('illuminated', screenId === 'screen-register');
+        const alertsWrap = document.getElementById('bottom-alerts-wrap');
+        if (alertsWrap) alertsWrap.classList.toggle('illuminated', screenId === 'screen-alerts');
         const settingsWrap = document.getElementById('bottom-settings-wrap');
         if (settingsWrap) settingsWrap.classList.toggle('illuminated', screenId === 'screen-settings');
+        const homeWrap = document.getElementById('bottom-home-wrap');
+        if (homeWrap) homeWrap.classList.toggle('illuminated', screenId === 'screen-dashboard');
         const fabWrap = document.getElementById('bottom-fab-wrap');
         if (fabWrap) fabWrap.classList.toggle('illuminated', screenId === 'screen-add');
         const bottomNavCurrent = {
             'bottom-nav-profile': 'screen-register',
+            'bottom-bell-icon': 'screen-alerts',
             'bottom-nav-settings': 'screen-settings',
             'bottom-nav-home': 'screen-dashboard',
             'main-fab-btn': 'screen-add'
@@ -7660,7 +7713,7 @@
             window._allJourneyExpandedId = null;
         }
         
-        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary', 'screen-settings'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
+        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary', 'screen-settings', 'screen-alerts'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
         const shownScreenEl = document.getElementById(screenId);
         if (!shownScreenEl) return;
         shownScreenEl.classList.remove('hidden');
@@ -7668,7 +7721,8 @@
             shownScreenEl.classList.remove('settings-over-roster');
             window._settingsOpenedFromRoster = false;
             try { window.updateSettingsToggleSwitches(); } catch (e) { console.error('updateSettingsToggleSwitches failed:', e); }
-        } 
+        }
+        if (screenId === 'screen-alerts' && window.renderAlertsPage) window.renderAlertsPage();
         const pullHandle = document.getElementById('sidebar-pull-handle');
         if (pullHandle) {
             const shouldShow = screenId !== 'screen-login' && window.isSidebarHandleEnabled && window.isSidebarHandleEnabled();
@@ -15725,6 +15779,10 @@
             return `${v}${unitText}`;
         };
         const points = values.map((v, i) => `${xAt(i).toFixed(1)},${toY(v).toFixed(1)}`).join(' ');
+        const dotLabelSize = opts.dotLabelFontSize || '10.5';
+        const dotLabelWeight = opts.dotLabelFontSize ? '600' : '700';
+        const useBoundaryMonthLabels = opts.monthLabelAtBoundary || (gridlineCount === 13 && monthLabelNames.length === 12);
+        const monthLabelX = (i) => useBoundaryMonthLabels ? boundaryX(i) : xAt(i);
         const dots = values.map((v, i) => {
             const dotX = xAt(i).toFixed(1);
             const y = toY(v).toFixed(1);
@@ -15734,10 +15792,10 @@
             const textFill = isHl ? highlightColor : defaultText;
             const labelText = formatValueLabel(v);
             return `<circle cx="${dotX}" cy="${y}" r="5" fill="${dotColor}" stroke="var(--card)" stroke-width="1.5"></circle>
-                ${v > 0 ? `<text x="${dotX}" y="${labelY}" font-size="10.5" font-weight="700" fill="${textFill}" text-anchor="start" transform="rotate(-90 ${dotX} ${labelY})">${labelText}</text>` : ''}`;
+                ${v > 0 ? `<text x="${dotX}" y="${labelY}" font-size="${dotLabelSize}" font-weight="${dotLabelWeight}" fill="${textFill}" text-anchor="start" transform="rotate(-90 ${dotX} ${labelY})">${labelText}</text>` : ''}`;
         }).join('');
         const monthLabels = monthLabelNames.map((name, i) =>
-            `<text x="${xAt(i).toFixed(1)}" y="${topMargin + height + 18}" font-size="9.5" fill="var(--text-muted)" text-anchor="middle">${name}</text>`
+            `<text x="${monthLabelX(i).toFixed(1)}" y="${topMargin + height + 18}" font-size="9.5" fill="var(--text-muted)" text-anchor="middle">${name}</text>`
         ).join('');
         const vGridLines = Array.from({ length: gridlineCount }, (_, i) =>
             `<line x1="${boundaryX(i).toFixed(1)}" y1="${topMargin}" x2="${boundaryX(i).toFixed(1)}" y2="${topMargin + height}" stroke="${gridColor}" stroke-width="1" stroke-dasharray="2,3"/>`
@@ -15849,7 +15907,8 @@
                 : t('trend_graph_actual_ta', 'Actual TA'));
             return window.buildResponsiveTrendLineGraph({
                 values, color, highlightColor: color, unitSuffix, avgDisplay, overlayHtml, graphTitle: title,
-                gridlineCount, xOffset, highlightIdx, monthLabelNames: labelNames
+                gridlineCount, xOffset, highlightIdx, monthLabelNames: labelNames,
+                dotLabelFontSize: '9', monthLabelAtBoundary: isNDA
             });
         }
 
@@ -15958,7 +16017,8 @@
                 const graphHtml = window.buildResponsiveTrendLineGraph({
                     values, color, highlightColor: color, unitSuffix, avgDisplay, overlayHtml,
                     graphTitle: opts.graphTitle || '', gridlineCount, xOffset, highlightIdx,
-                    monthLabelNames: labelNames, compactBottom: opts.compactBottom
+                    monthLabelNames: labelNames, compactBottom: opts.compactBottom,
+                    dotLabelFontSize: '9', monthLabelAtBoundary: isNDA
                 });
                 return (opts.marginTop ? `<div style="margin-top:${opts.marginTop}px;"></div>` : '') + graphHtml;
             }
@@ -16317,6 +16377,7 @@
 
     window.switchSalaryTab = function(tab) {
         window._salaryActiveTab = tab;
+        try { sessionStorage.setItem('tte_salary_tab', tab); } catch (e) {}
         const expectedBtn = document.getElementById('salary-tab-expected-btn');
         const projectedBtn = document.getElementById('salary-tab-projected-btn');
         const expectedPanel = document.getElementById('salary-expected-panel');
@@ -16336,6 +16397,7 @@
 
     window.switchSalaryCompareExpected = function() {
         window._salaryCompareExpected = !window._salaryCompareExpected;
+        try { sessionStorage.setItem('tte_salary_compare', window._salaryCompareExpected ? '1' : '0'); } catch (e) {}
         window.updateSalaryCompareFab();
         window.renderSalaryProjectedBreakdown();
         window.renderSalaryProjectedYearGraph();
@@ -16465,6 +16527,12 @@
         const today = new Date();
         const defaultMo = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}`;
         window._salaryCurrentMonthKey = monthKey || defaultMo;
+        try {
+            const savedTab = sessionStorage.getItem('tte_salary_tab');
+            if (savedTab) window._salaryActiveTab = savedTab;
+            const savedCompare = sessionStorage.getItem('tte_salary_compare');
+            if (savedCompare !== null) window._salaryCompareExpected = savedCompare === '1';
+        } catch (e) {}
         window._salaryActiveTab = window._salaryActiveTab || 'expected';
         window._salaryCompareExpected = window._salaryCompareExpected || false;
         const result = window.getSalaryForMonth(window._salaryCurrentMonthKey);
