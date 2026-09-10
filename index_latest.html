@@ -23,6 +23,8 @@
             --bottom-bar-h: 80px;
             --nav-indicator-bg: rgba(37, 99, 235, 0.2);
             --md-radius-input: 14px;
+            --on-accent-fill: #ffffff;
+            --row-stripe-bg: color-mix(in srgb, var(--card) 72%, var(--bg) 28%);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
             --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--safe-bottom));
@@ -109,7 +111,7 @@
         }
 
         body.green-theme {
-            --nav-indicator-bg: rgba(22, 163, 74, 0.22);
+            --nav-indicator-bg: rgba(22, 163, 74, 0.16);
             --blue: #16a34a;
             --blue-fill: #15803d;
             --row-blue-text: #166534;
@@ -128,6 +130,7 @@
         }
 
         body.dark-mode {
+            --row-stripe-bg: color-mix(in srgb, var(--card) 82%, #ffffff 18%);
             --nav-indicator-bg: rgba(37, 99, 235, 0.2);
             --md-primary: #8ab4ff;
             --md-on-primary: #002f6c;
@@ -196,7 +199,8 @@
         }
 
         body.dark-mode.green-theme {
-            --nav-indicator-bg: rgba(74, 222, 128, 0.22);
+            --nav-indicator-bg: rgba(134, 239, 172, 0.14);
+            --row-stripe-bg: color-mix(in srgb, var(--card) 88%, #86efac 12%);
             --blue: #4ade80;
             --blue-fill: #166534;
             --row-blue-text: #86efac;
@@ -257,7 +261,19 @@
         html { -webkit-overflow-scrolling: touch; }
         .hidden { display: none !important; }
         
-        .top-bar { position: sticky; background: var(--top-bar-bg); color: var(--text); padding: calc(10px + var(--safe-top)) 20px 10px; min-height: calc(64px + var(--safe-top)); display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: none; border-bottom: none; transition: background 0.3s; pointer-events: none; }
+        .top-bar { position: sticky; background: var(--top-bar-bg); color: var(--text); padding: calc(10px + var(--safe-top)) 20px 10px; min-height: calc(64px + var(--safe-top)); display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: none; border-bottom: none; transition: background 0.25s, border-color 0.25s; pointer-events: none; }
+        .top-bar.top-bar--scrolled, .dash-top-search-wrap.top-bar--scrolled { background: var(--card); border-bottom: 1px solid var(--border); }
+        .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row { display: none; }
+        .top-bar-tabbed.top-bar--compact-tabs { min-height: 0; padding-top: calc(4px + var(--safe-top)); }
+        .top-bar-title-row { display: flex; align-items: center; width: 100%; min-height: 52px; }
+        .top-bar-tabs-row { display: flex; width: 100%; position: relative; }
+        .dash-top-search-wrap {
+            position: sticky; top: 0; z-index: 1200;
+            padding: calc(4px + var(--safe-top)) 56px 8px 56px;
+            background: var(--top-bar-bg);
+            transition: background 0.25s, border-color 0.25s;
+        }
+        .dash-global-search--topbar { margin-bottom: 0; }
         .top-bar h1 { margin: 0 0 0 38px; font-size: var(--text-title); font-weight: 900; color: var(--text); letter-spacing: 0.5px; text-align: left; width: 100%; user-select: none; line-height: var(--line-height-tight); }
         .top-bar:not(.dash-header) h1,
         #roster-iframe-modal .top-bar h1 { font-weight: 600; letter-spacing: 0.35px; }
@@ -328,7 +344,7 @@
            several. */
         .dash-hamburger-btn {
             position: fixed !important;
-            top: calc(14px + var(--safe-top)) !important;
+            top: calc(6px + var(--safe-top)) !important;
             left: max(12px, env(safe-area-inset-left, 0px)) !important;
             width: 48px;
             height: 48px;
@@ -410,7 +426,7 @@
         }
         .dash-sync-cluster {
             position: fixed !important;
-            top: calc(14px + var(--safe-top)) !important;
+            top: calc(6px + var(--safe-top)) !important;
             right: max(8px, env(safe-area-inset-right, 0px)) !important;
             z-index: 2001;
             display: flex;
@@ -434,17 +450,19 @@
             text-transform: uppercase;
             white-space: nowrap;
             padding: 0;
-            margin: -3px 0 0 0;
+            margin: 1px 0 0 0;
             background: none !important;
             border: none !important;
             box-shadow: none !important;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.25s ease;
-            text-shadow: 0 0 1px rgba(0,0,0,0.95), 0 1px 3px rgba(0,0,0,0.7);
+            color: var(--text-muted);
+            text-shadow: none;
         }
+        body.dark-mode #dash-sync-mini-label { color: #e2e8f0; text-shadow: 0 0 1px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.55); }
         body.connectivity-bar-active .back-btn { top: calc(9px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
-        body.connectivity-bar-active .dash-hamburger-btn, body.connectivity-bar-active .dash-sync-cluster { top: calc(14px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
+        body.connectivity-bar-active .dash-hamburger-btn, body.connectivity-bar-active .dash-sync-cluster { top: calc(6px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
         body.connectivity-bar-active #roster-iframe-modal { top: var(--connectivity-bar-h) !important; height: calc(100% - var(--connectivity-bar-h)) !important; }
         
         .screen-content { padding: 15px 8px calc(98px + var(--safe-bottom)); max-width: 640px; margin: 0 auto; box-sizing: border-box; width: 100%; overflow-x: hidden; overflow-y: visible; }
@@ -526,9 +544,9 @@
         .dash-link-chevron svg { width: 28px; height: 28px; stroke-width: 3; }
         .dash-link-chevron--sm svg { width: 20px; height: 20px; stroke-width: 2.5; }
         .dash-global-search { position: relative; margin-bottom: 12px; z-index: 120; }
-        .dash-global-search-box { display: flex; align-items: center; gap: 8px; background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); border-radius: var(--md-radius-full); padding: 10px 16px; box-shadow: var(--md-elevation-1); }
-        .dash-global-search-box svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--text-muted); }
-        .dash-global-search-box input { flex: 1; border: none !important; background: transparent !important; outline: none; font-size: 14.5px; color: var(--text); font-family: inherit; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; width: auto; }
+        .dash-global-search-box { display: flex; align-items: center; gap: 8px; background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); border-radius: var(--md-radius-full); padding: 7px 12px; box-shadow: var(--md-elevation-1); min-height: 40px; box-sizing: border-box; }
+        .dash-global-search-box svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted); }
+        .dash-global-search-box input { flex: 1; border: none !important; background: transparent !important; outline: none; font-size: 13.5px; color: var(--text); font-family: inherit; padding: 0 !important; margin: 0 !important; box-shadow: none !important; border-radius: 0 !important; width: auto; min-height: 0 !important; }
         .dash-global-search-box input::placeholder { color: var(--text-muted); }
         .dash-global-search-results { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--card); border: 1px solid var(--border); border-radius: 14px; max-height: min(50vh, 320px); overflow-y: auto; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); }
         .dash-global-search-results.hidden { display: none; }
@@ -558,13 +576,17 @@
         #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel, #report-month-sel, #report-year-sel { text-align: center; text-align-last: center; }
         .month-year-picker,
         #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel, #report-month-sel, #report-year-sel {
-            border: 1.5px solid color-mix(in srgb, var(--blue) 55%, var(--border)) !important;
+            border: 1px solid var(--border) !important;
             background-color: var(--card) !important;
-            border-radius: 22px !important;
+            border-radius: 18px !important;
             font-weight: 700;
+            min-height: 36px !important;
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+            font-size: 13px !important;
         }
         #nda-from-box, #nda-to-box {
-            border: 1.5px solid color-mix(in srgb, var(--blue) 55%, var(--border)) !important;
+            border: 1px solid var(--border) !important;
         }
         .period-picker-shell { display:flex; align-items:center; justify-content:center; gap:14px; width:fit-content; margin:0 auto; background:var(--card); border-radius:22px; padding:5px 10px; border:1.5px solid color-mix(in srgb, var(--blue) 55%, var(--border)); box-shadow:0 1px 4px rgba(15,23,42,0.06); }
         input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; -webkit-appearance: checkbox; appearance: auto; }
@@ -610,7 +632,7 @@
             width: 100%; min-height: 48px; padding: 10px 24px; border: none;
             border-radius: var(--md-radius-full); font-weight: var(--font-weight-medium);
             cursor: pointer; font-size: var(--text-label); line-height: var(--line-height-tight);
-            color: var(--md-on-primary); background: var(--blue-fill);
+            color: var(--on-accent-fill); background: var(--blue-fill);
             box-shadow: var(--md-elevation-1);
             transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
         }
@@ -697,23 +719,23 @@
             display: flex;
             background: var(--card);
             background: linear-gradient(155deg, color-mix(in srgb, var(--card) 92%, white 8%) 0%, var(--card) 55%, color-mix(in srgb, var(--card) 90%, black 10%) 100%);
-            border: 1.5px solid var(--blue); border-radius: 30px; padding: 4px;
+            border: 1px solid var(--border); border-radius: 22px; padding: 3px;
             box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);
             transition: background 0.3s, border 0.3s;
         }
         .earnings-title-pill:active, .earnings-title-pill.squeezed { transform: scale(0.85) !important; box-shadow: inset 0 3px 6px rgba(0,0,0,0.35) !important; }
         .squeeze-ball:active, .squeeze-ball.squeezed { transform: scale(0.85) !important; }
         .month-nav-arrow-btn {
-            width: 48px !important; height: 48px !important; min-width: 48px !important; min-height: 48px !important;
+            width: 38px !important; height: 38px !important; min-width: 38px !important; min-height: 38px !important;
             padding: 0 !important; margin: 0; border-radius: 50%; flex-shrink: 0;
             display: inline-flex !important; align-items: center; justify-content: center;
-            line-height: 1; font-size: 22px; font-weight: 400; font-family: inherit;
-            background-color: var(--card); color: var(--blue); border: 1.5px solid var(--blue);
+            line-height: 1; font-size: 18px; font-weight: 400; font-family: inherit;
+            background-color: var(--card); color: var(--text); border: 1px solid var(--border);
             box-shadow: none; cursor: pointer;
         }
-        .month-nav-arrow-btn--green { color: var(--green); border-color: var(--green); }
+        .month-nav-arrow-btn--green { color: var(--text); border-color: var(--border); }
         body:not(.green-theme) #screen-salary .month-nav-arrow-btn--green,
-        body:not(.green-theme) #trend-future-month-nav-wrap .month-nav-arrow-btn--green { color: var(--blue); border-color: var(--blue); }
+        body:not(.green-theme) #trend-future-month-nav-wrap .month-nav-arrow-btn--green { color: var(--text); border-color: var(--border); }
         .trend-compare-scroll { overflow-x: auto; overflow-y: visible; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch; touch-action: auto; margin: 0 -4px; padding: 0 2px; }
         .trend-compare-inner { min-width: 680px; position: relative; }
         .trend-compare-vline { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--border); pointer-events: none; z-index: 1; }
@@ -744,14 +766,12 @@
         .trend-graph-highlight { position: absolute; top: 0; bottom: 0; z-index: 0; pointer-events: none; }
         .trend-summary-box { background: var(--summary-box-bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px; }
         body:not(.dark-mode) .trend-summary-box { background: var(--card); box-shadow: 0 1px 4px rgba(15, 23, 42, 0.07); }
-        .compare-pill-fab { position: fixed; bottom: calc(90px + var(--safe-bottom)); right: max(18px, env(safe-area-inset-right, 0px)); z-index: 3000; display: flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: var(--md-radius-full); border: 1.5px solid var(--blue-fill); background: var(--blue-fill); color: var(--md-on-primary); font-size: 12.5px; font-weight: 800; line-height: 1; cursor: pointer; box-shadow: var(--md-elevation-2); max-width: none; margin: 0; width: auto; height: auto; }
+        .compare-pill-fab { position: fixed; bottom: calc(90px + var(--safe-bottom)); right: max(18px, env(safe-area-inset-right, 0px)); z-index: 3000; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: var(--md-radius-full); border: 1.5px solid var(--blue-fill); background: var(--blue-fill); color: var(--on-accent-fill); font-size: 11.5px; font-weight: 800; line-height: 1; cursor: pointer; box-shadow: var(--md-elevation-2); max-width: none; margin: 0; width: auto; height: auto; min-height: 36px; }
         .compare-pill-fab svg { width: 20px; height: 17px; display: block; flex-shrink: 0; }
         .compare-pill-fab.active { color: var(--text) !important; background: var(--card) !important; border-color: color-mix(in srgb, var(--blue) 55%, var(--border)) !important; box-shadow: var(--md-elevation-1); }
         .compare-pill-fab:active { opacity: 0.9; transform: translateY(1px); }
         .trend-graph-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
         .salary-occasional { color: var(--purple) !important; }
-        #screen-salary .header-tab.active { color: var(--text); border-bottom: 3px solid var(--blue); }
-        body.green-theme #screen-salary .header-tab.active { border-bottom-color: var(--green); }
         #screen-salary .salary-accent { color: var(--blue); }
         body.green-theme #screen-salary .salary-accent { color: var(--green); }
         .month-nav-arrow-btn.prev { padding-right: 2px !important; }
@@ -759,12 +779,27 @@
         .tab-btn { flex: 1; padding: 10px; background: transparent; color: var(--text-muted); font-weight: bold; border-radius: 30px; margin: 0; text-align: center; cursor: pointer; box-shadow: none; transition: background 0.3s, color 0.3s; display: flex; align-items: center; justify-content: center; font-size: 14px; }
         .tab-btn.active { color: #ffffff !important; }
 
-        .header-tab { flex:1; background:transparent; border:none; box-shadow:none; margin:0; padding:7px 0 6px; border-radius:0; font-size:14.5px; font-weight:700; color:var(--text-muted); border-bottom:3px solid transparent; pointer-events:auto; transition:color 0.2s, border-color 0.2s; }
-        .header-tab.active { color:var(--text); border-bottom:3px solid var(--blue); }
+        .header-tab {
+            flex: 1; background: transparent; border: none; box-shadow: none; margin: 0;
+            padding: 8px 6px 10px; border-radius: 0; font-size: 13.5px; font-weight: 700;
+            color: var(--text-muted); pointer-events: auto; position: relative;
+            transition: color 0.2s, transform 0.1s;
+        }
+        .header-tab::after {
+            content: ''; position: absolute; left: 50%; bottom: 0; width: 0; height: 3px;
+            transform: translateX(-50%); border-radius: 2px 2px 0 0;
+            background: var(--blue-fill); transition: width 0.22s cubic-bezier(0.2, 0, 0, 1), background 0.2s;
+        }
+        .header-tab.active { color: var(--blue-fill); }
+        .header-tab.active::after { width: 52%; }
+        .header-tab:active { transform: scale(0.97); }
+        body.green-theme .header-tab.active { color: var(--green); }
+        body.green-theme .header-tab.active::after { background: var(--green); }
+        #screen-salary .header-tab.active { color: var(--blue-fill); border-bottom: none; }
+        body.green-theme #screen-salary .header-tab.active { color: var(--green); border-bottom-color: transparent; }
 
-        
-        .slider-bar { display: flex; justify-content: center; align-items: center; gap: 14px; padding: 5px 10px; font-weight: bold; color: var(--text); transition: color 0.3s, background 0.3s; border: 1px solid var(--border); border-radius: 22px; background: var(--card); width: fit-content; margin: 0 auto 15px auto; height: 38px; box-sizing: border-box; }
-        .slider-btn { background: transparent; border: 1.5px solid var(--blue); color: var(--blue); padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 28px; height: 28px; margin: 0; font-size: 14px; box-shadow: none; flex-shrink: 0; }
+        .slider-bar { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 4px 8px; font-weight: bold; color: var(--text); transition: color 0.3s, background 0.3s; border: 1px solid var(--border); border-radius: 20px; background: var(--card); width: fit-content; margin: 0 auto 15px auto; height: 32px; box-sizing: border-box; }
+        .slider-btn { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; width: 24px; height: 24px; margin: 0; font-size: 13px; box-shadow: none; flex-shrink: 0; }
         
         .summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; color: var(--text); }
         /* Duty Calendar */
@@ -953,18 +988,28 @@
             appearance: none;
             -webkit-appearance: none;
         }
-        .modal-icon-close {
-            width: 48px; height: 48px; min-width: 48px; min-height: 48px;
-            margin: 0; padding: 0; font-size: 13px; font-weight: 900;
+        .modal-icon-close, .modal-close-btn {
+            width: 36px; height: 36px; min-width: 36px; min-height: 36px;
+            margin: 0; padding: 0; font-size: 16px; font-weight: 700;
             background: var(--input-bg); color: var(--text-muted);
             border-radius: 50%; box-shadow: none; border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
+            display: inline-flex; align-items: center; justify-content: center;
             cursor: pointer; font: inherit; appearance: none; -webkit-appearance: none;
+            flex-shrink: 0; line-height: 1;
+        }
+        .modal-inline-action-btn {
+            width: auto !important; margin: 0 !important; min-height: 34px !important;
+            padding: 6px 12px !important; font-size: 12px !important; border-radius: 18px !important;
+            box-shadow: none !important;
         }
         .bottom-icon svg { width: 27px; height: 27px; transition: color 0.15s; }
         .bottom-icon:active { transform: scale(0.85); }
         .bottom-icon-wrap:active .bottom-icon, .bottom-icon-wrap.illuminated .bottom-icon { color: var(--blue-fill); }
         .bottom-icon-wrap:active .bottom-icon-label, .bottom-icon-wrap.illuminated .bottom-icon-label { color: var(--blue-fill); font-weight: 700; }
+        body.green-theme .bottom-icon-wrap.illuminated .bottom-icon,
+        body.green-theme .bottom-icon-wrap.illuminated .bottom-icon-label { color: var(--green); }
+        body.dark-mode.green-theme .bottom-icon-wrap.illuminated .bottom-icon,
+        body.dark-mode.green-theme .bottom-icon-wrap.illuminated .bottom-icon-label { color: #86efac; }
         .lang-toggle-icon { font-size: 12px; }
         .field-invalid { border: 1px solid var(--red) !important; background: rgba(220,38,38,0.08) !important; }
         /* Point (fix): the sheet's own inputs sit borderless and flush inside a padded, often
@@ -1056,11 +1101,13 @@
         .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; }
         .nav-fab-label { position: static; transform: none; font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
         .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue-fill); font-weight: 700; }
+        body.green-theme .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--green); }
+        body.dark-mode.green-theme .nav-fab-wrapper.illuminated .nav-fab-label { color: #86efac; }
         .nav-fab-ring { display: none; }
         .nav-fab {
             position: absolute; top: -30px; width: 64px; height: 64px;
             background: var(--blue-fill);
-            color: var(--md-on-primary); border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            color: var(--on-accent-fill); border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 32px;
             box-shadow: var(--md-elevation-3);
             border: none; cursor: pointer; z-index: 4001; transition: transform 0.1s; touch-action: manipulation;
@@ -1539,7 +1586,7 @@
                 pending: window.i18n ? window.i18n.tOr('sync_mini_pending', 'Pending') : 'Pending',
             }[state] || '';
             el.innerText = labelText;
-            el.style.color = '#ffffff';
+            el.style.color = document.body.classList.contains('dark-mode') ? '#e2e8f0' : 'var(--text-muted)';
             el.style.background = 'none';
             el.style.border = 'none';
             el.style.boxShadow = 'none';
@@ -2659,6 +2706,18 @@
 #sheet-add-table input::placeholder, #sheet-active-row-table input::placeholder { color: var(--text-muted) !important; -webkit-text-fill-color: var(--text-muted) !important; opacity: 0.60; font-size: 10.5px; }
 #sheet-add-table input::-webkit-input-placeholder, #sheet-active-row-table input::-webkit-input-placeholder { color: var(--text-muted) !important; -webkit-text-fill-color: var(--text-muted) !important; opacity: 0.60; font-size: 10.5px; }
 #sheet-add-tbody tr:last-child td { border-bottom: none !important; }
+#sheet-add-table td, #sheet-active-row-table td { padding: 2px 1px !important; }
+#sheet-add-table input, #sheet-active-row-table input,
+#sheet-add-table select, #sheet-active-row-table select {
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    padding: 2px 3px !important;
+    font-size: 10.5px !important;
+    border-radius: 4px !important;
+}
+#sheet-add-table thead th { padding: 3px 2px !important; font-size: 10px !important; }
+.settings-row [id$="-toggle-switch"] { width: 42px !important; height: 24px !important; }
+.settings-row [id$="-toggle-knob"] { width: 18px !important; height: 18px !important; top: 3px !important; }
 </style>
 <div id="connectivity-bar" class="hidden" style="position:relative; width:100%; min-height:var(--connectivity-bar-h); z-index:9999999; text-align:center; font-size:11px; font-weight:700; color:white; padding:3px 10px; box-sizing:border-box; transition:background 0.3s; line-height:1.3; display:flex; align-items:center; justify-content:center; gap:6px;">
     <div id="connectivity-bar-icon" style="width:17px; height:14px; flex-shrink:0; display:flex; align-items:center;"></div>
@@ -2953,12 +3012,12 @@
     </div>
 
     <div id="screen-yearly-trend" class="hidden">
-        <div class="top-bar" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
-            <div style="display:flex; align-items:center; min-height:60px; padding:10px 20px;">
+        <div class="top-bar top-bar-tabbed" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
+            <div class="top-bar-title-row" style="padding:10px 20px;">
                 <button class="back-btn" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
                 <h1 id="trend-screen-title" style="width:100%;">Travelling Allowances</h1>
             </div>
-            <div style="display:flex; width:100%;">
+            <div class="top-bar-tabs-row">
                 <button id="trend-tab-graph-btn" class="header-tab active" onclick="window.switchTrendViewTab('graph')">Actual TA</button>
                 <button id="trend-tab-future-btn" class="header-tab" onclick="window.switchTrendViewTab('future')">Projected TA</button>
                 <button id="trend-tab-signon-btn" class="header-tab hidden" onclick="window.switchTrendViewTab('signon')" data-i18n="trend_tab_signon">Sign On Time</button>
@@ -3000,12 +3059,12 @@
     </div>
 
     <div id="screen-salary" class="hidden">
-        <div class="top-bar" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
-            <div style="display:flex; align-items:center; min-height:60px; padding:10px 20px;">
+        <div class="top-bar top-bar-tabbed" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
+            <div class="top-bar-title-row" style="padding:10px 20px;">
                 <button class="back-btn" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
                 <h1 data-i18n="page_title_salary">Salary</h1>
             </div>
-            <div style="display:flex; width:100%;">
+            <div class="top-bar-tabs-row">
                 <button id="salary-tab-expected-btn" class="header-tab active" onclick="window.switchSalaryTab('expected')" data-i18n="salary_tab_expected">Expected Salary</button>
                 <button id="salary-tab-projected-btn" class="header-tab" onclick="window.switchSalaryTab('projected')" data-i18n="salary_tab_projected">Projected Salary</button>
             </div>
@@ -3035,7 +3094,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--green);">💰 Pay Rate Table</h3>
-                <button onclick="document.getElementById('pay-rate-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('pay-rate-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <p style="font-size:11px; color:var(--text-muted); margin:0 0 10px 0; flex-shrink:0;">✏️ Tap any Grade Pay / TA Rate cell to edit, then tap 💾 to save that row.</p>
             <div style="overflow-y:auto; flex:1;">
@@ -3091,7 +3150,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--orange);">🏠 HRA Rate Table</h3>
-                <button onclick="document.getElementById('hra-rate-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('hra-rate-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <p style="font-size:11px; color:var(--text-muted); margin:0 0 10px 0; flex-shrink:0;">✏️ Tap any HRA % cell to edit or toggle Big City, then tap 💾 to save that row. "Big City" determines the higher TPT (Transport Allowance) tier for that HQ.</p>
             <div style="display:flex; gap:8px; margin-bottom:6px; flex-shrink:0; align-items:center;">
@@ -3123,7 +3182,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--orange);">💰 NHA Rate Table</h3>
-                <button onclick="document.getElementById('nha-rate-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('nha-rate-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <p style="font-size:11px; color:var(--text-muted); margin:0 0 10px 0; flex-shrink:0;">✏️ Tap any rate cell to edit, then tap 💾 to save that row. National Holiday Allowance is paid per Pay Matrix Level band for duty performed on an NHA-eligible festival — festival dates themselves are managed in the Roster app's Admin → Festivals.</p>
             <div style="overflow-y:auto; flex:1;">
@@ -3197,7 +3256,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 480px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); transition: background 0.3s; display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-shrink: 0;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--blue);">📋 Central User Roster</h3>
-                <button onclick="document.getElementById('roster-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('roster-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <div id="roster-content" style="overflow-y: auto; flex: 1;">
                 <p style="font-size:13px; color:var(--text-muted); text-align:center; margin:20px 0;">Loading...</p>
@@ -3463,7 +3522,7 @@
         <div class="top-bar">
             <button class="back-btn hidden" id="profile-back-btn" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
             <div class="top-bar-content">
-                <h1 style="color: white;" data-i18n="page_title_profile_setup">Profile Setup</h1>
+                <h1 data-i18n="page_title_profile_setup">Profile Setup</h1>
             </div>
         </div>
         <div class="screen-content">
@@ -3685,7 +3744,7 @@
     <div id="screen-admin" class="hidden">
         <div class="top-bar" style="position:sticky;">
             <button class="back-btn" onclick="window.navTo('screen-dashboard')" style="pointer-events:auto;"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
-            <h1 style="color: white;" data-i18n="page_title_admin">Admin</h1>
+            <h1 data-i18n="page_title_admin">Admin</h1>
         </div>
         <div class="screen-content">
 
@@ -3772,7 +3831,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--red);">🔒 Maintenance Mode</h3>
-                <button onclick="document.getElementById('admin-maintenance-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('admin-maintenance-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                 <span style="font-size:12px; color:var(--text-muted);">Status:</span>
@@ -3788,7 +3847,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--orange);">📱 Version Gate</h3>
-                <button onclick="document.getElementById('admin-versiongate-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('admin-versiongate-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <div style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.4); border-radius:10px; padding:10px; margin-bottom:12px;">
                 <div style="font-size:12px; font-weight:900; color:var(--red); margin-bottom:4px;">Danger Zone — Read Before Using</div>
@@ -3814,7 +3873,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--blue);">📢 Global Announcement</h3>
-                <button onclick="document.getElementById('admin-announcement-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('admin-announcement-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Push a bell notification to all users. You can keep several active at once — each shows as its own bell alert.</p>
             <input type="text" id="admin-broadcast-msg" placeholder="Enter announcement message...">
@@ -3834,7 +3893,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--green);">📊 Push DA Revision</h3>
-                <button onclick="document.getElementById('admin-dapush-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('admin-dapush-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Pushes new DA% directly to ALL user profiles and sends them an in-app notification. TA Rate is user-managed (varies by level).</p>
             <div style="display:flex; gap:10px; margin-bottom:10px;">
@@ -3856,7 +3915,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 440px; max-height: 88vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--green);">📍 Push Stations by HQ</h3>
-                <button onclick="document.getElementById('admin-stationpush-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('admin-stationpush-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Since these are the same for every user at a given HQ, set them once here and push directly to every user whose profile HQ matches — instead of each user configuring it individually. This <b>overwrites</b> the matching fields on every affected profile.</p>
             <label class="profile-lbl">Target HQ</label>
@@ -3883,7 +3942,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); display:flex; flex-direction:column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink:0;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--blue);">🟢 Live Session Monitor</h3>
-                <button onclick="document.getElementById('admin-sessions-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('admin-sessions-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-shrink:0;">
                 <p style="font-size:12px; color:var(--text-muted); margin:0;">Users who synced in the last 10 minutes.</p>
@@ -3897,7 +3956,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--orange);">🗃️ Archive Old Data</h3>
-                <button onclick="document.getElementById('admin-archive-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('admin-archive-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <p style="font-size:12px; color:var(--text-muted); margin:0 0 10px 0;">Move all users' logs matching the chosen period to /archive/. Keeps the active DB fast. Can be browsed and restored anytime via View Archives below.</p>
 
@@ -3935,7 +3994,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 460px; max-height: 88vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); overflow-y: auto; display:flex; flex-direction:column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink:0;">
                 <h3 id="view-archives-title" style="margin: 0; font-size: 15px; font-weight: 900; color: var(--blue);">📂 Archived Data</h3>
-                <button onclick="window.closeViewArchivesModal()" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="window.closeViewArchivesModal()" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <div id="view-archives-body" style="overflow-y:auto;"><p style="font-size:12px; color:var(--text-muted); text-align:center;">Loading...</p></div>
         </div>
@@ -3945,11 +4004,11 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 95%; max-width: 420px; max-height: 85vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); display:flex; flex-direction:column;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink:0;">
                 <h3 style="margin: 0; font-size: 15px; font-weight: 900; color: var(--red);">📬 Feedback Inbox</h3>
-                <button onclick="document.getElementById('admin-feedback-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button type="button" class="modal-close-btn" onclick="document.getElementById('admin-feedback-modal').classList.add('hidden')" aria-label="Close">✕</button>
             </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-shrink:0;">
-                <p style="font-size:12px; color:var(--text-muted); margin:0;">Bug reports and feature requests submitted by users.</p>
-                <button onclick="window.loadFeedbackInbox()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--red); border-radius:20px; flex-shrink:0;">Load</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:6px; flex-shrink:0;">
+                <p style="font-size:12px; color:var(--text-muted); margin:0; flex:1; min-width:0;">Bug reports and feature requests submitted by users.</p>
+                <button type="button" class="modal-inline-action-btn" onclick="window.loadFeedbackInbox()" style="background:var(--red); color:var(--on-accent-fill);">Load</button>
             </div>
             <div id="admin-feedback-area" style="overflow-y:auto; flex:1;"><p style="font-size:13px; color:var(--text-muted); text-align:center; margin:5px 0;">Tap Load to view submissions</p></div>
         </div>
@@ -3957,18 +4016,16 @@
 
     <div id="screen-dashboard" class="hidden">
         <button type="button" id="dash-hamburger-icon" class="dash-hamburger-btn" onclick="window.openSidebar()" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
-        <div class="top-bar dash-header">
-            <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
-        </div>
-        <div class="screen-content">
-
-            <div id="dash-global-search" class="dash-global-search">
+        <div class="dash-top-search-wrap" id="dash-top-search-wrap">
+            <div id="dash-global-search" class="dash-global-search dash-global-search--topbar">
                 <div class="dash-global-search-box">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
                     <input type="search" id="dash-global-search-input" autocomplete="off" data-i18n-placeholder="global_search_placeholder" placeholder="Search journeys, circulars, features…" oninput="window.handleGlobalSearchInput()" onfocus="window.handleGlobalSearchInput()">
                 </div>
                 <div id="dash-global-search-results" class="dash-global-search-results hidden" role="listbox"></div>
             </div>
+        </div>
+        <div class="screen-content">
 
             <!-- Point (Task 3): welcome message + duty status box removed from display for now,
                  code kept here commented out in case it's needed again later.
@@ -4386,7 +4443,7 @@
         <div style="background:var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding:18px; border-radius:16px; width:88%; max-width:340px; border:1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); transition:background 0.3s;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h3 id="cal-day-title" style="color:var(--blue); margin:0; font-size:15px; font-weight:900;"></h3>
-                <button onclick="document.getElementById('cal-day-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('cal-day-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
             <div id="cal-day-content"></div>
         </div>
@@ -4396,7 +4453,7 @@
     <div id="screen-earnings" class="hidden">
         <div class="top-bar">
             <button class="back-btn" onclick="window.closeEarningsModal()"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
-            <h1 onclick="window.handleEarningsTitleTap()" style="color: white; cursor:pointer; user-select:none;" data-i18n="page_title_earnings">Earnings</h1>
+            <h1 onclick="window.handleEarningsTitleTap()" style="cursor:pointer; user-select:none;" data-i18n="page_title_earnings">Earnings</h1>
         </div>
         <div class="screen-content" style="display:flex; flex-direction:column; height:calc(100vh - 60px); box-sizing:border-box;">
             <div style="display:flex; gap:8px; margin-bottom:8px; flex-shrink:0; align-items:center;">
@@ -4467,7 +4524,7 @@
             <!-- Header row -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h4 style="margin:0; font-size:14px; font-weight:900; color:var(--blue);">📅 Duty Calendar</h4>
-                <button onclick="document.getElementById('calendar-modal').classList.add('hidden')" style="width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+                <button onclick="document.getElementById('calendar-modal').classList.add('hidden')" class="modal-close-btn" type="button" aria-label="Close">✕</button>
             </div>
 
             <!-- Month / Year Navigation -->
@@ -4535,12 +4592,12 @@
     </div>
 
     <div id="screen-reports" class="hidden">
-        <div class="top-bar" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
-            <div style="display:flex; align-items:center; min-height:60px; padding:10px 20px;">
+        <div class="top-bar top-bar-tabbed" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
+            <div class="top-bar-title-row" style="padding:10px 20px;">
                 <button class="back-btn" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
                 <h1 style="width:100%;" data-i18n="page_title_generate_pdf">Generate PDF</h1>
             </div>
-            <div style="display:flex; width:100%;">
+            <div class="top-bar-tabs-row">
                 <button id="tab-ta" class="header-tab active" onclick="window.switchTab('ta')">TA Journal</button>
                 <button id="tab-nda" class="header-tab" onclick="window.switchTab('nda')">NDA Bill</button>
             </div>
@@ -5332,7 +5389,8 @@
         const knob = document.getElementById(knobId);
         if (!sw || !knob) return;
         sw.style.background = isOn ? 'var(--blue-fill)' : '#64748b';
-        knob.style.left = isOn ? '23px' : '3px';
+        const swW = sw.offsetWidth || 46;
+        knob.style.left = isOn ? (swW - (knob.offsetWidth || 20) - 3) + 'px' : '3px';
     }
     window.toggleSettingsLanguage = function() {
         if (typeof window.toggleLanguage === 'function') window.toggleLanguage();
@@ -7154,7 +7212,23 @@
         if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(document.getElementById('screen-alerts'));
     };
 
+    window.updateTopBarScrollState = function() {
+        const y = window.scrollY || document.documentElement.scrollTop || 0;
+        const elevated = y > 6;
+        document.querySelectorAll('.top-bar, .dash-top-search-wrap').forEach(el => {
+            el.classList.toggle('top-bar--scrolled', elevated);
+        });
+        document.querySelectorAll('.top-bar-tabbed').forEach(el => {
+            el.classList.toggle('top-bar--compact-tabs', elevated);
+        });
+    };
+
     window.onload = () => { 
+        if (!window._topBarScrollBound) {
+            window._topBarScrollBound = true;
+            window.addEventListener('scroll', window.updateTopBarScrollState, { passive: true });
+            window.updateTopBarScrollState();
+        }
         if (window.applyPageAnimBodyClass) window.applyPageAnimBodyClass();
         if (window.applyCardShadowBodyClass) window.applyCardShadowBodyClass();
         if (window.applyGreenThemeBodyClass) window.applyGreenThemeBodyClass();
@@ -7735,7 +7809,8 @@
             animTarget.classList.add('page-open-anim');
             setTimeout(() => animTarget.classList.remove('page-open-anim'), 400);
         }
-        window.scrollTo(0, 0); 
+        window.scrollTo(0, 0);
+        if (window.updateTopBarScrollState) window.updateTopBarScrollState();
         
         const bBar = document.getElementById('main-bottom-bar');
         if(bBar) {
@@ -14401,6 +14476,8 @@
             document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.tOr('nda_total_row', "Total NDA") : "Total NDA");
         }
         animateTabSwitch(document.getElementById('report-summary-card'), direction);
+        const reportsZone = document.getElementById('reports-swipe-zone');
+        if (reportsZone) animateTabSwitch(reportsZone, direction);
         updateReportUI();
         if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
             window.updateTrendViewTabLabels();
@@ -14564,6 +14641,8 @@
         if (graphBtn) graphBtn.classList.toggle('active', view === 'graph');
         if (futureBtn) futureBtn.classList.toggle('active', view === 'future');
         if (signonBtn) signonBtn.classList.toggle('active', view === 'signon');
+        const trendAnimTarget = signonArea && view === 'signon' ? signonArea : (chartArea && view !== 'signon' ? chartArea : null);
+        if (trendAnimTarget) animateTabSwitch(trendAnimTarget);
         if (chartArea) chartArea.classList.toggle('hidden', view === 'signon');
         if (listBelow) listBelow.classList.add('hidden');
         const showMonthNav = view === 'future' || view === 'graph' || (isNda && view === 'signon');
@@ -14786,7 +14865,7 @@
             const monthName = isNDA
                 ? `${trendMonthShort(m - 2, year)}-${trendMonthShort(m - 1, year)}`
                 : trendMonthShort(m - 1, year);
-            const rowBg = (m % 2 === 0) ? 'var(--bg)' : 'var(--card)';
+            const rowBg = (m % 2 === 0) ? 'var(--row-stripe-bg)' : 'var(--card)';
             if (isNDA) {
                 const { totalNdaMinutes } = extractNDALegs(mo);
                 const stationMins = extractStationDutyNDA(mo).totalMins;
@@ -16386,6 +16465,8 @@
         if (projectedBtn) projectedBtn.classList.toggle('active', tab === 'projected');
         if (expectedPanel) expectedPanel.classList.toggle('hidden', tab !== 'expected');
         if (projectedPanel) projectedPanel.classList.toggle('hidden', tab !== 'projected');
+        const salaryAnimTarget = tab === 'projected' ? projectedPanel : expectedPanel;
+        if (salaryAnimTarget) animateTabSwitch(salaryAnimTarget);
         if (tab === 'projected') {
             window.renderSalaryProjectedBreakdown();
             window.renderSalaryProjectedYearGraph();
