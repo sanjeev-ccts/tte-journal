@@ -266,13 +266,35 @@
         .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row { display: none; }
         .top-bar-tabbed.top-bar--compact-tabs { min-height: 0; padding-top: calc(4px + var(--safe-top)); }
         .top-bar-title-row { display: flex; align-items: center; width: 100%; min-height: 52px; }
+        .top-bar-tabbed .top-bar-title-row {
+            position: relative;
+            justify-content: center;
+            padding: calc(8px + var(--safe-top)) 52px 8px 52px;
+            min-height: calc(44px + var(--safe-top));
+            box-sizing: border-box;
+        }
+        .top-bar-tabbed .top-bar-title-row h1 { margin: 0 !important; width: 100%; text-align: center; }
+        .top-bar-tabbed .top-bar-title-row .back-btn {
+            position: absolute !important;
+            left: max(4px, env(safe-area-inset-left, 0px)) !important;
+            top: calc(50% + var(--safe-top) / 2) !important;
+            transform: translateY(-50%) !important;
+        }
+        body.connectivity-bar-active .top-bar-tabbed .top-bar-title-row .back-btn {
+            top: calc(50% + var(--connectivity-bar-h) / 2 + var(--safe-top) / 2) !important;
+        }
         .top-bar-tabs-row { display: flex; width: 100%; position: relative; }
         .dash-top-search-wrap {
             position: sticky; top: 0; z-index: 1200;
-            padding: calc(4px + var(--safe-top)) 56px 8px 56px;
+            display: flex;
+            align-items: center;
+            min-height: calc(48px + var(--safe-top));
+            padding: calc(6px + var(--safe-top)) 64px 6px 64px;
             background: var(--top-bar-bg);
-            transition: background 0.25s, border-color 0.25s;
+            transition: background 0.25s, border-color 0.25s, opacity 0.2s;
+            box-sizing: border-box;
         }
+        body.dash-chrome-compact #dash-sync-cluster { opacity: 0; pointer-events: none; }
         .dash-global-search--topbar { margin-bottom: 0; }
         .top-bar h1 { margin: 0 0 0 38px; font-size: var(--text-title); font-weight: 900; color: var(--text); letter-spacing: 0.5px; text-align: left; width: 100%; user-select: none; line-height: var(--line-height-tight); }
         .top-bar:not(.dash-header) h1,
@@ -450,7 +472,7 @@
             text-transform: uppercase;
             white-space: nowrap;
             padding: 0;
-            margin: 1px 0 0 0;
+            margin: -3px 0 0 0;
             background: none !important;
             border: none !important;
             box-shadow: none !important;
@@ -460,7 +482,7 @@
             color: var(--text-muted);
             text-shadow: none;
         }
-        body.dark-mode #dash-sync-mini-label { color: #e2e8f0; text-shadow: 0 0 1px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.55); }
+        body.dark-mode #dash-sync-mini-label { text-shadow: 0 0 1px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.55); }
         body.connectivity-bar-active .back-btn { top: calc(9px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
         body.connectivity-bar-active .dash-hamburger-btn, body.connectivity-bar-active .dash-sync-cluster { top: calc(6px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
         body.connectivity-bar-active #roster-iframe-modal { top: var(--connectivity-bar-h) !important; height: calc(100% - var(--connectivity-bar-h)) !important; }
@@ -585,8 +607,30 @@
             padding-bottom: 6px !important;
             font-size: 13px !important;
         }
-        #nda-from-box, #nda-to-box {
+        #nda-from-box, #nda-to-box, #report-month-sel, #report-year-sel {
             border: 1px solid var(--border) !important;
+            border-radius: 30px !important;
+            min-height: 38px !important;
+            padding: 9px 22px 9px 12px !important;
+            font-size: 13.5px !important;
+            font-weight: 700 !important;
+            box-sizing: border-box;
+        }
+        .pdf-inline-field-box {
+            display: flex; align-items: center; justify-content: center;
+            background: var(--input-bg); border-radius: 14px;
+            padding: 4px 14px; min-height: 36px; min-width: 88px;
+            box-sizing: border-box;
+        }
+        .trend-nda-metric-toggle {
+            position: absolute; top: 8px; left: 8px; z-index: 2;
+            display: flex; background: var(--input-bg); border-radius: 10px;
+            padding: 2px; border: 1px solid var(--border);
+        }
+        .trend-nda-metric-toggle button {
+            margin: 0 !important; padding: 5px 10px !important; font-size: 10px !important;
+            font-weight: 700 !important; border-radius: 8px !important; box-shadow: none !important;
+            min-height: 28px !important; width: auto !important;
         }
         .period-picker-shell { display:flex; align-items:center; justify-content:center; gap:14px; width:fit-content; margin:0 auto; background:var(--card); border-radius:22px; padding:5px 10px; border:1.5px solid color-mix(in srgb, var(--blue) 55%, var(--border)); box-shadow:0 1px 4px rgba(15,23,42,0.06); }
         input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; -webkit-appearance: checkbox; appearance: auto; }
@@ -768,7 +812,8 @@
         body:not(.dark-mode) .trend-summary-box { background: var(--card); box-shadow: 0 1px 4px rgba(15, 23, 42, 0.07); }
         .compare-pill-fab { position: fixed; bottom: calc(90px + var(--safe-bottom)); right: max(18px, env(safe-area-inset-right, 0px)); z-index: 3000; display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-radius: var(--md-radius-full); border: 1.5px solid var(--blue-fill); background: var(--blue-fill); color: var(--on-accent-fill); font-size: 11.5px; font-weight: 800; line-height: 1; cursor: pointer; box-shadow: var(--md-elevation-2); max-width: none; margin: 0; width: auto; height: auto; min-height: 36px; }
         .compare-pill-fab svg { width: 20px; height: 17px; display: block; flex-shrink: 0; }
-        .compare-pill-fab.active { color: var(--text) !important; background: var(--card) !important; border-color: color-mix(in srgb, var(--blue) 55%, var(--border)) !important; box-shadow: var(--md-elevation-1); }
+        .compare-pill-fab.active { color: var(--text) !important; background: color-mix(in srgb, var(--blue) 14%, var(--card)) !important; border-color: color-mix(in srgb, var(--blue) 55%, var(--border)) !important; box-shadow: var(--md-elevation-1); }
+        body.green-theme .compare-pill-fab.active { background: color-mix(in srgb, var(--green) 16%, var(--card)) !important; border-color: color-mix(in srgb, var(--green) 50%, var(--border)) !important; }
         .compare-pill-fab:active { opacity: 0.9; transform: translateY(1px); }
         .trend-graph-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
         .salary-occasional { color: var(--purple) !important; }
@@ -949,7 +994,7 @@
         }
         body.dark-mode .bottom-bar { box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.35); }
         .bottom-nav-indicator {
-            position: absolute; top: 0; left: 0; width: 52px; height: 32px;
+            position: absolute; top: 0; left: 0; width: 58px; height: 32px;
             border-radius: 16px; background: var(--nav-indicator-bg);
             opacity: 0; pointer-events: none; z-index: 0;
             transition: left 0.28s cubic-bezier(0.2, 0, 0, 1), top 0.28s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s;
@@ -1006,6 +1051,13 @@
         .bottom-icon:active { transform: scale(0.85); }
         .bottom-icon-wrap:active .bottom-icon, .bottom-icon-wrap.illuminated .bottom-icon { color: var(--blue-fill); }
         .bottom-icon-wrap:active .bottom-icon-label, .bottom-icon-wrap.illuminated .bottom-icon-label { color: var(--blue-fill); font-weight: 700; }
+        .bottom-icon-wrap.illuminated .bottom-icon svg path,
+        .bottom-icon-wrap.illuminated .bottom-icon svg circle,
+        .bottom-icon-wrap.illuminated .bottom-icon svg line,
+        .bottom-icon-wrap.illuminated .bottom-icon svg polyline {
+            fill: currentColor;
+            stroke: none;
+        }
         body.green-theme .bottom-icon-wrap.illuminated .bottom-icon,
         body.green-theme .bottom-icon-wrap.illuminated .bottom-icon-label { color: var(--green); }
         body.dark-mode.green-theme .bottom-icon-wrap.illuminated .bottom-icon,
@@ -1586,7 +1638,15 @@
                 pending: window.i18n ? window.i18n.tOr('sync_mini_pending', 'Pending') : 'Pending',
             }[state] || '';
             el.innerText = labelText;
-            el.style.color = document.body.classList.contains('dark-mode') ? '#e2e8f0' : 'var(--text-muted)';
+            const syncLabelColors = {
+                synced: document.body.classList.contains('green-theme') ? '#22c55e' : '#3b82f6',
+                online: document.body.classList.contains('green-theme') ? '#22c55e' : '#3b82f6',
+                syncing: '#3b82f6',
+                pending: '#f97316',
+                offline: '#ef4444',
+                failing: '#ef4444',
+            };
+            el.style.color = syncLabelColors[state] || 'var(--text-muted)';
             el.style.background = 'none';
             el.style.border = 'none';
             el.style.boxShadow = 'none';
@@ -2706,13 +2766,13 @@
 #sheet-add-table input::placeholder, #sheet-active-row-table input::placeholder { color: var(--text-muted) !important; -webkit-text-fill-color: var(--text-muted) !important; opacity: 0.60; font-size: 10.5px; }
 #sheet-add-table input::-webkit-input-placeholder, #sheet-active-row-table input::-webkit-input-placeholder { color: var(--text-muted) !important; -webkit-text-fill-color: var(--text-muted) !important; opacity: 0.60; font-size: 10.5px; }
 #sheet-add-tbody tr:last-child td { border-bottom: none !important; }
-#sheet-add-table td, #sheet-active-row-table td { padding: 2px 1px !important; }
+#sheet-add-table td, #sheet-active-row-table td { padding: 3px 2px !important; }
 #sheet-add-table input, #sheet-active-row-table input,
 #sheet-add-table select, #sheet-active-row-table select {
     min-height: 0 !important;
     margin-top: 0 !important;
-    padding: 2px 3px !important;
-    font-size: 10.5px !important;
+    padding: 4px 3px !important;
+    font-size: 11px !important;
     border-radius: 4px !important;
 }
 #sheet-add-table thead th { padding: 3px 2px !important; font-size: 10px !important; }
@@ -4020,7 +4080,7 @@
             <div id="dash-global-search" class="dash-global-search dash-global-search--topbar">
                 <div class="dash-global-search-box">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
-                    <input type="search" id="dash-global-search-input" autocomplete="off" data-i18n-placeholder="global_search_placeholder" placeholder="Search journeys, circulars, features…" oninput="window.handleGlobalSearchInput()" onfocus="window.handleGlobalSearchInput()">
+                    <input type="search" id="dash-global-search-input" autocomplete="off" data-i18n-placeholder="global_search_short" placeholder="Search" oninput="window.handleGlobalSearchInput()" onfocus="window.handleGlobalSearchInput()">
                 </div>
                 <div id="dash-global-search-results" class="dash-global-search-results hidden" role="listbox"></div>
             </div>
@@ -4677,10 +4737,10 @@
                 </div>
                 
                 <div id="ta-extras">
-                    <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_working_days_label">Working Days</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><div style="display:flex; align-items:center; justify-content:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><input type="number" id="pdf-work-days" placeholder="0" oninput="window.toggleUnitLabel('pdf-work-days','pdf-work-days-unit'); window.toggleFillHint('pdf-work-days','pdf-work-days-fill')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"><span id="pdf-work-days-unit" data-i18n="report_days_unit" style="color:var(--purple); font-size:13px; font-weight:700; white-space:nowrap; display:none;">&nbsp;Days</span></div><span id="pdf-work-days-fill" style="display:inline-flex; align-items:center; margin-left:8px; color:var(--red); font-size:12px; font-weight:400; white-space:nowrap; line-height:1;"><svg viewBox="0 0 512 243.58" style="width:16px; height:8px; flex-shrink:0;" fill="currentColor"><path fill-rule="nonzero" d="M138.43 243.58 0 122.84 140.47 0l20.92 23.91-94.92 83 445.53-.42v31.75l-445.54.41 92.89 81.02z"/></svg><span data-i18n="pdf_fill_hint" style="margin-left:3px;">Fill</span></span></div>
-                    <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_earnings_label">Earnings</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><div style="display:flex; align-items:center; justify-content:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><span id="pdf-earnings-unit" style="color:var(--purple); font-size:14px; font-weight:700; display:none;">₹</span><input type="number" id="pdf-earnings" placeholder="0" oninput="window.toggleUnitLabel('pdf-earnings','pdf-earnings-unit'); window.toggleFillHint('pdf-earnings','pdf-earnings-fill')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"></div><span id="pdf-earnings-fill" style="display:inline-flex; align-items:center; margin-left:8px; color:var(--red); font-size:12px; font-weight:400; white-space:nowrap; line-height:1;"><svg viewBox="0 0 512 243.58" style="width:16px; height:8px; flex-shrink:0;" fill="currentColor"><path fill-rule="nonzero" d="M138.43 243.58 0 122.84 140.47 0l20.92 23.91-94.92 83 445.53-.42v31.75l-445.54.41 92.89 81.02z"/></svg><span data-i18n="pdf_fill_hint" style="margin-left:3px;">Fill</span></span></div>
+                    <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_working_days_label">Working Days</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><div class="pdf-inline-field-box"><input type="number" id="pdf-work-days" placeholder="0" oninput="window.toggleUnitLabel('pdf-work-days','pdf-work-days-unit'); window.toggleFillHint('pdf-work-days','pdf-work-days-fill')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 60px; height: auto; font-size: 14px; min-height: 0 !important;"><span id="pdf-work-days-unit" data-i18n="report_days_unit" style="color:var(--purple); font-size:13px; font-weight:700; white-space:nowrap; display:none;">&nbsp;Days</span></div><span id="pdf-work-days-fill" style="display:inline-flex; align-items:center; margin-left:8px; color:var(--red); font-size:12px; font-weight:400; white-space:nowrap; line-height:1;"><svg viewBox="0 0 512 243.58" style="width:16px; height:8px; flex-shrink:0;" fill="currentColor"><path fill-rule="nonzero" d="M138.43 243.58 0 122.84 140.47 0l20.92 23.91-94.92 83 445.53-.42v31.75l-445.54.41 92.89 81.02z"/></svg><span data-i18n="pdf_fill_hint" style="margin-left:3px;">Fill</span></span></div>
+                    <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_earnings_label">Earnings</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><div class="pdf-inline-field-box"><span id="pdf-earnings-unit" style="color:var(--purple); font-size:14px; font-weight:700; display:none;">₹</span><input type="number" id="pdf-earnings" placeholder="0" oninput="window.toggleUnitLabel('pdf-earnings','pdf-earnings-unit'); window.toggleFillHint('pdf-earnings','pdf-earnings-fill')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 60px; height: auto; font-size: 14px; min-height: 0 !important;"></div><span id="pdf-earnings-fill" style="display:inline-flex; align-items:center; margin-left:8px; color:var(--red); font-size:12px; font-weight:400; white-space:nowrap; line-height:1;"><svg viewBox="0 0 512 243.58" style="width:16px; height:8px; flex-shrink:0;" fill="currentColor"><path fill-rule="nonzero" d="M138.43 243.58 0 122.84 140.47 0l20.92 23.91-94.92 83 445.53-.42v31.75l-445.54.41 92.89 81.02z"/></svg><span data-i18n="pdf_fill_hint" style="margin-left:3px;">Fill</span></span></div>
                 </div>
-                <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate PDF Document</button>
+                <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate TA or NDA PDF</button>
             </div>
             <div id="preview-browser-hint" class="tte-fade" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:20px; padding:16px 16px 4px;">
         <p data-i18n="pdf_browser_recommend" style="color:var(--text-muted); font-size:11px; font-weight:500; margin:0; text-align:center; max-width:320px; line-height:1.5;">Printing TA and NDA PDF files works best using Google Chrome and similar chromium browsers.</p>
@@ -5446,7 +5506,7 @@
         const iconBtn = wrap.querySelector('.bottom-icon');
         const targetRect = iconBtn ? iconBtn.getBoundingClientRect() : wrap.getBoundingClientRect();
         const barRect = bar.getBoundingClientRect();
-        const pillW = 52;
+        const pillW = 58;
         const pillH = 32;
         indicator.style.width = pillW + 'px';
         indicator.style.height = pillH + 'px';
@@ -7207,7 +7267,7 @@
                 <div class="alerts-empty-desc">${t('notifications_no_active', 'No active warnings right now.')}</div>
             </div>`;
         } else {
-            body.innerHTML = notifs.map(n => `<div class="alerts-item"><div class="alerts-item-icon" aria-hidden="true">⚠️</div><div class="alerts-item-text">${n}</div></div>`).join('');
+            body.innerHTML = notifs.map(n => `<div class="alerts-item"><div class="alerts-item-text">${n}</div></div>`).join('');
         }
         if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(document.getElementById('screen-alerts'));
     };
@@ -7221,6 +7281,9 @@
         document.querySelectorAll('.top-bar-tabbed').forEach(el => {
             el.classList.toggle('top-bar--compact-tabs', elevated);
         });
+        const dash = document.getElementById('screen-dashboard');
+        const dashVisible = dash && !dash.classList.contains('hidden');
+        document.body.classList.toggle('dash-chrome-compact', dashVisible && elevated);
     };
 
     window.onload = () => { 
@@ -7775,6 +7838,13 @@
 
         if(screenId === 'screen-reports') {
             window.resetReportMonthToCurrent();
+        }
+        if (screenId === 'screen-yearly-trend') {
+            window._trendFutureCompareActual = false;
+        }
+        if (screenId === 'screen-salary') {
+            window._salaryCompareExpected = false;
+            try { sessionStorage.removeItem('tte_salary_compare'); } catch (e) {}
         }
 
         const dashLeaving = document.getElementById('screen-dashboard');
@@ -10677,8 +10747,9 @@
         const firstRow = document.querySelector('#sheet-add-tbody tr');
         if (!wrap || !thead) return;
         const headerH = thead.offsetHeight;
-        const rowH = firstRow ? firstRow.offsetHeight : 34;
-        wrap.style.maxHeight = (headerH + rowH * SHEET_VISIBLE_ROWS) + 'px';
+        const rowH = firstRow ? firstRow.offsetHeight : 38;
+        const actionExtra = window._sheetActionRowId ? Math.round(rowH * 0.85) : 0;
+        wrap.style.maxHeight = (headerH + rowH * SHEET_VISIBLE_ROWS + actionExtra) + 'px';
     }
 
     // Point (restructure v2): the active row is now sticky to the bottom of the container (see
@@ -11018,6 +11089,17 @@
         if (activeTbody) activeTbody.innerHTML = activeRow ? renderRowHtml(activeRow, 0, true, true) : '';
         adjustSheetContainerHeight();
         window.syncActiveRowColumnWidths();
+        if (window._sheetActionRowId) {
+            requestAnimationFrame(() => {
+                const wrap = document.getElementById('sheet-table-scroll-wrap');
+                const actionTr = document.querySelector(`tr.sheet-action-row[data-sheet-action-row="${window._sheetActionRowId}"]`);
+                if (!wrap || !actionTr) return;
+                const actionBottom = actionTr.offsetTop + actionTr.offsetHeight;
+                if (actionBottom > wrap.scrollTop + wrap.clientHeight - 4) {
+                    wrap.scrollTop = Math.max(0, actionBottom - wrap.clientHeight + 8);
+                }
+            });
+        }
     }
 
     // Point: measures the history table's ACTUAL rendered column widths (in pixels, after
@@ -14436,10 +14518,11 @@
 
     window.updateGeneratePdfBtnLabel = function() {
         const genBtn = document.getElementById('generate-btn');
-        if (!genBtn || !window.i18n) return;
-        genBtn.innerText = currentTab === 'nda'
-            ? window.i18n.tOr('generate_nda_pdf_btn', 'Generate NDA PDF')
-            : window.i18n.tOr('generate_ta_pdf_btn', 'Generate TA PDF');
+        if (!genBtn) return;
+        const label = window.i18n
+            ? window.i18n.tOr('generate_ta_or_nda_pdf', 'Generate TA or NDA PDF')
+            : 'Generate TA or NDA PDF';
+        genBtn.innerText = label;
     };
 
     function switchTab(tab, direction) { 
@@ -14475,9 +14558,6 @@
             document.getElementById('rep-nda-row').classList.remove('hidden');
             document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.tOr('nda_total_row', "Total NDA") : "Total NDA");
         }
-        animateTabSwitch(document.getElementById('report-summary-card'), direction);
-        const reportsZone = document.getElementById('reports-swipe-zone');
-        if (reportsZone) animateTabSwitch(reportsZone, direction);
         updateReportUI();
         if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
             window.updateTrendViewTabLabels();
@@ -15981,9 +16061,7 @@
             const xOffset = isNDA ? stepX / 2 : 0;
             const highlightIdx = window.getTrendGraphHighlightIdx(year, isNDA, highlightMonthKey);
             const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
-            const title = graphTitle || (isNDA
-                ? (unitSuffix === 'h' ? t('trend_graph_actual_nda', 'Actual NDA') : t('trend_graph_actual_nda', 'Actual NDA'))
-                : t('trend_graph_actual_ta', 'Actual TA'));
+            const title = graphTitle || '';
             return window.buildResponsiveTrendLineGraph({
                 values, color, highlightColor: color, unitSuffix, avgDisplay, overlayHtml, graphTitle: title,
                 gridlineCount, xOffset, highlightIdx, monthLabelNames: labelNames,
@@ -16007,9 +16085,9 @@
             const hrsLabel = window.i18n ? window.i18n.tOr('trend_nda_hours', 'Hours') : 'Hours';
             const moneyLabel = window.i18n ? window.i18n.tOr('trend_nda_money', 'Money') : 'Money';
             const toggleHtml = `
-                <div style="position:absolute; top:8px; left:8px; z-index:2; display:flex; background:var(--input-bg); border-radius:10px; padding:2px; border:1px solid var(--border);">
-                    <button onclick="window.switchTrendNdaMetric('hours')" style="margin:0; padding:3px 8px; font-size:10px; font-weight:700; border-radius:8px; background:${metric === 'hours' ? 'var(--blue-fill)' : 'transparent'}; color:${metric === 'hours' ? 'white' : 'var(--text-muted)'}; box-shadow:none;">${hrsLabel}</button>
-                    <button onclick="window.switchTrendNdaMetric('money')" style="margin:0; padding:3px 8px; font-size:10px; font-weight:700; border-radius:8px; background:${metric === 'money' ? 'var(--green)' : 'transparent'}; color:${metric === 'money' ? 'white' : 'var(--text-muted)'}; box-shadow:none;">${moneyLabel}</button>
+                <div class="trend-nda-metric-toggle">
+                    <button type="button" onclick="window.switchTrendNdaMetric('hours')" style="background:${metric === 'hours' ? 'var(--blue-fill)' : 'transparent'}; color:${metric === 'hours' ? 'white' : 'var(--text-muted)'};">${hrsLabel}</button>
+                    <button type="button" onclick="window.switchTrendNdaMetric('money')" style="background:${metric === 'money' ? 'var(--green)' : 'transparent'}; color:${metric === 'money' ? 'white' : 'var(--text-muted)'};">${moneyLabel}</button>
                 </div>`;
             html = (metric === 'hours'
                 ? buildOneGraph(hourValues, 'var(--blue)', 'h', 'trend_graph_avg_nda_hrs', toggleHtml, highlightMonthKey)
@@ -16116,21 +16194,21 @@
                 const hrsLabel = t('trend_nda_hours', 'Hours');
                 const moneyLabel = t('trend_nda_money', 'Money');
                 const toggleHtml = `
-                    <div style="position:absolute; top:8px; left:8px; z-index:2; display:flex; background:var(--input-bg); border-radius:10px; padding:2px; border:1px solid var(--border);">
-                        <button onclick="window.switchTrendFutureNdaMetric('hours')" style="margin:0; padding:3px 8px; font-size:10px; font-weight:700; border-radius:8px; background:${metric === 'hours' ? 'var(--blue-fill)' : 'transparent'}; color:${metric === 'hours' ? 'white' : 'var(--text-muted)'}; box-shadow:none;">${hrsLabel}</button>
-                        <button onclick="window.switchTrendFutureNdaMetric('money')" style="margin:0; padding:3px 8px; font-size:10px; font-weight:700; border-radius:8px; background:${metric === 'money' ? 'var(--green)' : 'transparent'}; color:${metric === 'money' ? 'white' : 'var(--text-muted)'}; box-shadow:none;">${moneyLabel}</button>
+                    <div class="trend-nda-metric-toggle">
+                        <button type="button" onclick="window.switchTrendFutureNdaMetric('hours')" style="background:${metric === 'hours' ? 'var(--blue-fill)' : 'transparent'}; color:${metric === 'hours' ? 'white' : 'var(--text-muted)'};">${hrsLabel}</button>
+                        <button type="button" onclick="window.switchTrendFutureNdaMetric('money')" style="background:${metric === 'money' ? 'var(--green)' : 'transparent'}; color:${metric === 'money' ? 'white' : 'var(--text-muted)'};">${moneyLabel}</button>
                     </div>`;
                 const projVals = metric === 'hours' ? hourValues : moneyValues;
                 const projColor = metric === 'hours' ? 'var(--blue)' : 'var(--green)';
                 const projSuffix = metric === 'hours' ? 'h' : '₹';
                 const projAvgKey = metric === 'hours' ? 'trend_graph_avg_nda_hrs' : 'trend_graph_avg_nda_money';
-                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { graphTitle: projectedTitle, compactBottom: compareOn });
+                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { graphTitle: compareOn ? projectedTitle : '', compactBottom: compareOn });
                 if (compareOn && actualValues) {
                     const actVals = metric === 'hours' ? actualValues.hourValues : actualValues.moneyValues;
                     html += buildFutureGraph(actVals, 'var(--text-muted)', projSuffix, projAvgKey, null, { graphTitle: actualTitle, compactBottom: true, marginTop: 18 });
                 }
             } else {
-                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { graphTitle: projectedTitle, compactBottom: compareOn });
+                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { graphTitle: compareOn ? projectedTitle : '', compactBottom: compareOn });
                 if (compareOn && actualValues) {
                     html += buildFutureGraph(actualValues.moneyValues, 'var(--text-muted)', '₹', 'trend_graph_avg_ta', null, { graphTitle: actualTitle, compactBottom: true, marginTop: 18 });
                 }
@@ -16478,7 +16556,6 @@
 
     window.switchSalaryCompareExpected = function() {
         window._salaryCompareExpected = !window._salaryCompareExpected;
-        try { sessionStorage.setItem('tte_salary_compare', window._salaryCompareExpected ? '1' : '0'); } catch (e) {}
         window.updateSalaryCompareFab();
         window.renderSalaryProjectedBreakdown();
         window.renderSalaryProjectedYearGraph();
@@ -16528,7 +16605,7 @@
             const r = window.getSalaryForMonth(mo);
             values.push(r ? r.total : 0);
         }
-        wrap.innerHTML = buildSalaryGraph(values, y, m - 1, t('salary_graph_expected', 'Expected Salary'));
+        wrap.innerHTML = buildSalaryGraph(values, y, m - 1, '');
     };
 
     window.renderSalaryProjectedYearGraph = function() {
@@ -16560,7 +16637,7 @@
                 projectedValues.push(pr ? pr.total : 0);
                 expectedValues.push(er ? er.total : 0);
             }
-            let html = buildSalaryGraph(projectedValues, y, m - 1, t('salary_graph_projected', 'Projected Salary'), { compactBottom: compareOn });
+            let html = buildSalaryGraph(projectedValues, y, m - 1, compareOn ? t('salary_graph_projected', 'Projected Salary') : '', { compactBottom: compareOn });
             if (compareOn) {
                 html += buildSalaryGraph(expectedValues, y, m - 1, t('salary_graph_expected', 'Expected Salary'), { color: 'var(--text-muted)', compactBottom: true, marginTop: 18 });
             }
@@ -16611,11 +16688,8 @@
         try {
             const savedTab = sessionStorage.getItem('tte_salary_tab');
             if (savedTab) window._salaryActiveTab = savedTab;
-            const savedCompare = sessionStorage.getItem('tte_salary_compare');
-            if (savedCompare !== null) window._salaryCompareExpected = savedCompare === '1';
         } catch (e) {}
         window._salaryActiveTab = window._salaryActiveTab || 'expected';
-        window._salaryCompareExpected = window._salaryCompareExpected || false;
         const result = window.getSalaryForMonth(window._salaryCurrentMonthKey);
         if (!result) return;
         document.getElementById('salary-breakdown-body').innerHTML = window.buildSalaryBreakdownHtml(result, { isProjected: false });
