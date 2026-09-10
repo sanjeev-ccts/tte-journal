@@ -25,12 +25,12 @@
         --sheet-header-text: #ecfdf5;
     }
     body.dark-mode {
-        --bg: #121212; --card: #303036; --text: #e6edf3; --text-muted: #aab4be;
-        --border: #484e5a; --input-bg: #242832; --shadow: 0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
-        --blue: #58a6ff; --blue-fill: #3157c4; --green: #3fb950; --purple: #bc8cff; --yellow: #f0c040; --orange: #f0883e; --red: #ff7b72;
-        --modal-bg: #343840; --top-bar-bg: #1a1c24;
-        --table-border: #30363d;
-        --sheet-header-bg: #254ca9; --sheet-header-text: #cbdcff;
+        --bg: #0b0f19; --card: #151c2c; --text: #f8fafc; --text-muted: #94a3b8;
+        --border: #232d42; --input-bg: #1a2336; --shadow: 0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
+        --blue: #58a6ff; --blue-fill: #4d8eff; --green: #3fb950; --purple: #bc8cff; --yellow: #f0c040; --orange: #f0883e; --red: #ff7b72;
+        --modal-bg: #151c2c; --top-bar-bg: #0b0f19; --bottom-bar-bg: #151c2c;
+        --table-border: #232d42;
+        --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
     }
     body.dark-mode.green-theme {
         --blue: #4ade80;
@@ -66,7 +66,7 @@
        cue that actually works well in dark mode (measured 2.27 contrast already) - compensating
        for what the shadow alone can't fully deliver. */
     body.dark-mode button { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
-    body:not(.card-shadow-on).dark-mode .admin-quick-card, body:not(.card-shadow-on).dark-mode .duty-box { background: var(--card); border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
+    body:not(.card-shadow-on).dark-mode .admin-quick-card, body:not(.card-shadow-on).dark-mode .duty-box { background: var(--card); border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     .result-modal-box { background: var(--card); box-shadow: 0 -8px 30px rgba(0,0,0,0.5) !important; }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
     body.dark-mode .team-info-card .cor-name, body.dark-mode .team-info-card .tte-name { color: var(--orange); }
@@ -112,7 +112,7 @@
         box-shadow: var(--shadow), inset 0 1px 0 color-mix(in srgb, white 25%, transparent), inset 0 -2px 3px color-mix(in srgb, black 12%, transparent);
         border: 1px solid var(--border);
     }
-    body:not(.card-shadow-on) .card { background: var(--card); border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
+    body:not(.card-shadow-on) .card { background: var(--card); border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.15); }
     /* Point: tab-bar converted from a separate pill-row-below-header (its own tinted background,
        rounded pill, hardcoded #1d4ed8 active text) into a header-tab strip merged directly into
        the top-bar - same visual language as index.html's Generate PDF page (TA Journal/NDA Bill)
@@ -425,12 +425,12 @@
     .bottom-icon:active { transform: scale(0.85); }
     .bottom-icon-wrap:active .bottom-icon, .bottom-icon-wrap.illuminated .bottom-icon { color: var(--blue); }
     .bottom-icon-wrap:active .bottom-icon-label, .bottom-icon-wrap.illuminated .bottom-icon-label { color: #3b7aec; }
-    .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; align-self: flex-end; }
+    .nav-fab-wrapper { position: relative; width: 58px; height: 58px; flex-shrink: 0; display: flex; justify-content: center; align-items: center; align-self: flex-end; }
     .nav-fab-label { position: absolute; bottom: 9px; left: 50%; transform: translateX(-50%); font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; }
     .nav-fab-wrapper.illuminated .nav-fab-label { color: #3b7aec; }
     .nav-fab-ring { display: none; }
-    .nav-fab { position: absolute; top: -26px; width: 64px; height: 64px; background: var(--blue-fill); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 32px; box-shadow: 0 3px 10px rgba(0,0,0,0.5); border: none; cursor: pointer; z-index: 4001; transition: transform 0.1s; touch-action: manipulation; }
-    .nav-fab svg { width: 30px; height: 30px; }
+    .nav-fab { position: absolute; top: -20px; width: 54px; height: 54px; background: var(--blue-fill); color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 28px; box-shadow: 0 3px 10px rgba(0,0,0,0.5); border: none; cursor: pointer; z-index: 4001; transition: transform 0.1s; touch-action: manipulation; }
+    .nav-fab svg { width: 26px; height: 26px; }
     .nav-fab:active { transform: scale(0.85); }
     .bell-badge { position: absolute; top: 6px; right: 6px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
     #save-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #16a34a; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 21000; transition: transform 0.3s ease; }

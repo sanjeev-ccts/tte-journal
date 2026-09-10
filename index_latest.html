@@ -132,7 +132,7 @@
         body.dark-mode {
             --row-stripe-bg: color-mix(in srgb, var(--card) 82%, #ffffff 18%);
             --nav-indicator-bg: rgba(37, 99, 235, 0.2);
-            --md-primary: #8ab4ff;
+            --md-primary: #5b9aff;
             --md-on-primary: #002f6c;
             --md-primary-container: #004494;
             --md-on-primary-container: #d8e2ff;
@@ -155,9 +155,9 @@
             --text: var(--md-on-surface);
             --text-muted: var(--md-on-surface-variant);
             --blue: #58a6ff;
-            --blue-fill: var(--md-primary);
+            --blue-fill: #4d8eff;
             --ta-accent: #3a7aec;
-            --ta-accent-fill: #58a6ff;
+            --ta-accent-fill: #5b9aff;
             --purple-fill: #7e22ce;
             --green: #3fb950;
             --purple: #bc8cff;
@@ -263,38 +263,40 @@
         
         .top-bar { position: sticky; background: var(--top-bar-bg); color: var(--text); padding: calc(10px + var(--safe-top)) 20px 10px; min-height: calc(64px + var(--safe-top)); display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: none; border-bottom: none; transition: background 0.25s, border-color 0.25s; pointer-events: none; }
         .top-bar.top-bar--scrolled, .dash-top-search-wrap.top-bar--scrolled { background: var(--card); border-bottom: 1px solid var(--border); }
-        .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row { display: none; }
+        .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row h1 {
+            opacity: 0; visibility: hidden; height: 0; margin: 0 !important; padding: 0; overflow: hidden;
+        }
+        .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row { min-height: 0; padding-top: calc(2px + var(--safe-top)); padding-bottom: 2px; }
+        .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row .back-btn {
+            opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+        }
         .top-bar-tabbed.top-bar--compact-tabs { min-height: 0; padding-top: calc(4px + var(--safe-top)); }
         .top-bar-title-row { display: flex; align-items: center; width: 100%; min-height: 52px; }
-        .top-bar-tabbed .top-bar-title-row {
-            position: relative;
-            justify-content: center;
-            padding: calc(8px + var(--safe-top)) 52px 8px 52px;
-            min-height: calc(44px + var(--safe-top));
-            box-sizing: border-box;
-        }
-        .top-bar-tabbed .top-bar-title-row h1 { margin: 0 !important; width: 100%; text-align: center; }
-        .top-bar-tabbed .top-bar-title-row .back-btn {
-            position: absolute !important;
-            left: max(4px, env(safe-area-inset-left, 0px)) !important;
-            top: calc(50% + var(--safe-top) / 2) !important;
-            transform: translateY(-50%) !important;
-        }
-        body.connectivity-bar-active .top-bar-tabbed .top-bar-title-row .back-btn {
-            top: calc(50% + var(--connectivity-bar-h) / 2 + var(--safe-top) / 2) !important;
-        }
         .top-bar-tabs-row { display: flex; width: 100%; position: relative; }
         .dash-top-search-wrap {
             position: sticky; top: 0; z-index: 1200;
             display: flex;
             align-items: center;
+            justify-content: center;
             min-height: calc(48px + var(--safe-top));
-            padding: calc(6px + var(--safe-top)) 64px 6px 64px;
+            padding: calc(6px + var(--safe-top)) 50px 6px 50px;
             background: var(--top-bar-bg);
-            transition: background 0.25s, border-color 0.25s, opacity 0.2s;
+            transition: background 0.25s, border-color 0.25s;
             box-sizing: border-box;
         }
-        body.dash-chrome-compact #dash-sync-cluster { opacity: 0; pointer-events: none; }
+        .dash-top-search-wrap .dash-global-search--topbar {
+            width: min(72%, 340px);
+            margin-left: auto;
+            margin-right: 6px;
+            flex-shrink: 1;
+        }
+        .top-bar:not(.top-bar-tabbed).top-bar--scrolled h1 {
+            opacity: 0; visibility: hidden; height: 0; margin: 0 !important; padding: 0; overflow: hidden;
+            transition: opacity 0.2s ease;
+        }
+        .top-bar:not(.top-bar-tabbed).top-bar--scrolled .back-btn {
+            opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+        }
         .dash-global-search--topbar { margin-bottom: 0; }
         .top-bar h1 { margin: 0 0 0 38px; font-size: var(--text-title); font-weight: 900; color: var(--text); letter-spacing: 0.5px; text-align: left; width: 100%; user-select: none; line-height: var(--line-height-tight); }
         .top-bar:not(.dash-header) h1,
@@ -472,7 +474,7 @@
             text-transform: uppercase;
             white-space: nowrap;
             padding: 0;
-            margin: -3px 0 0 0;
+            margin: -5px 0 0 0;
             background: none !important;
             border: none !important;
             box-shadow: none !important;
@@ -595,9 +597,9 @@
         body.green-theme input:not([type="checkbox"]):not([type="radio"]):focus, body.green-theme select:focus, body.green-theme textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 18%, transparent); }
         input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; text-transform: none; }
         select { padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-position: calc(100% - 12px) center; background-size: 14px 14px; background-repeat: no-repeat; }
-        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel, #report-month-sel, #report-year-sel { text-align: center; text-align-last: center; }
+        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel { text-align: center; text-align-last: center; }
         .month-year-picker,
-        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel, #report-month-sel, #report-year-sel {
+        #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel {
             border: 1px solid var(--border) !important;
             background-color: var(--card) !important;
             border-radius: 18px !important;
@@ -607,7 +609,8 @@
             padding-bottom: 6px !important;
             font-size: 13px !important;
         }
-        #nda-from-box, #nda-to-box, #report-month-sel, #report-year-sel {
+        #nda-from-box, #nda-to-box,
+        #report-slider-ta #report-month-sel, #report-slider-ta #report-year-sel {
             border: 1px solid var(--border) !important;
             border-radius: 30px !important;
             min-height: 38px !important;
@@ -616,10 +619,12 @@
             font-weight: 700 !important;
             box-sizing: border-box;
         }
+        #report-slider-ta #report-month-sel, #report-slider-ta #report-year-sel { text-align: center; text-align-last: center; }
+        #report-slider-ta, #report-slider-nda { min-height: 46px; align-items: center !important; }
         .pdf-inline-field-box {
             display: flex; align-items: center; justify-content: center;
-            background: var(--input-bg); border-radius: 14px;
-            padding: 4px 14px; min-height: 36px; min-width: 88px;
+            background: var(--input-bg); border-radius: 12px;
+            padding: 2px 10px; min-height: 30px; min-width: 72px;
             box-sizing: border-box;
         }
         .trend-nda-metric-toggle {
@@ -714,9 +719,9 @@
         .all-journey-action-row button,
         .sheet-action-row button {
             width: auto !important; min-width: 0 !important; flex: 1 1 0;
-            min-height: 44px !important; height: auto !important; margin: 0 !important;
-            padding: 8px 10px !important; border-radius: 8px !important;
-            font-size: 12px !important; font-weight: 700 !important; line-height: 1 !important;
+            min-height: 34px !important; height: auto !important; margin: 0 !important;
+            padding: 5px 8px !important; border-radius: 8px !important;
+            font-size: 11px !important; font-weight: 700 !important; line-height: 1 !important;
             display: inline-flex !important; flex-direction: row !important;
             align-items: center !important; justify-content: center !important;
             gap: 5px !important; box-shadow: none !important;
@@ -737,9 +742,12 @@
             border: none !important; box-shadow: none !important;
         }
         .sheet-action-row td {
-            padding: 4px 6px; background: var(--card); border: 1px solid var(--border);
+            padding: 2px 4px; background: var(--card); border: 1px solid var(--border);
             border-top: none; text-align: center;
         }
+        #earnings-table tbody tr { background: var(--card); }
+        #earnings-table tbody tr:nth-child(even) { background: var(--row-stripe-bg); }
+        #earnings-table tbody td { border-bottom: 1px solid var(--border); }
         .sheet-row-action-selected td {
             background: rgba(249,115,22,0.12) !important;
             box-shadow: inset 0 2px 0 rgba(249,115,22,0.8), inset 0 -2px 0 rgba(249,115,22,0.8);
@@ -1051,12 +1059,27 @@
         .bottom-icon:active { transform: scale(0.85); }
         .bottom-icon-wrap:active .bottom-icon, .bottom-icon-wrap.illuminated .bottom-icon { color: var(--blue-fill); }
         .bottom-icon-wrap:active .bottom-icon-label, .bottom-icon-wrap.illuminated .bottom-icon-label { color: var(--blue-fill); font-weight: 700; }
-        .bottom-icon-wrap.illuminated .bottom-icon svg path,
-        .bottom-icon-wrap.illuminated .bottom-icon svg circle,
-        .bottom-icon-wrap.illuminated .bottom-icon svg line,
-        .bottom-icon-wrap.illuminated .bottom-icon svg polyline {
+        #bottom-home-wrap.illuminated .bottom-icon svg path,
+        #bottom-profile-wrap.illuminated .bottom-icon svg path,
+        #bottom-home-wrap.illuminated .bottom-icon svg circle,
+        #bottom-profile-wrap.illuminated .bottom-icon svg circle {
             fill: currentColor;
             stroke: none;
+        }
+        #bottom-alerts-wrap.illuminated .bottom-icon svg path:first-of-type {
+            fill: currentColor;
+            stroke: none;
+        }
+        #bottom-alerts-wrap.illuminated .bottom-icon svg path:last-of-type {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.2;
+        }
+        #bottom-settings-wrap.illuminated .bottom-icon svg circle,
+        #bottom-settings-wrap.illuminated .bottom-icon svg path {
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2.1;
         }
         body.green-theme .bottom-icon-wrap.illuminated .bottom-icon,
         body.green-theme .bottom-icon-wrap.illuminated .bottom-icon-label { color: var(--green); }
@@ -1150,14 +1173,14 @@
         .all-journey-row--mela { background: color-mix(in srgb, #a855f7 14%, var(--card) 86%) !important; }
         .all-journey-row--others { background: color-mix(in srgb, var(--text-muted) 12%, var(--card) 88%) !important; }
         
-        .nav-fab-wrapper { position: relative; width: 68px; height: 68px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; }
+        .nav-fab-wrapper { position: relative; width: 58px; height: 58px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; }
         .nav-fab-label { position: static; transform: none; font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
         .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue-fill); font-weight: 700; }
         body.green-theme .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--green); }
         body.dark-mode.green-theme .nav-fab-wrapper.illuminated .nav-fab-label { color: #86efac; }
         .nav-fab-ring { display: none; }
         .nav-fab {
-            position: absolute; top: -30px; width: 64px; height: 64px;
+            position: absolute; top: -22px; width: 54px; height: 54px;
             background: var(--blue-fill);
             color: var(--on-accent-fill); border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 32px;
@@ -1165,7 +1188,7 @@
             border: none; cursor: pointer; z-index: 4001; transition: transform 0.1s; touch-action: manipulation;
             padding: 0; font: inherit; appearance: none; -webkit-appearance: none;
         }
-        .nav-fab svg { width: 30px; height: 30px; }
+        .nav-fab svg { width: 26px; height: 26px; }
         .nav-fab:active { transform: scale(0.85); }
         
         #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
@@ -1247,7 +1270,7 @@
             border:1px solid var(--border); text-align:center; cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;
             user-select:none; -webkit-user-select:none; -webkit-tap-highlight-color:transparent;
         }
-        .circ-dash-card { background: var(--card); border: none; }
+        .circ-dash-card { background: var(--card); border: 1px solid var(--md-outline-variant); box-shadow: var(--md-elevation-1); }
         .circ-dash-card:active { transform:scale(0.96) translateY(2px); box-shadow:0 3px 10px rgba(0,0,0,0.15), inset 0 2px 4px rgba(0,0,0,0.2); }
         .circ-dash-icon-badge { margin:0 auto 8px; display:flex; align-items:center; justify-content:center; font-size:28px; color: var(--blue); }
         .circ-dash-card .circ-dash-label { font-size:13.5px; font-weight:800; }
@@ -1268,7 +1291,7 @@
         .ta-da-info-note { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; }
         .nda-info-formula { text-align: center; padding: 12px 10px; background: var(--input-bg); border-radius: 10px; border: 1px solid var(--border); font-size: 12.5px; font-weight: 800; color: var(--text); line-height: 1.5; }
         .circ-latest-list { display: flex; flex-direction: column; gap: 8px; }
-        .circ-latest-item { background: var(--card); border-radius: 12px; padding: 10px 12px; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; text-decoration: none; color: inherit; touch-action: manipulation; }
+        .circ-latest-item { background: var(--card); border: 1px solid var(--md-outline-variant); border-radius: 12px; padding: 10px 12px; display: flex; align-items: flex-start; gap: 10px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; text-decoration: none; color: inherit; touch-action: manipulation; box-shadow: var(--md-elevation-1); }
         .circ-latest-item:active { transform: scale(0.99); opacity: 0.92; }
         .circ-latest-dot { font-size: 15px; line-height: 1.35; flex-shrink: 0; }
         .circ-latest-body { flex: 1; min-width: 0; }
@@ -1277,16 +1300,15 @@
         .circ-latest-arrow { color: var(--text-muted); font-size: 14px; flex-shrink: 0; margin-top: 1px; }
 
         .circ-search-card {
-            background:var(--card);
-            background:linear-gradient(155deg, color-mix(in srgb, var(--card) 92%, white 8%) 0%, var(--card) 55%, color-mix(in srgb, var(--card) 90%, black 10%) 100%);
-            border-radius:16px; padding:14px;
-            box-shadow:var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);
-            border:1px solid var(--border); margin-bottom:14px; position:sticky; top:60px; z-index:90;
+            background: var(--card);
+            border-radius: 14px; padding: 10px 12px;
+            box-shadow: var(--md-elevation-1);
+            border: 1px solid var(--md-outline-variant); margin-bottom: 12px; position: sticky; top: 60px; z-index: 90;
         }
         .circ-bucket-heading { font-size:15px; font-weight:900; color:var(--text); text-align:center; margin-bottom:10px; }
         .circ-bucket-heading:empty { display:none; margin:0; }
-        .circ-search-box { display:flex; align-items:center; gap:8px; background:var(--card); border:1.5px solid var(--border); border-radius:24px; padding:10px 16px; margin-bottom:10px; box-shadow:0 1px 4px rgba(15,23,42,0.06); }
-        .circ-search-box input { flex:1; border:none !important; background:transparent !important; outline:none; font-size:14.5px; color:var(--text); font-family:inherit; padding:0 !important; margin:0 !important; box-shadow:none !important; border-radius:0 !important; width:auto; }
+        .circ-search-box { display:flex; align-items:center; gap:8px; background:var(--md-surface-container-high); border:1px solid var(--md-outline-variant); border-radius:var(--md-radius-full); padding:7px 12px; margin-bottom:8px; min-height:40px; box-sizing:border-box; }
+        .circ-search-box input { flex:1; border:none !important; background:transparent !important; outline:none; font-size:13.5px; color:var(--text); font-family:inherit; padding:0 !important; margin:0 !important; box-shadow:none !important; border-radius:0 !important; width:auto; min-height:0 !important; }
         .circ-search-box input::placeholder { color:var(--text-muted); }
         .circ-filter-row { display:flex; gap:8px; }
         .circ-filter-row select { flex:1; padding:9px 30px 9px 10px; border-radius:12px; border:1.5px solid var(--border); background-color:var(--input-bg); color:var(--text); font-size:12.5px; font-family:inherit; }
@@ -1303,7 +1325,7 @@
             border:1px solid var(--border); margin-bottom:10px; display:flex; gap:12px; align-items:flex-start;
         }
         .circ-circular-card.circ-pinned { border:1.5px solid rgba(234,179,8,0.5); background:rgba(234,179,8,0.05); }
-        .circ-circular-card { background: var(--card); border: none; }
+        .circ-circular-card { background: var(--card); border: 1px solid var(--md-outline-variant); box-shadow: var(--md-elevation-1); }
         .circ-circular-link-row { display:flex; gap:12px; align-items:flex-start; flex:1; min-width:0; text-decoration:none; color:inherit; cursor:pointer; }
         .circ-circular-icon { width:40px; height:40px; border-radius:10px; background:color-mix(in srgb, var(--blue) 10%, transparent); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
         .circ-circular-body { flex:1; min-width:0; }
@@ -2771,8 +2793,8 @@
 #sheet-add-table select, #sheet-active-row-table select {
     min-height: 0 !important;
     margin-top: 0 !important;
-    padding: 4px 3px !important;
-    font-size: 11px !important;
+    padding: 5px 4px !important;
+    font-size: 11.5px !important;
     border-radius: 4px !important;
 }
 #sheet-add-table thead th { padding: 3px 2px !important; font-size: 10px !important; }
@@ -4535,8 +4557,8 @@
                 <button onclick="window.shiftEarningsMonth(1)" class="squeeze-ball month-nav-arrow-btn next" type="button">›</button>
             </div>
             <p data-i18n="earnings_tap_hint" style="font-size:10.5px; color:var(--text-muted); margin:0 0 8px 0; flex-shrink:0;">Tap the boxes of EFT, Cases, Amount to type and then Save to track your Daily/Monthly Earnings.</p>
-            <div style="overflow-y:auto; overflow-x:auto; flex:1; border-radius:10px; border:1px solid var(--border);">
-                <table id="earnings-table" style="width:100%; border-collapse:collapse; font-size:11.5px; table-layout:fixed;">
+            <div class="earnings-table-shell" style="overflow-y:auto; overflow-x:auto; flex:1; border-radius:10px; border:1px solid var(--border); background:var(--card);">
+                <table id="earnings-table" style="width:100%; border-collapse:collapse; font-size:11.5px; table-layout:fixed; background:var(--card);">
                     <thead><tr id="earnings-table-header-row" style="background:var(--all-header-bg); position:sticky; top:0; z-index:2;">
                         <th style="padding:6px 2px; font-size:10px; color:var(--all-header-text); width:16%; border-bottom:1px solid var(--border);">Date</th>
                         <th style="padding:6px 2px; font-size:10px; color:var(--all-header-text); width:20%; border-left:1px solid rgba(255,255,255,0.2); border-bottom:1px solid var(--border);">Train</th>
@@ -4740,7 +4762,7 @@
                     <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_working_days_label">Working Days</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><div class="pdf-inline-field-box"><input type="number" id="pdf-work-days" placeholder="0" oninput="window.toggleUnitLabel('pdf-work-days','pdf-work-days-unit'); window.toggleFillHint('pdf-work-days','pdf-work-days-fill')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 60px; height: auto; font-size: 14px; min-height: 0 !important;"><span id="pdf-work-days-unit" data-i18n="report_days_unit" style="color:var(--purple); font-size:13px; font-weight:700; white-space:nowrap; display:none;">&nbsp;Days</span></div><span id="pdf-work-days-fill" style="display:inline-flex; align-items:center; margin-left:8px; color:var(--red); font-size:12px; font-weight:400; white-space:nowrap; line-height:1;"><svg viewBox="0 0 512 243.58" style="width:16px; height:8px; flex-shrink:0;" fill="currentColor"><path fill-rule="nonzero" d="M138.43 243.58 0 122.84 140.47 0l20.92 23.91-94.92 83 445.53-.42v31.75l-445.54.41 92.89 81.02z"/></svg><span data-i18n="pdf_fill_hint" style="margin-left:3px;">Fill</span></span></div>
                     <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_earnings_label">Earnings</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><div class="pdf-inline-field-box"><span id="pdf-earnings-unit" style="color:var(--purple); font-size:14px; font-weight:700; display:none;">₹</span><input type="number" id="pdf-earnings" placeholder="0" oninput="window.toggleUnitLabel('pdf-earnings','pdf-earnings-unit'); window.toggleFillHint('pdf-earnings','pdf-earnings-fill')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 60px; height: auto; font-size: 14px; min-height: 0 !important;"></div><span id="pdf-earnings-fill" style="display:inline-flex; align-items:center; margin-left:8px; color:var(--red); font-size:12px; font-weight:400; white-space:nowrap; line-height:1;"><svg viewBox="0 0 512 243.58" style="width:16px; height:8px; flex-shrink:0;" fill="currentColor"><path fill-rule="nonzero" d="M138.43 243.58 0 122.84 140.47 0l20.92 23.91-94.92 83 445.53-.42v31.75l-445.54.41 92.89 81.02z"/></svg><span data-i18n="pdf_fill_hint" style="margin-left:3px;">Fill</span></span></div>
                 </div>
-                <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate TA or NDA PDF</button>
+                <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate TA PDF</button>
             </div>
             <div id="preview-browser-hint" class="tte-fade" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:20px; padding:16px 16px 4px;">
         <p data-i18n="pdf_browser_recommend" style="color:var(--text-muted); font-size:11px; font-weight:500; margin:0; text-align:center; max-width:320px; line-height:1.5;">Printing TA and NDA PDF files works best using Google Chrome and similar chromium browsers.</p>
@@ -4786,11 +4808,11 @@
                     <div data-i18n="ta_confirm_subtitle" style="text-align:center; font-size:12px; color:var(--text-muted); margin-bottom:16px; line-height:1.4;">Review or fill in Working Days and Earnings before generating — both are optional.</div>
                     <div style="display:flex; align-items:center; padding:8px 0; border-bottom:1px dashed var(--border);">
                         <span data-i18n="report_working_days_label" style="flex:1; font-size:14px;">Working Days</span>
-                        <div style="display:flex; align-items:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><input type="number" id="ta-confirm-work-days" placeholder="0" oninput="window.toggleUnitLabel('ta-confirm-work-days','ta-confirm-work-days-unit')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"><span id="ta-confirm-work-days-unit" data-i18n="report_days_unit" style="color:var(--purple); font-size:13px; font-weight:700; white-space:nowrap; display:none;">&nbsp;Days</span></div>
+                        <div class="pdf-inline-field-box"><input type="number" id="ta-confirm-work-days" placeholder="0" oninput="window.toggleUnitLabel('ta-confirm-work-days','ta-confirm-work-days-unit')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 52px; height: auto; font-size: 13px; min-height: 0 !important;"><span id="ta-confirm-work-days-unit" data-i18n="report_days_unit" style="color:var(--purple); font-size:12px; font-weight:700; white-space:nowrap; display:none;">&nbsp;Days</span></div>
                     </div>
                     <div style="display:flex; align-items:center; padding:8px 0 16px;">
                         <span data-i18n="report_earnings_label" style="flex:1; font-size:14px;">Earnings</span>
-                        <div style="display:flex; align-items:center; background:var(--input-bg); border-radius:14px; padding:2px 12px;"><span id="ta-confirm-earnings-unit" style="color:var(--purple); font-size:14px; font-weight:700; display:none;">₹</span><input type="number" id="ta-confirm-earnings" placeholder="0" oninput="window.toggleUnitLabel('ta-confirm-earnings','ta-confirm-earnings-unit')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 55px; height: auto; font-size: 14px;"></div>
+                        <div class="pdf-inline-field-box"><span id="ta-confirm-earnings-unit" style="color:var(--purple); font-size:13px; font-weight:700; display:none;">₹</span><input type="number" id="ta-confirm-earnings" placeholder="0" oninput="window.toggleUnitLabel('ta-confirm-earnings','ta-confirm-earnings-unit')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 52px; height: auto; font-size: 13px; min-height: 0 !important;"></div>
                     </div>
                     <div style="display:flex; gap:10px;">
                         <button onclick="document.getElementById('ta-confirm-values-modal').classList.add('hidden')" style="flex:1; margin:0; background:var(--input-bg); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">Cancel</button>
@@ -7281,9 +7303,6 @@
         document.querySelectorAll('.top-bar-tabbed').forEach(el => {
             el.classList.toggle('top-bar--compact-tabs', elevated);
         });
-        const dash = document.getElementById('screen-dashboard');
-        const dashVisible = dash && !dash.classList.contains('hidden');
-        document.body.classList.toggle('dash-chrome-compact', dashVisible && elevated);
     };
 
     window.onload = () => { 
@@ -14519,10 +14538,13 @@
     window.updateGeneratePdfBtnLabel = function() {
         const genBtn = document.getElementById('generate-btn');
         if (!genBtn) return;
-        const label = window.i18n
-            ? window.i18n.tOr('generate_ta_or_nda_pdf', 'Generate TA or NDA PDF')
-            : 'Generate TA or NDA PDF';
-        genBtn.innerText = label;
+        if (window.i18n) {
+            genBtn.innerText = currentTab === 'nda'
+                ? window.i18n.tOr('generate_nda_pdf_btn', 'Generate NDA PDF')
+                : window.i18n.tOr('generate_ta_pdf_btn', 'Generate TA PDF');
+        } else {
+            genBtn.innerText = currentTab === 'nda' ? 'Generate NDA PDF' : 'Generate TA PDF';
+        }
     };
 
     function switchTab(tab, direction) { 
