@@ -261,11 +261,9 @@
         html { -webkit-overflow-scrolling: touch; }
         .hidden { display: none !important; }
         
-        .top-bar { position: sticky; background: var(--top-bar-bg); color: var(--text); padding: calc(10px + var(--safe-top)) 20px 10px; min-height: calc(64px + var(--safe-top)); display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: none; border-bottom: none; transition: background 0.25s, border-color 0.25s; pointer-events: none; }
-        .top-bar.top-bar--scrolled, .dash-top-search-wrap.top-bar--scrolled { background: var(--card); border-bottom: 1px solid var(--border); }
-        .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row {
-            display: none !important;
-        }
+        .top-bar { position: sticky; background: var(--top-bar-bg); color: var(--text); padding: calc(10px + var(--safe-top)) 20px 10px; min-height: calc(64px + var(--safe-top)); display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: none; border-bottom: none; transition: background 0.25s ease, border-color 0.25s ease; pointer-events: none; }
+        .top-bar.top-bar--scrolled, .dash-top-search-wrap.top-bar--scrolled { background: var(--top-bar-bg); border-bottom: 1px solid var(--border); }
+        .top-bar.top-bar-tabbed.top-bar--scrolled { border-bottom: none; }
         .top-bar-tabbed.top-bar--compact-tabs {
             min-height: 0;
             padding-top: 0;
@@ -278,6 +276,18 @@
             padding: calc(8px + var(--safe-top)) 16px 8px 12px;
             min-height: calc(48px + var(--safe-top));
             box-sizing: border-box;
+            max-height: 160px;
+            opacity: 1;
+            overflow: hidden;
+            transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.26s ease, padding 0.32s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row {
+            max-height: 0;
+            opacity: 0;
+            min-height: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            pointer-events: none;
         }
         .top-bar-tabbed .top-bar-title-row .back-btn {
             position: relative !important;
@@ -299,10 +309,9 @@
         }
         .top-bar-tabs-row {
             display: flex; width: 100%; position: relative;
-        }
-        .top-bar-tabbed.top-bar--scrolled .top-bar-tabs-row {
-            background: var(--card);
+            background: var(--top-bar-bg);
             border-bottom: 1px solid var(--border);
+            transition: padding-top 0.32s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease;
         }
         .dash-top-search-wrap {
             position: sticky; top: 0; z-index: 1200;
@@ -320,13 +329,6 @@
             margin-left: auto;
             margin-right: auto;
             flex-shrink: 1;
-        }
-        .top-bar:not(.top-bar-tabbed).top-bar--scrolled h1 {
-            opacity: 0; visibility: hidden; height: 0; margin: 0 !important; padding: 0; overflow: hidden;
-            transition: opacity 0.2s ease;
-        }
-        .top-bar:not(.top-bar-tabbed).top-bar--scrolled .back-btn {
-            opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
         }
         .dash-global-search--topbar { margin-bottom: 0; }
         .top-bar h1 { margin: 0 0 0 38px; font-size: var(--text-title); font-weight: 900; color: var(--text); letter-spacing: 0.5px; text-align: left; width: 100%; user-select: none; line-height: var(--line-height-tight); }
@@ -1426,16 +1428,23 @@
         }
         .circ-admin-row-title { flex:1; min-width:0; font-size:13px; font-weight:700; }
         .circ-admin-row-title span.circ-dim { color:var(--text-muted); font-weight:500; font-size:11px; display:block; margin-top:2px; }
-        .circ-icon-action { width:32px; height:32px; border-radius:50%; border:none; display:flex; align-items:center; justify-content:center; font-size:14px; cursor:pointer; flex-shrink:0; padding:0; }
-        .circ-icon-action--edit { background: rgba(37,99,235,0.12) !important; color: var(--blue-fill) !important; }
-        .circ-icon-action--edit svg { fill: var(--blue-fill) !important; }
+        .circ-icon-action {
+            width:32px; height:32px; min-width:32px; min-height:32px; aspect-ratio:1;
+            border-radius:50%; border:none; display:flex; align-items:center; justify-content:center;
+            font-size:14px; cursor:pointer; flex-shrink:0; padding:0; box-sizing:border-box;
+        }
+        .circ-icon-action--edit { background: rgba(37,99,235,0.12) !important; color: var(--blue-fill) !important; align-self:center; }
+        .circ-icon-action--edit svg { width:16px; height:16px; fill: var(--blue-fill) !important; flex-shrink:0; }
         #dash-sync-icon.sync-state-offline #dash-sync-badge-group circle:nth-of-type(2) {
-            fill: currentColor;
+            fill: #ffffff;
             stroke: currentColor;
-            stroke-width: 0.65;
+            stroke-width: 0.7;
+        }
+        body.dark-mode #dash-sync-icon.sync-state-offline #dash-sync-badge-group circle:nth-of-type(2) {
+            fill: #ffffff;
         }
         #dash-sync-icon.sync-state-offline #dash-sync-symbol-path {
-            stroke: #ffffff;
+            stroke: currentColor;
             stroke-width: 2.15;
         }
     </style>
@@ -7353,13 +7362,25 @@
     };
 
     window.updateTopBarScrollState = function() {
-        const y = window.scrollY || document.documentElement.scrollTop || 0;
-        const elevated = y > 6;
-        document.querySelectorAll('.top-bar, .dash-top-search-wrap').forEach(el => {
-            el.classList.toggle('top-bar--scrolled', elevated);
-        });
-        document.querySelectorAll('.top-bar-tabbed').forEach(el => {
-            el.classList.toggle('top-bar--compact-tabs', elevated);
+        if (window._topBarScrollRaf) return;
+        window._topBarScrollRaf = requestAnimationFrame(() => {
+            window._topBarScrollRaf = 0;
+            const y = window.scrollY || document.documentElement.scrollTop || 0;
+            const ENTER = 28;
+            const EXIT = 10;
+            let elevated = window._topBarElevated === true;
+            if (elevated) {
+                if (y < EXIT) elevated = false;
+            } else if (y > ENTER) {
+                elevated = true;
+            }
+            window._topBarElevated = elevated;
+            document.querySelectorAll('.top-bar, .dash-top-search-wrap').forEach(el => {
+                el.classList.toggle('top-bar--scrolled', elevated);
+            });
+            document.querySelectorAll('.top-bar-tabbed').forEach(el => {
+                el.classList.toggle('top-bar--compact-tabs', elevated);
+            });
         });
     };
 
