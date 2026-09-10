@@ -24,6 +24,17 @@
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
             --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--safe-bottom));
+            --text-title: 18px;
+            --text-heading: 16px;
+            --text-body: 15px;
+            --text-label: 13px;
+            --text-caption: 11px;
+            --text-micro: 10px;
+            --line-height-tight: 1.25;
+            --line-height-body: 1.5;
+            --font-weight-label: 800;
+            --font-weight-medium: 600;
+            --font-weight-body: 500;
             --bg: #d2dae5; 
             --card: #ffffff; 
             --border: #b6c2d1; 
@@ -184,7 +195,7 @@
         body.green-theme #dash-ta-val,
         body.green-theme .nav-card:has(#dash-ta-val) .nav-icon { color: var(--ta-accent) !important; }
         .profile-inline-add-btn { width: auto !important; margin: 0 !important; padding: 0 16px !important; background: var(--blue-fill) !important; flex-shrink: 0; }
-        .form-field-lbl { font-weight: 700; color: var(--blue); display: block; margin-bottom: 2px; }
+        .form-field-lbl { font-size: var(--text-label); font-weight: var(--font-weight-medium); color: var(--blue); display: block; margin-bottom: 2px; line-height: var(--line-height-tight); }
         #profile-action-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 3999; padding: 12px 16px calc(110px + var(--safe-bottom)); background: var(--bg); border-top: 1px solid var(--border); box-shadow: 0 -4px 16px rgba(0,0,0,0.12); pointer-events: none; }
         #profile-action-bar button { pointer-events: auto; }
         #screen-register .screen-content { padding-bottom: 200px; }
@@ -194,7 +205,8 @@
             color: var(--text); 
             margin: 0; 
             padding: 0; 
-            font-size: 15px; 
+            font-size: var(--text-body);
+            line-height: var(--line-height-body);
             -webkit-tap-highlight-color: transparent; 
             transition: background 0.3s, color 0.3s; 
             overflow-x: hidden; 
@@ -207,8 +219,8 @@
         html { -webkit-overflow-scrolling: touch; }
         .hidden { display: none !important; }
         
-        .top-bar { position: sticky; background: var(--top-bar-bg); color: white; padding: 10px 20px; min-height: 64px; display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.08); transition: background 0.3s; pointer-events: none; }
-        .top-bar h1 { margin: 0 0 0 38px; font-size: 18px; font-weight: 900; color: white; letter-spacing: 0.5px; text-align: left; width: 100%; user-select: none; }
+        .top-bar { position: sticky; background: var(--top-bar-bg); color: white; padding: calc(10px + var(--safe-top)) 20px 10px; min-height: calc(64px + var(--safe-top)); display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: 0 4px 6px rgba(0,0,0,0.5); border-bottom: 1px solid rgba(255,255,255,0.08); transition: background 0.3s; pointer-events: none; }
+        .top-bar h1 { margin: 0 0 0 38px; font-size: var(--text-title); font-weight: 900; color: white; letter-spacing: 0.5px; text-align: left; width: 100%; user-select: none; line-height: var(--line-height-tight); }
         .top-bar:not(.dash-header) h1,
         #roster-iframe-modal .top-bar h1 { font-weight: 600; letter-spacing: 0.35px; }
         .top-bar-content { display: flex; justify-content: center; align-items: center; width: 100%; position: relative; pointer-events: none; }
@@ -244,8 +256,8 @@
         /* Back button: fixed overlay, completely independent of top-bar DOM */
         .back-btn { 
             position: fixed !important; 
-            top: 9px !important; 
-            left: 8px !important; 
+            top: calc(9px + var(--safe-top)) !important; 
+            left: max(8px, env(safe-area-inset-left, 0px)) !important; 
             transform: none !important;
             background: transparent !important; 
             border: none !important; 
@@ -391,7 +403,7 @@
             transition: opacity 0.25s ease;
             text-shadow: 0 0 1px rgba(0,0,0,0.95), 0 1px 3px rgba(0,0,0,0.7);
         }
-        body.connectivity-bar-active .back-btn { top: calc(9px + var(--connectivity-bar-h)) !important; }
+        body.connectivity-bar-active .back-btn { top: calc(9px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
         body.connectivity-bar-active .dash-hamburger-btn, body.connectivity-bar-active .dash-sync-cluster { top: calc(14px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
         body.connectivity-bar-active #roster-iframe-modal { top: var(--connectivity-bar-h) !important; height: calc(100% - var(--connectivity-bar-h)) !important; }
         
@@ -490,12 +502,12 @@
         .ta-summary-chevron.collapsed { transform: rotate(-90deg); }
         #rep-ta-row { cursor: pointer; }
         
-        .nav-main-text { font-size: 16px; font-weight: 700; margin-bottom: 3px; color: var(--text); }
-        .nav-sub-text { font-size: 11.5px; color: var(--text-muted); font-weight: normal; }
+        .nav-main-text { font-size: var(--text-heading); font-weight: 700; margin-bottom: 3px; color: var(--text); line-height: var(--line-height-tight); }
+        .nav-sub-text { font-size: var(--text-caption); color: var(--text-muted); font-weight: normal; line-height: var(--line-height-tight); }
         .nav-icon { font-size: 19px; margin-bottom: 2px; display: inline-block; }
         .nav-icon svg { width: 22px; height: 22px; }
         
-        input:not([type="checkbox"]):not([type="radio"]), select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 30px; margin-top: 4px; font-size: 14.5px; font-weight: 500; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; box-sizing: border-box; -webkit-appearance: none; appearance: none; }
+        input:not([type="checkbox"]):not([type="radio"]), select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 30px; margin-top: 4px; font-size: var(--text-body); font-weight: var(--font-weight-body); line-height: var(--line-height-body); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; box-sizing: border-box; -webkit-appearance: none; appearance: none; }
         input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; text-transform: none; }
         select { padding-right: 32px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-position: calc(100% - 12px) center; background-size: 14px 14px; background-repeat: no-repeat; }
         #dress-year-sel, #dress-month-sel, #plb-year-sel, #plb-month-sel, #sleep-real-month, #sleep-real-year, #all-logs-month, #all-logs-year, #cal-month-sel, #cal-year-sel, #qadd-month-sel, #qadd-year-sel, #nda-picker-month, #nda-picker-year, #earnings-month-sel, #earnings-year-sel, #report-month-sel, #report-year-sel { text-align: center; text-align-last: center; }
@@ -512,7 +524,7 @@
         .period-picker-shell { display:flex; align-items:center; justify-content:center; gap:14px; width:fit-content; margin:0 auto; background:var(--card); border-radius:22px; padding:5px 10px; border:1.5px solid color-mix(in srgb, var(--blue) 55%, var(--border)); box-shadow:0 1px 4px rgba(15,23,42,0.06); }
         input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; -webkit-appearance: checkbox; appearance: auto; }
         input:disabled, select:disabled { background-color: var(--input-disabled); color: var(--text-muted); border-style: dashed; opacity: 0.75; -webkit-text-fill-color: var(--text-muted); }
-        .profile-lbl { font-size: 13px; font-weight: 800; color: var(--blue); display: block; margin-bottom: 2px; }
+        .profile-lbl { font-size: var(--text-label); font-weight: var(--font-weight-label); color: var(--blue); display: block; margin-bottom: 2px; line-height: var(--line-height-tight); }
         .profile-stations-card { padding: 14px 15px 8px; }
         .profile-station-hq-block { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .profile-station-hq-block input { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
@@ -549,7 +561,7 @@
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
-        button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue-fill); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); transition: background 0.3s; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: var(--text-body); color: white; background: var(--blue-fill); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); transition: background 0.3s; }
         .quick-add-leg-btn { width: auto; padding: 10px 20px; border-radius: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); font-size: 16px; font-weight: 900; }
         button:active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
         
@@ -818,8 +830,23 @@
         .bottom-bar { position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-ui-offset); background: var(--bottom-bar-bg); display: flex; justify-content: space-around; align-items: stretch; z-index: 4000; box-shadow: 0 -4px 15px rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.08); transition: background 0.3s; padding: 0 max(12px, env(safe-area-inset-left, 0px)) var(--safe-bottom) max(12px, env(safe-area-inset-right, 0px)); box-sizing: border-box; }
         #pwa-install-banner { position: fixed; bottom: calc(55px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); width: 94%; max-width: 560px; background: linear-gradient(135deg, #1d4ed8, #1e40af); color: white; border-radius: 14px; padding: 12px 14px; z-index: 3999; box-shadow: 0 -4px 18px rgba(0,0,0,0.35); display: flex; align-items: center; gap: 10px; box-sizing: border-box; }
         #exit-toast { bottom: calc(96px + var(--safe-bottom)) !important; }
+        .app-snackbar {
+            position: fixed; left: 50%; z-index: 10000; max-width: 92vw; min-width: 200px; width: max-content;
+            padding: 12px 18px; border-radius: 8px; background: #323232; color: #fff;
+            font-size: var(--text-label); font-weight: var(--font-weight-body); line-height: var(--line-height-body);
+            text-align: center; box-shadow: 0 6px 16px rgba(0,0,0,0.38);
+            opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(12px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            bottom: calc(var(--bottom-ui-offset) + 12px);
+        }
+        .app-snackbar.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+        .app-snackbar--top { bottom: auto; top: calc(70px + var(--safe-top)); transform: translateX(-50%) translateY(-12px); }
+        .app-snackbar--top.visible { transform: translateX(-50%) translateY(0); }
+        .app-snackbar--success { background: #1e4620; color: #e8f5e9; }
+        .app-snackbar--error { background: #5f2120; color: #ffebee; }
+        .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
         .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
-        .bottom-icon-label { font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
+        .bottom-icon-label { font-size: var(--text-caption); font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
         .bottom-icon {
             width: 48px; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
             background: none;
@@ -1427,17 +1454,30 @@
             }
         };
 
+        window.showSnackbar = function(message, options) {
+            const el = document.getElementById('app-snackbar');
+            if (!el || !message) return;
+            const opts = options || {};
+            const type = opts.type || 'default';
+            const duration = opts.duration != null ? opts.duration : 2500;
+            const position = opts.position || 'bottom';
+            el.textContent = message;
+            el.className = 'app-snackbar';
+            if (type !== 'default') el.classList.add('app-snackbar--' + type);
+            if (position === 'top') el.classList.add('app-snackbar--top');
+            el.classList.remove('visible');
+            requestAnimationFrame(() => el.classList.add('visible'));
+            clearTimeout(window._snackbarHideTimer);
+            window._snackbarHideTimer = setTimeout(() => el.classList.remove('visible'), duration);
+        };
+        window.showSuccessSnackbar = function(message, duration) {
+            window.showSnackbar(message, { type: 'success', duration: duration != null ? duration : 1500 });
+        };
+
         window.showSyncStatusToast = function() {
-            const el = document.getElementById('sync-status-toast');
-            if (!el) return;
-            el.innerText = window._syncStatusToastText || '';
-            el.style.opacity = '1';
-            el.style.transform = 'translateX(-50%) translateY(0)';
-            clearTimeout(window._syncToastHideTimer);
-            window._syncToastHideTimer = setTimeout(() => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateX(-50%) translateY(-20px)';
-            }, 2200);
+            const msg = window._syncStatusToastText || '';
+            if (!msg) return;
+            window.showSnackbar(msg, { type: 'info', duration: 2200, position: 'top' });
             if (window._syncRepeatedlyFailing) window.saveData();
         };
 
@@ -1472,15 +1512,9 @@
         // (one out, one in), so this is really just "relabel the current top entry," which
         // avoids the race entirely rather than trying to order two separate history operations.
         window.showExitToast = function() {
-            const el = document.getElementById('exit-toast');
-            if (!el) return;
-            el.style.opacity = '1';
-            el.style.transform = 'translateX(-50%) translateY(0)';
-            clearTimeout(window._exitToastHideTimer);
-            window._exitToastHideTimer = setTimeout(() => {
-                el.style.opacity = '0';
-                el.style.transform = 'translateX(-50%) translateY(20px)';
-            }, 1800);
+            const exitEl = document.getElementById('exit-toast');
+            const msg = window.i18n ? window.i18n.tOr('press_back_exit', 'Press back again to exit') : (exitEl ? exitEl.textContent.trim() : 'Press back again to exit');
+            window.showSnackbar(msg, { duration: 1800 });
         };
         window.pushBackState = function(label) {
             window._backStackDepth++;
@@ -3120,7 +3154,8 @@
         </div>
     </div>
 
-    <div id="exit-toast" data-i18n="press_back_exit" style="position:fixed; bottom:96px; left:50%; transform:translateX(-50%) translateY(20px); background:rgba(20,20,24,0.95); color:white; padding:10px 20px; border-radius:24px; font-size:13px; font-weight:700; z-index:9999; opacity:0; pointer-events:none; transition:opacity 0.2s, transform 0.2s; box-shadow:0 4px 15px rgba(0,0,0,0.4);">Press back again to exit</div>
+    <div id="exit-toast" data-i18n="press_back_exit" hidden aria-hidden="true">Press back again to exit</div>
+    <div id="app-snackbar" role="status" aria-live="polite" class="app-snackbar"></div>
     <div id="language-picker-modal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.82); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); display:flex; align-items:center; justify-content:center; z-index:12000; padding:20px;">
         <div style="background:var(--modal-bg); border:1px solid var(--border); border-radius:18px; padding:22px 18px; width:100%; max-width:340px; box-shadow:var(--shadow); text-align:center;">
             <h3 style="margin:0 0 6px; font-size:17px; font-weight:900; color:var(--text);">Choose Your Language</h3>
@@ -3131,7 +3166,7 @@
             </div>
         </div>
     </div>
-    <div id="sync-status-toast" class="subtle-pill-banner"></div>
+    <div id="sync-status-toast" class="subtle-pill-banner" hidden aria-hidden="true"></div>
     <div id="dash-sync-cluster" class="dash-sync-cluster hidden">
         <div id="dash-sync-icon" class="dash-signout-btn" onclick="window.showSyncStatusToast()" title="Sync Status">
             <svg id="dash-sync-icon-svg" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:26px; height:26px;"><path fill="currentColor" d="M7 24.5A6.5 6.5 0 0 1 8.7 11A7.3 7.3 0 0 1 23.3 11A6.5 6.5 0 0 1 25 24.5H7z"/><g id="dash-sync-badge-group"><circle cx="16" cy="23.24" r="8.4" fill="var(--top-bar-bg)" stroke="none"/><circle cx="16" cy="23.24" r="6.3" fill="currentColor" stroke="none"/><path id="dash-sync-symbol-path" fill="none" stroke="var(--top-bar-bg)" stroke-width="2.3" d="M13.5 23.34l2 2 3.5-4"/></g></svg>
@@ -3325,27 +3360,27 @@
             </div>
         
             <div class="card">
-                <div style="margin-bottom: 10px;"><label class="profile-lbl">Full Name</label><input type="text" id="reg-name" style="text-transform: uppercase;"></div>
+                <div style="margin-bottom: 10px;"><label class="profile-lbl" for="reg-name">Full Name</label><input type="text" id="reg-name" aria-required="true" style="text-transform: uppercase;"></div>
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">P.F. No.</label><input type="text" id="reg-pf"></div>
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Bill Unit No.</label><input type="text" id="reg-bu"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-pf">P.F. No.</label><input type="text" id="reg-pf" aria-required="true"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-bu">Bill Unit No.</label><input type="text" id="reg-bu" aria-required="true"></div>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Designation</label><input type="text" id="reg-desig" style="text-transform: uppercase;"></div>
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Date of Appointment</label><input type="date" id="reg-appt" style="font-size: 16px; padding: 7px 8px;"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-desig">Designation</label><input type="text" id="reg-desig" aria-required="true" style="text-transform: uppercase;"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-appt">Date of Appointment</label><input type="date" id="reg-appt" aria-required="true" style="font-size: 16px; padding: 7px 8px;"></div>
                 </div>
             </div>
 
             <div class="card">
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Employee Type</label>
-                        <select id="reg-emp-type" onchange="window.checkGazetted(true)">
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-emp-type">Employee Type</label>
+                        <select id="reg-emp-type" aria-required="true" onchange="window.checkGazetted(true)">
                             <option value="Non-Gazetted">NON-GAZETTED</option>
                             <option value="Gazetted">GAZETTED</option>
                         </select>
                     </div>
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Pay Scale</label>
-                        <select id="reg-payscale-dropdown" onchange="window.applyPayRateAutofill(this.value)">
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-payscale-dropdown">Pay Scale</label>
+                        <select id="reg-payscale-dropdown" aria-required="true" onchange="window.applyPayRateAutofill(this.value)">
                             <option value="" disabled selected>Select</option>
                             <option value="LEVEL-1">LEVEL-1</option>
                             <option value="LEVEL-2">LEVEL-2</option>
@@ -3356,18 +3391,18 @@
                             <option value="LEVEL-7">LEVEL-7</option>
                             <option value="LEVEL-8 (MACP)">LEVEL-8 (MACP)</option>
                         </select>
-                        <input type="text" id="reg-payscale-text" class="hidden" placeholder="Enter Pay Scale" style="text-transform: uppercase;">
+                        <input type="text" id="reg-payscale-text" class="hidden" aria-required="true" placeholder="Enter Pay Scale" style="text-transform: uppercase;">
                     </div>
                 </div>
                 <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Grade Pay</label><input type="number" id="reg-gradepay" placeholder="e.g. 4200"></div>
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Basic Pay (₹)</label><input type="number" id="reg-basicpay" placeholder="e.g. 35400"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-gradepay">Grade Pay</label><input type="number" id="reg-gradepay" aria-required="true" placeholder="e.g. 4200"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-basicpay">Basic Pay (₹)</label><input type="number" id="reg-basicpay" aria-required="true" placeholder="e.g. 35400"></div>
                 </div>
                 <div style="display: flex; gap: 10px;">
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">TA Rate (₹)</label><input type="number" id="reg-tarate" placeholder="e.g. 800"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-tarate">TA Rate (₹)</label><input type="number" id="reg-tarate" aria-required="true" placeholder="e.g. 800"></div>
                     <div style="flex: 1; min-width: 0; position: relative;">
-                        <label class="profile-lbl">DA (%)</label>
-                        <input type="number" id="reg-da" placeholder="e.g. 55">
+                        <label class="profile-lbl" for="reg-da">DA (%)</label>
+                        <input type="number" id="reg-da" aria-required="true" placeholder="e.g. 55">
                         <div id="da-warning-msg" class="hidden" style="color: var(--red); font-size: 11px; font-weight: bold; margin-top: 5px;"></div>
                     </div>
                 </div>
@@ -3375,20 +3410,20 @@
 
             <div class="card">
                 <div style="display: flex; gap: 10px;">
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Rule by which Governed</label><input type="text" id="reg-rule-governed" value="LLR" placeholder="e.g. LLR"></div>
-                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl">Objective of Journey</label><input type="text" id="reg-journey-objective" value="Worked as TTE" placeholder="e.g. Worked as TTE"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-rule-governed">Rule by which Governed</label><input type="text" id="reg-rule-governed" value="LLR" placeholder="e.g. LLR"></div>
+                    <div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-journey-objective">Objective of Journey</label><input type="text" id="reg-journey-objective" value="Worked as TTE" placeholder="e.g. Worked as TTE"></div>
                 </div>
             </div>
 
             <div class="card">
-                <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1; min-width: 0;"><label class="profile-lbl">Pass No. <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="text" id="reg-pass"></div><div style="flex: 1; min-width: 0;"><label class="profile-lbl">Pass Validity <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="date" id="reg-passval" style="font-size: 16px; padding: 7px 8px;"></div></div>
-                <div style="display: flex; gap: 10px;"><div style="flex: 1; min-width: 0;"><label class="profile-lbl">Checking Authority No. <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="text" id="reg-auth"></div><div style="flex: 1; min-width: 0;"><label class="profile-lbl">Authority Validity <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="date" id="reg-authval" style="font-size: 16px; padding: 7px 8px;"></div></div>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;"><div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-pass">Pass No. <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="text" id="reg-pass"></div><div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-passval">Pass Validity <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="date" id="reg-passval" style="font-size: 16px; padding: 7px 8px;"></div></div>
+                <div style="display: flex; gap: 10px;"><div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-auth">Checking Authority No. <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="text" id="reg-auth"></div><div style="flex: 1; min-width: 0;"><label class="profile-lbl" for="reg-authval">Authority Validity <span style="color:var(--text-muted); font-weight:400; font-size:10px;">(opt)</span></label><input type="date" id="reg-authval" style="font-size: 16px; padding: 7px 8px;"></div></div>
             </div>
 
             <div class="card profile-stations-card">
                 <div class="profile-station-hq-block">
-                    <label class="profile-lbl">Main HQ Station</label>
-                    <input type="text" id="reg-hq" placeholder="e.g. BSB" style="text-transform: uppercase;" oninput="window.filterAlphaOnly(this); window.renderProfileStationSummaries && window.renderProfileStationSummaries();">
+                    <label class="profile-lbl" for="reg-hq">Main HQ Station</label>
+                    <input type="text" id="reg-hq" aria-required="true" placeholder="e.g. BSB" style="text-transform: uppercase;" oninput="window.filterAlphaOnly(this); window.renderProfileStationSummaries && window.renderProfileStationSummaries();">
                     <p class="profile-station-help-static" data-i18n="profile_main_hq_desc">This is your main posting station.</p>
                 </div>
 
@@ -3972,37 +4007,37 @@
             <div id="form-duty">
                 <div class="card" style="padding:0; overflow:hidden;">
                     <div style="padding: 10px 12px; border-bottom: 1px solid var(--border);">
-                        <label data-i18n="aj_label_train" class="form-field-lbl" style="font-size: 13px;">Train No.</label>
-                        <input type="text" id="trip-train" inputmode="numeric" maxlength="5" style="margin: 0; width: 100%;">
+                        <label data-i18n="aj_label_train" class="form-field-lbl" for="trip-train" style="font-size: 13px;">Train No.</label>
+                        <input type="text" id="trip-train" inputmode="numeric" maxlength="5" aria-required="true" style="margin: 0; width: 100%;">
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label data-i18n="aj_label_dep_date" class="form-field-lbl" style="font-size: 12px;">Departure Date</label>
-                            <input type="date" id="trip-dep-date" onchange="document.getElementById('trip-dep-time').focus()" style="margin: 0; width: 100%; font-size: 16px; padding: 7px 8px;">
+                            <label data-i18n="aj_label_dep_date" class="form-field-lbl" for="trip-dep-date" style="font-size: 12px;">Departure Date</label>
+                            <input type="date" id="trip-dep-date" aria-required="true" onchange="document.getElementById('trip-dep-time').focus()" style="margin: 0; width: 100%; font-size: 16px; padding: 7px 8px;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label data-i18n="aj_label_arr_date" class="form-field-lbl" style="font-size: 12px;">Arrival Date</label>
-                            <input type="date" id="trip-arr-date" onchange="document.getElementById('trip-arr-time').focus()" style="margin: 0; width: 100%; font-size: 16px; padding: 7px 8px;">
+                            <label data-i18n="aj_label_arr_date" class="form-field-lbl" for="trip-arr-date" style="font-size: 12px;">Arrival Date</label>
+                            <input type="date" id="trip-arr-date" aria-required="true" onchange="document.getElementById('trip-arr-time').focus()" style="margin: 0; width: 100%; font-size: 16px; padding: 7px 8px;">
                         </div>
                     </div>
                     <div style="display: flex; border-bottom: 1px solid var(--border);">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label data-i18n="aj_label_dep_time" class="form-field-lbl" style="font-size: 12px;">Departure Time</label>
-                            <input type="text" inputmode="numeric" id="trip-dep-time" placeholder="HHMM" oninput="window.liveFormatTimeInput(this);" onblur="window.formatTimeInput(this)" maxlength="5" style="margin: 0; width: 100%;">
+                            <label data-i18n="aj_label_dep_time" class="form-field-lbl" for="trip-dep-time" style="font-size: 12px;">Departure Time</label>
+                            <input type="text" inputmode="numeric" id="trip-dep-time" aria-required="true" placeholder="HHMM" oninput="window.liveFormatTimeInput(this);" onblur="window.formatTimeInput(this)" maxlength="5" style="margin: 0; width: 100%;">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label class="form-field-lbl" style="font-size: 12px;"><span data-i18n="aj_label_arr_time">Arrival Time</span> <span style="color:var(--text-muted); font-weight:400; font-size:10px;" data-i18n="aj_label_opt">(opt)</span></label>
+                            <label class="form-field-lbl" for="trip-arr-time" style="font-size: 12px;"><span data-i18n="aj_label_arr_time">Arrival Time</span> <span style="color:var(--text-muted); font-weight:400; font-size:10px;" data-i18n="aj_label_opt">(opt)</span></label>
                             <input type="text" inputmode="numeric" id="trip-arr-time" placeholder="HHMM" oninput="window.liveFormatTimeInput(this); window.timeInputAutoAdvance(this, 'trip-dep-stn', 'trip-dep-stn', 'trip-arr-stn')" onblur="window.formatTimeInput(this)" maxlength="5" style="margin: 0; width: 100%;">
                         </div>
                     </div>
                     <div style="display: flex;">
                         <div style="flex: 1; min-width: 0; padding: 10px 12px; border-right: 1px solid var(--border);">
-                            <label data-i18n="aj_label_stn_from" class="form-field-lbl" style="font-size: 12px;">Station From</label>
-                            <input list="stn-list" id="trip-dep-stn" placeholder="e.g. BSB" style="margin: 0; width: 100%; text-transform: uppercase;" oninput="window.filterAlphaOnly(this)">
+                            <label data-i18n="aj_label_stn_from" class="form-field-lbl" for="trip-dep-stn" style="font-size: 12px;">Station From</label>
+                            <input list="stn-list" id="trip-dep-stn" aria-required="true" placeholder="e.g. BSB" style="margin: 0; width: 100%; text-transform: uppercase;" oninput="window.filterAlphaOnly(this)">
                         </div>
                         <div style="flex: 1; min-width: 0; padding: 10px 12px;">
-                            <label data-i18n="aj_label_stn_to" class="form-field-lbl" style="font-size: 12px;">Station To</label>
-                            <input list="stn-list" id="trip-arr-stn" placeholder="TYPE OR SELECT" style="margin: 0; width: 100%; text-transform: uppercase;" oninput="window.filterAlphaOnly(this)" onfocus="window.populateStnList()">
+                            <label data-i18n="aj_label_stn_to" class="form-field-lbl" for="trip-arr-stn" style="font-size: 12px;">Station To</label>
+                            <input list="stn-list" id="trip-arr-stn" aria-required="true" placeholder="TYPE OR SELECT" style="margin: 0; width: 100%; text-transform: uppercase;" oninput="window.filterAlphaOnly(this)" onfocus="window.populateStnList()">
                             <datalist id="stn-list"></datalist>
                         </div>
                     </div>
@@ -5524,14 +5559,15 @@
             if (!el) return;
             if (!el.value || !el.value.trim()) {
                 el.classList.add('field-invalid');
-                const clearOnce = () => { el.classList.remove('field-invalid'); el.removeEventListener('input', clearOnce); el.removeEventListener('change', clearOnce); };
+                el.setAttribute('aria-invalid', 'true');
+                const clearOnce = () => { el.classList.remove('field-invalid'); el.removeAttribute('aria-invalid'); el.removeEventListener('input', clearOnce); el.removeEventListener('change', clearOnce); };
                 el.addEventListener('input', clearOnce);
                 el.addEventListener('change', clearOnce);
             }
         });
     };
     window.clearFieldsInvalid = function(ids) {
-        (resolveFieldIdsForContext(ids) || []).forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('field-invalid'); });
+        (resolveFieldIdsForContext(ids) || []).forEach(id => { const el = document.getElementById(id); if (el) { el.classList.remove('field-invalid'); el.removeAttribute('aria-invalid'); } });
     };
 
     // Point: one global listener covers every element that already has a dedicated squeeze/press
@@ -5937,7 +5973,7 @@
             await window.firebaseSet(window.firebaseRef(window.db, `users/${uid}/profile/diversionMap`), diversionMap);
             window._adminAuditUserData.profile = Object.assign({}, window._adminAuditUserData.profile, { nearby, nearbyTaClaimed, dest, diversionMap });
             if (window._rosterDataMap && window._rosterDataMap[uid]) window._rosterDataMap[uid].profile = window._adminAuditUserData.profile;
-            showModal("Saved!", "Station settings updated for this user.", "success", false, null, 1500);
+            showSuccessSnackbar("Station settings updated for this user.");
             renderAdminStationSettings(uid, window._adminAuditUserData.profile, false);
         } catch (e) {
             showModal("Save Failed", "Could not save: " + e.message + "\n\nThis usually means Firebase security rules don't allow admin writes to another user's profile yet — that needs to be enabled in the Firebase console rules.", "error", false);
@@ -8302,7 +8338,7 @@
         if (window.appState.profile && window.currentUid) {
             window.appState.profile.diversionMap = JSON.parse(JSON.stringify(window._diversionMap));
             window.saveData();
-            showModal("Saved!", `"${pair.a} ↔ ${pair.b}" has been added as a diversion pair. You can now try generating the PDF again.`, "success", false, null, 1500);
+            showSuccessSnackbar(`"${pair.a} ↔ ${pair.b}" has been added as a diversion pair. You can now try generating the PDF again.`);
         }
     };
 
@@ -8433,7 +8469,7 @@
             window.payRateTable = window.payRateTable || {};
             window.payRateTable[level] = updated;
             await window.firebaseSet(window.firebaseRef(window.db, `admin_config/payRateTable/${level}`), updated);
-            showModal("Saved!", `${level} rate updated: Grade Pay ₹${updated.gradepay}, TA Rate ₹${updated.tarate}`, "success", false, null, 1500);
+            showSuccessSnackbar(`${level} rate updated: Grade Pay ₹${updated.gradepay}, TA Rate ₹${updated.tarate}`);
         } catch (e) {
             showModal("ERROR", "Save failed: " + e.message, "error", false);
         }
@@ -8841,7 +8877,7 @@
     window.saveNhaRateToFirebase = async function(band, val) {
         try {
             await window.firebaseSet(window.firebaseRef(window.db, `admin_config/nhaRateTable/${band}`), val);
-            showModal("Saved!", `Level ${band}: ₹${val} NHA rate updated.`, "success", false, null, 1500);
+            showSuccessSnackbar(`Level ${band}: ₹${val} NHA rate updated.`);
             if (window.updateExpectedSalaryBox) window.updateExpectedSalaryBox();
         } catch (e) {
             showModal("ERROR", "Save failed: " + e.message, "error", false);
@@ -8962,7 +8998,7 @@
     window.saveHraRateToFirebase = async function(hq, entry) {
         try {
             await window.firebaseSet(window.firebaseRef(window.db, `admin_config/hraRateTable/${hq}`), entry);
-            showModal("Saved!", `${hq} updated: HRA ${entry.hra}%, Big City: ${entry.bigCity ? 'Yes' : 'No'}`, "success", false, null, 1500);
+            showSuccessSnackbar(`${hq} updated: HRA ${entry.hra}%, Big City: ${entry.bigCity ? 'Yes' : 'No'}`);
         } catch (e) {
             showModal("ERROR", "Save failed: " + e.message, "error", false);
         }
@@ -9271,7 +9307,7 @@
             initProfileEditing();
             checkProfileNotifications();
             navTo('screen-dashboard'); 
-            showModal("Success", (window.i18n ? window.i18n.tOr('profile_saved_synced', "Profile Saved & Synced!") : "Profile Saved & Synced!"), "success", false, null, 1500); 
+            showSuccessSnackbar(window.i18n ? window.i18n.tOr('profile_saved_synced', "Profile Saved & Synced!") : "Profile Saved & Synced!"); 
         } catch(e) { 
             showModal("Save Error", e.message, "error", false); 
         } 
@@ -9526,7 +9562,7 @@
         } else {
             switchAddTab('duty');
             updateDashboardUI();
-            showModal("Saved!", "Journey saved successfully.", "success", false, null, 1500);
+            showSuccessSnackbar("Journey saved successfully.");
         }
     }
 
@@ -11686,7 +11722,7 @@
             } else {
                 switchAddTab('nonduty');
                 updateDashboardUI();
-                showModal("Saved!", (window.i18n ? window.i18n.tOr('leave_record_saved', "Record saved successfully.") : "Record saved successfully."), "success", false, null, 1500);
+                showSuccessSnackbar(window.i18n ? window.i18n.tOr('leave_record_saved', "Record saved successfully.") : "Record saved successfully.");
             }
         };
 
@@ -12136,7 +12172,7 @@
         saveData();
         document.getElementById('complete-arrival-modal').classList.add('hidden');
         updateDashboardUI();
-        showModal("Saved!", `Arrival updated: ${arrDate} at ${arrTime}`, "success", false, null, 1500);
+        showSuccessSnackbar(`Arrival updated: ${arrDate} at ${arrTime}`);
     };
 
     // ========== YOUR DUTY (mini roster calc, mirrors roster.html logic) ==========
@@ -13588,7 +13624,7 @@
         // through the same saveData() used everywhere else gets the same offline queueing,
         // timeout, and automatic reconnect-retry for free.
         window.saveData();
-        showModal("Saved!", (window.i18n ? window.i18n.tOr('earnings_saved_message', "Earnings for this month have been saved.") : "Earnings for this month have been saved."), "success", false, null, 1500);
+        showSuccessSnackbar(window.i18n ? window.i18n.tOr('earnings_saved_message', "Earnings for this month have been saved.") : "Earnings for this month have been saved.");
     };
 
     window.toggleCalendarView = function() {
@@ -14491,7 +14527,7 @@
         if (window._trendActiveView === 'signon') window.renderNdaSignOnTable();
         else if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
         else if (window._trendActiveView === 'graph') window.renderYearlyLineGraph();
-        showModal('Saved!', (window.i18n ? window.i18n.tOr('nda_signon_saved_message', 'Sign On times for this NDA period have been saved.') : 'Sign On times for this NDA period have been saved.'), 'success', false, null, 1500);
+        showSuccessSnackbar(window.i18n ? window.i18n.tOr('nda_signon_saved_message', 'Sign On times for this NDA period have been saved.') : 'Sign On times for this NDA period have been saved.');
     };
 
     // Point 1: Dashboard TA/NDA cards open the trend modal
