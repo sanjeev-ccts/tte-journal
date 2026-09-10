@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Point: tells browsers this page already handles its own light/dark theming (via the
          .dark-mode class toggle below) — without this, some Android browsers (Samsung Internet's
          "Dark mode" setting, Chrome's "Force Dark for websites") apply their OWN automatic dark
@@ -276,8 +276,11 @@
             position: fixed !important;
             top: 14px !important;
             left: 12px !important;
-            width: 34px;
-            height: 34px;
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            min-height: 48px;
+            padding: 0;
             border-radius: 50%;
             background: transparent;
             border: none;
@@ -292,6 +295,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            font: inherit;
+            appearance: none;
+            -webkit-appearance: none;
         }
         #sidebar-overlay {
             position: fixed; inset: 0; z-index: 8000; background: rgba(0,0,0,0.5);
@@ -326,8 +332,11 @@
             position: fixed !important;
             top: 14px !important;
             right: 12px !important;
-            width: 34px;
-            height: 34px;
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            min-height: 48px;
+            padding: 0;
             border-radius: 50%;
             background: transparent;
             border: none;
@@ -570,8 +579,8 @@
         .all-journey-action-row button,
         .sheet-action-row button {
             width: auto !important; min-width: 0 !important; flex: 1 1 0;
-            min-height: 32px !important; height: auto !important; margin: 0 !important;
-            padding: 5px 10px !important; border-radius: 8px !important;
+            min-height: 44px !important; height: auto !important; margin: 0 !important;
+            padding: 8px 10px !important; border-radius: 8px !important;
             font-size: 12px !important; font-weight: 700 !important; line-height: 1 !important;
             display: inline-flex !important; flex-direction: row !important;
             align-items: center !important; justify-content: center !important;
@@ -579,7 +588,7 @@
         }
         .all-journey-action-row .all-journey-action-cancel,
         .sheet-action-row .sheet-action-cancel {
-            flex: 0 0 36px !important; min-width: 36px !important; padding: 5px !important;
+            flex: 0 0 44px !important; min-width: 44px !important; padding: 8px !important;
         }
         .all-journey-action-edit svg, .sheet-action-edit svg, .manage-action-edit svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
         .all-journey-action-delete svg, .sheet-action-delete svg, .manage-action-delete svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
@@ -626,7 +635,7 @@
         .earnings-title-pill:active, .earnings-title-pill.squeezed { transform: scale(0.85) !important; box-shadow: inset 0 3px 6px rgba(0,0,0,0.35) !important; }
         .squeeze-ball:active, .squeeze-ball.squeezed { transform: scale(0.85) !important; }
         .month-nav-arrow-btn {
-            width: 36px !important; height: 36px !important; min-width: 36px !important;
+            width: 48px !important; height: 48px !important; min-width: 48px !important; min-height: 48px !important;
             padding: 0 !important; margin: 0; border-radius: 50%; flex-shrink: 0;
             display: inline-flex !important; align-items: center; justify-content: center;
             line-height: 1; font-size: 22px; font-weight: 400; font-family: inherit;
@@ -806,12 +815,24 @@
         .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
         .bottom-icon-label { font-size: 10.5px; font-weight: 400; color: rgba(255,255,255,0.62); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
         .bottom-icon {
-            width: 48px; height: 48px; border-radius: 50%;
+            width: 48px; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
             background: none;
             border: none;
             box-shadow: none;
             display: flex; justify-content: center; align-items: center; font-size: 15px; color: white; cursor: pointer; position: relative; flex-shrink: 0;
             transition: transform 0.1s;
+            padding: 0;
+            font: inherit;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .modal-icon-close {
+            width: 48px; height: 48px; min-width: 48px; min-height: 48px;
+            margin: 0; padding: 0; font-size: 13px; font-weight: 900;
+            background: var(--input-bg); color: var(--text-muted);
+            border-radius: 50%; box-shadow: none; border: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font: inherit; appearance: none; -webkit-appearance: none;
         }
         .bottom-icon svg { width: 27px; height: 27px; transition: color 0.15s; }
         .bottom-icon:active { transform: scale(0.85); }
@@ -908,6 +929,7 @@
             font-size: 32px;
             box-shadow: 0 3px 10px rgba(0,0,0,0.5);
             border: none; cursor: pointer; z-index: 4001; transition: transform 0.1s; touch-action: manipulation;
+            padding: 0; font: inherit; appearance: none; -webkit-appearance: none;
         }
         .nav-fab svg { width: 30px; height: 30px; }
         .nav-fab:active { transform: scale(0.85); }
@@ -2624,39 +2646,39 @@
         <button onclick="window.dismissInstallBanner()" style="width:auto; margin:0; padding:6px 9px; font-size:12px; background:rgba(255,255,255,0.2); border-radius:50%; flex-shrink:0;">✕</button>
     </div>
 
-    <div class="bottom-bar hidden" id="main-bottom-bar">
+    <nav class="bottom-bar hidden" id="main-bottom-bar" aria-label="Main navigation">
         <div class="bottom-icon-wrap" id="bottom-profile-wrap">
-            <div class="bottom-icon" onclick="window.navTo('screen-register')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg></div>
+            <button type="button" class="bottom-icon" id="bottom-nav-profile" onclick="window.navTo('screen-register')" aria-label="Profile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M5 21v-1a7 7 0 0 1 14 0v1"/></svg></button>
             <span class="bottom-icon-label" data-i18n="profile_label">Profile</span>
         </div>
         <div class="bottom-icon-wrap">
-            <div class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></div>
+            <button type="button" class="bottom-icon" id="theme-toggle" onclick="window.toggleTheme()" aria-label="Toggle theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
             <span class="bottom-icon-label" id="theme-toggle-label">Light</span>
         </div>
         <div class="bottom-icon-wrap">
-            <div class="bottom-icon" onclick="window.toggleLanguage()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+            <button type="button" class="bottom-icon" id="bottom-nav-language" onclick="window.toggleLanguage()" aria-label="Change language"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></button>
             <span class="bottom-icon-label" id="language-toggle-label">English</span>
         </div>
         
         <div class="nav-fab-wrapper" id="bottom-fab-wrap">
-            <div class="nav-fab-ring"></div>
-            <div class="nav-fab" id="main-fab-btn" onclick="window._sheetModeActive=false; window._sheetModeSaveCallback=null; window._sheetModeNonDutySaveCallback=null; window._sheetModeDeleteCallback=null; window.switchAddTab('duty'); window.navTo('screen-add');"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+            <div class="nav-fab-ring" aria-hidden="true"></div>
+            <button type="button" class="nav-fab" id="main-fab-btn" onclick="window._sheetModeActive=false; window._sheetModeSaveCallback=null; window._sheetModeNonDutySaveCallback=null; window._sheetModeDeleteCallback=null; window.switchAddTab('duty'); window.navTo('screen-add');" aria-label="Add Journey"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
             <span class="nav-fab-label" data-i18n="add_journey">Add Journey</span>
         </div>
         
         <div class="bottom-icon-wrap">
-            <div class="bottom-icon" id="bottom-bell-icon" onclick="window.showNotifications()" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="bell-badge hidden" id="bottom-bell-badge" style="top:6px; right:6px;">0</div></div>
+            <button type="button" class="bottom-icon" id="bottom-bell-icon" onclick="window.showNotifications()" aria-label="Alerts" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><div class="bell-badge hidden" id="bottom-bell-badge" style="top:6px; right:6px;" aria-hidden="true">0</div></button>
             <span class="bottom-icon-label" data-i18n="notifications_label">Alerts</span>
         </div>
         <div class="bottom-icon-wrap" id="bottom-settings-wrap">
-            <div class="bottom-icon" onclick="window.openSettingsModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+            <button type="button" class="bottom-icon" id="bottom-nav-settings" onclick="window.openSettingsModal()" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
             <span class="bottom-icon-label" data-i18n="settings">Settings</span>
         </div>
         <div class="bottom-icon-wrap" id="bottom-home-wrap">
-            <div class="bottom-icon" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div>
+            <button type="button" class="bottom-icon" id="bottom-nav-home" onclick="window.navTo('screen-dashboard')" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button>
             <span class="bottom-icon-label" data-i18n="home">Home</span>
         </div>
-    </div>
+    </nav>
 
 
 
@@ -2674,7 +2696,7 @@
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 18px; border-radius: 16px; width: 92%; max-width: 420px; max-height: 80vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); display:flex; flex-direction:column;">
             <div style="position:relative; display:flex; align-items:center; margin-bottom:8px; flex-shrink:0;">
                 <span data-i18n="settings_title" style="width:100%; text-align:center; font-size:17px; font-weight:900; color:var(--blue);">SETTINGS</span>
-                <button onclick="window.closeSettingsModal()" style="position:absolute; right:0; top:50%; transform:translateY(-50%); width:28px; height:28px; margin:0; padding:0; font-size:13px; font-weight:900; background:var(--input-bg); color:var(--text-muted); border-radius:50%; box-shadow:none; border:1px solid var(--border); display:flex; align-items:center; justify-content:center;">✕</button>
+                <button type="button" class="modal-icon-close" onclick="window.closeSettingsModal()" style="position:absolute; right:0; top:50%; transform:translateY(-50%);" aria-label="Close settings">✕</button>
             </div>
             <div style="overflow-y:auto;">
 
@@ -3157,7 +3179,7 @@
         </div>
     </div>
 
-    <div id="custom-modal" class="hidden" onclick="if(event.target === this && !window._sheetModeActive) { const bc = document.getElementById('modal-cancel'); if (!bc.classList.contains('hidden')) bc.click(); else document.getElementById('modal-ok').click(); }">
+    <div id="custom-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true" onclick="if(event.target === this && !window._sheetModeActive) { const bc = document.getElementById('modal-cancel'); if (!bc.classList.contains('hidden')) bc.click(); else document.getElementById('modal-ok').click(); }">
         <div id="modal-box">
             <h3 id="modal-title" style="margin-top:0; font-size: 18px; color: var(--text);">Message</h3>
             <div id="modal-msg" style="font-size: 14px; white-space: pre-wrap; color: var(--text-muted); margin-bottom: 20px; text-align: center; line-height: 1.5;"></div>
@@ -3766,7 +3788,7 @@
     </div>
 
     <div id="screen-dashboard" class="hidden">
-        <div id="dash-hamburger-icon" class="dash-hamburger-btn" onclick="window.openSidebar()" title="Menu">☰</div>
+        <button type="button" id="dash-hamburger-icon" class="dash-hamburger-btn" onclick="window.openSidebar()" aria-label="Menu">☰</button>
         <div class="top-bar dash-header">
             <h1 style="margin:0; text-align:center; width:100%;"><span class="dash-title-pill" id="dash-title">TTE LOGS</span></h1>
         </div>
@@ -6833,6 +6855,9 @@
     // isn't a data-i18n element since its text depends on CURRENT theme state, not a fixed key — so
     // it needs this separate hook to refresh into the new language too.
     window.onLanguageChanged = function(fromRemote) {
+        if (window.i18n) {
+            document.documentElement.lang = window.i18n.getLang() === 'hi' ? 'hi' : 'en';
+        }
         const themeLabel = document.getElementById('theme-toggle-label');
         if (themeLabel && window.i18n) {
             const isDark = document.body.classList.contains('dark-mode');
@@ -7380,6 +7405,17 @@
         // don't keep their trigger icon lit either.
         const fabWrap = document.getElementById('bottom-fab-wrap');
         if (fabWrap) fabWrap.classList.toggle('illuminated', screenId === 'screen-add');
+        const bottomNavCurrent = {
+            'bottom-nav-profile': 'screen-register',
+            'bottom-nav-home': 'screen-dashboard',
+            'main-fab-btn': 'screen-add'
+        };
+        Object.keys(bottomNavCurrent).forEach(id => {
+            const btn = document.getElementById(id);
+            if (!btn) return;
+            if (screenId === bottomNavCurrent[id]) btn.setAttribute('aria-current', 'page');
+            else btn.removeAttribute('aria-current');
+        });
 
         // Point (back-button Stage 1): keeps the history stack in sync with which screen is
         // visible. Depth 2 is only reachable via dashboard -> circulars-dashboard ->
@@ -7781,6 +7817,7 @@
             modal.classList.add('hidden');
             modal.classList.remove('centered-modal');
         }
+        modal.setAttribute('aria-hidden', 'true');
         if (!fromBackButton) window.consumeBackState();
         if (window._modalAutoCloseTimer) { clearTimeout(window._modalAutoCloseTimer); window._modalAutoCloseTimer = null; }
     }
@@ -7818,7 +7855,8 @@
         // against a theoretical direct re-entrant showModal() call (content swap without an
         // intervening close) double-pushing a state for what's still visually one open modal.
         if (modal.classList.contains('hidden')) window.pushBackState('custom-modal');
-        modal.classList.remove('hidden'); 
+        modal.classList.remove('hidden');
+        modal.removeAttribute('aria-hidden');
 
         // Point: optional auto-dismiss for "final save, nothing left to decide" confirmations
         // (e.g. Profile Save & Lock) — standard app behavior for a pure success notice, so the
