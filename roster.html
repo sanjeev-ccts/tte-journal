@@ -217,11 +217,12 @@
         width: 84px; height: 84px; border-radius: 50%; padding: 0; margin: 0; display: flex; align-items: center; justify-content: center;
         font-size: 14px; font-weight: 800; color: #ffffff !important; border: none; cursor: pointer;
     }
-    @keyframes rosterHeaderTabRowFlash {
-        0% { background: color-mix(in srgb, var(--blue) 14%, var(--top-bar-bg)); }
-        100% { background: var(--top-bar-bg); }
+    @keyframes rosterHeaderTabFlash {
+        0% { background: color-mix(in srgb, var(--blue) 9%, transparent); }
+        55% { background: color-mix(in srgb, var(--blue) 4%, transparent); }
+        100% { background: transparent; }
     }
-    .top-bar-tabs-row.header-tab-flash { animation: rosterHeaderTabRowFlash 0.48s ease-out; }
+    .header-tab.header-tab-flash { animation: rosterHeaderTabFlash 0.7s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 8px; }
     .view-edit-team-btn svg { flex-shrink: 0; color: var(--blue-fill); }
     .tsc-edit-icon { display: inline-flex; align-items: center; color: var(--blue-fill); margin-left: 2px; }
     .admin-quick-card .aq-icon { display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
@@ -3634,11 +3635,11 @@ ROSTER_OVERLAY_IDS.forEach(function(id) {
 const TAB_ORDER = ['mine', 'search', 'admin'];
 window.switchTab = function(tab) {
     if (tab === 'admin' && !window.isAdmin) return;
-    const tabRow = document.querySelector('.top-bar-tabs-row');
-    if (tabRow) {
-        tabRow.classList.remove('header-tab-flash');
-        void tabRow.offsetWidth;
-        tabRow.classList.add('header-tab-flash');
+    const tabBtn = document.getElementById('tab-' + tab);
+    if (tabBtn) {
+        tabBtn.classList.remove('header-tab-flash');
+        void tabBtn.offsetWidth;
+        tabBtn.classList.add('header-tab-flash');
     }
     // Back-button tracking: leaving the My Duty home tab pushes an entry; returning to it pops.
     if (tab !== 'mine' && window._currentTab === 'mine') {

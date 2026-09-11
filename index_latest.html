@@ -313,11 +313,12 @@
             border-bottom: 1px solid var(--border);
             transition: padding-top 0.32s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease;
         }
-        @keyframes headerTabRowFlash {
-            0% { background: color-mix(in srgb, var(--blue) 14%, var(--top-bar-bg)); }
-            100% { background: var(--top-bar-bg); }
+        @keyframes headerTabFlash {
+            0% { background: color-mix(in srgb, var(--blue) 9%, transparent); }
+            55% { background: color-mix(in srgb, var(--blue) 4%, transparent); }
+            100% { background: transparent; }
         }
-        .top-bar-tabs-row.header-tab-flash { animation: headerTabRowFlash 0.48s ease-out; }
+        .header-tab.header-tab-flash { animation: headerTabFlash 0.7s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 8px; }
         .dash-top-search-wrap {
             position: sticky; top: 0; z-index: 1200;
             display: flex;
@@ -7371,12 +7372,25 @@
         if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(document.getElementById('screen-alerts'));
     };
 
-    window.flashHeaderTabRow = function() {
-        const row = document.querySelector('#screen-reports:not(.hidden) .top-bar-tabs-row, #screen-yearly-trend:not(.hidden) .top-bar-tabs-row, #screen-salary:not(.hidden) .top-bar-tabs-row');
-        if (!row) return;
-        row.classList.remove('header-tab-flash');
-        void row.offsetWidth;
-        row.classList.add('header-tab-flash');
+    window.flashHeaderTab = function(tabElOrId) {
+        const el = typeof tabElOrId === 'string' ? document.getElementById(tabElOrId) : tabElOrId;
+        if (!el || !el.classList.contains('header-tab')) return;
+        el.classList.remove('header-tab-flash');
+        void el.offsetWidth;
+        el.classList.add('header-tab-flash');
+    };
+
+    window.getMainBottomNavScreen = function() {
+        const addEl = document.getElementById('screen-add');
+        if (addEl && !addEl.classList.contains('hidden')) return null;
+        const order = ['screen-register', 'screen-alerts', 'screen-settings', 'screen-dashboard'];
+        for (const id of order) {
+            const el = document.getElementById(id);
+            if (!el || el.classList.contains('hidden')) continue;
+            if (id === 'screen-settings' && el.classList.contains('settings-over-roster')) continue;
+            return id;
+        }
+        return null;
     };
 
     window.updateTopBarScrollState = function() {
@@ -7402,12 +7416,19 @@
         });
     };
 
-    window.navigateMainBottomNavBySwipe = function(diff) {
-        const dash = document.getElementById('screen-dashboard');
-        if (!dash || dash.classList.contains('hidden')) return false;
-        if (diff >= 0) return false;
+    window.navigateMainBottomNavBySwipe = function(diff, currentId) {
+        const seq = ['screen-register', 'screen-alerts', 'screen-settings', 'screen-dashboard'];
+        const current = currentId || (window.getMainBottomNavScreen ? window.getMainBottomNavScreen() : null);
+        if (!current) return false;
+        const idx = seq.indexOf(current);
+        if (idx < 0) return false;
+        let target = null;
+        if (diff < 0 && idx > 0) target = seq[idx - 1];
+        else if (diff > 0 && idx < seq.length - 1) target = seq[idx + 1];
+        if (!target) return false;
         window.hapticTap();
-        window.openSettingsModal();
+        if (target === 'screen-settings') window.openSettingsModal();
+        else window.navTo(target);
         return true;
     };
 
@@ -7517,9 +7538,10 @@
                     const idx = Math.max(0, tabs.indexOf(cur));
                     if (diff < 0 && idx < tabs.length - 1) window.switchSalaryTab(tabs[idx + 1]);
                     else if (diff > 0 && idx > 0) window.switchSalaryTab(tabs[idx - 1]);
-                } else if (!document.getElementById('screen-dashboard').classList.contains('hidden')) {
-                    if (!e.target.closest('input, textarea, select, #preview-wrapper, #sidebar, .sidebar-overlay, .dash-global-search')) {
-                        if (window.navigateMainBottomNavBySwipe(diff)) { /* bottom-nav swipe */ }
+                } else {
+                    const bottomNavScreen = window.getMainBottomNavScreen ? window.getMainBottomNavScreen() : null;
+                    if (bottomNavScreen && !e.target.closest('input, textarea, select, #preview-wrapper, #sidebar, .sidebar-overlay, .dash-global-search, #sheet-table-scroll-wrap, #sheet-outer-box, #sheet-active-row-wrap')) {
+                        window.navigateMainBottomNavBySwipe(diff, bottomNavScreen);
                     }
                 }
             }
@@ -14661,7 +14683,6 @@
 
     function switchTab(tab, direction) { 
         currentTab = tab;
-        if (window.flashHeaderTabRow) window.flashHeaderTabRow();
         const tabTa = document.getElementById('tab-ta');
         const tabNda = document.getElementById('tab-nda');
         const genBtn = document.getElementById('generate-btn');
@@ -14676,6 +14697,7 @@
             document.getElementById('report-month-hidden').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,'0')}`;
             document.getElementById('rep-nda-row').classList.add('hidden');
             document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.tOr('report_total_ta', "Total Travelling Allowances") : "Total Travelling Allowances");
+            if (window.flashHeaderTab) window.flashHeaderTab(tabTa);
         } else {
             tabNda.classList.add('active'); 
             tabTa.classList.remove('active'); 
@@ -14692,6 +14714,7 @@
             document.getElementById('report-month-hidden').value = `${ndaY}-${String(ndaM).padStart(2,'0')}`;
             document.getElementById('rep-nda-row').classList.remove('hidden');
             document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.tOr('nda_total_row', "Total NDA") : "Total NDA");
+            if (window.flashHeaderTab) window.flashHeaderTab(tabNda);
         }
         updateReportUI();
         if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
@@ -14837,7 +14860,6 @@
     };
 
     window.switchTrendViewTab = function(view) {
-        if (window.flashHeaderTabRow) window.flashHeaderTabRow();
         const isNda = currentTab === 'nda';
         if (view === 'signon' && !isNda) view = 'graph';
         if (view !== 'future' && window._trendFutureCompareActual) {
@@ -14857,6 +14879,8 @@
         if (graphBtn) graphBtn.classList.toggle('active', view === 'graph');
         if (futureBtn) futureBtn.classList.toggle('active', view === 'future');
         if (signonBtn) signonBtn.classList.toggle('active', view === 'signon');
+        const trendFlashBtn = view === 'graph' ? graphBtn : (view === 'future' ? futureBtn : signonBtn);
+        if (window.flashHeaderTab && trendFlashBtn) window.flashHeaderTab(trendFlashBtn);
         const trendAnimTarget = signonArea && view === 'signon' ? signonArea : (chartArea && view !== 'signon' ? chartArea : null);
         if (trendAnimTarget) animateTabSwitch(trendAnimTarget);
         if (chartArea) chartArea.classList.toggle('hidden', view === 'signon');
@@ -16669,7 +16693,6 @@
     };
 
     window.switchSalaryTab = function(tab) {
-        if (window.flashHeaderTabRow) window.flashHeaderTabRow();
         window._salaryActiveTab = tab;
         try { sessionStorage.setItem('tte_salary_tab', tab); } catch (e) {}
         const expectedBtn = document.getElementById('salary-tab-expected-btn');
@@ -16678,6 +16701,7 @@
         const projectedPanel = document.getElementById('salary-projected-panel');
         if (expectedBtn) expectedBtn.classList.toggle('active', tab === 'expected');
         if (projectedBtn) projectedBtn.classList.toggle('active', tab === 'projected');
+        if (window.flashHeaderTab) window.flashHeaderTab(tab === 'projected' ? projectedBtn : expectedBtn);
         if (expectedPanel) expectedPanel.classList.toggle('hidden', tab !== 'expected');
         if (projectedPanel) projectedPanel.classList.toggle('hidden', tab !== 'projected');
         const salaryAnimTarget = tab === 'projected' ? projectedPanel : expectedPanel;
