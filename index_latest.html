@@ -279,7 +279,7 @@
             max-height: 160px;
             opacity: 1;
             overflow: hidden;
-            transition: max-height 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.26s ease, padding 0.32s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: max-height 0.36s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.36s cubic-bezier(0.4, 0, 0.2, 1), padding 0.36s cubic-bezier(0.4, 0, 0.2, 1), min-height 0.36s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row {
             max-height: 0;
@@ -730,7 +730,7 @@
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
-        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn) {
+        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn) {
             width: 100%; min-height: 48px; padding: 10px 24px; border: none;
             border-radius: var(--md-radius-full); font-weight: var(--font-weight-medium);
             cursor: pointer; font-size: var(--text-label); line-height: var(--line-height-tight);
@@ -739,7 +739,19 @@
             transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
         }
         .quick-add-leg-btn { width: auto; padding: 10px 20px; border-radius: var(--md-radius-full); background: linear-gradient(135deg, #f59e0b, #d97706); font-size: 16px; font-weight: 900; }
-        button:active { opacity: 0.92; transform: scale(0.98); box-shadow: none; }
+        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):active { opacity: 0.92; transform: scale(0.98); box-shadow: none; }
+        .sheet-action-row button, .all-journey-action-row button {
+            box-shadow: none !important;
+            background-image: none !important;
+            border: none !important;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent;
+            filter: none !important;
+        }
+        .sheet-action-row button:active, .all-journey-action-row button:active {
+            transform: none !important;
+            opacity: 1 !important;
+        }
         .profile-inline-add-btn { border-radius: var(--md-radius-full) !important; min-height: 40px !important; }
         
         .status-badge { display: inline-flex; align-items: center; gap: 5px; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; transition: background 0.3s, color 0.3s, border 0.3s; }
@@ -965,6 +977,12 @@
             border-bottom: 1px solid var(--border);
         }
         .settings-row:last-child { border-bottom: none; }
+        .settings-row-nav { cursor: pointer; user-select: none; }
+        .settings-row-chevron { margin-left: auto; font-size: 20px; font-weight: 700; color: var(--text-muted); line-height: 1; padding-right: 2px; transition: transform 0.2s ease; }
+        .settings-row-chevron.settings-row-chevron--open { transform: rotate(90deg); }
+        .settings-animation-group { border-bottom: 1px solid var(--border); }
+        .settings-animation-group .settings-row { padding-left: 28px; }
+        .settings-animation-group .settings-row:last-child { border-bottom: none; }
         .settings-row-label {
             font-size: var(--text-body); font-weight: var(--font-weight-medium);
             display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
@@ -1719,7 +1737,8 @@
             window._syncStatusToastText = `${statusText}\n${timeText}`;
             const isFirstCall = window._lastSyncIconState === undefined;
             const stateChanged = window._lastSyncIconState !== syncIconState;
-            if (stateChanged || (isFirstCall && syncIconState !== 'synced')) {
+            const persistMiniLabel = syncIconState === 'offline' || syncIconState === 'failing' || syncIconState === 'pending' || syncIconState === 'syncing';
+            if (stateChanged || (isFirstCall && syncIconState !== 'synced') || persistMiniLabel) {
                 window.showSyncMiniLabel(syncIconState);
             }
             window._lastSyncIconState = syncIconState;
@@ -1767,6 +1786,9 @@
                     window._syncMiniLabelActive = false;
                     if (window.refreshSyncIconColor) window.refreshSyncIconColor(window._lastSyncIconState);
                 }, 3000);
+            } else if (state === 'offline' || state === 'failing' || state === 'pending' || state === 'syncing') {
+                el.style.opacity = labelText ? '1' : '0';
+                window._syncMiniLabelActive = !!labelText;
             }
         };
 
@@ -3079,20 +3101,6 @@
             <div class="card settings-list">
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#6366f1;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="dark_theme_row">Dark Theme</span></span>
-                <div id="darktheme-toggle-switch" onclick="window.toggleTheme()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
-                    <div id="darktheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
-                </div>
-            </div>
-
-            <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#0ea5e9;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="hindi_language_row">Hindi Language</span></span>
-                <div id="settings-lang-toggle-switch" onclick="window.toggleSettingsLanguage()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
-                    <div id="settings-lang-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
-                </div>
-            </div>
-
-            <div class="settings-row" role="group">
                 <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 8v8"/><path d="M20 8v8"/></svg><span data-i18n="haptic_feedback_row">Haptic Feedback</span></span>
                 <div id="haptic-toggle-switch" onclick="window.toggleHapticSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="haptic-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
@@ -3106,18 +3114,29 @@
                 </div>
             </div>
 
+            <div class="settings-row settings-row-nav" role="button" tabindex="0" onclick="window.toggleSettingsAnimationGroup()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.toggleSettingsAnimationGroup();}">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="#eab308" style="width:16px; height:16px; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="settings_animations_group">Animation</span></span>
+                <span id="settings-animation-chevron" class="settings-row-chevron" aria-hidden="true">›</span>
+            </div>
+            <div id="settings-animation-group" class="settings-animation-group hidden">
             <div class="settings-row" role="group">
                 <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="#eab308" style="width:16px; height:16px; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="page_anim_row">Page Opening Animation</span></span>
                 <div id="pageanim-toggle-switch" onclick="window.togglePageAnimSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="pageanim-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
-
             <div class="settings-row" role="group">
                 <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ec4899;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span data-i18n="close_anim_row">Dialog Close Animation</span></span>
                 <div id="closeanim-toggle-switch" onclick="window.toggleCloseAnimSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="closeanim-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
+            </div>
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#3b82f6;"><path d="M4 12c2-4 4-4 6 0s4 4 6 0 4-4 4 0"/></svg><span data-i18n="scroll_bounce_row">Scroll Stretch</span></span>
+                <div id="scrollbounce-toggle-switch" onclick="window.toggleScrollBounceSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
+                    <div id="scrollbounce-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
+                </div>
+            </div>
             </div>
 
             <div class="settings-row" role="group">
@@ -3149,13 +3168,6 @@
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#3b82f6;"><path d="M4 12c2-4 4-4 6 0s4 4 6 0 4-4 4 0"/></svg><span data-i18n="scroll_bounce_row">Scroll Stretch</span></span>
-                <div id="scrollbounce-toggle-switch" onclick="window.toggleScrollBounceSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
-                    <div id="scrollbounce-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
-                </div>
-            </div>
-
-            <div class="settings-row" role="group">
                 <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><span data-i18n="green_theme_row">Green Theme</span></span>
                 <div id="greentheme-toggle-switch" onclick="window.toggleGreenThemeSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="greentheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
@@ -3166,6 +3178,20 @@
                 <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#06b6d4;"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/></svg><span data-i18n="card_shadow_row">Card Shadow</span></span>
                 <div id="cardshadow-toggle-switch" onclick="window.toggleCardShadowSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="cardshadow-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
+                </div>
+            </div>
+
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#6366f1;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="dark_theme_row">Dark Theme</span></span>
+                <div id="darktheme-toggle-switch" onclick="window.toggleTheme()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
+                    <div id="darktheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
+                </div>
+            </div>
+
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#0ea5e9;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="hindi_language_row">Hindi Language</span></span>
+                <div id="settings-lang-toggle-switch" onclick="window.toggleSettingsLanguage()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
+                    <div id="settings-lang-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
@@ -3187,9 +3213,9 @@
                 <h1 id="trend-screen-title" style="width:100%;">Travelling Allowances</h1>
             </div>
             <div class="top-bar-tabs-row">
-                <button id="trend-tab-graph-btn" class="header-tab active" onclick="window.switchTrendViewTab('graph')">Actual TA</button>
-                <button id="trend-tab-future-btn" class="header-tab" onclick="window.switchTrendViewTab('future')">Projected TA</button>
-                <button id="trend-tab-signon-btn" class="header-tab hidden" onclick="window.switchTrendViewTab('signon')" data-i18n="trend_tab_signon">Sign On Time</button>
+                <button id="trend-tab-graph-btn" class="header-tab active" onclick="window.switchTrendViewTab('graph', true)">Actual TA</button>
+                <button id="trend-tab-future-btn" class="header-tab" onclick="window.switchTrendViewTab('future', true)">Projected TA</button>
+                <button id="trend-tab-signon-btn" class="header-tab hidden" onclick="window.switchTrendViewTab('signon', true)" data-i18n="trend_tab_signon">Sign On Time</button>
             </div>
         </div>
         <div class="screen-content">
@@ -3234,8 +3260,8 @@
                 <h1 data-i18n="page_title_salary">Salary</h1>
             </div>
             <div class="top-bar-tabs-row">
-                <button id="salary-tab-expected-btn" class="header-tab active" onclick="window.switchSalaryTab('expected')" data-i18n="salary_tab_expected">Expected Salary</button>
-                <button id="salary-tab-projected-btn" class="header-tab" onclick="window.switchSalaryTab('projected')" data-i18n="salary_tab_projected">Projected Salary</button>
+                <button id="salary-tab-expected-btn" class="header-tab active" onclick="window.switchSalaryTab('expected', true)" data-i18n="salary_tab_expected">Expected Salary</button>
+                <button id="salary-tab-projected-btn" class="header-tab" onclick="window.switchSalaryTab('projected', true)" data-i18n="salary_tab_projected">Projected Salary</button>
             </div>
         </div>
         <div class="screen-content" style="padding-left:16px; padding-right:16px;">
@@ -4767,8 +4793,8 @@
                 <h1 style="width:100%;" data-i18n="page_title_generate_pdf">Generate PDF</h1>
             </div>
             <div class="top-bar-tabs-row">
-                <button id="tab-ta" class="header-tab active" onclick="window.switchTab('ta')">TA Journal</button>
-                <button id="tab-nda" class="header-tab" onclick="window.switchTab('nda')">NDA Bill</button>
+                <button id="tab-ta" class="header-tab active" onclick="window.switchTab('ta', true)">TA Journal</button>
+                <button id="tab-nda" class="header-tab" onclick="window.switchTab('nda', true)">NDA Bill</button>
             </div>
         </div>
         <div class="screen-content" id="reports-swipe-zone" style="min-height: 80vh; width: 100%;">
@@ -5490,6 +5516,15 @@
         window.applyPageAnimBodyClass();
         window.updateSettingsToggleSwitches();
         window.broadcastSettingToRoster('PAGE_ANIM_CHANGED', !wasOn);
+    };
+    window.toggleSettingsAnimationGroup = function() {
+        const grp = document.getElementById('settings-animation-group');
+        const chev = document.getElementById('settings-animation-chevron');
+        if (!grp) return;
+        if (window.hapticTap) window.hapticTap();
+        grp.classList.toggle('hidden');
+        const isOpen = !grp.classList.contains('hidden');
+        if (chev) chev.classList.toggle('settings-row-chevron--open', isOpen);
     };
     window.isCloseAnimEnabled = function() {
         const v = localStorage.getItem('close_anim_enabled');
@@ -7538,18 +7573,19 @@
                     const views = currentTab === 'nda' ? ['graph', 'future', 'signon'] : ['graph', 'future'];
                     const cur = window._trendActiveView || 'graph';
                     const idx = Math.max(0, views.indexOf(cur));
-                    if (diff < 0 && idx < views.length - 1) window.switchTrendViewTab(views[idx + 1]);
-                    else if (diff > 0 && idx > 0) window.switchTrendViewTab(views[idx - 1]);
+                    if (diff < 0 && idx < views.length - 1) window.switchTrendViewTab(views[idx + 1], true);
+                    else if (diff > 0 && idx > 0) window.switchTrendViewTab(views[idx - 1], true);
                 } else if (!document.getElementById('screen-salary').classList.contains('hidden')) {
                     window.hapticTap();
                     const tabs = ['expected', 'projected'];
                     const cur = window._salaryActiveTab || 'expected';
                     const idx = Math.max(0, tabs.indexOf(cur));
-                    if (diff < 0 && idx < tabs.length - 1) window.switchSalaryTab(tabs[idx + 1]);
-                    else if (diff > 0 && idx > 0) window.switchSalaryTab(tabs[idx - 1]);
+                    if (diff < 0 && idx < tabs.length - 1) window.switchSalaryTab(tabs[idx + 1], true);
+                    else if (diff > 0 && idx > 0) window.switchSalaryTab(tabs[idx - 1], true);
                 } else {
                     const bottomNavScreen = window.getMainBottomNavScreen ? window.getMainBottomNavScreen() : null;
-                    if (bottomNavScreen && !e.target.closest('input, textarea, select, #preview-wrapper, #sidebar, .sidebar-overlay, .dash-global-search, #sheet-table-scroll-wrap, #sheet-outer-box, #sheet-active-row-wrap')) {
+                    const blocksBottomNavSwipe = e.target.closest('#preview-wrapper, #sidebar, .sidebar-overlay, .dash-global-search-results, #sheet-table-scroll-wrap, #sheet-outer-box, #sheet-active-row-wrap, .modal-overlay:not(.hidden), [id$="-modal"]:not(.hidden)');
+                    if (bottomNavScreen && !blocksBottomNavSwipe) {
                         window.navigateMainBottomNavBySwipe(diff, bottomNavScreen);
                     }
                 }
@@ -8052,6 +8088,9 @@
         }
         const syncCluster = document.getElementById('dash-sync-cluster');
         if (syncCluster) syncCluster.classList.toggle('hidden', screenId !== 'screen-dashboard');
+        if (screenId === 'screen-dashboard' && window._lastSyncIconState && window.showSyncMiniLabel) {
+            window.showSyncMiniLabel(window._lastSyncIconState);
+        }
         if (screenId !== 'screen-login' && window.updateSyncLabels) window.updateSyncLabels();
         if (screenId === 'screen-login') {
             const banner = document.getElementById('pwa-install-banner');
@@ -14708,7 +14747,8 @@
         }
     };
 
-    function switchTab(tab, direction) { 
+    function switchTab(tab, direction) {
+        const userTriggeredTab = direction === 'left' || direction === 'right' || direction === true;
         currentTab = tab;
         const tabTa = document.getElementById('tab-ta');
         const tabNda = document.getElementById('tab-nda');
@@ -14724,7 +14764,7 @@
             document.getElementById('report-month-hidden').value = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2,'0')}`;
             document.getElementById('rep-nda-row').classList.add('hidden');
             document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.tOr('report_total_ta', "Total Travelling Allowances") : "Total Travelling Allowances");
-            if (window.flashHeaderTab) window.flashHeaderTab(tabTa);
+            if (userTriggeredTab && window.flashHeaderTab) window.flashHeaderTab(tabTa);
         } else {
             tabNda.classList.add('active'); 
             tabTa.classList.remove('active'); 
@@ -14741,7 +14781,7 @@
             document.getElementById('report-month-hidden').value = `${ndaY}-${String(ndaM).padStart(2,'0')}`;
             document.getElementById('rep-nda-row').classList.remove('hidden');
             document.getElementById('rep-val-label').innerText = (window.i18n ? window.i18n.tOr('nda_total_row', "Total NDA") : "Total NDA");
-            if (window.flashHeaderTab) window.flashHeaderTab(tabNda);
+            if (userTriggeredTab && window.flashHeaderTab) window.flashHeaderTab(tabNda);
         }
         updateReportUI();
         if (!document.getElementById('screen-yearly-trend').classList.contains('hidden')) {
@@ -14886,7 +14926,7 @@
         if (futureBtn) futureBtn.textContent = isNda ? t('trend_tab_projected_nda', 'Projected NDA') : t('trend_tab_projected_ta', 'Projected TA');
     };
 
-    window.switchTrendViewTab = function(view) {
+    window.switchTrendViewTab = function(view, userTriggered) {
         const isNda = currentTab === 'nda';
         if (view === 'signon' && !isNda) view = 'graph';
         if (view !== 'future' && window._trendFutureCompareActual) {
@@ -14907,7 +14947,7 @@
         if (futureBtn) futureBtn.classList.toggle('active', view === 'future');
         if (signonBtn) signonBtn.classList.toggle('active', view === 'signon');
         const trendFlashBtn = view === 'graph' ? graphBtn : (view === 'future' ? futureBtn : signonBtn);
-        if (window.flashHeaderTab && trendFlashBtn) window.flashHeaderTab(trendFlashBtn);
+        if (userTriggered && window.flashHeaderTab && trendFlashBtn) window.flashHeaderTab(trendFlashBtn);
         const trendAnimTarget = signonArea && view === 'signon' ? signonArea : (chartArea && view !== 'signon' ? chartArea : null);
         if (trendAnimTarget) animateTabSwitch(trendAnimTarget);
         if (chartArea) chartArea.classList.toggle('hidden', view === 'signon');
@@ -16719,7 +16759,7 @@
         return rowsHtml + footerHtml;
     };
 
-    window.switchSalaryTab = function(tab) {
+    window.switchSalaryTab = function(tab, userTriggered) {
         window._salaryActiveTab = tab;
         try { sessionStorage.setItem('tte_salary_tab', tab); } catch (e) {}
         const expectedBtn = document.getElementById('salary-tab-expected-btn');
@@ -16728,7 +16768,7 @@
         const projectedPanel = document.getElementById('salary-projected-panel');
         if (expectedBtn) expectedBtn.classList.toggle('active', tab === 'expected');
         if (projectedBtn) projectedBtn.classList.toggle('active', tab === 'projected');
-        if (window.flashHeaderTab) window.flashHeaderTab(tab === 'projected' ? projectedBtn : expectedBtn);
+        if (userTriggered && window.flashHeaderTab) window.flashHeaderTab(tab === 'projected' ? projectedBtn : expectedBtn);
         if (expectedPanel) expectedPanel.classList.toggle('hidden', tab !== 'expected');
         if (projectedPanel) projectedPanel.classList.toggle('hidden', tab !== 'projected');
         const salaryAnimTarget = tab === 'projected' ? projectedPanel : expectedPanel;
