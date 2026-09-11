@@ -27,7 +27,7 @@
             --row-stripe-bg: color-mix(in srgb, var(--card) 72%, var(--bg) 28%);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
-            --nav-gesture-inset: max(env(safe-area-inset-bottom, 0px), 48px);
+            --nav-gesture-inset: max(env(safe-area-inset-bottom, 0px), 24px);
             --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--nav-gesture-inset));
             --list-row-min-h: 48px;
             --md-radius-lg: 18px;
@@ -1077,14 +1077,14 @@
             bottom: 0;
             height: var(--nav-gesture-inset);
             background: var(--bottom-bar-bg-solid);
-            z-index: 3998;
+            z-index: 3995;
             pointer-events: none;
         }
         .bottom-bar {
-            position: fixed; bottom: var(--nav-gesture-inset); left: 0; width: 100%;
+            position: fixed; bottom: 0; left: 0; width: 100%;
             min-height: var(--bottom-bar-h);
             height: auto;
-            padding-bottom: 0;
+            padding-bottom: var(--nav-gesture-inset);
             background: var(--bottom-bar-bg-solid);
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
