@@ -295,49 +295,11 @@
             background: var(--top-bar-bg);
             pointer-events: none;
         }
-        .top-bar.top-bar--scrolled, .dash-top-search-wrap.top-bar--scrolled { background: var(--top-bar-bg); border-bottom: none; box-shadow: none; }
-        .top-bar.top-bar-tabbed.top-bar--scrolled { border-bottom: none; }
-        .top-bar-tabbed.top-bar--compact-tabs {
-            min-height: 0;
-            padding-top: 0;
-        }
-        .top-bar-tabbed.top-bar--compact-tabs .top-bar-tabs-row {
-            padding-top: calc(var(--safe-top));
-        }
         .top-bar-title-row { display: flex; align-items: center; width: 100%; min-height: 52px; }
         .top-bar-tabbed .top-bar-title-row {
             padding: calc(8px + var(--safe-top)) 16px 8px 12px;
             min-height: calc(48px + var(--safe-top));
             box-sizing: border-box;
-            max-height: 160px;
-            opacity: 1;
-            visibility: visible;
-            overflow: hidden;
-            transform: translate3d(0, 0, 0);
-            transition:
-                max-height 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                padding 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                min-height 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0s linear 0s;
-        }
-        .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row {
-            max-height: 0;
-            opacity: 0;
-            visibility: hidden;
-            transform: translate3d(0, -10px, 0);
-            min-height: 0 !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-            pointer-events: none;
-            transition:
-                max-height 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                transform 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                padding 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                min-height 0.36s cubic-bezier(0.4, 0, 0.2, 1),
-                visibility 0s linear 0.36s;
         }
         .top-bar-tabbed .top-bar-title-row .back-btn {
             position: relative !important;
@@ -361,7 +323,6 @@
             display: flex; width: 100%; position: relative;
             background: var(--top-bar-bg);
             border-bottom: 1px solid var(--border);
-            transition: padding-top 0.36s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease;
         }
         .hidden .header-tab.header-tab-flash { animation: none !important; background: transparent !important; }
         @keyframes headerTabFlash {
@@ -596,7 +557,8 @@
             height: calc(100% - var(--bottom-ui-offset) - var(--connectivity-bar-h)) !important;
         }
         body.roster-iframe-open #main-bottom-bar { z-index: 1000002 !important; }
-        body.roster-mandali-open #main-bottom-bar { visibility: hidden; pointer-events: none; }
+        body.roster-mandali-open #main-bottom-bar,
+        body.roster-mandali-open #bottom-nav-chrome { visibility: hidden; pointer-events: none; }
         
         .screen-content { padding: 15px 8px calc(98px + var(--safe-bottom)); max-width: 640px; margin: 0 auto; box-sizing: border-box; width: 100%; overflow-x: hidden; overflow-y: visible; }
         
@@ -7536,40 +7498,6 @@
         return null;
     };
 
-    window.updateTopBarScrollState = function() {
-        if (window._topBarScrollRaf) return;
-        window._topBarScrollRaf = requestAnimationFrame(() => {
-            window._topBarScrollRaf = 0;
-            const y = window.scrollY || document.documentElement.scrollTop || 0;
-            const doc = document.documentElement;
-            const maxScroll = Math.max(0, (doc.scrollHeight || 0) - window.innerHeight);
-            const COMPACT_MIN_SCROLL = 160;
-            const canCompact = maxScroll >= COMPACT_MIN_SCROLL;
-            const ENTER = 56;
-            const EXIT = 4;
-            const prevY = window._topBarLastScrollY != null ? window._topBarLastScrollY : y;
-            const dy = y - prevY;
-            window._topBarLastScrollY = y;
-            const prevElevated = window._topBarElevated === true;
-            let elevated = prevElevated;
-            if (!canCompact) {
-                elevated = false;
-            } else if (elevated) {
-                if (y <= EXIT) elevated = false;
-                else if (dy < -6) elevated = false;
-            } else if (y >= ENTER && dy > 6) {
-                elevated = true;
-            }
-            window._topBarElevated = elevated;
-            document.querySelectorAll('.top-bar, .dash-top-search-wrap').forEach(el => {
-                el.classList.toggle('top-bar--scrolled', elevated && canCompact);
-            });
-            document.querySelectorAll('.top-bar-tabbed').forEach(el => {
-                el.classList.toggle('top-bar--compact-tabs', elevated && canCompact);
-            });
-        });
-    };
-
     window.navigateMainBottomNavBySwipe = function(diff, currentId) {
         const seq = ['screen-register', 'screen-alerts', 'screen-settings', 'screen-dashboard'];
         const current = currentId || (window.getMainBottomNavScreen ? window.getMainBottomNavScreen() : null);
@@ -7587,11 +7515,6 @@
     };
 
     window.onload = () => { 
-        if (!window._topBarScrollBound) {
-            window._topBarScrollBound = true;
-            window.addEventListener('scroll', window.updateTopBarScrollState, { passive: true });
-            window.updateTopBarScrollState();
-        }
         if (window.applyPageAnimBodyClass) window.applyPageAnimBodyClass();
         if (window.applyCardShadowBodyClass) window.applyCardShadowBodyClass();
         if (window.applyGreenThemeBodyClass) window.applyGreenThemeBodyClass();
@@ -8186,10 +8109,7 @@
             animTarget.classList.add('page-open-anim');
             setTimeout(() => animTarget.classList.remove('page-open-anim'), 400);
         }
-        window._topBarElevated = false;
-        window._topBarLastScrollY = 0;
         window.scrollTo(0, 0);
-        if (window.updateTopBarScrollState) window.updateTopBarScrollState();
         
         const bBar = document.getElementById('main-bottom-bar');
         const bChrome = document.getElementById('bottom-nav-chrome');
