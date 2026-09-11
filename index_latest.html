@@ -8212,6 +8212,7 @@
         }
         if (window.updateTrendCompareFab) window.updateTrendCompareFab();
         if (window.updateSalaryCompareFab) window.updateSalaryCompareFab();
+        requestAnimationFrame(() => { window._suppressHeaderTabFlash = false; });
     }
 
     // Point 4: Open the Pay Rate Table as a popup modal
