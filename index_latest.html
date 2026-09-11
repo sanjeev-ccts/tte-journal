@@ -27,7 +27,7 @@
             --row-stripe-bg: color-mix(in srgb, var(--card) 72%, var(--bg) 28%);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
-            --nav-gesture-inset: max(env(safe-area-inset-bottom, 0px), 24px);
+            --nav-gesture-inset: max(env(safe-area-inset-bottom, 0px), 48px);
             --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--nav-gesture-inset));
             --list-row-min-h: 48px;
             --md-radius-lg: 18px;
@@ -287,13 +287,9 @@
             box-shadow: none; border: none; border-bottom: none;
             transition: background 0.25s ease, border-color 0.25s ease; pointer-events: none;
         }
-        .top-bar::before {
-            content: '';
-            position: absolute;
-            left: 0; right: 0; top: 0;
-            height: var(--safe-top);
+        .top-bar.top-bar-tabbed {
+            padding-top: var(--safe-top);
             background: var(--top-bar-bg);
-            pointer-events: none;
         }
         .top-bar-title-row { display: flex; align-items: center; width: 100%; min-height: 52px; }
         .top-bar-tabbed .top-bar-title-row {
@@ -343,14 +339,6 @@
             border: none;
             transition: background 0.25s, border-color 0.25s;
             box-sizing: border-box;
-        }
-        .dash-top-search-wrap::before {
-            content: '';
-            position: absolute;
-            left: 0; right: 0; top: 0;
-            height: var(--safe-top);
-            background: var(--top-bar-bg);
-            pointer-events: none;
         }
         .dash-top-search-wrap .dash-global-search--topbar {
             width: min(88%, 400px);
@@ -753,7 +741,7 @@
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
-        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn) {
+        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn) {
             width: 100%; min-height: 48px; padding: 10px 24px; border: none;
             border-radius: var(--md-radius-full); font-weight: var(--font-weight-medium);
             cursor: pointer; font-size: var(--text-label); line-height: var(--line-height-tight);
@@ -1089,14 +1077,14 @@
             bottom: 0;
             height: var(--nav-gesture-inset);
             background: var(--bottom-bar-bg-solid);
-            z-index: 3995;
+            z-index: 3998;
             pointer-events: none;
         }
         .bottom-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%;
+            position: fixed; bottom: var(--nav-gesture-inset); left: 0; width: 100%;
             min-height: var(--bottom-bar-h);
             height: auto;
-            padding-bottom: var(--nav-gesture-inset);
+            padding-bottom: 0;
             background: var(--bottom-bar-bg-solid);
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
@@ -1164,9 +1152,10 @@
             flex-shrink: 0; line-height: 1;
         }
         .modal-inline-action-btn {
-            width: auto !important; margin: 0 !important; min-height: 34px !important;
-            padding: 6px 12px !important; font-size: 12px !important; border-radius: 18px !important;
-            box-shadow: none !important;
+            width: auto !important; margin: 0 !important; min-height: 30px !important;
+            max-height: 30px !important; padding: 4px 10px !important; font-size: 11px !important;
+            font-weight: 700 !important; line-height: 1.2 !important; border-radius: 16px !important;
+            box-shadow: none !important; flex-shrink: 0;
         }
         .bottom-icon svg { width: 27px; height: 27px; transition: color 0.15s; }
         .bottom-icon:active { transform: scale(0.85); }
@@ -1420,18 +1409,22 @@
         .circ-search-box { display:flex; align-items:center; gap:8px; background:var(--md-surface-container-high); border:1px solid var(--md-outline-variant); border-radius:var(--md-radius-full); padding:7px 12px; margin-bottom:8px; min-height:40px; box-sizing:border-box; }
         .circ-search-box input { flex:1; border:none !important; background:transparent !important; outline:none; font-size:13.5px; color:var(--text); font-family:inherit; padding:0 !important; margin:0 !important; box-shadow:none !important; border-radius:0 !important; width:auto; min-height:0 !important; }
         .circ-search-box input::placeholder { color:var(--text-muted); }
-        .circ-filter-row { display:flex; gap:8px; align-items:stretch; }
+        .circ-filter-row { display:flex; gap:8px; align-items:center; }
         .circ-filter-row select {
-            flex:1; height:36px; min-height:36px; box-sizing:border-box;
-            padding:0 30px 0 10px; border-radius:12px; border:1.5px solid var(--border);
+            flex:1; height:36px; min-height:36px; max-height:36px; box-sizing:border-box;
+            margin:0; padding:0 30px 0 10px; border-radius:12px; border:1.5px solid var(--border);
             background-color:var(--input-bg); color:var(--text); font-size:12.5px; font-family:inherit;
+            line-height:36px; vertical-align:middle;
         }
         .circ-clear-filters-btn {
-            flex-shrink: 0; width: 36px; height: 36px; min-width: 36px; min-height: 36px;
-            padding: 0; margin: 0; border-radius: 12px; border: 1.5px solid var(--border);
-            background: var(--input-bg); color: var(--text-muted); font-size: 14px; font-weight: 800;
-            cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-            line-height: 1; box-sizing: border-box;
+            flex: 0 0 36px !important; width: 36px !important; height: 36px !important;
+            min-width: 36px !important; min-height: 36px !important; max-height: 36px !important;
+            padding: 0 !important; margin: 0 !important; border-radius: 12px !important;
+            border: 1.5px solid var(--border) !important;
+            background: var(--input-bg) !important; color: var(--text-muted); font-size: 13px; font-weight: 800;
+            cursor: pointer; display: inline-flex !important; align-items: center; justify-content: center;
+            align-self: center; line-height: 1; box-sizing: border-box; box-shadow: none !important;
+            transform: translateY(0);
         }
 
         .circ-empty-state { text-align:center; padding:50px 20px; color:var(--text-muted); }
@@ -3247,7 +3240,7 @@
 
     <div id="screen-yearly-trend" class="hidden">
         <div class="top-bar top-bar-tabbed" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
-            <div class="top-bar-title-row" style="padding:10px 20px;">
+            <div class="top-bar-title-row">
                 <button class="back-btn" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
                 <h1 id="trend-screen-title" style="width:100%;">Travelling Allowances</h1>
             </div>
@@ -3294,7 +3287,7 @@
 
     <div id="screen-salary" class="hidden">
         <div class="top-bar top-bar-tabbed" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
-            <div class="top-bar-title-row" style="padding:10px 20px;">
+            <div class="top-bar-title-row">
                 <button class="back-btn" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
                 <h1 data-i18n="page_title_salary">Salary</h1>
             </div>
@@ -4046,10 +4039,10 @@
             <!-- USER STATS (stays full-width, per request) -->
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                    <h3 style="color:var(--purple); margin:0; font-size:15px;">👥 User Statistics</h3>
+                    <h3 style="color:var(--purple); margin:0; font-size:15px;">User Statistics</h3>
                     <div style="display:flex; gap:6px;">
-                        <button onclick="window.loadAdminStats()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--purple); border-radius:20px;">Refresh</button>
-                        <button onclick="window.loadUserRoster()" style="width:auto; margin:0; padding:5px 12px; font-size:12px; background:var(--blue-fill); border-radius:20px;">📋 Roster</button>
+                        <button type="button" class="modal-inline-action-btn" onclick="window.loadAdminStats()" style="background:var(--purple); color:var(--on-accent-fill);">Refresh</button>
+                        <button type="button" class="modal-inline-action-btn" onclick="window.loadUserRoster()" style="background:var(--blue-fill); color:var(--on-accent-fill);">Roster</button>
                     </div>
                 </div>
                 <div id="admin-stats-area">
@@ -4827,7 +4820,7 @@
 
     <div id="screen-reports" class="hidden">
         <div class="top-bar top-bar-tabbed" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
-            <div class="top-bar-title-row" style="padding:10px 20px;">
+            <div class="top-bar-title-row">
                 <button class="back-btn" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
                 <h1 style="width:100%;" data-i18n="page_title_generate_pdf">Generate PDF</h1>
             </div>
@@ -5140,7 +5133,7 @@
                 <select id="circ-category-select" onchange="window.circRenderList()">
                     <option value="">All Categories</option>
                 </select>
-                <button class="circ-clear-filters-btn" onclick="window.circClearFilters()" title="Clear filters">✕</button>
+                <button type="button" class="circ-clear-filters-btn" onclick="window.circClearFilters()" title="Clear filters" aria-label="Clear filters">✕</button>
             </div>
         </div>
         <div class="screen-content" style="padding-top:0;">
@@ -7341,19 +7334,21 @@
         if(rUI) rUI.innerText = "Last Restored: " + window.lastRestoreTime;
     }
     
+    function cssColorToThemeHex(cssColor) {
+        if (!cssColor) return '';
+        const t = cssColor.trim();
+        if (t.startsWith('#')) return t;
+        const m = t.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+        if (!m) return t;
+        const hex = (n) => Number(n).toString(16).padStart(2, '0');
+        return `#${hex(m[1])}${hex(m[2])}${hex(m[3])}`;
+    }
     function updateThemeColorMeta() {
         const meta = document.querySelector('meta[name="theme-color"]');
         if (!meta) return;
-        const probe = document.getElementById('bottom-nav-chrome') || document.getElementById('main-bottom-bar');
-        if (probe) {
-            const bg = getComputedStyle(probe).backgroundColor;
-            if (bg && bg !== 'rgba(0, 0, 0, 0)') {
-                meta.setAttribute('content', bg);
-                return;
-            }
-        }
-        const isDark = document.body.classList.contains('dark-mode');
-        meta.setAttribute('content', isDark ? '#151c2c' : '#ffffff');
+        const pageBg = getComputedStyle(document.body).backgroundColor;
+        const hex = cssColorToThemeHex(pageBg);
+        if (hex) meta.setAttribute('content', hex);
     }
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
