@@ -333,7 +333,7 @@
             justify-content: center;
             isolation: isolate;
             min-height: calc(48px + var(--safe-top));
-            padding: calc(8px + var(--safe-top)) 50px 6px 50px;
+            padding: calc(8px + var(--safe-top)) 50px 0 50px;
             background: var(--top-bar-bg);
             border: none;
             transition: background 0.25s, border-color 0.25s;
@@ -346,6 +346,7 @@
             flex-shrink: 1;
         }
         .dash-global-search--topbar { margin-bottom: 0; }
+        #screen-dashboard > .screen-content { padding-top: 4px; }
         .top-bar h1 { margin: 0 0 0 38px; font-size: var(--text-title); font-weight: 900; color: var(--text); letter-spacing: 0.5px; text-align: left; width: 100%; user-select: none; line-height: var(--line-height-tight); }
         .top-bar:not(.dash-header) h1,
         #roster-iframe-modal .top-bar h1 { font-weight: 600; letter-spacing: 0.35px; }
@@ -5678,6 +5679,14 @@
         indicator.classList.add('visible');
     };
 
+    window.refreshSettingsPageTitle = function() {
+        const el = document.getElementById('settings-page-title');
+        if (!el) return;
+        let title = window.i18n ? window.i18n.tOr('settings_title', 'Settings') : 'Settings';
+        title = title.replace(/^[\s\uFE0F\u2600-\u27BF\u{1F300}-\u{1FAFF}]+/u, '').trim();
+        el.textContent = title || 'Settings';
+    };
+
     window.openSettingsModal = function() {
         try { window.updateSettingsToggleSwitches(); } catch (e) { console.error('updateSettingsToggleSwitches failed:', e); }
         const rosterEl = document.getElementById('roster-iframe-modal');
@@ -7364,6 +7373,7 @@
         if (window.i18n) {
             document.documentElement.lang = window.i18n.getLang() === 'hi' ? 'hi' : 'en';
         }
+        if (window.refreshSettingsPageTitle) window.refreshSettingsPageTitle();
         window.updateSettingsToggleSwitches();
         if (fromRemote !== true && window.i18n) window.broadcastSettingToRoster('LANGUAGE_CHANGED', window.i18n.getLang());
         // Same reasoning as the theme label above — sync status text depends on dynamic sync
@@ -8077,6 +8087,7 @@
             shownScreenEl.classList.remove('settings-over-roster');
             window._settingsOpenedFromRoster = false;
             try { window.updateSettingsToggleSwitches(); } catch (e) { console.error('updateSettingsToggleSwitches failed:', e); }
+            if (window.refreshSettingsPageTitle) window.refreshSettingsPageTitle();
         }
         if (screenId === 'screen-alerts' && window.renderAlertsPage) window.renderAlertsPage();
         const pullHandle = document.getElementById('sidebar-pull-handle');
