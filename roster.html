@@ -80,7 +80,7 @@
        shadow toward its practical ceiling AND strengthens the highlight further, since that's the
        cue that actually works well in dark mode (measured 2.27 contrast already) - compensating
        for what the shadow alone can't fully deliver. */
-    body.dark-mode button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab) { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
+    body.dark-mode button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn) { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
     body:not(.card-shadow-on).dark-mode .admin-quick-card, body:not(.card-shadow-on).dark-mode .duty-box { background: var(--card); border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     .result-modal-box { background: var(--card); box-shadow: 0 -8px 30px rgba(0,0,0,0.5) !important; }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
@@ -160,7 +160,10 @@
     body.dark-mode .mandali-tab-btn.active { color: white; }
     .swipe-hint { text-align: center; font-size: 12px; font-weight: 700; color: var(--red); margin: 0 0 12px 0; }
     input, select { width: 100%; padding: 11px 14px; border-radius: 30px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 16px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; -webkit-appearance: none; appearance: none; min-width: 0; }
-    button { width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue-fill); box-shadow: var(--shadow), inset 0 1px 0 color-mix(in srgb, white 25%, transparent), inset 0 -2px 3px color-mix(in srgb, black 12%, transparent); transition: background 0.3s; }
+    button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn) {
+        width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue-fill);
+        box-shadow: var(--shadow), inset 0 1px 0 color-mix(in srgb, white 25%, transparent), inset 0 -2px 3px color-mix(in srgb, black 12%, transparent); transition: background 0.3s;
+    }
     input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; padding: 0; margin: 0; border-radius: 4px; -webkit-appearance: checkbox; appearance: checkbox; box-shadow: none; flex-shrink: 0; }
     input[type="date"], input[type="number"], input[type="text"], input[type="time"] { -webkit-appearance: none; appearance: none; min-height: 40px; box-sizing: border-box; }
     select { -webkit-appearance: none; appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 12px center; background-size: 18px; padding-right: 36px; }
@@ -207,7 +210,18 @@
     .tsc-edit-btn { width: auto; flex-shrink: 0; padding: 6px 10px; border-radius: 20px; background: var(--blue-fill); color: white; border: none; font-size: 13px; cursor: pointer; font-family: 'Roboto', sans-serif; }
     .two-col-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: stretch; }
     .two-col-row .card { flex: 1; margin-bottom: 0; }
-    .view-edit-team-btn { border: none; border-radius: 30px !important; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--blue-fill); font-weight: 900; font-size: 14px; font-family: 'Roboto', sans-serif; background: var(--card); padding: 8px 10px; }
+    .view-edit-team-btn { border: none; border-radius: 30px !important; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--blue-fill); font-weight: 900; font-size: 14px; font-family: 'Roboto', sans-serif; background: var(--card) !important; box-shadow: none !important; width: auto; padding: 8px 10px; }
+    .mandali-sphere-btn {
+        background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--blue-fill) 45%, #ffffff) 0%, var(--blue-fill) 52%, color-mix(in srgb, var(--blue-fill) 75%, #000000) 100%) !important;
+        box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3), inset 4px 4px 8px rgba(255,255,255,0.25), 0 4px 10px rgba(0,0,0,0.3) !important;
+        width: 84px; height: 84px; border-radius: 50%; padding: 0; margin: 0; display: flex; align-items: center; justify-content: center;
+        font-size: 14px; font-weight: 800; color: #ffffff !important; border: none; cursor: pointer;
+    }
+    @keyframes rosterHeaderTabRowFlash {
+        0% { background: color-mix(in srgb, var(--blue) 14%, var(--top-bar-bg)); }
+        100% { background: var(--top-bar-bg); }
+    }
+    .top-bar-tabs-row.header-tab-flash { animation: rosterHeaderTabRowFlash 0.48s ease-out; }
     .view-edit-team-btn svg { flex-shrink: 0; color: var(--blue-fill); }
     .tsc-edit-icon { display: inline-flex; align-items: center; color: var(--blue-fill); margin-left: 2px; }
     .admin-quick-card .aq-icon { display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
@@ -673,7 +687,7 @@ if (window.parent !== window) {
         </div>
         <p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:14px 0 4px; line-height:1.4;" data-i18n="mandali_desc">📍 Mandali is a past, present, and future view of where every team stays at destinations — whether LKO, PRYJ, CNB, or Anywhere else</p>
         <div id="bsb-lobby-row" style="display:flex; justify-content:center; margin:4px 0 4px;">
-            <button onclick="window.openLobbyModal()" style="background: radial-gradient(circle at 35% 30%, #7FA8D6 0%, #37659B 55%, #1F3F61 100%); box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3), inset 4px 4px 8px rgba(255,255,255,0.25), 0 4px 10px rgba(0,0,0,0.3); width:84px; height:84px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; color:#ffffff; border:none; cursor:pointer;">मंडली</button>
+            <button type="button" class="mandali-sphere-btn" onclick="window.openLobbyModal()">मंडली</button>
         </div>
     </div>
     <div id="view-admin" class="hidden">
@@ -3620,6 +3634,12 @@ ROSTER_OVERLAY_IDS.forEach(function(id) {
 const TAB_ORDER = ['mine', 'search', 'admin'];
 window.switchTab = function(tab) {
     if (tab === 'admin' && !window.isAdmin) return;
+    const tabRow = document.querySelector('.top-bar-tabs-row');
+    if (tabRow) {
+        tabRow.classList.remove('header-tab-flash');
+        void tabRow.offsetWidth;
+        tabRow.classList.add('header-tab-flash');
+    }
     // Back-button tracking: leaving the My Duty home tab pushes an entry; returning to it pops.
     if (tab !== 'mine' && window._currentTab === 'mine') {
         rosterPushOpen('tab:away');
