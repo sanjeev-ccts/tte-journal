@@ -27,8 +27,7 @@
             --row-stripe-bg: color-mix(in srgb, var(--card) 72%, var(--bg) 28%);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
-            --nav-gesture-inset: max(env(safe-area-inset-bottom, 0px), 24px);
-            --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--nav-gesture-inset));
+            --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--safe-bottom));
             --list-row-min-h: 48px;
             --md-radius-lg: 18px;
             --md-radius-md: 12px;
@@ -548,7 +547,7 @@
         body.roster-mandali-open #main-bottom-bar,
         body.roster-mandali-open #bottom-nav-chrome { visibility: hidden; pointer-events: none; }
         
-        .screen-content { padding: 15px 8px calc(98px + var(--safe-bottom)); max-width: 640px; margin: 0 auto; box-sizing: border-box; width: 100%; overflow-x: hidden; overflow-y: visible; }
+        .screen-content { padding: 15px 8px calc(var(--bottom-ui-offset) + 12px); max-width: 640px; margin: 0 auto; box-sizing: border-box; width: 100%; overflow-x: hidden; overflow-y: visible; }
         
         .card {
             background: var(--card);
@@ -1070,21 +1069,11 @@
 
 
 
-        #bottom-nav-chrome {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: var(--nav-gesture-inset);
-            background: var(--bottom-bar-bg-solid);
-            z-index: 3995;
-            pointer-events: none;
-        }
+        #bottom-nav-chrome { display: none !important; }
         .bottom-bar {
             position: fixed; bottom: 0; left: 0; width: 100%;
-            min-height: var(--bottom-bar-h);
-            height: auto;
-            padding-bottom: var(--nav-gesture-inset);
+            height: var(--bottom-ui-offset);
+            min-height: unset;
             background: var(--bottom-bar-bg-solid);
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
@@ -1093,9 +1082,7 @@
             box-shadow: 0 -1px 3px rgba(15, 23, 42, 0.08);
             border-top: 1px solid var(--md-outline-variant);
             transition: background 0.3s;
-            padding-left: max(12px, env(safe-area-inset-left, 0px));
-            padding-right: max(12px, env(safe-area-inset-right, 0px));
-            padding-top: 0;
+            padding: 0 max(12px, env(safe-area-inset-left, 0px)) var(--safe-bottom) max(12px, env(safe-area-inset-right, 0px));
             box-sizing: border-box;
         }
         body.dark-mode .bottom-bar { box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.35); }
@@ -1125,8 +1112,8 @@
         .app-snackbar--success { background: #1e4620; color: #e8f5e9; }
         .app-snackbar--error { background: #5f2120; color: #ffebee; }
         .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
-        .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 4px; padding-bottom: 11px; flex-shrink: 0; }
-        .bottom-icon-wrap:not(#bottom-fab-wrap) .bottom-icon { transform: translateY(3px); }
+        .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
+        .bottom-icon-wrap:not(#bottom-fab-wrap) .bottom-icon { transform: none; }
         .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
         .bottom-bar .bottom-icon {
             width: 48px !important; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
@@ -3127,7 +3114,7 @@
     <div id="screen-settings" class="hidden">
         <div class="top-bar">
             <button type="button" class="back-btn" onclick="window.closeSettingsModal()" aria-label="Back"><svg viewBox="0 0 512 512" style="width:20px; height:20px;" aria-hidden="true"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
-            <h1 data-i18n="settings_title">Settings</h1>
+            <h1 id="settings-page-title">Settings</h1>
         </div>
         <div class="screen-content">
             <div class="card settings-list">
@@ -3242,7 +3229,7 @@
         <div class="top-bar top-bar-tabbed" style="flex-direction:column; align-items:stretch; padding:0; min-height:0;">
             <div class="top-bar-title-row">
                 <button class="back-btn" onclick="window.navTo('screen-dashboard')"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
-                <h1 id="trend-screen-title" style="width:100%;">Travelling Allowances</h1>
+                <h1 id="trend-screen-title" style="width:100%;">TA</h1>
             </div>
             <div class="top-bar-tabs-row">
                 <button id="trend-tab-graph-btn" class="header-tab active" onclick="window.switchTrendViewTab('graph', true)">Actual TA</button>
@@ -7404,8 +7391,8 @@
             const trendTitleEl = document.getElementById('trend-screen-title');
             if (trendTitleEl && window.i18n) {
                 trendTitleEl.innerText = currentTab === 'nda'
-                    ? window.i18n.tOr('trend_title_nda', 'Night Duty Allowances')
-                    : window.i18n.tOr('trend_title_ta', 'Travelling Allowances');
+                    ? window.i18n.tOr('trend_title_nda', 'NDA')
+                    : window.i18n.tOr('trend_title_ta', 'TA');
             }
             window.updateTrendViewTabLabels();
             if (window._trendActiveView === 'future') window.renderYearlyFutureTrendGraph();
@@ -14904,8 +14891,8 @@
         const titleEl = document.getElementById('trend-screen-title');
         if (titleEl) {
             titleEl.innerText = currentTab === 'nda'
-                ? (window.i18n ? window.i18n.tOr('trend_title_nda', 'Night Duty Allowances') : 'Night Duty Allowances')
-                : (window.i18n ? window.i18n.tOr('trend_title_ta', 'Travelling Allowances') : 'Travelling Allowances');
+                ? (window.i18n ? window.i18n.tOr('trend_title_nda', 'NDA') : 'NDA')
+                : (window.i18n ? window.i18n.tOr('trend_title_ta', 'TA') : 'TA');
         }
         window.updateTrendViewTabLabels();
         window.navTo('screen-yearly-trend');
