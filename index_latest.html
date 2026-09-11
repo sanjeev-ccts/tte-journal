@@ -27,7 +27,8 @@
             --row-stripe-bg: color-mix(in srgb, var(--card) 72%, var(--bg) 28%);
             --safe-bottom: env(safe-area-inset-bottom, 0px);
             --safe-top: env(safe-area-inset-top, 0px);
-            --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--safe-bottom));
+            --nav-gesture-inset: max(env(safe-area-inset-bottom, 0px), 24px);
+            --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--nav-gesture-inset));
             --list-row-min-h: 48px;
             --md-radius-lg: 18px;
             --md-radius-md: 12px;
@@ -86,7 +87,6 @@
             --top-bar-bg: var(--bg);
             --bottom-bar-bg: color-mix(in srgb, var(--md-surface-container) 86%, transparent);
             --bottom-bar-bg-solid: var(--md-surface-container);
-            --chrome-edge-bg: var(--top-bar-bg);
             --bottom-bar-glass: blur(16px) saturate(1.15);
             
             --row-up-bg: #ffffff;
@@ -177,7 +177,6 @@
             --top-bar-bg: var(--bg);
             --bottom-bar-bg: color-mix(in srgb, var(--md-surface-container) 78%, transparent);
             --bottom-bar-bg-solid: var(--md-surface-container);
-            --chrome-edge-bg: var(--top-bar-bg);
             
             --row-up-bg: #161b22;
             --row-down-bg: #2d333b; 
@@ -261,28 +260,41 @@
             width: 100vw;
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
+            min-height: 100dvh;
+            min-height: 100vh;
         }
-        html { -webkit-overflow-scrolling: touch; background: var(--chrome-edge-bg); }
-        body::before,
-        body::after {
-            content: '';
-            position: fixed;
-            left: 0;
-            right: 0;
-            z-index: 9998;
-            pointer-events: none;
-            background: var(--chrome-edge-bg);
+        html { -webkit-overflow-scrolling: touch; background: var(--bg); }
+        [id^="screen-"]:not(#screen-login) {
+            background: var(--bg);
+            min-height: 100dvh;
+            min-height: 100vh;
         }
-        body::before { top: 0; height: var(--safe-top); }
-        body::after {
-            bottom: 0;
-            height: var(--safe-bottom);
-            background: var(--bottom-bar-bg-solid);
-            z-index: 3998;
+        [id^="screen-"] > .screen-content {
+            background: var(--bg);
+            flex: 1 1 auto;
+        }
+        #screen-alerts,
+        #screen-settings {
+            display: flex;
+            flex-direction: column;
         }
         .hidden { display: none !important; }
         
-        .top-bar { position: sticky; background: var(--top-bar-bg); color: var(--text); padding: calc(10px + var(--safe-top)) 20px 10px; min-height: calc(64px + var(--safe-top)); display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000; box-shadow: none; border-bottom: none; transition: background 0.25s ease, border-color 0.25s ease; pointer-events: none; }
+        .top-bar {
+            position: sticky; background: var(--top-bar-bg); color: var(--text);
+            padding: calc(10px + var(--safe-top)) 20px 10px; min-height: calc(64px + var(--safe-top));
+            display: flex; justify-content: center; align-items: center; top: 0; z-index: 1000;
+            box-shadow: none; border: none; border-bottom: none;
+            transition: background 0.25s ease, border-color 0.25s ease; pointer-events: none;
+        }
+        .top-bar::before {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; top: 0;
+            height: var(--safe-top);
+            background: var(--top-bar-bg);
+            pointer-events: none;
+        }
         .top-bar.top-bar--scrolled, .dash-top-search-wrap.top-bar--scrolled { background: var(--top-bar-bg); border-bottom: none; box-shadow: none; }
         .top-bar.top-bar-tabbed.top-bar--scrolled { border-bottom: none; }
         .top-bar-tabbed.top-bar--compact-tabs {
@@ -363,11 +375,21 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            isolation: isolate;
             min-height: calc(48px + var(--safe-top));
             padding: calc(8px + var(--safe-top)) 50px 6px 50px;
             background: var(--top-bar-bg);
+            border: none;
             transition: background 0.25s, border-color 0.25s;
             box-sizing: border-box;
+        }
+        .dash-top-search-wrap::before {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; top: 0;
+            height: var(--safe-top);
+            background: var(--top-bar-bg);
+            pointer-events: none;
         }
         .dash-top-search-wrap .dash-global-search--topbar {
             width: min(88%, 400px);
@@ -1098,17 +1120,32 @@
 
 
 
+        #bottom-nav-chrome {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: var(--nav-gesture-inset);
+            background: var(--bottom-bar-bg-solid);
+            z-index: 3995;
+            pointer-events: none;
+        }
         .bottom-bar {
-            position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-ui-offset);
-            background: linear-gradient(to bottom, var(--bottom-bar-bg) 0%, var(--bottom-bar-bg-solid) 72%, var(--bottom-bar-bg-solid) 100%);
-            backdrop-filter: var(--bottom-bar-glass);
-            -webkit-backdrop-filter: var(--bottom-bar-glass);
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            min-height: var(--bottom-bar-h);
+            height: auto;
+            padding-bottom: var(--nav-gesture-inset);
+            background: var(--bottom-bar-bg-solid);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
             display: flex; justify-content: space-around; align-items: stretch;
             z-index: 4000;
             box-shadow: 0 -1px 3px rgba(15, 23, 42, 0.08);
             border-top: 1px solid var(--md-outline-variant);
             transition: background 0.3s;
-            padding: 0 max(12px, env(safe-area-inset-left, 0px)) var(--safe-bottom) max(12px, env(safe-area-inset-right, 0px));
+            padding-left: max(12px, env(safe-area-inset-left, 0px));
+            padding-right: max(12px, env(safe-area-inset-right, 0px));
+            padding-top: 0;
             box-sizing: border-box;
         }
         body.dark-mode .bottom-bar { box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.35); }
@@ -3084,6 +3121,7 @@
         <button onclick="window.dismissInstallBanner()" style="width:auto; margin:0; padding:6px 9px; font-size:12px; background:rgba(255,255,255,0.2); border-radius:50%; flex-shrink:0;">✕</button>
     </div>
 
+    <div id="bottom-nav-chrome" class="hidden" aria-hidden="true"></div>
     <nav class="bottom-bar hidden" id="main-bottom-bar" aria-label="Main navigation">
         <div class="bottom-nav-indicator" id="bottom-nav-indicator" aria-hidden="true"></div>
         <div class="bottom-icon-wrap" id="bottom-profile-wrap">
@@ -3127,7 +3165,7 @@
             <h1 data-i18n="notifications_label">Alerts</h1>
         </div>
         <div class="screen-content">
-            <div id="alerts-page-body" class="card settings-list"></div>
+            <div id="alerts-page-body" class="settings-list"></div>
         </div>
     </div>
 
@@ -7343,11 +7381,17 @@
     
     function updateThemeColorMeta() {
         const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) {
-            const edge = getComputedStyle(document.body).getPropertyValue('--chrome-edge-bg').trim()
-                || getComputedStyle(document.body).getPropertyValue('--top-bar-bg').trim();
-            meta.setAttribute('content', edge);
+        if (!meta) return;
+        const probe = document.getElementById('bottom-nav-chrome') || document.getElementById('main-bottom-bar');
+        if (probe) {
+            const bg = getComputedStyle(probe).backgroundColor;
+            if (bg && bg !== 'rgba(0, 0, 0, 0)') {
+                meta.setAttribute('content', bg);
+                return;
+            }
         }
+        const isDark = document.body.classList.contains('dark-mode');
+        meta.setAttribute('content', isDark ? '#151c2c' : '#ffffff');
     }
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
@@ -7499,28 +7543,22 @@
             const y = window.scrollY || document.documentElement.scrollTop || 0;
             const doc = document.documentElement;
             const maxScroll = Math.max(0, (doc.scrollHeight || 0) - window.innerHeight);
-            const COMPACT_MIN_SCROLL = 120;
+            const COMPACT_MIN_SCROLL = 160;
             const canCompact = maxScroll >= COMPACT_MIN_SCROLL;
-            const ENTER = 52;
-            const EXIT = 6;
+            const ENTER = 56;
+            const EXIT = 4;
+            const prevY = window._topBarLastScrollY != null ? window._topBarLastScrollY : y;
+            const dy = y - prevY;
+            window._topBarLastScrollY = y;
             const prevElevated = window._topBarElevated === true;
             let elevated = prevElevated;
             if (!canCompact) {
                 elevated = false;
             } else if (elevated) {
                 if (y <= EXIT) elevated = false;
-            } else if (y >= ENTER) {
+                else if (dy < -6) elevated = false;
+            } else if (y >= ENTER && dy > 6) {
                 elevated = true;
-            }
-            let compactDelta = 0;
-            if (canCompact && elevated !== prevElevated) {
-                document.querySelectorAll('.top-bar-tabbed').forEach(bar => {
-                    if (bar.closest('.hidden')) return;
-                    const row = bar.querySelector('.top-bar-title-row');
-                    if (!row) return;
-                    const h = row.getBoundingClientRect().height;
-                    if (h > 0) compactDelta = Math.max(compactDelta, h);
-                });
             }
             window._topBarElevated = elevated;
             document.querySelectorAll('.top-bar, .dash-top-search-wrap').forEach(el => {
@@ -7529,10 +7567,6 @@
             document.querySelectorAll('.top-bar-tabbed').forEach(el => {
                 el.classList.toggle('top-bar--compact-tabs', elevated && canCompact);
             });
-            if (compactDelta > 0) {
-                const nextY = elevated ? y + compactDelta : Math.max(0, y - compactDelta);
-                if (Math.abs(nextY - y) > 0.5) window.scrollTo(0, nextY);
-            }
         });
     };
 
@@ -8153,13 +8187,20 @@
             setTimeout(() => animTarget.classList.remove('page-open-anim'), 400);
         }
         window._topBarElevated = false;
+        window._topBarLastScrollY = 0;
         window.scrollTo(0, 0);
         if (window.updateTopBarScrollState) window.updateTopBarScrollState();
         
         const bBar = document.getElementById('main-bottom-bar');
+        const bChrome = document.getElementById('bottom-nav-chrome');
         if(bBar) {
             if(screenId === 'screen-login') { bBar.classList.add('hidden'); } else { bBar.classList.remove('hidden'); }
         }
+        if (bChrome) {
+            if (screenId === 'screen-login') bChrome.classList.add('hidden');
+            else bChrome.classList.remove('hidden');
+        }
+        if (window.updateThemeColorMeta) window.updateThemeColorMeta();
         if (window.updateBottomNavIndicator) {
             window.updateBottomNavIndicator(screenId);
             requestAnimationFrame(() => window.updateBottomNavIndicator(screenId));
