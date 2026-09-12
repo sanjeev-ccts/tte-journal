@@ -333,7 +333,7 @@
             justify-content: center;
             isolation: isolate;
             min-height: calc(52px + var(--safe-top));
-            padding: calc(12px + var(--safe-top)) 50px 4px 50px;
+            padding: calc(12px + var(--safe-top)) 50px 0 50px;
             background: var(--top-bar-bg);
             border: none;
             transition: background 0.25s, border-color 0.25s;
@@ -900,6 +900,22 @@
         body.green-theme .compare-pill-fab.active { background: color-mix(in srgb, var(--green) 16%, var(--card)) !important; border-color: color-mix(in srgb, var(--green) 50%, var(--border)) !important; }
         .compare-pill-fab:active { opacity: 0.9; transform: translateY(1px); }
         .trend-graph-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
+        .trend-compare-hbar-chart { margin-top: 14px; margin-bottom: 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+        body.dark-mode .trend-compare-hbar-chart { background: var(--summary-box-bg); }
+        .trend-compare-hbar-legend { display: flex; flex-wrap: wrap; gap: 14px 18px; margin-bottom: 12px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .trend-compare-hbar-legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .trend-compare-hbar-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+        .trend-compare-hbar-rows { display: flex; flex-direction: column; gap: 10px; }
+        .trend-compare-hbar-row { display: flex; align-items: center; gap: 10px; min-height: 28px; }
+        .trend-compare-hbar-label { flex: 0 0 32px; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2px; }
+        .trend-compare-hbar-bars { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; justify-content: center; }
+        .trend-compare-hbar-track { height: 7px; border-radius: 999px; background: color-mix(in srgb, var(--text-muted) 10%, transparent); overflow: hidden; }
+        .trend-compare-hbar-fill { height: 100%; border-radius: 999px; min-width: 0; transition: width 0.25s ease; }
+        .trend-compare-hbar-fill--primary { background: var(--blue-fill); }
+        .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 38%, var(--card)); }
+        body.dark-mode .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple) 55%, transparent); }
+        .pdf-generate-panel.card { padding: 12px 14px 14px; margin-bottom: 8px; }
+        .pdf-generate-panel .pdf-month-nav { margin-bottom: 12px; }
         .salary-occasional { color: var(--purple) !important; }
         #screen-salary .salary-accent { color: var(--blue); }
         body.green-theme #screen-salary .salary-accent { color: var(--green); }
@@ -1088,8 +1104,8 @@
         }
         body.dark-mode .bottom-bar { box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.35); }
         .bottom-nav-indicator {
-            position: absolute; top: 0; left: 0; width: 58px; height: 32px;
-            border-radius: 16px; background: var(--nav-indicator-bg);
+            position: absolute; top: 0; left: 0; width: 56px; height: 36px;
+            border-radius: 18px; background: var(--nav-indicator-bg);
             opacity: 0; pointer-events: none; z-index: 0;
             transition: left 0.28s cubic-bezier(0.2, 0, 0, 1), top 0.28s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s;
         }
@@ -1115,8 +1131,7 @@
         .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
         .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; padding-bottom: 14px; flex-shrink: 0; }
         .bottom-icon-wrap:not(#bottom-fab-wrap) .bottom-icon { transform: none; }
-        .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s, font-size 0.15s; }
-        .bottom-icon-wrap:not(#bottom-fab-wrap):not(.illuminated) .bottom-icon-label { font-size: 10px; letter-spacing: 0.15px; }
+        .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
         .bottom-bar .bottom-icon {
             width: 48px !important; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
             min-height: 48px;
@@ -1261,14 +1276,14 @@
         .all-journey-row--mela { background: color-mix(in srgb, #a855f7 14%, var(--card) 86%) !important; }
         .all-journey-row--others { background: color-mix(in srgb, var(--text-muted) 12%, var(--card) 88%) !important; }
         
-        .nav-fab-wrapper { position: relative; width: 64px; height: 64px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; }
-        .nav-fab-label { position: static; transform: none; font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
+        .nav-fab-wrapper { position: relative; width: 64px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; padding-bottom: 14px; padding-top: 20px; align-self: flex-end; box-sizing: border-box; }
+        .nav-fab-label { position: static; transform: none; font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; margin: 0; }
         .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue-fill); font-weight: 700; }
         body.green-theme .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--green); }
         body.dark-mode.green-theme .nav-fab-wrapper.illuminated .nav-fab-label { color: #86efac; }
         .nav-fab-ring { display: none; }
         .nav-fab {
-            position: absolute; top: -28px; width: 58px; height: 58px;
+            position: absolute; top: -20px; left: 50%; margin-left: -25px; width: 50px; height: 50px;
             background: var(--blue-fill);
             color: var(--on-accent-fill); border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 32px;
@@ -1276,7 +1291,7 @@
             border: none; cursor: pointer; z-index: 4001; transition: transform 0.1s; touch-action: manipulation;
             padding: 0; font: inherit; appearance: none; -webkit-appearance: none;
         }
-        .nav-fab svg { width: 28px; height: 28px; }
+        .nav-fab svg { width: 25px; height: 25px; }
         .nav-fab:active { transform: scale(0.85); }
         
         #preview-wrapper { padding-top: 60px; background: #cbd5e1; min-height: 100vh; position: absolute; top: 0; left: 0; width: 100%; z-index: 10000; overflow: auto; padding-bottom: 100px; }
@@ -4820,7 +4835,8 @@
         </div>
         <div class="screen-content" id="reports-swipe-zone" style="min-height: 80vh; width: 100%;">
             
-            <div id="report-slider-ta" style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
+            <div class="card pdf-generate-panel">
+            <div id="report-slider-ta" class="pdf-month-nav" style="display:flex; gap:8px; align-items:center;">
                 <button onclick="window.changeMonth(-1)" class="squeeze-ball month-nav-arrow-btn prev" type="button">‹</button>
                 <select id="report-month-sel" onchange="window.setReportMonthFromPicker()" style="margin:0; flex:1; background-color:var(--card); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E&quot;); background-position: calc(100% - 12px) center; background-size: 14px 14px; background-repeat: no-repeat; border:1px solid var(--border); padding:9px 28px 9px 12px; -webkit-appearance:none; -moz-appearance:none; appearance:none; text-align:center; text-align-last:center;">
                     <option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option>
@@ -4838,7 +4854,7 @@
                 </select>
                 <button onclick="window.changeMonth(1)" class="squeeze-ball month-nav-arrow-btn next" type="button">›</button>
             </div>
-            <div id="report-slider-nda" class="hidden" style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
+            <div id="report-slider-nda" class="hidden pdf-month-nav" style="display:flex; gap:8px; align-items:center;">
                 <button onclick="window.changeMonth(-1)" class="squeeze-ball month-nav-arrow-btn prev" type="button">‹</button>
                 <div id="nda-from-box" onclick="window.openNdaMonthPicker('from')" style="flex:1; text-align:center; padding:9px 22px 9px 4px; border-radius:30px; background-color:var(--card); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E&quot;); background-position: calc(100% - 10px) center; background-size: 12px 12px; background-repeat: no-repeat; border:1px solid var(--border); font-weight:700; font-size:13.5px; cursor:pointer;">16.07.26</div>
                 <div id="nda-to-box" onclick="window.openNdaMonthPicker('to')" style="flex:1; text-align:center; padding:9px 22px 9px 4px; border-radius:30px; background-color:var(--card); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E&quot;); background-position: calc(100% - 10px) center; background-size: 12px 12px; background-repeat: no-repeat; border:1px solid var(--border); font-weight:700; font-size:13.5px; cursor:pointer;">15.08.26</div>
@@ -4872,7 +4888,7 @@
                 </div>
             </div>
             
-            <div class="card" id="report-summary-card" style="padding: 10px 15px;">
+            <div id="report-summary-card">
                 <!-- TA SUMMARY ROWS -->
                 <div id="ta-summary-rows">
                     <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-top:1px dashed var(--border); border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_total_working_days">Total Number of Working Days</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><span id="rep-ta-days">0</span></div>
@@ -4897,6 +4913,7 @@
                     <div style="display:flex; align-items:center; padding: 10px 0; color: var(--text); font-size:14px; border-bottom:1px dashed var(--border);"><span style="color:var(--text-muted); margin-right:6px;">›</span><span data-i18n="report_earnings_label">Earnings</span><span style="margin:0 10px; color:var(--text-muted); display:inline-flex; align-items:center; position:relative; top:-1px;">⟶</span><div class="pdf-inline-field-box"><span id="pdf-earnings-unit" style="color:var(--purple); font-size:14px; font-weight:700; display:none;">₹</span><input type="number" id="pdf-earnings" placeholder="0" oninput="window.toggleUnitLabel('pdf-earnings','pdf-earnings-unit'); window.toggleFillHint('pdf-earnings','pdf-earnings-fill')" style="text-align: center; color: var(--purple); background: transparent; border: none; box-shadow: none; margin: 0; padding: 0; width: 60px; height: auto; font-size: 14px; min-height: 0 !important;"></div><span id="pdf-earnings-fill" style="display:inline-flex; align-items:center; margin-left:8px; color:var(--red); font-size:12px; font-weight:400; white-space:nowrap; line-height:1;"><svg viewBox="0 0 512 243.58" style="width:16px; height:8px; flex-shrink:0;" fill="currentColor"><path fill-rule="nonzero" d="M138.43 243.58 0 122.84 140.47 0l20.92 23.91-94.92 83 445.53-.42v31.75l-445.54.41 92.89 81.02z"/></svg><span data-i18n="pdf_fill_hint" style="margin-left:3px;">Fill</span></span></div>
                 </div>
                 <button style="margin-top: 20px;" id="generate-btn" onclick="window.triggerGenerate()">Generate TA PDF</button>
+            </div>
             </div>
             <div id="preview-browser-hint" class="tte-fade" style="display:flex; flex-direction:column; align-items:center; gap:8px; margin-top:20px; padding:16px 16px 4px;">
         <p data-i18n="pdf_browser_recommend" style="color:var(--text-muted); font-size:11px; font-weight:500; margin:0; text-align:center; max-width:320px; line-height:1.5;">Printing TA and NDA PDF files works best using Google Chrome and similar chromium browsers.</p>
@@ -5669,10 +5686,11 @@
             return;
         }
         const iconBtn = wrap.querySelector('.bottom-icon');
-        const targetRect = iconBtn ? iconBtn.getBoundingClientRect() : wrap.getBoundingClientRect();
+        const iconSvg = iconBtn && iconBtn.querySelector('svg');
+        const targetRect = iconSvg ? iconSvg.getBoundingClientRect() : (iconBtn ? iconBtn.getBoundingClientRect() : wrap.getBoundingClientRect());
         const barRect = bar.getBoundingClientRect();
-        const pillW = 58;
-        const pillH = 32;
+        const pillW = 56;
+        const pillH = 36;
         indicator.style.width = pillW + 'px';
         indicator.style.height = pillH + 'px';
         indicator.style.left = (targetRect.left - barRect.left + (targetRect.width - pillW) / 2) + 'px';
@@ -16167,6 +16185,36 @@
         return null;
     };
 
+    window.TREND_COMPARE_ACTUAL_LINE_COLOR = 'var(--purple-fill)';
+
+    window.buildTrendCompareBarChart = function(projValues, actValues, monthLabels, opts) {
+        opts = opts || {};
+        const t = (key, fallback) => (window.i18n ? window.i18n.tOr(key, fallback) : fallback);
+        const primaryLabel = opts.primaryLabel || t('trend_compare_bar_projected', 'Projected');
+        const secondaryLabel = opts.secondaryLabel || t('trend_compare_bar_actual', 'Actual');
+        const maxVal = Math.max(1, ...projValues, ...actValues);
+        const rows = (monthLabels || []).map((name, i) => {
+            const p = projValues[i] || 0;
+            const a = actValues[i] || 0;
+            const pW = maxVal > 0 ? Math.max(p > 0 ? 2 : 0, (p / maxVal) * 100) : 0;
+            const aW = maxVal > 0 ? Math.max(a > 0 ? 2 : 0, (a / maxVal) * 100) : 0;
+            return `<div class="trend-compare-hbar-row">
+                <span class="trend-compare-hbar-label">${name}</span>
+                <div class="trend-compare-hbar-bars">
+                    <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill trend-compare-hbar-fill--primary" style="width:${pW.toFixed(1)}%;"></div></div>
+                    <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill trend-compare-hbar-fill--secondary" style="width:${aW.toFixed(1)}%;"></div></div>
+                </div>
+            </div>`;
+        }).join('');
+        return `<div class="trend-compare-hbar-chart">
+            <div class="trend-compare-hbar-legend">
+                <span><span class="trend-compare-hbar-dot" style="background:var(--blue-fill);"></span>${primaryLabel}</span>
+                <span><span class="trend-compare-hbar-dot" style="background:color-mix(in srgb, var(--purple-fill) 70%, var(--card));"></span>${secondaryLabel}</span>
+            </div>
+            <div class="trend-compare-hbar-rows">${rows}</div>
+        </div>`;
+    };
+
     window.buildTrendSmoothLinePath = function(xy, tension) {
         if (!xy || !xy.length) return '';
         if (xy.length === 1) return `M ${xy[0].x.toFixed(1)},${xy[0].y.toFixed(1)}`;
@@ -16218,6 +16266,8 @@
             if (unitSuffix === 'h') return `${v}${unitText || ' hrs'}`;
             return `${v}${unitText}`;
         };
+        const baselineY = topMargin + height;
+        const plotClipId = 'trend-plot-clip-' + Math.random().toString(36).slice(2, 9);
         const xyPoints = values.map((v, i) => ({ x: xAt(i), y: toY(v) }));
         const smoothPath = window.buildTrendSmoothLinePath(xyPoints);
         const dotLabelSize = opts.dotLabelFontSize || '10.5';
@@ -16255,8 +16305,9 @@
                 <div class="trend-graph-plot-wrap">
                     ${overlayHtml}
                     <svg class="trend-graph-svg" width="100%" viewBox="0 0 ${width} ${svgH}" preserveAspectRatio="xMidYMid meet">
+                        <defs><clipPath id="${plotClipId}"><rect x="0" y="${topMargin}" width="${width}" height="${height}"/></clipPath></defs>
                         ${highlightBandSvg}${vGridLines}${baseline}
-                        <path d="${smoothPath}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="${smoothPath}" clip-path="url(#${plotClipId})" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         ${dots}${monthLabels}
                     </svg>
                 </div>
@@ -16487,12 +16538,14 @@
                 html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { graphTitle: compareOn ? projectedTitle : '', compactBottom: compareOn });
                 if (compareOn && actualValues) {
                     const actVals = metric === 'hours' ? actualValues.hourValues : actualValues.moneyValues;
-                    html += buildFutureGraph(actVals, 'var(--text-muted)', projSuffix, projAvgKey, null, { graphTitle: actualTitle, compactBottom: true, marginTop: 18 });
+                    html += buildFutureGraph(actVals, window.TREND_COMPARE_ACTUAL_LINE_COLOR, projSuffix, projAvgKey, null, { graphTitle: actualTitle, compactBottom: true, marginTop: 18 });
+                    html += window.buildTrendCompareBarChart(projVals, actVals, MONTH_SHORT, { primaryLabel: projectedTitle, secondaryLabel: actualTitle });
                 }
             } else {
                 html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { graphTitle: compareOn ? projectedTitle : '', compactBottom: compareOn });
                 if (compareOn && actualValues) {
-                    html += buildFutureGraph(actualValues.moneyValues, 'var(--text-muted)', '₹', 'trend_graph_avg_ta', null, { graphTitle: actualTitle, compactBottom: true, marginTop: 18 });
+                    html += buildFutureGraph(actualValues.moneyValues, window.TREND_COMPARE_ACTUAL_LINE_COLOR, '₹', 'trend_graph_avg_ta', null, { graphTitle: actualTitle, compactBottom: true, marginTop: 18 });
+                    html += window.buildTrendCompareBarChart(moneyValues, actualValues.moneyValues, MONTH_SHORT, { primaryLabel: projectedTitle, secondaryLabel: actualTitle });
                 }
             }
             area.innerHTML = html;
@@ -16920,9 +16973,12 @@
                 projectedValues.push(pr ? pr.total : 0);
                 expectedValues.push(er ? er.total : 0);
             }
-            let html = buildSalaryGraph(projectedValues, y, m - 1, compareOn ? t('salary_graph_projected', 'Projected Salary') : '', { compactBottom: compareOn });
+            const projectedTitle = t('salary_graph_projected', 'Projected Salary');
+            const expectedTitle = t('salary_graph_expected', 'Expected Salary');
+            let html = buildSalaryGraph(projectedValues, y, m - 1, compareOn ? projectedTitle : '', { compactBottom: compareOn });
             if (compareOn) {
-                html += buildSalaryGraph(expectedValues, y, m - 1, t('salary_graph_expected', 'Expected Salary'), { color: 'var(--text-muted)', compactBottom: true, marginTop: 18 });
+                html += buildSalaryGraph(expectedValues, y, m - 1, expectedTitle, { color: window.TREND_COMPARE_ACTUAL_LINE_COLOR, compactBottom: true, marginTop: 18 });
+                html += window.buildTrendCompareBarChart(projectedValues, expectedValues, trendLocalizedMonthShorts(y), { primaryLabel: projectedTitle, secondaryLabel: expectedTitle });
             }
             html += `<p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('salary_projected_hint', 'Projected salary graph is shown using your projected TA and NDA from roster link programme and train timings.')}</p>`;
             wrap.innerHTML = html;
