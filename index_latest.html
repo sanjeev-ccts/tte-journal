@@ -332,8 +332,8 @@
             align-items: center;
             justify-content: center;
             isolation: isolate;
-            min-height: calc(48px + var(--safe-top));
-            padding: calc(8px + var(--safe-top)) 50px 0 50px;
+            min-height: calc(52px + var(--safe-top));
+            padding: calc(12px + var(--safe-top)) 50px 4px 50px;
             background: var(--top-bar-bg);
             border: none;
             transition: background 0.25s, border-color 0.25s;
@@ -417,7 +417,7 @@
            several. */
         .dash-hamburger-btn {
             position: fixed !important;
-            top: calc(6px + var(--safe-top)) !important;
+            top: calc(10px + var(--safe-top)) !important;
             left: max(12px, env(safe-area-inset-left, 0px)) !important;
             width: 48px;
             height: 48px;
@@ -499,7 +499,7 @@
         }
         .dash-sync-cluster {
             position: fixed !important;
-            top: calc(6px + var(--safe-top)) !important;
+            top: calc(10px + var(--safe-top)) !important;
             right: max(8px, env(safe-area-inset-right, 0px)) !important;
             z-index: 2001;
             display: flex;
@@ -535,7 +535,7 @@
         }
         body.dark-mode #dash-sync-mini-label { text-shadow: 0 0 1px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.55); }
         body.connectivity-bar-active .back-btn { top: calc(9px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
-        body.connectivity-bar-active .dash-hamburger-btn, body.connectivity-bar-active .dash-sync-cluster { top: calc(6px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
+        body.connectivity-bar-active .dash-hamburger-btn, body.connectivity-bar-active .dash-sync-cluster { top: calc(10px + var(--connectivity-bar-h) + var(--safe-top)) !important; }
         body.connectivity-bar-active #roster-iframe-modal { top: var(--connectivity-bar-h) !important; height: calc(100% - var(--connectivity-bar-h)) !important; }
         body.roster-iframe-open #roster-iframe-modal:not(.hidden) {
             height: calc(100% - var(--bottom-ui-offset)) !important;
@@ -1113,9 +1113,10 @@
         .app-snackbar--success { background: #1e4620; color: #e8f5e9; }
         .app-snackbar--error { background: #5f2120; color: #ffebee; }
         .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
-        .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
+        .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; padding-bottom: 14px; flex-shrink: 0; }
         .bottom-icon-wrap:not(#bottom-fab-wrap) .bottom-icon { transform: none; }
-        .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
+        .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s, font-size 0.15s; }
+        .bottom-icon-wrap:not(#bottom-fab-wrap):not(.illuminated) .bottom-icon-label { font-size: 10px; letter-spacing: 0.15px; }
         .bottom-bar .bottom-icon {
             width: 48px !important; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
             min-height: 48px;
@@ -16166,6 +16167,25 @@
         return null;
     };
 
+    window.buildTrendSmoothLinePath = function(xy, tension) {
+        if (!xy || !xy.length) return '';
+        if (xy.length === 1) return `M ${xy[0].x.toFixed(1)},${xy[0].y.toFixed(1)}`;
+        const t = tension == null ? 0.32 : tension;
+        let d = `M ${xy[0].x.toFixed(1)},${xy[0].y.toFixed(1)}`;
+        for (let i = 0; i < xy.length - 1; i++) {
+            const p0 = xy[Math.max(i - 1, 0)];
+            const p1 = xy[i];
+            const p2 = xy[i + 1];
+            const p3 = xy[Math.min(i + 2, xy.length - 1)];
+            const cp1x = p1.x + (p2.x - p0.x) * t;
+            const cp1y = p1.y + (p2.y - p0.y) * t;
+            const cp2x = p2.x - (p3.x - p1.x) * t;
+            const cp2y = p2.y - (p3.y - p1.y) * t;
+            d += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+        }
+        return d;
+    };
+
     window.buildResponsiveTrendLineGraph = function(opts) {
         opts = opts || {};
         const values = opts.values || [];
@@ -16198,7 +16218,8 @@
             if (unitSuffix === 'h') return `${v}${unitText || ' hrs'}`;
             return `${v}${unitText}`;
         };
-        const points = values.map((v, i) => `${xAt(i).toFixed(1)},${toY(v).toFixed(1)}`).join(' ');
+        const xyPoints = values.map((v, i) => ({ x: xAt(i), y: toY(v) }));
+        const smoothPath = window.buildTrendSmoothLinePath(xyPoints);
         const dotLabelSize = opts.dotLabelFontSize || '10.5';
         const dotLabelWeight = opts.dotLabelFontSize ? '600' : '700';
         const useBoundaryMonthLabels = opts.monthLabelAtBoundary || (gridlineCount === 13 && monthLabelNames.length === 12);
@@ -16235,7 +16256,7 @@
                     ${overlayHtml}
                     <svg class="trend-graph-svg" width="100%" viewBox="0 0 ${width} ${svgH}" preserveAspectRatio="xMidYMid meet">
                         ${highlightBandSvg}${vGridLines}${baseline}
-                        <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2"/>
+                        <path d="${smoothPath}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         ${dots}${monthLabels}
                     </svg>
                 </div>
