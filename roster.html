@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0b0d15">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#eef2f8">
 <title>BSB Duty Roster</title>
 <script src="./i18n.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,15 +16,18 @@
         --safe-bottom: env(safe-area-inset-bottom, 0px);
         --safe-top: env(safe-area-inset-top, 0px);
         --bottom-ui-offset: calc(var(--bottom-bar-h) + var(--safe-bottom));
+        --md-surface: #eef2f8;
+        --md-surface-container: #ffffff;
         --md-on-surface-variant: #43474f;
         --md-outline-variant: #e0e4ec;
+        --bottom-bar-bg-solid: var(--md-surface-container);
         --bottom-bar-glass: blur(16px) saturate(1.15);
         --text-caption: 11px;
         --on-accent-fill: #ffffff;
         --bg: #eef2f8; --card: #ffffff; --text: #1a1c24; --text-muted: #43474f;
         --border: #e0e4ec; --blue: #3b82f6; --blue-fill: #1d5bd6; --green: #22c55e; --red: #ef4444;
         --orange: #f97316; --purple: #a855f7; --yellow: #eab308;
-        --top-bar-bg: var(--bg); --bottom-bar-bg: color-mix(in srgb, #ffffff 86%, transparent);
+        --top-bar-bg: var(--bg); --bottom-bar-bg: color-mix(in srgb, var(--md-surface-container) 86%, transparent);
         --input-bg: #dde4ec; --modal-bg: #ffffff; --shadow: 0 4px 14px rgba(30,41,59,0.15), 0 1px 3px rgba(30,41,59,0.10);
         --table-border: #a5b4fc;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
@@ -43,7 +47,10 @@
         --bg: #0b0f19; --card: #151c2c; --text: #f8fafc; --text-muted: #94a3b8;
         --border: #232d42; --input-bg: #1a2336; --shadow: 0 4px 16px rgba(0,0,0,0.5), 0 1px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
         --blue: #58a6ff; --blue-fill: #4d8eff; --green: #3fb950; --purple: #bc8cff; --yellow: #f0c040; --orange: #f0883e; --red: #ff7b72;
-        --modal-bg: #151c2c; --top-bar-bg: var(--bg); --bottom-bar-bg: color-mix(in srgb, #151c2c 78%, transparent);
+        --md-surface: #0b0f19;
+        --md-surface-container: #151c2c;
+        --modal-bg: #151c2c; --top-bar-bg: var(--bg); --bottom-bar-bg: color-mix(in srgb, var(--md-surface-container) 78%, transparent);
+        --bottom-bar-bg-solid: var(--md-surface-container);
         --table-border: #232d42;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
         --md-elevation-3: 0 4px 8px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -80,7 +87,7 @@
        shadow toward its practical ceiling AND strengthens the highlight further, since that's the
        cue that actually works well in dark mode (measured 2.27 contrast already) - compensating
        for what the shadow alone can't fully deliver. */
-    body.dark-mode button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn) { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
+    body.dark-mode button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn):not(#app-zoom-indicator) { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
     body:not(.card-shadow-on).dark-mode .admin-quick-card, body:not(.card-shadow-on).dark-mode .duty-box { background: var(--card); border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     .result-modal-box { background: var(--card); box-shadow: 0 -8px 30px rgba(0,0,0,0.5) !important; }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
@@ -490,8 +497,11 @@
     .table-toggle-btn { background: var(--purple); margin-bottom: 10px; }
     .bottom-bar {
         position: fixed; bottom: 0; left: 0; width: 100%; height: var(--bottom-ui-offset);
-        background: var(--bottom-bar-bg); backdrop-filter: var(--bottom-bar-glass); -webkit-backdrop-filter: var(--bottom-bar-glass);
+        min-height: unset;
+        background: var(--bottom-bar-bg-solid);
+        backdrop-filter: none; -webkit-backdrop-filter: none;
         display: flex; justify-content: space-around; align-items: stretch; z-index: 4000;
+        overflow: visible;
         box-shadow: 0 -1px 3px rgba(15, 23, 42, 0.08); border-top: 1px solid var(--md-outline-variant);
         transition: background 0.3s;
         padding: 0 max(12px, env(safe-area-inset-left, 0px)) var(--safe-bottom) max(12px, env(safe-area-inset-right, 0px));
@@ -500,13 +510,15 @@
     body.dark-mode .bottom-bar { box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.35); }
     body.mandali-open #roster-bottom-bar { z-index: 10001; }
     .bottom-nav-indicator {
-        position: absolute; top: 0; left: 0; width: 58px; height: 32px;
-        border-radius: 16px; background: var(--nav-indicator-bg);
+        position: absolute; top: 0; left: 0; width: 56px; height: 36px;
+        border-radius: 18px; background: var(--nav-indicator-bg);
         opacity: 0; pointer-events: none; z-index: 0;
+        box-sizing: border-box;
         transition: left 0.28s cubic-bezier(0.2, 0, 0, 1), top 0.28s cubic-bezier(0.2, 0, 0, 1), opacity 0.2s;
     }
     .bottom-nav-indicator.visible { opacity: 1; }
-    .bottom-icon-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; flex-shrink: 0; }
+    .bottom-icon-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; padding-bottom: 14px; flex-shrink: 0; }
+    .bottom-icon-wrap:not(#bottom-fab-wrap) .bottom-icon { transform: none; }
     .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
     .bottom-bar .bottom-icon {
         width: 48px !important; height: 48px; min-width: 48px; min-height: 48px; border-radius: 50%;
@@ -526,25 +538,44 @@
     #bottom-profile-wrap.illuminated .bottom-icon svg circle { fill: currentColor; stroke: none; }
     #bottom-alerts-wrap.illuminated .bottom-icon svg path:first-of-type { fill: currentColor; stroke: none; }
     #bottom-alerts-wrap.illuminated .bottom-icon svg path:last-of-type { fill: none; stroke: currentColor; stroke-width: 2.2; }
-    #bottom-settings-wrap.illuminated .bottom-icon svg circle,
-    #bottom-settings-wrap.illuminated .bottom-icon svg path { fill: currentColor; stroke: none; }
+    #bottom-settings-wrap .bottom-icon-svg--filled { display: none; }
+    #bottom-settings-wrap.illuminated .bottom-icon-svg--outline { display: none; }
+    #bottom-settings-wrap.illuminated .bottom-icon-svg--filled { display: block; }
+    #bottom-settings-wrap.illuminated .bottom-icon-svg--filled circle,
+    #bottom-settings-wrap.illuminated .bottom-icon-svg--filled path { fill: currentColor; stroke: none; }
     body.green-theme .bottom-icon-wrap.illuminated .bottom-icon,
     body.green-theme .bottom-icon-wrap.illuminated .bottom-icon-label { color: var(--blue); }
     body.dark-mode.green-theme .bottom-icon-wrap.illuminated .bottom-icon,
     body.dark-mode.green-theme .bottom-icon-wrap.illuminated .bottom-icon-label { color: #86efac; }
-    .nav-fab-wrapper { position: relative; width: 64px; height: 64px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; padding-bottom: 11px; align-self: flex-end; z-index: 2; }
+    .nav-fab-wrapper { position: relative; width: 64px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; padding-bottom: 14px; padding-top: 0; align-self: flex-end; z-index: 2; box-sizing: border-box; }
     .nav-fab-label { position: static; transform: none; font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; z-index: 4002; transition: color 0.15s; text-align: center; max-width: 72px; overflow: hidden; text-overflow: ellipsis; }
     .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue-fill); font-weight: 700; }
     body.green-theme .nav-fab-wrapper.illuminated .nav-fab-label { color: var(--blue); }
     .nav-fab-ring { display: none; }
     .nav-fab {
-        position: absolute; top: -28px; width: 58px; height: 58px; background: var(--blue-fill); color: var(--on-accent-fill);
+        position: absolute; left: 50%; transform: translateX(-50%);
+        bottom: calc(14px + 11px + 5px + 24px - 25px + 7.5px);
+        width: 50px; height: 50px; margin: 0;
+        background: var(--blue-fill); color: var(--on-accent-fill);
         border-radius: 50%; display: flex; justify-content: center; align-items: center;
         box-shadow: var(--md-elevation-3); border: none; cursor: pointer; z-index: 4001;
         transition: transform 0.1s; touch-action: manipulation; padding: 0; font: inherit; appearance: none; -webkit-appearance: none;
     }
-    .nav-fab svg { width: 28px; height: 28px; }
-    .nav-fab:active { transform: scale(0.85); }
+    .nav-fab svg { width: 25px; height: 25px; }
+    .nav-fab:active { transform: translateX(-50%) scale(0.85); }
+    #app-zoom-indicator {
+        position: fixed; left: 12px; top: auto; bottom: calc(var(--bottom-ui-offset) + 6px); z-index: 2147483000;
+        margin: 0; transform: none; pointer-events: auto; display: flex; align-items: center; gap: 6px;
+        padding: 7px 11px; border-radius: 20px; border: 1px solid var(--border);
+        background: color-mix(in srgb, var(--card) 94%, transparent); color: var(--text);
+        font-size: 11px; font-weight: 800; line-height: 1; box-shadow: var(--md-elevation-3);
+        width: auto; height: auto; min-height: 34px; cursor: pointer;
+    }
+    #app-zoom-indicator.hidden { display: none !important; pointer-events: none !important; }
+    #app-zoom-indicator:not(.hidden) { pointer-events: auto !important; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    #app-zoom-indicator svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted); }
+    #app-zoom-indicator.app-zoom-indicator--reset { border-color: color-mix(in srgb, var(--blue-fill) 55%, var(--border)); }
+    body.in-iframe #app-zoom-indicator { display: none !important; }
     .bell-badge { position: absolute; top: -3px; right: -3px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
     #save-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #16a34a; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 21000; transition: transform 0.3s ease; }
     #save-toast.show { transform: translateX(-50%) translateY(0); }
@@ -590,25 +621,25 @@ if (window.parent !== window) {
     }
 }
 </script>
-<div id="roster-float-back" class="floating-back">← Back</div>
+<div id="roster-float-back" class="floating-back"><span data-i18n="roster_back">← Back</span></div>
 <div class="top-bar top-bar-tabbed" id="roster-top-bar">
-    <div class="top-bar-title-row"><h1>BSB Duty Roster</h1></div>
+    <div class="top-bar-title-row"><h1 data-i18n="roster_page_title">BSB Duty Roster</h1></div>
     <div class="tab-bar top-bar-tabs-row">
         <button type="button" class="header-tab active" id="tab-mine" onclick="switchTab('mine')" data-i18n="roster_tab_mine">My Duty</button>
         <button type="button" class="header-tab" id="tab-search" onclick="switchTab('search')" data-i18n="roster_tab_search">Search Duty</button>
         <button type="button" class="header-tab hidden" id="tab-admin" onclick="switchTab('admin')" data-i18n="roster_tab_admin">Admin</button>
     </div>
 </div>
-<div id="save-toast">✅ Saved successfully!</div>
+<div id="save-toast" data-i18n="roster_saved_toast">✅ Saved successfully!</div>
 <div class="screen-content" id="swipe-area">
     <div id="view-mine">
         <div class="card team-select-card" id="team-setup-card">
-            <label>Select &amp; Save Your Team</label>
+            <label data-i18n="roster_select_save_team">Select &amp; Save Your Team</label>
             <select id="my-team-select" onchange="onMyTeamChange()">
-                <option value="">-- Select your team --</option>
+                <option value="" data-i18n="roster_select_team_option">-- Select your team --</option>
             </select>
-            <button class="action" style="background:var(--green); margin-top:6px;" onclick="window.saveMyTeamNumber()">Save</button>
-            <p style="font-size:11px; color:var(--text-muted); margin:8px 0 0 0;">Don't know your team? Use Search tab and find your name.</p>
+            <button class="action" style="background:var(--green); margin-top:6px;" onclick="window.saveMyTeamNumber()" data-i18n="save">Save</button>
+            <p style="font-size:11px; color:var(--text-muted); margin:8px 0 0 0;" data-i18n="roster_team_search_hint">Don't know your team? Use Search tab and find your name.</p>
         </div>
         <div class="two-col-row">
             <div class="card team-saved-card hidden" id="team-saved-card" onclick="window.editMyTeam()" style="cursor:pointer;">
@@ -617,47 +648,47 @@ if (window.parent !== window) {
                     <span class="tsc-edit-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span>
                 </div>
             </div>
-            <button type="button" class="card view-edit-team-btn" onclick="window.openFeedbackModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Change Team</button>
+            <button type="button" class="card view-edit-team-btn" onclick="window.openFeedbackModal()"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> <span data-i18n="change_team">Change Team</span></button>
         </div>
         <div id="my-duty-week"></div>
     </div>
     <div id="view-search" class="hidden">
         <div class="card search-card">
-            <label>Search by Name</label>
+            <label data-i18n="roster_search_by_name">Search by Name</label>
             <div class="search-row-3">
                 <div class="search-field-wrap" style="flex:1;">
-                    <input type="text" id="search-name-input" placeholder="Type a name..." oninput="window.onSearchNameInput()" autocomplete="off">
-                    <p class="search-field-caption">Name</p>
+                    <input type="text" id="search-name-input" placeholder="Type a name..." data-i18n-placeholder="roster_search_name_placeholder" oninput="window.onSearchNameInput()" autocomplete="off">
+                    <p class="search-field-caption" data-i18n="roster_caption_name">Name</p>
                 </div>
                 <button class="clear-btn" onclick="window.clearNameSearch()">✕</button>
             </div>
             <div id="search-name-results" class="name-search-results"></div>
         </div>
         <div class="card search-card">
-            <label>Search by Team No + Date</label>
+            <label data-i18n="roster_search_team_date">Search by Team No + Date</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
                     <input type="number" id="search-team" inputmode="numeric" maxlength="2" oninput="if(this.value.length>2) this.value=this.value.slice(0,2);">
-                    <p class="search-field-caption">Team no</p>
+                    <p class="search-field-caption" data-i18n="roster_caption_team_no">Team no</p>
                 </div>
                 <div class="search-field-wrap">
                     <input type="date" id="search-team-date">
-                    <p class="search-field-caption">Date (optional)</p>
+                    <p class="search-field-caption" data-i18n="roster_caption_date_optional">Date (optional)</p>
                 </div>
                 <button type="button" class="icon-search-btn" onclick="renderTeamSearch()" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
                 <button class="clear-btn" onclick="window.clearTeamSearch()">✕</button>
             </div>
         </div>
         <div class="card search-card">
-            <label>Search by Train No + Date</label>
+            <label data-i18n="roster_search_train_date">Search by Train No + Date</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
                     <input type="text" id="search-train" inputmode="numeric" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'').slice(0,5);">
-                    <p class="search-field-caption">Train no</p>
+                    <p class="search-field-caption" data-i18n="roster_caption_train_no">Train no</p>
                 </div>
                 <div class="search-field-wrap">
                     <input type="date" id="search-train-date">
-                    <p class="search-field-caption">Date (optional)</p>
+                    <p class="search-field-caption" data-i18n="roster_caption_date_optional">Date (optional)</p>
                 </div>
                 <button type="button" class="icon-search-btn" onclick="renderTrainSearch()" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
                 <button class="clear-btn" onclick="window.clearTrainSearch()">✕</button>
@@ -665,15 +696,15 @@ if (window.parent !== window) {
         </div>
 
         <div class="card search-card">
-            <label>Search by Date + Team/Train No</label>
+            <label data-i18n="roster_search_date_team">Search by Date + Team/Train No</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
                     <input type="date" id="search-date-only">
-                    <p class="search-field-caption">Date</p>
+                    <p class="search-field-caption" data-i18n="roster_caption_date">Date</p>
                 </div>
                 <div class="search-field-wrap">
                     <input type="number" id="search-date-extra">
-                    <p class="search-field-caption">Team/Train No (Opt)</p>
+                    <p class="search-field-caption" data-i18n="roster_caption_team_train_opt">Team/Train No (Opt)</p>
                 </div>
                 <button type="button" class="icon-search-btn" onclick="renderDateOnlySearch()" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
                 <button class="clear-btn" onclick="window.clearDateOnlySearch()">✕</button>
@@ -681,18 +712,18 @@ if (window.parent !== window) {
         </div>
 
         <div class="card search-card">
-            <label>Ideal Roster - PDF</label>
+            <label data-i18n="roster_ideal_pdf">Ideal Roster - PDF</label>
             <div class="search-row-3">
                 <div class="search-field-wrap">
                     <input type="date" id="roster-pdf-date">
-                    <p class="search-field-caption">Select Date</p>
+                    <p class="search-field-caption" data-i18n="roster_select_date">Select Date</p>
                 </div>
                 <button type="button" class="icon-search-btn" onclick="window.generateRosterPDF()" aria-label="Download PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M4 21h16"/></svg></button>
             </div>
         </div>
         <p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:14px 0 4px; line-height:1.4;" data-i18n="mandali_desc">📍 Mandali is a past, present, and future view of where every team stays at destinations — whether LKO, PRYJ, CNB, or Anywhere else</p>
         <div id="bsb-lobby-row" style="display:flex; justify-content:center; margin:4px 0 4px;">
-            <button type="button" class="mandali-sphere-btn" onclick="window.openLobbyModal()">मंडली</button>
+            <button type="button" class="mandali-sphere-btn" onclick="window.openLobbyModal()" data-i18n="nav_mandali">Mandali</button>
         </div>
     </div>
     <div id="view-admin" class="hidden">
@@ -759,6 +790,10 @@ if (window.parent !== window) {
         </div>
     </div>
 </div>
+<button type="button" id="app-zoom-indicator" class="hidden" onclick="window.resetAppViewportZoom()" aria-label="Reset zoom">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+    <span id="app-zoom-indicator-label">100%</span>
+</button>
 <nav class="bottom-bar" id="roster-bottom-bar" aria-label="Main navigation">
     <div class="bottom-nav-indicator visible" id="roster-bottom-nav-indicator" aria-hidden="true"></div>
     <div class="bottom-icon-wrap" id="bottom-profile-wrap">
@@ -775,7 +810,7 @@ if (window.parent !== window) {
         <span class="nav-fab-label" data-i18n="add_journey">Add Journey</span>
     </div>
     <div class="bottom-icon-wrap" id="bottom-settings-wrap">
-        <button type="button" class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_SETTINGS' }, '*');" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        <button type="button" class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_SETTINGS' }, '*');" aria-label="Settings"><svg class="bottom-icon-svg--outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><svg class="bottom-icon-svg--filled" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
         <span class="bottom-icon-label" data-i18n="settings">Settings</span>
     </div>
     <div class="bottom-icon-wrap illuminated" id="bottom-home-wrap">
@@ -786,15 +821,15 @@ if (window.parent !== window) {
 <div id="roster-alert-overlay" class="hidden" style="position:fixed; inset:0; z-index:20000; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; padding:24px;">
     <div style="background:var(--card); border-radius:16px; padding:22px 20px; max-width:340px; width:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4); text-align:center;">
         <p id="roster-alert-message" style="font-size:14px; color:var(--text); margin:0 0 18px; line-height:1.5;"></p>
-        <button onclick="document.getElementById('roster-alert-overlay').classList.add('hidden')" style="margin:0; background:var(--blue);">OK</button>
+        <button onclick="document.getElementById('roster-alert-overlay').classList.add('hidden')" style="margin:0; background:var(--blue);" data-i18n="ok">OK</button>
     </div>
 </div>
 <div id="roster-confirm-overlay" class="hidden" style="position:fixed; inset:0; z-index:20000; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; padding:24px;">
     <div style="background:var(--card); border-radius:16px; padding:22px 20px; max-width:340px; width:100%; box-shadow:0 10px 40px rgba(0,0,0,0.4); text-align:center;">
         <p id="roster-confirm-message" style="font-size:14px; color:var(--text); margin:0 0 18px; line-height:1.5;"></p>
         <div style="display:flex; gap:8px;">
-            <button id="roster-confirm-no" style="margin:0; flex:1; background:var(--input-bg); color:var(--text-muted); border:1.5px solid var(--border); box-shadow:none;">Cancel</button>
-            <button id="roster-confirm-yes" style="margin:0; flex:1; background:var(--red);">Confirm</button>
+            <button id="roster-confirm-no" style="margin:0; flex:1; background:var(--input-bg); color:var(--text-muted); border:1.5px solid var(--border); box-shadow:none;" data-i18n="cancel">Cancel</button>
+            <button id="roster-confirm-yes" style="margin:0; flex:1; background:var(--red);" data-i18n="confirm">Confirm</button>
         </div>
     </div>
 </div>
@@ -4672,6 +4707,135 @@ window.applyRosterNotificationBadge = function(count) {
     }
 };
 
+const APP_VIEWPORT_CONTENT = 'width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover';
+
+window.clampAppViewportZoom = function() {
+    const vv = window.visualViewport;
+    if (!vv || !vv.scale || vv.scale <= 2.02) return;
+    if (window._appZoomClampLock) return;
+    window._appZoomClampLock = true;
+    const meta = document.querySelector('meta[name="viewport"]');
+    if (!meta) {
+        window._appZoomClampLock = false;
+        return;
+    }
+    const inv = (2 / vv.scale).toFixed(6);
+    meta.setAttribute('content', `width=device-width, initial-scale=${inv}, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover`);
+    void document.documentElement.offsetHeight;
+    setTimeout(() => {
+        meta.setAttribute('content', APP_VIEWPORT_CONTENT);
+        window._appZoomClampLock = false;
+        if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
+    }, 48);
+};
+
+window.positionAppZoomIndicator = function() {
+    const btn = document.getElementById('app-zoom-indicator');
+    const vv = window.visualViewport;
+    if (!btn || btn.classList.contains('hidden')) return;
+    if (!vv) return;
+    const rootStyle = getComputedStyle(document.documentElement);
+    const bottomUi = parseFloat(rootStyle.getPropertyValue('--bottom-ui-offset')) || 72;
+    const safeLeft = Math.max(12, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-left')) || 0);
+    const padLeft = vv.offsetLeft + safeLeft;
+    const h = btn.offsetHeight || 34;
+    const top = vv.offsetTop + vv.height - bottomUi - h - 8;
+    btn.style.left = `${padLeft}px`;
+    btn.style.top = `${Math.max(vv.offsetTop + 8, top)}px`;
+    btn.style.bottom = 'auto';
+    btn.style.right = 'auto';
+    btn.style.transform = 'none';
+};
+
+window.updateAppZoomIndicator = function() {
+    const btn = document.getElementById('app-zoom-indicator');
+    const label = document.getElementById('app-zoom-indicator-label');
+    if (!btn || !label) return;
+    const vv = window.visualViewport;
+    const scale = (vv && vv.scale) ? vv.scale : 1;
+    const pct = Math.round(scale * 100);
+    const zoomed = Math.abs(pct - 100) > 2;
+    const resetTxt = window.i18n ? window.i18n.tOr('zoom_reset_suffix', 'Reset') : 'Reset';
+    btn.classList.toggle('hidden', !zoomed);
+    btn.classList.toggle('app-zoom-indicator--reset', zoomed);
+    label.textContent = zoomed ? `${pct}% · ${resetTxt}` : '100%';
+    if (zoomed) window.positionAppZoomIndicator();
+    else {
+        btn.style.left = '';
+        btn.style.top = '';
+        btn.style.bottom = '';
+        btn.style.transform = '';
+    }
+};
+
+window.resetAppViewportZoom = function() {
+    if (window._appZoomResetLock) return;
+    const vv = window.visualViewport;
+    const scale = (vv && vv.scale) ? vv.scale : 1;
+    if (scale <= 1.02) {
+        if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
+        return;
+    }
+    window._appZoomResetLock = true;
+    setTimeout(() => { window._appZoomResetLock = false; }, 900);
+    try {
+        document.documentElement.style.zoom = '';
+        document.body.style.zoom = '';
+    } catch (e) { /* ignore */ }
+    const meta = document.querySelector('meta[name="viewport"]');
+    const applyRelaxed = () => {
+        if (meta) meta.setAttribute('content', APP_VIEWPORT_CONTENT);
+        window.scrollTo(0, 0);
+        if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
+    };
+    if (meta) {
+        const inv = (1 / scale).toFixed(6);
+        meta.setAttribute('content', `width=device-width, initial-scale=${inv}, maximum-scale=${inv}, minimum-scale=${inv}, viewport-fit=cover`);
+        void document.documentElement.offsetHeight;
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                applyRelaxed();
+                setTimeout(applyRelaxed, 80);
+                setTimeout(() => {
+                    const s2 = (window.visualViewport && window.visualViewport.scale) ? window.visualViewport.scale : 1;
+                    if (s2 > 1.02) {
+                        try { sessionStorage.setItem('app_viewport_zoom_reset', '1'); } catch (e) { /* ignore */ }
+                        window.location.reload();
+                        return;
+                    }
+                    if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
+                }, 320);
+            });
+        });
+    } else {
+        window.scrollTo(0, 0);
+        if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
+    }
+};
+
+window.initAppZoomIndicator = function() {
+    const btn = document.getElementById('app-zoom-indicator');
+    if (btn && !btn.dataset.zoomBound) {
+        btn.dataset.zoomBound = '1';
+        const runReset = (e) => {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            window.resetAppViewportZoom();
+        };
+        btn.addEventListener('click', runReset);
+        btn.addEventListener('touchend', runReset, { passive: false });
+    }
+    if (!window.visualViewport) return;
+    const onChange = () => {
+        if (window.clampAppViewportZoom) window.clampAppViewportZoom();
+        window.updateAppZoomIndicator();
+    };
+    window.visualViewport.addEventListener('resize', onChange);
+    window.visualViewport.addEventListener('scroll', onChange);
+    window.addEventListener('resize', onChange);
+    window.addEventListener('scroll', onChange, { passive: true });
+    window.updateAppZoomIndicator();
+};
+
 window.updateRosterBottomNavIndicator = function() {
     const indicator = document.getElementById('roster-bottom-nav-indicator');
     const bar = document.getElementById('roster-bottom-bar');
@@ -4679,9 +4843,13 @@ window.updateRosterBottomNavIndicator = function() {
     if (!indicator || !bar || !wrap) return;
     const iconBtn = wrap.querySelector('.bottom-icon');
     const targetRect = iconBtn ? iconBtn.getBoundingClientRect() : wrap.getBoundingClientRect();
+    if (!targetRect.width || !targetRect.height) {
+        requestAnimationFrame(() => window.updateRosterBottomNavIndicator());
+        return;
+    }
     const barRect = bar.getBoundingClientRect();
-    const pillW = 58;
-    const pillH = 32;
+    const pillW = 56;
+    const pillH = 36;
     indicator.style.width = pillW + 'px';
     indicator.style.height = pillH + 'px';
     indicator.style.left = (targetRect.left - barRect.left + (targetRect.width - pillW) / 2) + 'px';
@@ -4752,6 +4920,7 @@ window.toggleDarkMode = function() {
 window.onLanguageChanged = function(fromRemote) {
     if (!window.i18n) return;
     window.refreshRosterLiveContent();
+    if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
     if (fromRemote !== true && window.parent !== window) {
         window.parent.postMessage({ type: 'LANGUAGE_CHANGED', lang: window.i18n.getLang() }, '*');
     }
@@ -5004,6 +5173,8 @@ if (window.parent !== window) {
 window.resetFloatingBackPosition && window.resetFloatingBackPosition();
 
 // admin-anchor-date input is now populated from actual saved data inside loadRosterData(), not hardcoded here
+
+if (window.initAppZoomIndicator) window.initAppZoomIndicator();
 
 </script>
 </body>
