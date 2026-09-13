@@ -507,20 +507,28 @@
         }
         .trend-collapse-header:active { background: var(--input-bg); }
         .trend-collapse-title { flex: 1; min-width: 0; }
-        .trend-collapse-chevron {
-            width: 22px;
-            height: 22px;
+        .trend-collapse-chevron-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #1d5bd6;
             flex-shrink: 0;
-            padding: 4px;
-            box-sizing: border-box;
+        }
+        body.dark-mode:not(.green-theme) .trend-collapse-chevron-wrap { background: #4d8eff; }
+        body.green-theme .trend-collapse-chevron-wrap { background: #15803d; }
+        .trend-collapse-chevron {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            display: block;
             color: #ffffff !important;
             stroke: #ffffff;
-            background: var(--blue-fill);
-            border-radius: 50%;
             transform: rotate(0deg);
             transition: transform 0.2s ease;
         }
-        body.green-theme .trend-collapse-chevron { background: var(--green); }
         .trend-collapse-chevron.open { transform: rotate(90deg); }
         .trend-collapse-body { margin-top: 8px; }
         .trend-collapse-body.collapsed { display: none; }
@@ -975,9 +983,22 @@
         .compare-pill-fab.active { color: var(--text) !important; background: color-mix(in srgb, var(--blue) 14%, var(--card)) !important; border-color: color-mix(in srgb, var(--blue) 55%, var(--border)) !important; box-shadow: var(--md-elevation-1); }
         body.green-theme .compare-pill-fab.active { background: color-mix(in srgb, var(--green) 16%, var(--card)) !important; border-color: color-mix(in srgb, var(--green) 50%, var(--border)) !important; }
         .compare-pill-fab:active { opacity: 0.9; transform: translateY(1px); }
+        :root { --app-vv-scale: 1; }
+        body.app-browser-zoomed .bottom-bar,
+        body.app-browser-zoomed .compare-pill-fab,
+        body.app-browser-zoomed .dash-hamburger-btn,
+        body.app-browser-zoomed .dash-sync-cluster,
+        body.app-browser-zoomed .dash-signout-btn,
+        body.app-browser-zoomed #app-zoom-indicator {
+            zoom: calc(1 / var(--app-vv-scale, 1));
+        }
+        body.app-browser-zoomed .top-bar {
+            zoom: calc(1 / var(--app-vv-scale, 1));
+        }
         #app-zoom-indicator {
             position: fixed;
             left: max(12px, env(safe-area-inset-left, 0px));
+            top: auto;
             bottom: calc(var(--bottom-ui-offset) + 6px);
             z-index: 2998;
             display: flex;
@@ -1373,7 +1394,7 @@
             justify-content: flex-end; padding-right: 10px; padding-left: 6px;
             color: var(--text-muted); flex-shrink: 0;
         }
-        .all-journey-row-chevron svg { width: 26px; height: 26px; stroke-width: 2.5; transition: transform 0.15s; }
+        .all-journey-row-chevron svg { width: 18px; height: 18px; stroke-width: 2.2; transition: transform 0.15s; }
         .all-journey-row--expanded .all-journey-row-chevron svg { transform: rotate(-90deg); color: var(--blue); }
         .aj-train { font-weight: 800; color: var(--row-text); }
         .aj-date { font-weight: 700; color: color-mix(in srgb, var(--blue) 55%, var(--text-muted) 45%); }
@@ -7652,6 +7673,45 @@
         return true;
     };
 
+    window.scrollToCompareBarChart = function(scopeEl) {
+        const scope = scopeEl || document;
+        const run = () => {
+            const chart = scope.querySelector ? scope.querySelector('.trend-compare-hbar-chart') : null;
+            if (!chart) return;
+            const screen = document.getElementById('screen-yearly-trend');
+            const salaryScreen = document.getElementById('screen-salary');
+            let scrollHost = null;
+            if (screen && !screen.classList.contains('hidden')) scrollHost = screen.querySelector('.screen-content');
+            else if (salaryScreen && !salaryScreen.classList.contains('hidden')) scrollHost = salaryScreen.querySelector('.screen-content');
+            if (scrollHost) {
+                const hostTop = scrollHost.getBoundingClientRect().top;
+                const chartTop = chart.getBoundingClientRect().top;
+                scrollHost.scrollTo({ top: scrollHost.scrollTop + (chartTop - hostTop) - 8, behavior: 'smooth' });
+            } else {
+                chart.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        };
+        requestAnimationFrame(() => requestAnimationFrame(run));
+    };
+
+    window.syncVisualViewportChrome = function() {
+        const vv = window.visualViewport;
+        const scale = (vv && vv.scale) ? vv.scale : 1;
+        document.documentElement.style.setProperty('--app-vv-scale', String(scale));
+        document.body.classList.toggle('app-browser-zoomed', Math.abs(scale - 1) > 0.02);
+        const btn = document.getElementById('app-zoom-indicator');
+        if (!btn || !vv) return;
+        const rootStyle = getComputedStyle(document.documentElement);
+        const bottomUi = parseFloat(rootStyle.getPropertyValue('--bottom-ui-offset')) || 72;
+        const padLeft = Math.max(12, parseFloat(rootStyle.getPropertyValue('--safe-left')) || 12);
+        const h = btn.offsetHeight || 34;
+        const top = vv.offsetTop + vv.height - bottomUi - h - 8;
+        btn.style.left = `${vv.offsetLeft + padLeft}px`;
+        btn.style.top = `${Math.max(vv.offsetTop + 8, top)}px`;
+        btn.style.bottom = 'auto';
+        btn.style.right = 'auto';
+    };
+
     window.updateAppZoomIndicator = function() {
         const btn = document.getElementById('app-zoom-indicator');
         const label = document.getElementById('app-zoom-indicator-label');
@@ -7663,6 +7723,7 @@
         btn.classList.toggle('hidden', !zoomed);
         btn.classList.toggle('app-zoom-indicator--reset', zoomed);
         label.textContent = zoomed ? `${pct}% · Reset` : '100%';
+        window.syncVisualViewportChrome();
     };
 
     window.resetAppViewportZoom = function() {
@@ -7682,6 +7743,7 @@
         window.visualViewport.addEventListener('resize', onChange);
         window.visualViewport.addEventListener('scroll', onChange);
         window.addEventListener('resize', onChange);
+        window.addEventListener('scroll', onChange, { passive: true });
         window.updateAppZoomIndicator();
     };
 
@@ -15442,7 +15504,7 @@
         return `<div class="trend-collapse-wrap">
             <button type="button" class="trend-collapse-header" onclick="window.toggleTrendCollapseSection('${safeId}')" aria-expanded="${open}">
                 <span class="trend-collapse-title">${title}</span>
-                <svg class="${chevClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                <span class="trend-collapse-chevron-wrap" aria-hidden="true"><svg class="${chevClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
             </button>
             <div id="trend-collapse-body-${safeId}" class="${bodyClass}">${innerHtml}</div>
         </div>`;
@@ -16876,11 +16938,16 @@
             area.innerHTML = html;
             window.renderFutureTrendDetailList(projectedLegs);
             window.updateTrendCompareFab();
+            if (window._scrollToCompareAfterRender && compareOn) {
+                window._scrollToCompareAfterRender = false;
+                window.scrollToCompareBarChart(area);
+            }
         });
     };
 
     window.switchTrendFutureCompare = function() {
         window._trendFutureCompareActual = !window._trendFutureCompareActual;
+        window._scrollToCompareAfterRender = !!window._trendFutureCompareActual;
         window.updateTrendCompareFab();
         window.renderYearlyFutureTrendGraph();
     };
@@ -17217,6 +17284,7 @@
 
     window.switchSalaryCompareExpected = function() {
         window._salaryCompareExpected = !window._salaryCompareExpected;
+        window._scrollToCompareAfterRender = !!window._salaryCompareExpected;
         window.updateSalaryCompareFab();
         window.renderSalaryProjectedBreakdown();
         window.renderSalaryProjectedYearGraph();
@@ -17312,6 +17380,10 @@
             }
             html += `<p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('salary_projected_hint', 'Projected salary graph is shown using your projected TA and NDA from roster link programme and train timings.')}</p>`;
             wrap.innerHTML = html;
+            if (window._scrollToCompareAfterRender && compareOn) {
+                window._scrollToCompareAfterRender = false;
+                window.scrollToCompareBarChart(wrap);
+            }
         });
     };
 
