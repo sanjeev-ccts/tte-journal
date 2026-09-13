@@ -493,17 +493,18 @@
             gap: 10px;
             padding: 12px 14px;
             margin: 0;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
+            min-height: 48px;
+            background: var(--card) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: 12px !important;
             font-size: 12px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.3px;
-            color: var(--text-muted);
+            color: var(--text-muted) !important;
             cursor: pointer;
             text-align: left;
-            box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);
+            box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow) !important;
         }
         .trend-collapse-header:active { background: var(--input-bg); }
         .trend-collapse-title { flex: 1; min-width: 0; }
@@ -511,14 +512,22 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 50%;
             background: #1d5bd6;
+            border: 2px solid color-mix(in srgb, #ffffff 35%, #1d5bd6);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.22);
             flex-shrink: 0;
         }
-        body.dark-mode:not(.green-theme) .trend-collapse-chevron-wrap { background: #4d8eff; }
-        body.green-theme .trend-collapse-chevron-wrap { background: #15803d; }
+        body.dark-mode:not(.green-theme) .trend-collapse-chevron-wrap {
+            background: #4d8eff;
+            border-color: color-mix(in srgb, #ffffff 40%, #4d8eff);
+        }
+        body.green-theme .trend-collapse-chevron-wrap {
+            background: #15803d;
+            border-color: color-mix(in srgb, #ffffff 35%, #15803d);
+        }
         .trend-collapse-chevron {
             width: 14px;
             height: 14px;
@@ -824,7 +833,7 @@
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
-        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn) {
+        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.trend-collapse-header):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn) {
             width: 100%; min-height: 48px; padding: 10px 24px; border: none;
             border-radius: 12px; font-weight: var(--font-weight-medium);
             cursor: pointer; font-size: var(--text-label); line-height: var(--line-height-tight);
@@ -983,24 +992,15 @@
         .compare-pill-fab.active { color: var(--text) !important; background: color-mix(in srgb, var(--blue) 14%, var(--card)) !important; border-color: color-mix(in srgb, var(--blue) 55%, var(--border)) !important; box-shadow: var(--md-elevation-1); }
         body.green-theme .compare-pill-fab.active { background: color-mix(in srgb, var(--green) 16%, var(--card)) !important; border-color: color-mix(in srgb, var(--green) 50%, var(--border)) !important; }
         .compare-pill-fab:active { opacity: 0.9; transform: translateY(1px); }
-        :root { --app-vv-scale: 1; }
-        body.app-browser-zoomed .bottom-bar,
-        body.app-browser-zoomed .compare-pill-fab,
-        body.app-browser-zoomed .dash-hamburger-btn,
-        body.app-browser-zoomed .dash-sync-cluster,
-        body.app-browser-zoomed .dash-signout-btn,
-        body.app-browser-zoomed #app-zoom-indicator {
-            zoom: calc(1 / var(--app-vv-scale, 1));
-        }
-        body.app-browser-zoomed .top-bar {
-            zoom: calc(1 / var(--app-vv-scale, 1));
-        }
         #app-zoom-indicator {
             position: fixed;
-            left: max(12px, env(safe-area-inset-left, 0px));
+            left: 12px;
             top: auto;
             bottom: calc(var(--bottom-ui-offset) + 6px);
-            z-index: 2998;
+            z-index: 2147483000;
+            margin: 0;
+            transform: none;
+            pointer-events: auto;
             display: flex;
             align-items: center;
             gap: 6px;
@@ -1023,7 +1023,7 @@
         #app-zoom-indicator svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted); }
         #app-zoom-indicator.app-zoom-indicator--reset { border-color: color-mix(in srgb, var(--blue-fill) 55%, var(--border)); }
         .trend-graph-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
-        .trend-compare-hbar-chart { margin-top: 14px; margin-bottom: 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
+        .trend-compare-hbar-chart { margin-top: 14px; margin-bottom: 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); scroll-margin-top: 72px; scroll-margin-bottom: calc(var(--bottom-ui-offset) + 24px); }
         body.dark-mode .trend-compare-hbar-chart { background: var(--summary-box-bg); }
         .trend-compare-hbar-legend { display: flex; flex-wrap: wrap; gap: 14px 18px; margin-bottom: 12px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
         .trend-compare-hbar-legend span { display: inline-flex; align-items: center; gap: 6px; }
@@ -7680,36 +7680,39 @@
             if (!chart) return;
             const screen = document.getElementById('screen-yearly-trend');
             const salaryScreen = document.getElementById('screen-salary');
-            let scrollHost = null;
-            if (screen && !screen.classList.contains('hidden')) scrollHost = screen.querySelector('.screen-content');
-            else if (salaryScreen && !salaryScreen.classList.contains('hidden')) scrollHost = salaryScreen.querySelector('.screen-content');
-            if (scrollHost) {
+            const activeScreen = (screen && !screen.classList.contains('hidden')) ? screen
+                : ((salaryScreen && !salaryScreen.classList.contains('hidden')) ? salaryScreen : null);
+            const scrollHost = activeScreen ? activeScreen.querySelector('.screen-content') : null;
+            const headerOffset = 72;
+            if (scrollHost && scrollHost.scrollHeight > scrollHost.clientHeight + 4) {
                 const hostTop = scrollHost.getBoundingClientRect().top;
                 const chartTop = chart.getBoundingClientRect().top;
-                scrollHost.scrollTo({ top: scrollHost.scrollTop + (chartTop - hostTop) - 8, behavior: 'smooth' });
-            } else {
-                chart.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                scrollHost.scrollTo({ top: scrollHost.scrollTop + (chartTop - hostTop) - headerOffset, behavior: 'smooth' });
+                return;
             }
+            const y = window.scrollY + chart.getBoundingClientRect().top - headerOffset;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
         };
         requestAnimationFrame(() => requestAnimationFrame(run));
     };
 
-    window.syncVisualViewportChrome = function() {
-        const vv = window.visualViewport;
-        const scale = (vv && vv.scale) ? vv.scale : 1;
-        document.documentElement.style.setProperty('--app-vv-scale', String(scale));
-        document.body.classList.toggle('app-browser-zoomed', Math.abs(scale - 1) > 0.02);
+    window.positionAppZoomIndicator = function() {
         const btn = document.getElementById('app-zoom-indicator');
-        if (!btn || !vv) return;
+        const vv = window.visualViewport;
+        if (!btn || btn.classList.contains('hidden')) return;
+        if (!vv) return;
         const rootStyle = getComputedStyle(document.documentElement);
         const bottomUi = parseFloat(rootStyle.getPropertyValue('--bottom-ui-offset')) || 72;
-        const padLeft = Math.max(12, parseFloat(rootStyle.getPropertyValue('--safe-left')) || 12);
+        const safeLeft = Math.max(12, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--safe-left')) || 0);
+        const padLeft = vv.offsetLeft + safeLeft;
+        const layoutGapBottom = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
         const h = btn.offsetHeight || 34;
         const top = vv.offsetTop + vv.height - bottomUi - h - 8;
-        btn.style.left = `${vv.offsetLeft + padLeft}px`;
+        btn.style.left = `${padLeft}px`;
         btn.style.top = `${Math.max(vv.offsetTop + 8, top)}px`;
         btn.style.bottom = 'auto';
         btn.style.right = 'auto';
+        btn.style.transform = 'none';
     };
 
     window.updateAppZoomIndicator = function() {
@@ -7723,7 +7726,13 @@
         btn.classList.toggle('hidden', !zoomed);
         btn.classList.toggle('app-zoom-indicator--reset', zoomed);
         label.textContent = zoomed ? `${pct}% · Reset` : '100%';
-        window.syncVisualViewportChrome();
+        if (zoomed) window.positionAppZoomIndicator();
+        else {
+            btn.style.left = '';
+            btn.style.top = '';
+            btn.style.bottom = '';
+            btn.style.transform = '';
+        }
     };
 
     window.resetAppViewportZoom = function() {
@@ -16940,7 +16949,7 @@
             window.updateTrendCompareFab();
             if (window._scrollToCompareAfterRender && compareOn) {
                 window._scrollToCompareAfterRender = false;
-                window.scrollToCompareBarChart(area);
+                setTimeout(() => window.scrollToCompareBarChart(area), 120);
             }
         });
     };
@@ -17382,7 +17391,7 @@
             wrap.innerHTML = html;
             if (window._scrollToCompareAfterRender && compareOn) {
                 window._scrollToCompareAfterRender = false;
-                window.scrollToCompareBarChart(wrap);
+                setTimeout(() => window.scrollToCompareBarChart(wrap), 120);
             }
         });
     };
