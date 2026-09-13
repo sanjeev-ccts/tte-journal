@@ -7699,6 +7699,7 @@
         if (isDarkOnLoad) document.body.classList.add('dark-mode');
         updateThemeColorMeta();
         window.updateSettingsToggleSwitches();
+        if (window.initAppZoomIndicator) window.initAppZoomIndicator();
         if (localStorage.getItem('tte_app_lang')) localStorage.setItem('tte_lang_chosen', '1');
         const loginVersionEl = document.getElementById('login-app-version');
         if (loginVersionEl) loginVersionEl.innerText = window.APP_VERSION;
