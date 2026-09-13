@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
     <!-- Point: tells browsers this page already handles its own light/dark theming (via the
          .dark-mode class toggle below) — without this, some Android browsers (Samsung Internet's
          "Dark mode" setting, Chrome's "Force Dark for websites") apply their OWN automatic dark
@@ -7692,6 +7692,28 @@
         requestAnimationFrame(() => requestAnimationFrame(run));
     };
 
+    const APP_VIEWPORT_CONTENT = 'width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover';
+
+    window.clampAppViewportZoom = function() {
+        const vv = window.visualViewport;
+        if (!vv || !vv.scale || vv.scale <= 2.02) return;
+        if (window._appZoomClampLock) return;
+        window._appZoomClampLock = true;
+        const meta = document.querySelector('meta[name="viewport"]');
+        if (!meta) {
+            window._appZoomClampLock = false;
+            return;
+        }
+        const inv = (2 / vv.scale).toFixed(6);
+        meta.setAttribute('content', `width=device-width, initial-scale=${inv}, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover`);
+        void document.documentElement.offsetHeight;
+        setTimeout(() => {
+            meta.setAttribute('content', APP_VIEWPORT_CONTENT);
+            window._appZoomClampLock = false;
+            if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
+        }, 48);
+    };
+
     window.positionAppZoomIndicator = function() {
         const btn = document.getElementById('app-zoom-indicator');
         const vv = window.visualViewport;
@@ -7733,30 +7755,43 @@
 
     window.resetAppViewportZoom = function() {
         if (window._appZoomResetLock) return;
+        const vv = window.visualViewport;
+        const scale = (vv && vv.scale) ? vv.scale : 1;
+        if (scale <= 1.02) {
+            if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
+            return;
+        }
         window._appZoomResetLock = true;
-        setTimeout(() => { window._appZoomResetLock = false; }, 600);
+        setTimeout(() => { window._appZoomResetLock = false; }, 900);
         try {
             document.documentElement.style.zoom = '';
             document.body.style.zoom = '';
         } catch (e) { /* ignore */ }
         const meta = document.querySelector('meta[name="viewport"]');
-        const relaxed = 'width=device-width, initial-scale=1.0, viewport-fit=cover';
-        const tight = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover';
+        const applyRelaxed = () => {
+            if (meta) meta.setAttribute('content', APP_VIEWPORT_CONTENT);
+            window.scrollTo(0, 0);
+            if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
+        };
         if (meta) {
-            meta.setAttribute('content', tight);
+            const inv = (1 / scale).toFixed(6);
+            meta.setAttribute('content', `width=device-width, initial-scale=${inv}, maximum-scale=${inv}, minimum-scale=${inv}, viewport-fit=cover`);
             void document.documentElement.offsetHeight;
-            setTimeout(() => {
-                meta.setAttribute('content', relaxed);
-                window.scrollTo(0, 0);
-                if (window.visualViewport) {
-                    window.visualViewport.addEventListener('resize', function once() {
-                        window.visualViewport.removeEventListener('resize', once);
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    applyRelaxed();
+                    setTimeout(applyRelaxed, 80);
+                    setTimeout(() => {
+                        const s2 = (window.visualViewport && window.visualViewport.scale) ? window.visualViewport.scale : 1;
+                        if (s2 > 1.02) {
+                            try { sessionStorage.setItem('app_viewport_zoom_reset', '1'); } catch (e) { /* ignore */ }
+                            window.location.reload();
+                            return;
+                        }
                         if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
-                    });
-                }
-                setTimeout(() => { if (window.updateAppZoomIndicator) window.updateAppZoomIndicator(); }, 80);
-                setTimeout(() => { if (window.updateAppZoomIndicator) window.updateAppZoomIndicator(); }, 400);
-            }, 60);
+                    }, 320);
+                });
+            });
         } else {
             window.scrollTo(0, 0);
             if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
@@ -7775,7 +7810,10 @@
             btn.addEventListener('touchend', runReset, { passive: false });
         }
         if (!window.visualViewport) return;
-        const onChange = () => window.updateAppZoomIndicator();
+        const onChange = () => {
+            if (window.clampAppViewportZoom) window.clampAppViewportZoom();
+            window.updateAppZoomIndicator();
+        };
         window.visualViewport.addEventListener('resize', onChange);
         window.visualViewport.addEventListener('scroll', onChange);
         window.addEventListener('resize', onChange);
