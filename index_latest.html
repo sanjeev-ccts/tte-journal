@@ -508,13 +508,19 @@
         .trend-collapse-header:active { background: var(--input-bg); }
         .trend-collapse-title { flex: 1; min-width: 0; }
         .trend-collapse-chevron {
-            width: 18px;
-            height: 18px;
+            width: 22px;
+            height: 22px;
             flex-shrink: 0;
-            color: var(--text-muted);
+            padding: 4px;
+            box-sizing: border-box;
+            color: #ffffff !important;
+            stroke: #ffffff;
+            background: var(--blue-fill);
+            border-radius: 50%;
             transform: rotate(0deg);
             transition: transform 0.2s ease;
         }
+        body.green-theme .trend-collapse-chevron { background: var(--green); }
         .trend-collapse-chevron.open { transform: rotate(90deg); }
         .trend-collapse-body { margin-top: 8px; }
         .trend-collapse-body.collapsed { display: none; }
@@ -969,6 +975,32 @@
         .compare-pill-fab.active { color: var(--text) !important; background: color-mix(in srgb, var(--blue) 14%, var(--card)) !important; border-color: color-mix(in srgb, var(--blue) 55%, var(--border)) !important; box-shadow: var(--md-elevation-1); }
         body.green-theme .compare-pill-fab.active { background: color-mix(in srgb, var(--green) 16%, var(--card)) !important; border-color: color-mix(in srgb, var(--green) 50%, var(--border)) !important; }
         .compare-pill-fab:active { opacity: 0.9; transform: translateY(1px); }
+        #app-zoom-indicator {
+            position: fixed;
+            left: max(12px, env(safe-area-inset-left, 0px));
+            bottom: calc(var(--bottom-ui-offset) + 6px);
+            z-index: 2998;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 11px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--card) 94%, transparent);
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1;
+            box-shadow: var(--md-elevation-2);
+            margin: 0;
+            width: auto;
+            height: auto;
+            min-height: 34px;
+            cursor: pointer;
+        }
+        #app-zoom-indicator.hidden { display: none !important; }
+        #app-zoom-indicator svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted); }
+        #app-zoom-indicator.app-zoom-indicator--reset { border-color: color-mix(in srgb, var(--blue-fill) 55%, var(--border)); }
         .trend-graph-svg { width: 100%; height: auto; display: block; position: relative; z-index: 1; }
         .trend-compare-hbar-chart { margin-top: 14px; margin-bottom: 10px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06); }
         body.dark-mode .trend-compare-hbar-chart { background: var(--summary-box-bg); }
@@ -984,8 +1016,11 @@
         .trend-compare-hbar-fill { height: 100%; border-radius: 0; min-width: 0; transition: width 0.25s ease; }
         .trend-compare-hbar-val { flex: 0 0 auto; font-size: 9px; font-weight: 700; color: var(--text-muted); white-space: nowrap; min-width: 44px; text-align: right; }
         .trend-compare-hbar-fill--primary { background: var(--blue-fill); }
-        .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 38%, var(--card)); }
-        body.dark-mode .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple) 55%, transparent); }
+        .trend-compare-hbar-fill--secondary { background: var(--purple-fill); }
+        body.dark-mode .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 92%, #c084fc 8%); }
+        body:not(.dark-mode) .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 88%, #7c3aed 12%); }
+        .trend-compare-hbar-fill--green { background: var(--green); }
+        body.dark-mode .trend-compare-hbar-fill--green { background: color-mix(in srgb, var(--green) 88%, #4ade80 12%); }
         .pdf-generate-panel.card { padding: 12px 14px 14px; margin-bottom: 8px; }
         .pdf-generate-panel .pdf-month-nav { margin-bottom: 12px; }
         .salary-occasional { color: var(--purple) !important; }
@@ -1330,11 +1365,11 @@
             padding: 12px 0 12px 10px !important;
         }
         .all-journey-row-body {
-            flex: 0 0 80%; max-width: 80%; min-width: 0; text-align: left;
-            line-height: 1.38; font-size: 12px; overflow: hidden;
+            flex: 0 0 87%; max-width: 87%; min-width: 0; text-align: left;
+            line-height: 1.38; font-size: 12.5px; overflow: hidden;
         }
         .all-journey-row-chevron {
-            flex: 0 0 20%; max-width: 20%; display: flex; align-items: center;
+            flex: 0 0 13%; max-width: 13%; display: flex; align-items: center;
             justify-content: flex-end; padding-right: 10px; padding-left: 6px;
             color: var(--text-muted); flex-shrink: 0;
         }
@@ -3161,6 +3196,11 @@
         <button onclick="window.dismissInstallBanner()" style="width:auto; margin:0; padding:6px 9px; font-size:12px; background:rgba(255,255,255,0.2); border-radius:50%; flex-shrink:0;">✕</button>
     </div>
 
+    <button type="button" id="app-zoom-indicator" class="hidden" onclick="window.resetAppViewportZoom()" aria-label="Reset zoom">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        <span id="app-zoom-indicator-label">100%</span>
+    </button>
+
     <div id="bottom-nav-chrome" class="hidden" aria-hidden="true"></div>
     <nav class="bottom-bar hidden" id="main-bottom-bar" aria-label="Main navigation">
         <div class="bottom-nav-indicator" id="bottom-nav-indicator" aria-hidden="true"></div>
@@ -3217,20 +3257,6 @@
         <div class="screen-content">
             <div class="card settings-list">
 
-            <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 8v8"/><path d="M20 8v8"/></svg><span data-i18n="haptic_feedback_row">Haptic Feedback</span></span>
-                <div id="haptic-toggle-switch" onclick="window.toggleHapticSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
-                    <div id="haptic-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
-                </div>
-            </div>
-
-            <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ef4444;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span data-i18n="floating_back_button_row">Floating Back Button</span></span>
-                <div id="floatback-toggle-switch" onclick="window.toggleFloatingBackSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
-                    <div id="floatback-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
-                </div>
-            </div>
-
             <div class="settings-row settings-row-nav" role="button" tabindex="0" onclick="window.toggleSettingsAnimationGroup()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.toggleSettingsAnimationGroup();}">
                 <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="#eab308" style="width:16px; height:16px; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="settings_animations_group">Animation</span></span>
                 <span id="settings-animation-chevron" class="settings-row-chevron" aria-hidden="true">›</span>
@@ -3254,6 +3280,20 @@
                     <div id="scrollbounce-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
+            </div>
+
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 8v8"/><path d="M20 8v8"/></svg><span data-i18n="haptic_feedback_row">Haptic Feedback</span></span>
+                <div id="haptic-toggle-switch" onclick="window.toggleHapticSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
+                    <div id="haptic-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
+                </div>
+            </div>
+
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ef4444;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span data-i18n="floating_back_button_row">Floating Back Button</span></span>
+                <div id="floatback-toggle-switch" onclick="window.toggleFloatingBackSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
+                    <div id="floatback-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
+                </div>
             </div>
 
             <div class="settings-row" role="group">
@@ -3285,13 +3325,6 @@
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><span data-i18n="green_theme_row">Green Theme</span></span>
-                <div id="greentheme-toggle-switch" onclick="window.toggleGreenThemeSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
-                    <div id="greentheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
-                </div>
-            </div>
-
-            <div class="settings-row" role="group">
                 <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#06b6d4;"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/></svg><span data-i18n="card_shadow_row">Card Shadow</span></span>
                 <div id="cardshadow-toggle-switch" onclick="window.toggleCardShadowSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="cardshadow-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
@@ -3299,16 +3332,23 @@
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#6366f1;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="dark_theme_row">Dark Theme</span></span>
-                <div id="darktheme-toggle-switch" onclick="window.toggleTheme()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
-                    <div id="darktheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#0ea5e9;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="hindi_language_row">Hindi Language</span></span>
+                <div id="settings-lang-toggle-switch" onclick="window.toggleSettingsLanguage()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
+                    <div id="settings-lang-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#0ea5e9;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="hindi_language_row">Hindi Language</span></span>
-                <div id="settings-lang-toggle-switch" onclick="window.toggleSettingsLanguage()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
-                    <div id="settings-lang-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><span data-i18n="green_theme_row">Green Theme</span></span>
+                <div id="greentheme-toggle-switch" onclick="window.toggleGreenThemeSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
+                    <div id="greentheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
+                </div>
+            </div>
+
+            <div class="settings-row" role="group">
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#6366f1;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="dark_theme_row">Dark Theme</span></span>
+                <div id="darktheme-toggle-switch" onclick="window.toggleTheme()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
+                    <div id="darktheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
@@ -7610,6 +7650,39 @@
         if (target === 'screen-settings') window.openSettingsModal();
         else window.navTo(target);
         return true;
+    };
+
+    window.updateAppZoomIndicator = function() {
+        const btn = document.getElementById('app-zoom-indicator');
+        const label = document.getElementById('app-zoom-indicator-label');
+        if (!btn || !label) return;
+        const vv = window.visualViewport;
+        const scale = (vv && vv.scale) ? vv.scale : 1;
+        const pct = Math.round(scale * 100);
+        const zoomed = Math.abs(pct - 100) > 2;
+        btn.classList.toggle('hidden', !zoomed);
+        btn.classList.toggle('app-zoom-indicator--reset', zoomed);
+        label.textContent = zoomed ? `${pct}% · Reset` : '100%';
+    };
+
+    window.resetAppViewportZoom = function() {
+        try {
+            document.documentElement.style.zoom = '1';
+            document.body.style.zoom = '1';
+        } catch (e) { /* ignore */ }
+        const meta = document.querySelector('meta[name="viewport"]');
+        if (meta) meta.setAttribute('content', 'width=device-width, initial-scale=1.0, viewport-fit=cover');
+        window.scrollTo(0, 0);
+        setTimeout(() => { if (window.updateAppZoomIndicator) window.updateAppZoomIndicator(); }, 280);
+    };
+
+    window.initAppZoomIndicator = function() {
+        if (!window.visualViewport) return;
+        const onChange = () => window.updateAppZoomIndicator();
+        window.visualViewport.addEventListener('resize', onChange);
+        window.visualViewport.addEventListener('scroll', onChange);
+        window.addEventListener('resize', onChange);
+        window.updateAppZoomIndicator();
     };
 
     window.onload = () => { 
@@ -16347,7 +16420,7 @@
         return `<div class="trend-compare-hbar-chart">
             <div class="trend-compare-hbar-legend">
                 <span><span class="trend-compare-hbar-dot" style="background:var(--blue-fill);"></span>${primaryLabel}</span>
-                <span><span class="trend-compare-hbar-dot" style="background:color-mix(in srgb, var(--purple-fill) 70%, var(--card));"></span>${secondaryLabel}</span>
+                <span><span class="trend-compare-hbar-dot" style="background:var(--purple-fill);"></span>${secondaryLabel}</span>
             </div>
             <div class="trend-compare-hbar-rows">${rows}</div>
         </div>`;
@@ -16430,7 +16503,7 @@
                 return window.buildTrendSingleSeriesBarChart(moneyValues, monthLabels, {
                     unitSuffix: '₹',
                     seriesLabel: ndaLabel,
-                    fillClass: 'trend-compare-hbar-fill--secondary'
+                    fillClass: 'trend-compare-hbar-fill--green'
                 });
             }
             return window.buildTrendSingleSeriesBarChart(hourValues, monthLabels, {
