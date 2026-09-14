@@ -112,21 +112,22 @@
         }
 
         body.green-theme {
-            --nav-indicator-bg: rgba(34, 197, 94, 0.2);
-            --blue: #22c55e;
-            --blue-fill: #22c55e;
+            --nav-indicator-bg: rgba(25, 149, 71, 0.18);
+            --blue: #199547;
+            --blue-fill: #199547;
+            --green: #199547;
             --row-blue-text: #15803d;
             --table-header-bg: #dcfce7;
             --table-header-text: #14532d;
             --table-border: #86efac;
-            --sheet-grid-border: #4ade80;
+            --sheet-grid-border: #199547;
             --sheet-locked-bg: #f0fdf4;
             --sheet-unlocked-bg: #dcfce7;
-            --sheet-header-bg: #22c55e;
+            --sheet-header-bg: #199547;
             --sheet-header-text: #ecfdf5;
-            --all-header-bg: #22c55e;
+            --all-header-bg: #199547;
             --all-header-text: #ecfdf5;
-            --all-header-border: #22c55e;
+            --all-header-border: #199547;
             --earnings-total-bg: #f0fdf4;
         }
 
@@ -201,34 +202,25 @@
         }
 
         body.dark-mode.green-theme {
-            --nav-indicator-bg: rgba(134, 239, 172, 0.18);
+            --nav-indicator-bg: rgba(134, 239, 172, 0.16);
             --row-stripe-bg: color-mix(in srgb, var(--card) 88%, #86efac 12%);
             --blue: #4ade80;
-            --blue-fill: #22c55e;
+            --blue-fill: #1a8141;
+            --green: #1a8141;
             --row-blue-text: #86efac;
             --table-header-bg: #166534;
             --table-header-text: #bbf7d0;
-            --table-border: #22c55e;
-            --sheet-grid-border: #3d9e5c;
+            --table-border: #1a8141;
+            --sheet-grid-border: #2f6b45;
             --sheet-locked-bg: #14261a;
             --sheet-unlocked-bg: #1a3a24;
-            --sheet-header-bg: #22c55e;
+            --sheet-header-bg: #1a8141;
             --sheet-header-text: #ecfdf5;
-            --all-header-bg: #22c55e;
+            --all-header-bg: #1a8141;
             --all-header-text: #ecfdf5;
             --all-header-border: #4ade80;
             --earnings-total-bg: #14261a;
         }
-        body.green-theme .nav-fab {
-            background: linear-gradient(165deg, #86efac 0%, #22c55e 42%, #16a34a 100%);
-            box-shadow: 0 4px 18px rgba(34, 197, 94, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.38);
-        }
-        body.green-theme button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.trend-collapse-header):not(#app-zoom-indicator):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn):not(.quick-add-leg-btn):not(.add-signon-link-btn):not(.dashboard-period-banner__close):not(.squeeze-ball) {
-            background: linear-gradient(165deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
-            box-shadow: 0 2px 10px rgba(34, 197, 94, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
-        }
-        body.green-theme .trend-compare-hbar-fill--green,
-        body.green-theme .trend-hbar-fill--green { background: linear-gradient(90deg, #4ade80, #22c55e) !important; }
 
         body.dark-mode .summary-pill { background: linear-gradient(135deg, #1a2035, #0d2010) !important; color: #79c0ff !important; border-color: #30363d !important; }
         body.green-theme .summary-pill { color: var(--blue) !important; }
@@ -1060,13 +1052,13 @@
         .trend-compare-hbar-legend span { display: inline-flex; align-items: center; gap: 6px; }
         .trend-compare-hbar-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
         .trend-compare-hbar-rows { display: flex; flex-direction: column; gap: 12px; }
-        .trend-compare-hbar-row { display: flex; align-items: center; gap: 8px; min-height: 36px; }
-        .trend-compare-hbar-label { flex: 0 0 32px; font-size: 10px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2px; }
-        .trend-compare-hbar-bars { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; justify-content: center; }
-        .trend-compare-hbar-barline { display: flex; align-items: center; gap: 6px; min-height: 16px; }
-        .trend-compare-hbar-track { flex: 1; height: 15.75px; border-radius: 0; background: color-mix(in srgb, var(--text-muted) 10%, transparent); overflow: hidden; }
+        .trend-compare-hbar-row { display: flex; align-items: center; gap: 8px; min-height: 40px; }
+        .trend-compare-hbar-label { flex: 0 0 32px; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.2px; }
+        .trend-compare-hbar-bars { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; justify-content: center; }
+        .trend-compare-hbar-barline { display: flex; align-items: center; gap: 6px; min-height: 20px; }
+        .trend-compare-hbar-track { flex: 1; height: 19px; border-radius: 0; background: color-mix(in srgb, var(--text-muted) 10%, transparent); overflow: hidden; }
         .trend-compare-hbar-fill { height: 100%; border-radius: 0; min-width: 0; transition: width 0.25s ease; }
-        .trend-compare-hbar-val { flex: 0 0 auto; font-size: 9px; font-weight: 700; color: var(--text-muted); white-space: nowrap; min-width: 44px; text-align: right; }
+        .trend-compare-hbar-val { flex: 0 0 auto; font-size: 11px; font-weight: 800; color: var(--text-muted); white-space: nowrap; min-width: 48px; text-align: right; }
         .trend-compare-hbar-fill--primary { background: var(--blue-fill); }
         .trend-compare-hbar-fill--secondary { background: var(--purple-fill); }
         body.dark-mode .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 92%, #c084fc 8%); }
@@ -4140,28 +4132,6 @@
                         </div>
                     </div>
 
-                    <div class="profile-station-block" data-profile-block="originating">
-                        <div class="profile-station-divider" aria-hidden="true"></div>
-                        <div class="profile-station-row" data-profile-section="originating" onclick="window.toggleProfileStationSection('originating')">
-                            <div class="profile-station-row-main">
-                                <span class="profile-station-row-title"><span data-i18n="profile_originating_trains_toggle">Originating Trains (NDA)</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
-                                <span id="profile-summary-originating" class="profile-station-row-value">Not set</span>
-                            </div>
-                            <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                        </div>
-                        <div id="profile-section-originating" class="profile-station-expand hidden">
-                            <details class="profile-station-help">
-                                <summary data-i18n="profile_whats_this">What's this?</summary>
-                                <p data-i18n="profile_originating_trains_desc">Optional — add only if you have originating trains. These get a 45-minute NDA sign-on margin (30 minutes for all others). Only hours between 22:00 and 06:00 count toward NDA.</p>
-                            </details>
-                            <div style="display:flex; gap:8px; margin-top:8px;">
-                                <input type="text" id="reg-originating-input" placeholder="e.g. 13239" style="margin:0; flex:1;" oninput="window.filterNumericOnly(this)" maxlength="5">
-                                <button type="button" onclick="event.stopPropagation(); window.addOriginatingTrain()" class="profile-inline-add-btn">Add</button>
-                            </div>
-                            <div id="reg-originating-chips" class="profile-chip-row" data-empty-label="No trains added"></div>
-                        </div>
-                    </div>
-
                     <div class="profile-station-block" data-profile-block="dest">
                         <div class="profile-station-divider" aria-hidden="true"></div>
                         <div class="profile-station-row" data-profile-section="dest" onclick="window.toggleProfileStationSection('dest')">
@@ -4196,26 +4166,36 @@
                         <div id="profile-section-diversion" class="profile-station-expand hidden">
                             <details class="profile-station-help">
                                 <summary data-i18n="profile_whats_this">What's this?</summary>
-                                <p data-i18n="dest_diversion_stations_desc">For trains that sometimes divert away from a major destination station to a nearby one (e.g. LKO trains diverting via AMG). Optional — only add if you know of specific diversions on your usual routes.</p>
+                                <p data-i18n="dest_diversion_stations_desc">Add diversion station here for trains that sometimes divert away from a major destination station to a nearby one (e.g. LKO trains diverting via AMG, UTR). — This helps the app auto-recognize your journeys correctly.</p>
                             </details>
-                            <div id="reg-diversion-major-wrap" style="display:flex; gap:8px; margin-top:8px; margin-bottom:8px;">
-                                <select id="reg-diversion-major" style="margin:0; flex:1;">
-                                    <option value="">-- Select major station --</option>
-                                </select>
-                            </div>
-                            <div id="reg-diversion-major-custom-wrap" class="hidden" style="display:flex; gap:8px; margin-bottom:8px;">
-                                <input type="text" id="reg-diversion-major-custom" placeholder="Type major station code" style="text-transform: uppercase; margin:0; flex:1;">
-                                <button type="button" onclick="event.stopPropagation(); window.confirmCustomMajorStation()" class="profile-inline-add-btn">Use</button>
-                            </div>
-                            <div id="reg-diversion-editor" class="hidden">
-                                <div style="font-size:12px; font-weight:800; color:var(--blue); margin-bottom:6px;" id="reg-diversion-editor-title"></div>
-                                <div style="display:flex; gap:8px; margin-bottom:8px;">
-                                    <input type="text" id="reg-diversion-sub-input" placeholder="e.g. AMG UTR" style="text-transform: uppercase; margin:0; flex:1;">
-                                    <button type="button" onclick="event.stopPropagation(); window.addDiversionSubStation()" class="profile-inline-add-btn">Add</button>
-                                </div>
-                                <div id="reg-diversion-sub-chips" class="profile-chip-row"></div>
+                            <div style="display:flex; gap:8px; margin-top:8px; align-items:center;">
+                                <input type="text" id="reg-diversion-station-a" placeholder="e.g. LKO" style="text-transform: uppercase; margin:0; flex:1; min-width:0;" aria-label="Major station">
+                                <input type="text" id="reg-diversion-station-b" placeholder="e.g. AMG" style="text-transform: uppercase; margin:0; flex:1; min-width:0;" aria-label="Diversion station">
+                                <button type="button" onclick="event.stopPropagation(); window.addDiversionPairFromInputs()" class="profile-inline-add-btn">Add</button>
                             </div>
                             <div id="reg-diversion-summary" style="margin-top:10px;"></div>
+                        </div>
+                    </div>
+
+                    <div class="profile-station-block" data-profile-block="originating">
+                        <div class="profile-station-divider" aria-hidden="true"></div>
+                        <div class="profile-station-row" data-profile-section="originating" onclick="window.toggleProfileStationSection('originating')">
+                            <div class="profile-station-row-main">
+                                <span class="profile-station-row-title"><span data-i18n="profile_originating_trains_toggle">Originating Trains (NDA)</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
+                                <span id="profile-summary-originating" class="profile-station-row-value">Not set</span>
+                            </div>
+                            <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+                        </div>
+                        <div id="profile-section-originating" class="profile-station-expand hidden">
+                            <details class="profile-station-help">
+                                <summary data-i18n="profile_whats_this">What's this?</summary>
+                                <p data-i18n="profile_originating_trains_desc">Adding trains will get a 45-minute NDA sign-on margin. Other trains will get default 30 minutes margin. Only hours between 22:00 and 06:00 will be counted toward NDA.</p>
+                            </details>
+                            <div style="display:flex; gap:8px; margin-top:8px;">
+                                <input type="text" id="reg-originating-input" placeholder="e.g. 13239" style="margin:0; flex:1;" oninput="window.filterNumericOnly(this)" maxlength="5">
+                                <button type="button" onclick="event.stopPropagation(); window.addOriginatingTrain()" class="profile-inline-add-btn">Add</button>
+                            </div>
+                            <div id="reg-originating-chips" class="profile-chip-row" data-empty-label="No trains added"></div>
                         </div>
                     </div>
                 </div>
@@ -9345,61 +9325,25 @@
     window._diversionMap = window._diversionMap || {};
     window._currentDiversionMajor = null;
 
-    window.populateDiversionMajorDropdown = function() {
-        const sel = document.getElementById('reg-diversion-major');
-        if (!sel) return;
-        const currentVal = sel.value;
-        sel.innerHTML = '<option value="">-- Select major station --</option>';
-        (window._destStations || []).forEach(stn => {
-            sel.innerHTML += `<option value="${stn}">${stn}</option>`;
-        });
-        sel.innerHTML += '<option value="__custom__">+ Type a different station...</option>';
-        if (currentVal && [...(window._destStations||[]), '__custom__'].includes(currentVal)) sel.value = currentVal;
-    };
+    window.populateDiversionMajorDropdown = function() { /* legacy no-op: diversion uses inline pair inputs */ };
 
-    // When the major-station dropdown changes: either open the editor for that station,
-    // or reveal a free-text box if the user picked "type a different station"
-    document.addEventListener('change', function(e) {
-        if (e.target && e.target.id === 'reg-diversion-major') {
-            const val = e.target.value;
-            const customWrap = document.getElementById('reg-diversion-major-custom-wrap');
-            if (val === '__custom__') {
-                customWrap.classList.remove('hidden');
-                document.getElementById('reg-diversion-editor').classList.add('hidden');
-            } else if (val) {
-                customWrap.classList.add('hidden');
-                window.openDiversionEditor(val);
-            } else {
-                customWrap.classList.add('hidden');
-                document.getElementById('reg-diversion-editor').classList.add('hidden');
-            }
+    window.addDiversionPairFromInputs = function() {
+        const inputA = document.getElementById('reg-diversion-station-a');
+        const inputB = document.getElementById('reg-diversion-station-b');
+        if (!inputA || !inputB) return;
+        const stationA = (inputA.value || '').trim().toUpperCase();
+        const stationB = (inputB.value || '').trim().toUpperCase();
+        if (!stationA || !stationB) {
+            showModal('Missing Stations', 'Please enter both stations before adding a diversion pair.', 'warning', false);
+            return;
         }
-    });
-
-    window.confirmCustomMajorStation = function() {
-        const input = document.getElementById('reg-diversion-major-custom');
-        const val = input.value.trim().toUpperCase();
-        if (!val) return;
-        input.value = '';
-        document.getElementById('reg-diversion-major-custom-wrap').classList.add('hidden');
-        window.openDiversionEditor(val);
-    };
-
-    window.openDiversionEditor = function(majorStn) {
-        window._currentDiversionMajor = majorStn;
-        document.getElementById('reg-diversion-editor').classList.remove('hidden');
-        document.getElementById('reg-diversion-editor-title').innerText = `Diversion stations for ${majorStn}:`;
-        window.renderDiversionSubChips();
-    };
-
-    window.addDiversionSubStation = function() {
-        const input = document.getElementById('reg-diversion-sub-input');
-        const codes = parseMultiStationInput(input.value);
-        const major = window._currentDiversionMajor;
-        if (codes.length === 0 || !major) return;
-        codes.forEach(val => window.addDiversionPairBothWays(major, val));
-        input.value = '';
-        window.renderDiversionSubChips();
+        if (stationA === stationB) {
+            showModal('Invalid Pair', 'The two stations must be different.', 'warning', false);
+            return;
+        }
+        window.addDiversionPairBothWays(stationA, stationB);
+        inputA.value = '';
+        inputB.value = '';
         window.renderDiversionSummary();
         if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
