@@ -6,7 +6,7 @@
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef2f8">
 <title>BSB Duty Roster</title>
-<script src="./i18n.js"></script>
+<script src="./i18n.js?v=1.6"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
@@ -87,7 +87,7 @@
        shadow toward its practical ceiling AND strengthens the highlight further, since that's the
        cue that actually works well in dark mode (measured 2.27 contrast already) - compensating
        for what the shadow alone can't fully deliver. */
-    body.dark-mode button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn):not(#app-zoom-indicator) { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
+    body.dark-mode button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn):not(.mandali-tab-btn):not(.mandali-station-row):not(#app-zoom-indicator) { box-shadow: 0 2px 5px rgba(0,0,0,0.4) !important; }
     body:not(.card-shadow-on).dark-mode .admin-quick-card, body:not(.card-shadow-on).dark-mode .duty-box { background: var(--card); border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.4); }
     .result-modal-box { background: var(--card); box-shadow: 0 -8px 30px rgba(0,0,0,0.5) !important; }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
@@ -164,12 +164,19 @@
     .header-tab:active { transform: scale(0.97); }
     body.green-theme .header-tab.active { color: var(--blue); }
     body.green-theme .header-tab.active::after { background: var(--blue); }
-    .mandali-tab-btn { background: var(--input-bg); color: color-mix(in srgb, var(--text-muted) 65%, transparent); transition: background 0.3s, color 0.3s; }
-    .mandali-tab-btn.active { background: color-mix(in srgb, var(--blue) 25%, var(--card) 75%); color: var(--blue-fill); }
-    body.dark-mode .mandali-tab-btn.active { color: white; }
+    .mandali-tab-btn {
+        width: auto !important; margin: 0 !important; box-shadow: none !important;
+        background: var(--card) !important; color: var(--text-muted) !important;
+        transition: background 0.2s, color 0.2s;
+    }
+    .mandali-tab-btn.active {
+        background: var(--blue-fill) !important; color: var(--on-accent-fill) !important;
+    }
+    body.dark-mode .mandali-tab-btn.active { color: #fff !important; }
+    body.green-theme .mandali-tab-btn.active { background: var(--blue-fill) !important; color: #fff !important; }
     .swipe-hint { text-align: center; font-size: 12px; font-weight: 700; color: var(--red); margin: 0 0 12px 0; }
     input, select { width: 100%; padding: 11px 14px; border-radius: 30px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 16px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; -webkit-appearance: none; appearance: none; min-width: 0; }
-    button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn) {
+    button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn):not(.mandali-tab-btn):not(.mandali-station-row) {
         width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue-fill);
         box-shadow: var(--shadow), inset 0 1px 0 color-mix(in srgb, white 25%, transparent), inset 0 -2px 3px color-mix(in srgb, black 12%, transparent); transition: background 0.3s;
     }
@@ -209,17 +216,22 @@
     .save-team-row { display: flex; gap: 8px; margin-bottom: 10px; }
     .save-team-row input { flex: 1; margin-bottom: 0; }
     .save-team-row button { width: auto; flex-shrink: 0; padding: 0 18px; border-radius: 12px; background: var(--green); color: white; border: none; font-weight: 700; font-size: 13px; box-shadow: 0 3px 8px rgba(34,197,94,0.3); font-family: 'Roboto', sans-serif; }
-    .team-select-card { padding: 14px 16px; text-align: center; }
+    .team-select-card { padding: 14px 16px; text-align: center; background: var(--card) !important; background-image: none !important; }
     .team-select-card label { font-size: 12px; font-weight: 700; color: var(--green); display: block; margin-bottom: 5px; text-align: center; }
-    #my-team-select { font-size: 16px; font-weight: 800; padding: 10px; text-align: center; text-align-last: center; }
-    .team-saved-card { padding: 8px 12px; border-radius: 30px; margin-bottom: 0; }
+    #my-team-select { font-size: 16px; font-weight: 800; padding: 10px 14px; text-align: center; text-align-last: center; background: var(--card); border: 1px solid var(--border); box-shadow: none; min-height: 44px; }
+    .team-saved-card { padding: 8px 12px; border-radius: 30px; margin-bottom: 0; min-height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
     .tsc-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
     .tsc-team { flex: 1; text-align: center; cursor: pointer; }
     .tsc-team-chip { display: inline-block; padding: 0; border-radius: 0; border: none; color: var(--blue); font-weight: 900; font-size: 16px; background: none; box-shadow: none; }
     .tsc-edit-btn { width: auto; flex-shrink: 0; padding: 6px 10px; border-radius: 20px; background: var(--blue-fill); color: white; border: none; font-size: 13px; cursor: pointer; font-family: 'Roboto', sans-serif; }
     .two-col-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: stretch; }
-    .two-col-row .card { flex: 1; margin-bottom: 0; }
-    .view-edit-team-btn { border: none; border-radius: 30px !important; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--blue-fill); font-weight: 900; font-size: 14px; font-family: 'Roboto', sans-serif; background: var(--card) !important; box-shadow: none !important; width: auto; padding: 8px 10px; }
+    .two-col-row .card { flex: 1 1 0; margin-bottom: 0; min-width: 0; }
+    .view-edit-team-btn {
+        border: 1px solid var(--border); border-radius: 30px !important; cursor: pointer;
+        display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--blue-fill);
+        font-weight: 900; font-size: 14px; font-family: 'Roboto', sans-serif; background: var(--card) !important;
+        box-shadow: none !important; width: auto; flex: 1 1 0; min-height: 52px; padding: 8px 10px; box-sizing: border-box;
+    }
     .mandali-sphere-btn {
         background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--blue-fill) 45%, #ffffff) 0%, var(--blue-fill) 52%, color-mix(in srgb, var(--blue-fill) 75%, #000000) 100%) !important;
         box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3), inset 4px 4px 8px rgba(255,255,255,0.25), 0 4px 10px rgba(0,0,0,0.3) !important;
@@ -345,11 +357,32 @@
     .name-search-row .nsr-role { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
     .name-search-row .nsr-team { font-size: 12.5px; font-weight: 900; color: var(--blue); background: rgba(59,130,246,0.14); padding: 3px 10px; border-radius: 20px; }
     .name-search-empty { text-align: center; font-size: 12.5px; color: var(--text-muted); padding: 8px; }
-    .lobby-dest-box { background: rgba(59,130,246,0.10); border: 1px solid rgba(59,130,246,0.3); border-radius: 14px; padding: 8px 10px; margin-bottom: 8px; }
-    .lobby-dest-box .admin-table th { position: static; }
+    .mandali-station-block { padding: 0 !important; margin-bottom: 8px; overflow: hidden; }
+    .mandali-station-row {
+        width: 100% !important; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+        min-height: 56px; padding: 12px 14px; margin: 0; border: none; border-radius: 0; cursor: pointer;
+        background: transparent !important; color: inherit !important; box-shadow: none !important;
+        font-family: inherit; text-align: left;
+    }
+    .mandali-station-row:active { opacity: 0.88; }
+    .mandali-station-row-main { flex: 1; min-width: 0; }
+    .mandali-station-row-title { display: block; font-size: 13px; font-weight: 800; color: var(--blue); line-height: 1.25; }
+    .mandali-station-row-sub { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+    .mandali-station-row-chevron {
+        flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
+        border: 1px solid var(--border); background: var(--card);
+        display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+        transition: transform 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .mandali-station-block.expanded .mandali-station-row-chevron { transform: rotate(90deg); color: var(--blue); border-color: color-mix(in srgb, var(--blue) 35%, var(--border)); }
+    .mandali-station-body { padding: 0 8px 10px; border-top: 1px solid var(--border); }
+    .mandali-station-body .admin-table th {
+        position: static; background: var(--sheet-header-bg) !important; color: var(--sheet-header-text) !important;
+        border-color: color-mix(in srgb, var(--sheet-header-bg) 70%, black);
+    }
+    .mandali-station-body .admin-table td, .mandali-station-body .admin-table th { white-space: nowrap; }
+    .lobby-dest-box .admin-table th { position: static; background: var(--sheet-header-bg) !important; color: var(--sheet-header-text) !important; }
     .lobby-dest-box .admin-table td, .lobby-dest-box .admin-table th { white-space: nowrap; }
-    body.dark-mode .lobby-dest-box { background: rgba(59,130,246,0.16); }
-    .lobby-dest-title { font-size: 13.5px; font-weight: 900; color: #3b7aec; text-transform: uppercase; text-align: center; margin-bottom: 8px; letter-spacing: 0.5px; }
     .lobby-team-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; background: rgba(59,130,246,0.14); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 6px 12px; margin: 4px auto; font-size: 12.5px; font-weight: 800; color: var(--blue); cursor: pointer; width: fit-content; max-width: 100%; box-sizing: border-box; }
     .lobby-team-chip .ltc-name { font-size: 12.5px; text-align: center; }
     .lobby-team-chip .ltc-train { font-size: 10px; font-weight: 700; color: var(--text-muted); text-align: center; }
@@ -577,8 +610,23 @@
     #app-zoom-indicator.app-zoom-indicator--reset { border-color: color-mix(in srgb, var(--blue-fill) 55%, var(--border)); }
     body.in-iframe #app-zoom-indicator { display: none !important; }
     .bell-badge { position: absolute; top: -3px; right: -3px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
-    #save-toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #16a34a; color: white; padding: 12px 24px; border-radius: 30px; font-weight: 700; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); z-index: 21000; transition: transform 0.3s ease; }
-    #save-toast.show { transform: translateX(-50%) translateY(0); }
+    .app-snackbar {
+        position: fixed; left: 50%; z-index: 21000; max-width: 92vw; min-width: 200px; width: max-content;
+        padding: 12px 18px; border-radius: 8px; background: #323232; color: #fff;
+        font-size: 13px; font-weight: 600; line-height: 1.35; text-align: center;
+        box-shadow: 0 6px 16px rgba(0,0,0,0.38);
+        opacity: 0; pointer-events: none; transform: translateX(-50%) translateY(12px);
+        transition: opacity 0.2s ease, transform 0.2s ease;
+        bottom: calc(var(--bottom-ui-offset) + 12px);
+    }
+    .app-snackbar.visible { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+    .app-snackbar--success { background: #1e4620; color: #e8f5e9; }
+    .app-snackbar--error { background: #5f2120; color: #ffebee; }
+    .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
+    #mandali-page-overlay {
+        position: fixed; top: 0; left: 0; right: 0; bottom: var(--bottom-ui-offset);
+        z-index: 10000; background: var(--bg); overflow-y: auto;
+    }
     .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 10700; display: flex; align-items: flex-end; justify-content: center; }
     .modal-box { position: relative; background: var(--card); border-radius: 18px 18px 0 0; padding: 20px; width: 100%; max-width: 640px; box-shadow: 0 -8px 30px rgba(0,0,0,0.3); animation: rosterSheetSlideUp 0.28s ease-out; }
     @keyframes rosterSheetSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -630,7 +678,7 @@ if (window.parent !== window) {
         <button type="button" class="header-tab hidden" id="tab-admin" onclick="switchTab('admin')" data-i18n="roster_tab_admin">Admin</button>
     </div>
 </div>
-<div id="save-toast" data-i18n="roster_saved_toast">✅ Saved successfully!</div>
+<div id="app-snackbar" role="status" aria-live="polite" class="app-snackbar"></div>
 <div class="screen-content" id="swipe-area">
     <div id="view-mine">
         <div class="card team-select-card" id="team-setup-card">
@@ -813,7 +861,7 @@ if (window.parent !== window) {
         <button type="button" class="bottom-icon" onclick="if (window.parent !== window) window.parent.postMessage({ type: 'OPEN_SETTINGS' }, '*');" aria-label="Settings"><svg class="bottom-icon-svg--outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><svg class="bottom-icon-svg--filled" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.488.488 0 0 0-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg></button>
         <span class="bottom-icon-label" data-i18n="settings">Settings</span>
     </div>
-    <div class="bottom-icon-wrap illuminated" id="bottom-home-wrap">
+    <div class="bottom-icon-wrap" id="bottom-home-wrap">
         <button type="button" class="bottom-icon" onclick="window.goHome()" aria-label="Home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></button>
         <span class="bottom-icon-label" data-i18n="home">Home</span>
     </div>
@@ -848,7 +896,7 @@ if (window.parent !== window) {
         <div id="team-info-modal-body"></div>
     </div>
 </div>
-<div id="mandali-page-overlay" class="hidden" style="position:fixed; inset:0; z-index:10000; background:var(--bg); overflow-y:auto;">
+<div id="mandali-page-overlay" class="hidden">
     <div style="position:sticky; top:0; z-index:10;">
         <div style="background:color-mix(in srgb, var(--blue) 7%, var(--card) 93%); padding:15px 8px; max-width:640px; margin:0 auto; box-shadow:0 4px 10px rgba(0,0,0,0.12); border-bottom:1px solid var(--table-border); position:relative;">
             <button id="mandali-standalone-back-btn" class="hidden" onclick="window.closeMandaliPage()" style="position:absolute; left:8px; top:15px; background:none; border:none; box-shadow:none; border-radius:0; color:var(--blue); font-size:14px; font-weight:700; cursor:pointer; width:auto; margin:0; padding:6px 10px;">← Back</button>
@@ -1800,7 +1848,8 @@ function populateTeamSelectors() {
         const sel = document.getElementById(selId);
         if (!sel) return;
         const currentVal = sel.value;
-        sel.innerHTML = '<option value="">-- Select team --</option>';
+        const emptyTeamOpt = window.i18n ? window.i18n.tOr('roster_select_team_option', '-- Select your team --') : '-- Select your team --';
+        sel.innerHTML = `<option value="">${emptyTeamOpt}</option>`;
         Object.keys(window.appData.teamMaster).sort((a,b)=>a-b).forEach(t => {
             const team = window.appData.teamMaster[t];
             if (!team) return; // Point (fix): skip a null/malformed entry instead of crashing
@@ -1820,7 +1869,9 @@ function applySavedTeamState(teamNo) {
     const savedCard = document.getElementById('team-saved-card');
     if (teamNo && window.appData.teamMaster[teamNo]) {
         const tscTeamEl = document.getElementById('tsc-team-no');
-        tscTeamEl.innerText = 'Team ' + teamNo;
+        tscTeamEl.innerText = (window.i18n && window.i18n.tf)
+            ? window.i18n.tf('roster_team_chip', { team: teamNo })
+            : ('Team ' + teamNo);
         setupCard.classList.add('hidden');
         savedCard.classList.remove('hidden');
         document.getElementById('my-team-select').value = teamNo;
@@ -1846,7 +1897,8 @@ window.editMyTeam = function() {
     const teamMaster = window.appData.teamMaster || {};
     const teamNos = Object.keys(teamMaster).sort((a,b)=>a-b);
     const currentTeam = localStorage.getItem('roster_my_team') || '';
-    let optionsHtml = '<option value="">-- Select team --</option>';
+    const emptyTeamOpt = window.i18n ? window.i18n.tOr('roster_select_team_option', '-- Select your team --') : '-- Select your team --';
+    let optionsHtml = `<option value="">${emptyTeamOpt}</option>`;
     teamNos.forEach(t => {
         const team = teamMaster[t];
         if (!team) return; // skip a null/malformed entry instead of crashing
@@ -1895,13 +1947,26 @@ window.showRosterAlert = function(message) {
 };
 
 function showToast(msg, isError) {
-    const toast = document.getElementById('save-toast');
-    toast.innerText = msg;
-    toast.style.background = isError ? '#dc2626' : '#16a34a';
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 2500);
+    const el = document.getElementById('app-snackbar');
+    if (!el || !msg) return;
+    el.textContent = msg;
+    el.className = 'app-snackbar app-snackbar--' + (isError ? 'error' : 'success');
+    el.classList.remove('visible');
+    requestAnimationFrame(() => el.classList.add('visible'));
+    clearTimeout(window._rosterSnackbarHideTimer);
+    window._rosterSnackbarHideTimer = setTimeout(() => el.classList.remove('visible'), isError ? 2800 : 2000);
 }
 window.showToast = showToast;
+window.showSuccessSnackbar = function(message, duration) {
+    const el = document.getElementById('app-snackbar');
+    if (!el || !message) return;
+    el.textContent = message;
+    el.className = 'app-snackbar app-snackbar--success';
+    el.classList.remove('visible');
+    requestAnimationFrame(() => el.classList.add('visible'));
+    clearTimeout(window._rosterSnackbarHideTimer);
+    window._rosterSnackbarHideTimer = setTimeout(() => el.classList.remove('visible'), duration != null ? duration : 1500);
+};
 
 window.onMyTeamChange = function() {
     // Just previews the selected team; only the Save button persists it.
@@ -3395,6 +3460,30 @@ function computeMandaliBuckets(dateStr, nowMoment) {
     return buckets;
 }
 
+window.toggleMandaliStationRow = function(blockId) {
+    const block = document.getElementById(blockId);
+    if (!block) return;
+    const body = block.querySelector('.mandali-station-body');
+    const willExpand = body && body.classList.contains('hidden');
+    block.classList.toggle('expanded', willExpand);
+    if (body) body.classList.toggle('hidden', !willExpand);
+    window.hapticTap && window.hapticTap();
+};
+
+function buildMandaliStationSection(sectionId, title, subline, bodyHtml, startExpanded) {
+    const expanded = startExpanded !== false;
+    return `<div id="${sectionId}" class="card mandali-station-block${expanded ? ' expanded' : ''}">
+        <button type="button" class="mandali-station-row" onclick="window.toggleMandaliStationRow('${sectionId}')">
+            <div class="mandali-station-row-main">
+                <span class="mandali-station-row-title">${title}</span>
+                <span class="mandali-station-row-sub">${subline}</span>
+            </div>
+            <span class="mandali-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+        </button>
+        <div class="mandali-station-body${expanded ? '' : ' hidden'}">${bodyHtml}</div>
+    </div>`;
+}
+
 window.renderLobbyResults = function() {
     const dateStr = document.getElementById('lobby-date').value;
     const resultsEl = document.getElementById('lobby-results');
@@ -3436,15 +3525,18 @@ window.renderLobbyResults = function() {
                 </table>
             </div>`
             : `<p class="lobby-empty">${window.i18n ? window.i18n.tf('mandali_no_teams_at', { station: st }) : `No teams currently at ${st}`}</p>`;
-        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${st} मंडली</div>${body}</div>`;
+        const countLabel = window.i18n
+            ? window.i18n.tf('mandali_teams_count', { count: list.length })
+            : (list.length === 1 ? '1 team' : `${list.length} teams`);
+        return buildMandaliStationSection(`mandali-team-${st}`, `${st} मंडली`, countLabel, body, list.length > 0);
     }).join('');
 
     // Point: Mixed box only renders at all when it actually has someone in it — no empty
     // heading-only row, unlike the three main boxes which always show (with a "no teams" message).
     const mixedList = buckets.Mixed;
     const mixedHtml = mixedList.length
-        ? `<div class="lobby-dest-box"><div class="lobby-dest-title">Mixed मंडली</div>
-            <div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
+        ? (() => {
+            const mixedBody = `<div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
                 <table class="admin-table" style="min-width:480px;">
                     <thead><tr><th>Station</th><th>Teams</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead>
                     <tbody>${mixedList.map(x => {
@@ -3464,8 +3556,12 @@ window.renderLobbyResults = function() {
                         </tr>`;
                     }).join('')}</tbody>
                 </table>
-            </div>
-        </div>`
+            </div>`;
+            const mixedCount = window.i18n
+                ? window.i18n.tf('mandali_teams_count', { count: mixedList.length })
+                : (mixedList.length === 1 ? '1 team' : `${mixedList.length} teams`);
+            return buildMandaliStationSection('mandali-team-mixed', 'Mixed मंडली', mixedCount, mixedBody, true);
+        })()
         : '';
 
     resultsEl.innerHTML = mainBoxesHtml + mixedHtml;
@@ -3537,14 +3633,21 @@ window.renderTrainWiseResults = function() {
 
     const mainBoxesHtml = MANDALI_STATIONS.map(st => {
         const { up, down } = splitTrainChips(buckets[st]);
+        const trainCount = up.length + down.length;
         const body = twoColumnBody(up, down) || `<p class="lobby-empty">${window.i18n ? window.i18n.tf('mandali_no_trains_at', { station: st }) : `No trains currently at ${st}`}</p>`;
-        return `<div class="lobby-dest-box"><div class="lobby-dest-title">${st} मंडली</div>${body}</div>`;
+        const countLabel = window.i18n
+            ? window.i18n.tf('mandali_trains_count', { count: trainCount })
+            : (trainCount === 1 ? '1 train' : `${trainCount} trains`);
+        return buildMandaliStationSection(`mandali-train-${st}`, `${st} मंडली`, countLabel, body, trainCount > 0);
     }).join('');
 
     const { up: mixedUp, down: mixedDown } = splitTrainChips(buckets.Mixed);
     const mixedBody = twoColumnBody(mixedUp, mixedDown);
+    const mixedTrainCount = mixedUp.length + mixedDown.length;
     const mixedHtml = mixedBody
-        ? `<div class="lobby-dest-box"><div class="lobby-dest-title">Mixed मंडली</div>${mixedBody}</div>`
+        ? buildMandaliStationSection('mandali-train-mixed', 'Mixed मंडली',
+            window.i18n ? window.i18n.tf('mandali_trains_count', { count: mixedTrainCount }) : `${mixedTrainCount} trains`,
+            mixedBody, true)
         : '';
 
     resultsEl.innerHTML = mainBoxesHtml + mixedHtml;
@@ -4838,23 +4941,7 @@ window.initAppZoomIndicator = function() {
 
 window.updateRosterBottomNavIndicator = function() {
     const indicator = document.getElementById('roster-bottom-nav-indicator');
-    const bar = document.getElementById('roster-bottom-bar');
-    const wrap = document.getElementById('bottom-home-wrap');
-    if (!indicator || !bar || !wrap) return;
-    const iconBtn = wrap.querySelector('.bottom-icon');
-    const targetRect = iconBtn ? iconBtn.getBoundingClientRect() : wrap.getBoundingClientRect();
-    if (!targetRect.width || !targetRect.height) {
-        requestAnimationFrame(() => window.updateRosterBottomNavIndicator());
-        return;
-    }
-    const barRect = bar.getBoundingClientRect();
-    const pillW = 56;
-    const pillH = 36;
-    indicator.style.width = pillW + 'px';
-    indicator.style.height = pillH + 'px';
-    indicator.style.left = (targetRect.left - barRect.left + (targetRect.width - pillW) / 2) + 'px';
-    indicator.style.top = (targetRect.top - barRect.top + (targetRect.height - pillH) / 2) + 'px';
-    indicator.classList.add('visible');
+    if (indicator) indicator.classList.remove('visible');
 };
 
 window.updateRosterTopBarScrollState = function() {
@@ -5078,6 +5165,9 @@ window.addEventListener('message', function(event) {
         window.userHQ = (event.data.hq || '').trim().toUpperCase();
         const lobbyRow = document.getElementById('bsb-lobby-row');
         if (lobbyRow) lobbyRow.classList.toggle('hidden', !!window.userHQ && window.userHQ !== 'BSB');
+        if (window.i18n && event.data.lang && window.i18n.getLang() !== event.data.lang) {
+            window.i18n.setLang(event.data.lang);
+        }
         _rosterAuthReady = true;
         _maybeInitAfterAuth();
     }

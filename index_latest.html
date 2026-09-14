@@ -10191,6 +10191,36 @@
                 window.globalNotifications.push("DA% Update: Please update your DA% in Profile Setup if a new rate is applicable.");
             }
 
+            // NDA (14th–16th) and TA (1st–3rd) period summaries — always in Alerts for those
+            // calendar days, even if the user dismissed today's dashboard banner.
+            const periodDay = today.getDate();
+            const periodMonth = today.getMonth() + 1;
+            const periodYear = today.getFullYear();
+            const moPadPeriod = String(periodMonth).padStart(2, '0');
+            if (periodDay >= 14 && periodDay <= 16) {
+                const moKey = `${periodYear}-${moPadPeriod}`;
+                const range = formatNdaPeriodRangeLabel(moKey);
+                const { hrs, mins } = computeNdaDisplayTotals(moKey);
+                const hrsStr = String(hrs).padStart(2, '0');
+                const minsStr = String(mins).padStart(2, '0');
+                const ndaPrefix = (window.i18n && window.i18n.tf)
+                    ? window.i18n.tf('dash_period_nda_banner', { range })
+                    : `This is your NDA from ${range}`;
+                window.globalNotifications.push(`📊 ${ndaPrefix}: ${hrsStr}:${minsStr} hrs`);
+            }
+            if (periodDay >= 1 && periodDay <= 3) {
+                let prevM = periodMonth - 1;
+                let prevY = periodYear;
+                if (prevM < 1) { prevM = 12; prevY -= 1; }
+                const prevMo = `${prevY}-${String(prevM).padStart(2, '0')}`;
+                const labelMonth = today.toLocaleString('default', { month: 'long' });
+                const taAmt = computeCalendarMonthTA(prevMo);
+                const taPrefix = (window.i18n && window.i18n.tf)
+                    ? window.i18n.tf('dash_period_ta_banner', { month: labelMonth, year: periodYear })
+                    : `This is your ${labelMonth} ${periodYear} TA`;
+                window.globalNotifications.push(`📊 ${taPrefix}: ₹${taAmt}`);
+            }
+
             if(window.appState.legs && window.appState.legs.length > 0) {
                 const hqGroup = [p.hq, ...(p.nearby || [])]; 
                 const dutyOnlyAll = window.appState.legs.filter(l => !l.isNonDuty);
@@ -13524,7 +13554,8 @@
                     name: window.appState.profile ? window.appState.profile.name : '',
                     pf: window.appState.profile ? window.appState.profile.pf : '',
                     hq: window.appState.profile ? window.appState.profile.hq : '',
-                    isAdmin: (window.currentUid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(window.currentUserEmail || '')
+                    isAdmin: (window.currentUid === window.ADMIN_UID) || window.ADMIN_EMAILS.includes(window.currentUserEmail || ''),
+                    lang: window.i18n ? window.i18n.getLang() : 'en'
                 }, '*');
             }
             sendRosterActivateIfPossible();
