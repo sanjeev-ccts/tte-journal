@@ -597,6 +597,10 @@
     }
     body.dark-mode .bottom-bar { box-shadow: 0 -1px 4px rgba(0, 0, 0, 0.35); }
     body.mandali-open #roster-bottom-bar { z-index: 10001; }
+    /* Point: hide the center FAB while Mandali is open — it sits above the bar and was
+       clipping through the overlay’s bottom edge, so tables looked like they scrolled into
+       a cut-off blue circle. */
+    body.mandali-open .nav-fab-wrapper { display: none !important; }
     .bottom-nav-indicator {
         position: absolute; top: 0; left: 0; width: 56px; height: 36px;
         border-radius: 18px; background: var(--nav-indicator-bg);
@@ -679,9 +683,15 @@
     .app-snackbar--error { background: #5f2120; color: #ffebee; }
     .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
     #mandali-page-overlay {
-        position: fixed; top: 0; left: 0; right: 0; bottom: var(--bottom-ui-offset);
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
         z-index: 10000; background: var(--bg); overflow-y: auto;
+        padding-bottom: var(--bottom-ui-offset);
+        box-sizing: border-box;
+        -webkit-overflow-scrolling: touch;
     }
+    body.in-iframe.mandali-open #mandali-page-overlay { padding-bottom: 0; }
+    .mandali-page-header { position: sticky; top: 0; z-index: 10; background: var(--bg); }
+    .mandali-page-content { padding: 12px 8px 20px; max-width: 640px; margin: 0 auto; }
     .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 10700; display: flex; align-items: flex-end; justify-content: center; }
     .modal-box { position: relative; background: var(--card); border-radius: 18px 18px 0 0; padding: 20px; width: 100%; max-width: 640px; box-shadow: 0 -8px 30px rgba(0,0,0,0.3); animation: rosterSheetSlideUp 0.28s ease-out; }
     @keyframes rosterSheetSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -952,7 +962,7 @@ if (window.parent !== window) {
     </div>
 </div>
 <div id="mandali-page-overlay" class="hidden">
-    <div style="position:sticky; top:0; z-index:10;">
+    <div class="mandali-page-header">
         <div style="background:color-mix(in srgb, var(--blue) 7%, var(--card) 93%); padding:15px 8px; max-width:640px; margin:0 auto; box-shadow:0 4px 10px rgba(0,0,0,0.12); border-bottom:1px solid var(--table-border); position:relative;">
             <button id="mandali-standalone-back-btn" class="hidden" onclick="window.closeMandaliPage()" style="position:absolute; left:8px; top:15px; background:none; border:none; box-shadow:none; border-radius:0; color:var(--blue); font-size:14px; font-weight:700; cursor:pointer; width:auto; margin:0; padding:6px 10px;">← Back</button>
             <h3 style="margin:0 0 10px; text-align:center; font-size:15px; font-weight:900; color:var(--text);">मंडली</h3>
@@ -970,7 +980,7 @@ if (window.parent !== window) {
             <div id="lobby-live-clock" class="mandali-live-clock" role="status" aria-live="polite"></div>
         </div>
     </div>
-    <div style="padding:15px 8px 90px; max-width:640px; margin:0 auto;">
+    <div class="mandali-page-content">
         <div class="mandali-tabs-wrap">
             <button id="mandali-tab-team-btn" class="mandali-tab-btn active" onclick="window.switchMandaliTab('team')" style="flex:1; margin:0; padding:8px; border-radius:0; font-size:13px; font-weight:800;">👥 <span data-i18n="mandali_tab_team">Team Wise</span></button>
             <button id="mandali-tab-train-btn" class="mandali-tab-btn" onclick="window.switchMandaliTab('train')" style="flex:1; margin:0; padding:8px; border-radius:0; font-size:13px; font-weight:800;">🚂 <span data-i18n="mandali_tab_train">Train Wise</span></button>
@@ -3406,7 +3416,9 @@ window.openLobbyModal = function() {
     if (slider) slider.value = now.getHours() * 60 + now.getMinutes();
     window.setMandaliSliderFill(now.getHours() * 60 + now.getMinutes());
     window._mandaliExpandedSections = new Set();
-    document.getElementById('mandali-page-overlay').classList.remove('hidden');
+    const mandaliOverlayEl = document.getElementById('mandali-page-overlay');
+    mandaliOverlayEl.classList.remove('hidden');
+    mandaliOverlayEl.scrollTop = 0;
     document.body.classList.add('mandali-open');
     if (localStorage.getItem('page_anim_enabled') !== 'false') {
         const overlayEl = document.getElementById('mandali-page-overlay');
