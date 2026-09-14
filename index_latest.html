@@ -1012,7 +1012,8 @@
         .trend-compare-proj .trend-compare-journey { flex: 1; min-width: 0; }
         .trend-compare-proj .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--blue); min-width: 40px; text-align: right; }
         .trend-compare-act { padding-left: 8px; color: var(--text-muted); justify-content: flex-end; text-align: right; }
-        .trend-compare-act .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--text-muted); min-width: 40px; text-align: left; }
+        .trend-compare-act .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--blue-fill); min-width: 40px; text-align: left; }
+        body.green-theme .trend-compare-act .trend-compare-metric { color: var(--green); }
         .trend-compare-act .trend-compare-journey { flex: 1; min-width: 0; text-align: right; }
         .trend-compare-act .trend-compare-date { flex-shrink: 0; font-weight: 700; color: var(--text); margin-left: 4px; }
         .trend-compare-empty { color: var(--text-muted); opacity: 0.45; }
@@ -1075,8 +1076,16 @@
         .trend-compare-hbar-barline { display: flex; align-items: center; gap: 6px; min-height: 20px; }
         .trend-compare-hbar-track { flex: 1; height: 19px; border-radius: 0; background: color-mix(in srgb, var(--text-muted) 10%, transparent); overflow: hidden; }
         .trend-compare-hbar-fill { height: 100%; border-radius: 0; min-width: 0; transition: width 0.25s ease; }
-        .trend-compare-hbar-val { flex: 0 0 auto; font-size: 11px; font-weight: 800; color: var(--text-muted); white-space: nowrap; min-width: 48px; text-align: right; }
+        .trend-compare-hbar-val { flex: 0 0 auto; font-size: 11px; font-weight: 800; white-space: nowrap; min-width: 48px; text-align: right; }
+        .trend-compare-hbar-val--primary { color: var(--blue-fill); }
+        body.green-theme .trend-compare-hbar-val--primary { color: var(--green); }
+        .trend-compare-hbar-val--secondary { color: var(--purple-fill); }
+        .trend-compare-summary-sub--projected { color: var(--blue); }
+        body.green-theme .trend-compare-summary-sub--projected { color: var(--green); }
+        .trend-compare-summary-value--actual,
+        .trend-compare-summary-sub--actual { color: var(--purple-fill); }
         .trend-compare-hbar-fill--primary { background: var(--blue-fill); }
+        body.green-theme .trend-compare-hbar-fill--primary { background: var(--green); }
         .trend-compare-hbar-fill--secondary { background: var(--purple-fill); }
         body.dark-mode .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 92%, #c084fc 8%); }
         body:not(.dark-mode) .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 88%, #7c3aed 12%); }
@@ -16560,7 +16569,7 @@
                     </div>
                     <div class="trend-summary-box" style="display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; color:var(--text-muted);">
                         <span>${t('trend_actual_total_nda', 'Total Actual NDA')}</span>
-                        <span>${String(actH).padStart(2, '0')}:${String(actM).padStart(2, '0')} ${hrsSuffix}${actNdaMoney > 0 ? ` · ₹${actNdaMoney}` : ''}</span>
+                        <span class="trend-compare-summary-value--actual">${String(actH).padStart(2, '0')}:${String(actM).padStart(2, '0')} ${hrsSuffix}${actNdaMoney > 0 ? ` · ₹${actNdaMoney}` : ''}</span>
                     </div>
                 </div>`;
             } else {
@@ -16627,14 +16636,14 @@
                             <span>${t('future_trends_total_projected_ta', 'Total Projected TA')}</span>
                             <span>₹${Math.floor(totalMoney)}</span>
                         </div>
-                        ${pctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${pctParts}</div>` : ''}
+                        ${pctParts ? `<div class="trend-compare-summary-sub--projected" style="font-size:11px; font-weight:700; text-align:right;">${pctParts}</div>` : ''}
                     </div>
                     <div class="trend-summary-box" style="display:flex; flex-direction:column; gap:4px; font-size:13px; font-weight:800; color:var(--text-muted);">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span>${t('trend_actual_total_ta', 'Total Actual TA')}</span>
-                            <span>₹${actualIndex.monthTotal}</span>
+                            <span class="trend-compare-summary-value--actual">₹${actualIndex.monthTotal}</span>
                         </div>
-                        ${actPctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${actPctParts}</div>` : ''}
+                        ${actPctParts ? `<div class="trend-compare-summary-sub--actual" style="font-size:11px; font-weight:700; text-align:right;">${actPctParts}</div>` : ''}
                     </div>
                 </div>`;
             } else {
@@ -16804,11 +16813,11 @@
                 <div class="trend-compare-hbar-bars">
                     <div class="trend-compare-hbar-barline">
                         <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill trend-compare-hbar-fill--primary" style="width:${pW.toFixed(1)}%;"></div></div>
-                        <span class="trend-compare-hbar-val">${fmtVal(p)}</span>
+                        <span class="trend-compare-hbar-val trend-compare-hbar-val--primary">${fmtVal(p)}</span>
                     </div>
                     <div class="trend-compare-hbar-barline">
                         <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill trend-compare-hbar-fill--secondary" style="width:${aW.toFixed(1)}%;"></div></div>
-                        <span class="trend-compare-hbar-val">${fmtSec(a)}</span>
+                        <span class="trend-compare-hbar-val trend-compare-hbar-val--secondary">${fmtSec(a)}</span>
                     </div>
                 </div>
             </div>`;
@@ -16842,7 +16851,7 @@
                 <div class="trend-compare-hbar-bars">
                     <div class="trend-compare-hbar-barline">
                         <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill ${fillClass}" style="width:${w.toFixed(1)}%;"></div></div>
-                        <span class="trend-compare-hbar-val">${fmtVal(v)}</span>
+                        <span class="trend-compare-hbar-val${fillClass === 'trend-compare-hbar-fill--primary' ? ' trend-compare-hbar-val--primary' : ''}">${fmtVal(v)}</span>
                     </div>
                 </div>
             </div>`;
@@ -17566,12 +17575,15 @@
         if (result.plbAmount > 0) rows.push([t('salary_row_plb', 'Productivity Linked Bonus (PLB)'), result.plbAmount, true]);
         rows.push([t('salary_row_reis', 'Railway Employee Insurance Scheme'), -result.relsAmount]);
         rows.push([result.usesPfSubs ? t('salary_pf_subs_row', 'PF-SUBS (1/12 of Basic Pay)') : t('salary_nps_row', 'NPS (10% of Basic+DA)'), -result.npsAmount]);
-        const rowsHtml = rows.map(([label, val, isOccasional], idx) =>
-            `<div style="display:flex; align-items:center; justify-content:space-between; padding:9px 0; ${idx < rows.length - 1 ? 'border-bottom:1px dashed var(--border);' : ''} font-size:13px;">
+        const rowsHtml = rows.map(([label, val, isOccasional], idx) => {
+            const projTaNdaVal = compareExpected && isProjected && (idx === 4 || idx === 5) && val >= 0;
+            const amountColor = val < 0 ? 'var(--red)' : (isOccasional ? 'var(--purple)' : (projTaNdaVal ? '' : 'var(--text)'));
+            const amountClass = projTaNdaVal ? 'salary-accent' : '';
+            return `<div style="display:flex; align-items:center; justify-content:space-between; padding:9px 0; ${idx < rows.length - 1 ? 'border-bottom:1px dashed var(--border);' : ''} font-size:13px;">
                 <span class="${isOccasional ? 'salary-occasional' : ''}" style="color:${isOccasional ? 'var(--purple)' : 'var(--text-muted)'};"><span style="color:var(--text-muted); margin-right:6px;">›</span>${label}</span>
-                <span style="font-weight:800; color:${val < 0 ? 'var(--red)' : isOccasional ? 'var(--purple)' : 'var(--text)'};">${val < 0 ? '-' : ''}₹${Math.abs(Math.round(val)).toLocaleString('en-IN')}</span>
-            </div>`
-        ).join('');
+                <span class="${amountClass}" style="font-weight:800;${amountColor ? ` color:${amountColor};` : ''}">${val < 0 ? '-' : ''}₹${Math.abs(Math.round(val)).toLocaleString('en-IN')}</span>
+            </div>`;
+        }).join('');
         const totalLabel = isProjected ? t('salary_total_projected', 'Total Projected Salary') : t('salary_total_expected', 'Total Expected Salary');
         let footerHtml = `<div class="trend-summary-box salary-accent" style="margin-top:10px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800;">
             <span>${totalLabel}</span>
@@ -17585,7 +17597,7 @@
                 </div>
                 <div style="display:flex; justify-content:space-between; align-items:center; color:var(--text-muted);">
                     <span>${t('salary_total_expected', 'Total Expected Salary')}</span>
-                    <span>₹${expectedResult.total.toLocaleString('en-IN')}</span>
+                    <span class="trend-compare-hbar-val--secondary" style="font-size:15px;">₹${expectedResult.total.toLocaleString('en-IN')}</span>
                 </div>
             </div>`;
         }
