@@ -805,12 +805,11 @@
         input[type="checkbox"], input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; -webkit-appearance: checkbox; appearance: auto; }
         input:disabled, select:disabled { background-color: var(--input-disabled); color: var(--text-muted); border-style: dashed; opacity: 0.75; -webkit-text-fill-color: var(--text-muted); }
         .profile-lbl { font-size: var(--text-label); font-weight: var(--font-weight-label); color: var(--blue); display: block; margin-bottom: 2px; line-height: var(--line-height-tight); }
-        .profile-stations-card { padding: 14px 15px 8px; }
+        .profile-stations-card { padding: 14px 15px 12px; }
         .profile-station-hq-block { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .profile-station-hq-block input { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
-        .profile-stations-rows { margin-left: -15px; margin-right: -15px; }
+        .profile-stations-rows { display: flex; flex-direction: column; gap: 10px; margin: 12px 0 4px; }
         .profile-station-divider { border-top: 1px solid var(--border); margin: 0; }
-        .profile-stations-rows { display: flex; flex-direction: column; gap: 10px; }
         .profile-station-block {
             border: 1px solid var(--border);
             border-radius: var(--md-radius-input);
@@ -3455,9 +3454,9 @@
         <div class="screen-content">
             <div id="trend-year-nav-wrap" style="margin-bottom:12px;"></div>
             <div id="trend-future-month-nav-wrap" class="hidden" style="margin-bottom:12px;"></div>
-            <p id="trend-future-page-hint" class="hidden" data-i18n="future_trends_hint" style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:0 0 12px; padding:0 4px;">Projected from your roster link programme and train timings. For DDU (Nearby Station · TA claimed), dummy trains XXXXX/YYYYY cover BSB↔DDU travel — BSB departure is taken 3 hours before the DDU train, with 1 hour shuttle time to reach DDU.</p>
             <div id="trend-chart-area" style="width: 100%; overflow-x: auto;"></div>
             <div id="trend-future-detail-wrap" class="hidden" style="margin-top:16px;"></div>
+            <p id="trend-future-page-hint" class="hidden" data-i18n="future_trends_hint" style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:16px 4px 24px; padding:0 4px;">Projected from your roster link programme and train timings. For DDU (Nearby Station · TA claimed), dummy trains XXXXX/YYYYY cover BSB↔DDU travel — BSB departure is taken 3 hours before the DDU train, with 1 hour shuttle time to reach DDU.</p>
             <div id="trend-list-below-graph" class="hidden" style="margin-top:16px;"></div>
             <div id="trend-signon-area" class="hidden">
                 <div id="nda-signon-info-box" data-i18n="nda_signon_hint">Enter your actual sign-on time for night duties to calculate NDA more accurately. Use this for delayed trains, or to apply a 45-minute margin for originating trains not listed in your profile. If left blank, the app uses the default 30-minute margin (45 minutes for originating trains, if originating trains are added in Profile page).</div>
@@ -5715,6 +5714,7 @@
     };
     window.applyGreenThemeBodyClass = function() {
         document.body.classList.toggle('green-theme', window.isGreenThemeEnabled());
+        if (window.updateThemeColorMeta) window.updateThemeColorMeta();
     };
     window.toggleGreenThemeSetting = function() {
         const wasOn = window.isGreenThemeEnabled();
@@ -8470,6 +8470,10 @@
         if (allLeaving && !allLeaving.classList.contains('hidden') && screenId !== 'screen-all') {
             window._allJourneyExpandedId = null;
         }
+        const trendLeaving = document.getElementById('screen-yearly-trend');
+        if (trendLeaving && !trendLeaving.classList.contains('hidden') && screenId !== 'screen-yearly-trend') {
+            if (window.resetTrendCollapseSections) window.resetTrendCollapseSections();
+        }
         
         ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary', 'screen-settings', 'screen-alerts'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
         const shownScreenEl = document.getElementById(screenId);
@@ -8561,6 +8565,7 @@
         }
         if(screenId === 'screen-yearly-trend') {
             if (!window._trendSkipNavReset) window.resetTrendDateNavigation();
+            else if (window.resetTrendCollapseSections) window.resetTrendCollapseSections();
             window._trendSkipNavReset = false;
             window.switchTrendViewTab(window._trendActiveView || 'graph');
             const trendEl = document.getElementById('screen-yearly-trend');
@@ -15364,6 +15369,10 @@
         }
     };
 
+    window.resetTrendCollapseSections = function() {
+        window._trendCollapseOpen = {};
+    };
+
     window.resetTrendDateNavigation = function() {
         const today = new Date();
         window._trendCurrentYear = today.getFullYear();
@@ -15372,6 +15381,7 @@
         window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
         window._trendFutureCompareActual = false;
         window._trendActiveView = 'graph';
+        window.resetTrendCollapseSections();
     };
 
     function showTrendChart(includeBars, includeYearlyTable) {
