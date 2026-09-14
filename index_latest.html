@@ -851,7 +851,7 @@
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
-        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.trend-collapse-header):not(#app-zoom-indicator):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn):not(.quick-add-leg-btn):not(.add-signon-link-btn) {
+        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.trend-collapse-header):not(#app-zoom-indicator):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn):not(.quick-add-leg-btn):not(.add-signon-link-btn):not(.dashboard-period-banner__close) {
             width: 100%; min-height: 48px; padding: 10px 24px; border: none;
             border-radius: var(--md-radius-input); font-weight: var(--font-weight-medium);
             cursor: pointer; font-size: var(--text-label); line-height: var(--line-height-tight);
@@ -1289,8 +1289,9 @@
         .app-snackbar--success { background: #1e4620; color: #e8f5e9; }
         .app-snackbar--error { background: #5f2120; color: #ffebee; }
         .app-snackbar--info { background: #1a2a44; color: #e3f2fd; }
-        .quick-add-duty-label { white-space: nowrap; font-size: 9.5px; line-height: 1.15; }
-        #btn-quick-add-wrap { width: auto; min-width: 57px; max-width: none; }
+        .quick-add-action-col { display: flex; flex-direction: column; align-items: center; gap: 5px; width: 74px; flex-shrink: 0; }
+        .quick-add-action-label { font-size: 10.5px; font-weight: 800; color: var(--text-muted); text-align: center; line-height: 1.15; }
+        .quick-add-action-label--duty { white-space: nowrap; }
         .dashboard-period-banners { margin-bottom: 10px; display: flex; flex-direction: column; gap: 8px; }
         .dashboard-period-banner {
             position: relative; border-radius: 14px; padding: 2px;
@@ -1304,17 +1305,22 @@
             100% { background-position: 400% 50%; }
         }
         .dashboard-period-banner__inner {
-            display: flex; align-items: flex-start; gap: 10px;
+            display: flex; flex-direction: row; align-items: center; gap: 10px; width: 100%; box-sizing: border-box;
             background: var(--card); border-radius: 12px; padding: 10px 12px;
         }
         .dashboard-period-banner__text {
-            flex: 1; min-width: 0; font-size: 12px; font-weight: 700; line-height: 1.45; color: var(--text);
+            flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 700; line-height: 1.45; color: var(--text);
+            word-break: normal; overflow-wrap: anywhere;
         }
         .dashboard-period-banner__close {
-            flex-shrink: 0; width: auto; margin: 0; padding: 4px 10px; font-size: 12px;
-            background: var(--input-bg); color: var(--text-muted); border-radius: 14px;
-            box-shadow: none; border: 1px solid var(--border);
+            flex: 0 0 auto; width: auto !important; min-height: 0 !important; min-width: 32px !important;
+            margin: 0 !important; padding: 4px 10px !important; font-size: 12px !important; line-height: 1 !important;
+            font-weight: 700 !important; color: var(--text-muted) !important;
+            background: var(--input-bg) !important; border-radius: 14px !important;
+            box-shadow: none !important; border: 1px solid var(--border) !important;
+            transform: none !important;
         }
+        .dashboard-period-banner__close:active { opacity: 0.85; transform: none !important; }
         .period-banner-nda-hrs { color: var(--purple); font-weight: 900; }
         .period-banner-nda-mins { color: var(--blue); font-weight: 900; }
         .period-banner-ta-amt { color: var(--ta-accent); font-weight: 900; }
@@ -4788,18 +4794,18 @@
             </div>
 
             <p id="quick-add-desc" data-i18n-html="quickadd_desc_hint" style="font-size:11px; color:var(--text-muted); text-align:center; margin:14px 0 0; line-height:1.4;">📍 Add your upcoming duties here in a single tap by clicking Quick Add.</p>
-            <div id="quick-add-btn-row" style="display:flex; gap:20px; margin-top:10px; justify-content:center; align-items:flex-start;">
-                <div id="btn-quick-add-wrap" style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+            <div id="quick-add-btn-row" style="display:flex; gap:16px; margin-top:10px; justify-content:center; align-items:flex-start;">
+                <div id="btn-quick-add-wrap" class="quick-add-action-col">
                     <button id="btn-quick-add-duty" class="squeeze-ball" onclick="window.handleQuickAddClick()" style="background: var(--card); border: 1px solid var(--border); box-shadow: 0 3px 8px rgba(0,0,0,0.25); width:57px; height:57px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; transition:transform 0.1s, box-shadow 0.15s;"><svg viewBox="0 0 24 24" fill="#ea580c" stroke="#ea580c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width:30px; height:30px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></button>
-                    <span class="quick-add-duty-label" style="font-weight:800; color:var(--text-muted); text-align:center;" data-i18n="quick_add_duty">Quick Add Duty</span>
+                    <span class="quick-add-action-label quick-add-action-label--duty" data-i18n="quick_add_duty">Quick Add Duty</span>
                 </div>
-                <div style="display:flex; flex-direction:column; align-items:center; gap:5px; width:66px;">
+                <div class="quick-add-action-col">
                     <button id="btn-clear-inputs" class="squeeze-ball" onclick="window.clearDutyInputs()" style="background: var(--card); border: 1px solid var(--border); box-shadow: 0 3px 8px rgba(0,0,0,0.25); width:57px; height:57px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; transition:transform 0.1s, box-shadow 0.15s;"><svg viewBox="0 0 122.88 120.01" fill="currentColor" style="width:28px; height:27px;"><path fill-rule="evenodd" clip-rule="evenodd" d="M110.97,1.27L70.02,42.73l10.67,10.36l41.25-41.56C125.58,3.7,117.92-2.85,110.97,1.27L110.97,1.27z M54.04,46.81c0.4-0.31,0.81-0.58,1.22-0.81l0.15-0.08c2.35-1.28,4.81-1.24,7.39,0.53l7.17,6.98l0.11,0.11l6.6,6.42 c2.73,2.78,3.34,5.88,1.83,9.31l-19.35,50.75C24.02,112.99-0.34,87.94,0,49.73C19.23,55.35,37.75,57.19,54.04,46.81L54.04,46.81z"/></svg></button>
-                    <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center;">Clear Inputs</span>
+                    <span class="quick-add-action-label">Clear Inputs</span>
                 </div>
-                <div style="display:flex; flex-direction:column; align-items:center; gap:5px; width:66px;">
+                <div class="quick-add-action-col">
                     <button id="btn-add-rest-leave" class="squeeze-ball" onclick="window.switchAddTab('nonduty')" style="background: var(--card); border: 1px solid var(--border); box-shadow: 0 3px 8px rgba(0,0,0,0.25); width:57px; height:57px; border-radius:50%; padding:0; margin:0; display:flex; align-items:center; justify-content:center; transition:transform 0.1s, box-shadow 0.15s;"><svg viewBox="0 0 24 24" fill="var(--green)" stroke="var(--green)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" style="width:30px; height:30px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
-                    <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center; white-space:nowrap;">Add Rest/Leave</span>
+                    <span class="quick-add-action-label" style="white-space:nowrap;">Add Rest/Leave</span>
                 </div>
             </div>
             <div id="add-journey-secondary-actions" class="aj-secondary-action-box">
