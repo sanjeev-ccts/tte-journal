@@ -1007,14 +1007,32 @@
         .trend-compare-col { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; }
         .trend-compare-divider { display: none; }
         .trend-compare-head-divider { display: none; }
-        .trend-compare-actual-only .trend-compare-journey { color: var(--purple) !important; }
+        .trend-compare-actual-only .trend-compare-act .trend-compare-journey,
+        .trend-compare-actual-only .trend-compare-act .trend-compare-metric,
+        .trend-compare-actual-only .trend-compare-act .trend-compare-date { color: var(--blue-fill) !important; }
+        body.green-theme .trend-compare-actual-only .trend-compare-act .trend-compare-journey,
+        body.green-theme .trend-compare-actual-only .trend-compare-act .trend-compare-metric,
+        body.green-theme .trend-compare-actual-only .trend-compare-act .trend-compare-date { color: var(--green) !important; }
         .trend-compare-proj { padding-right: 8px; color: var(--text-muted); justify-content: flex-start; }
         .trend-compare-proj .trend-compare-journey { flex: 1; min-width: 0; }
-        .trend-compare-proj .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--blue); min-width: 40px; text-align: right; }
+        .trend-compare-proj .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--purple-fill); min-width: 40px; text-align: right; }
         .trend-compare-act { padding-left: 8px; color: var(--text-muted); justify-content: flex-end; text-align: right; }
-        .trend-compare-act .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--text-muted); min-width: 40px; text-align: left; }
+        .trend-compare-act .trend-compare-metric { flex-shrink: 0; font-weight: 800; color: var(--blue-fill); min-width: 40px; text-align: left; }
+        body.green-theme .trend-compare-act .trend-compare-metric { color: var(--green); }
+        .trend-compare-act .trend-compare-journey b { color: var(--blue-fill); }
+        body.green-theme .trend-compare-act .trend-compare-journey b { color: var(--green); }
         .trend-compare-act .trend-compare-journey { flex: 1; min-width: 0; text-align: right; }
-        .trend-compare-act .trend-compare-date { flex-shrink: 0; font-weight: 700; color: var(--text); margin-left: 4px; }
+        .trend-compare-act .trend-compare-date { flex-shrink: 0; font-weight: 700; color: var(--blue-fill); margin-left: 4px; }
+        body.green-theme .trend-compare-act .trend-compare-date { color: var(--green); }
+        .trend-compare-head-proj { color: var(--purple-fill); }
+        .trend-compare-head-act { color: var(--blue-fill); }
+        body.green-theme .trend-compare-head-act { color: var(--green); }
+        .trend-compare-note-actual-only { color: var(--blue-fill); }
+        body.green-theme .trend-compare-note-actual-only { color: var(--green); }
+        .trend-summary-projected { color: var(--purple-fill) !important; }
+        .trend-summary-actual { color: var(--blue-fill) !important; }
+        body.green-theme .trend-summary-actual { color: var(--green) !important; }
+        .trend-graph-heading--projected { color: var(--purple-fill); }
         .trend-compare-empty { color: var(--text-muted); opacity: 0.45; }
         .trend-graph-heading { text-align: center; font-size: 14px; font-weight: 900; color: var(--text); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .trend-graph-box { position: relative; border-radius: 12px; border: 1px solid var(--border); padding: 0; background: var(--card); box-shadow: 0 2px 10px rgba(15, 23, 42, 0.08); overflow: hidden; }
@@ -1075,11 +1093,22 @@
         .trend-compare-hbar-barline { display: flex; align-items: center; gap: 6px; min-height: 20px; }
         .trend-compare-hbar-track { flex: 1; height: 19px; border-radius: 0; background: color-mix(in srgb, var(--text-muted) 10%, transparent); overflow: hidden; }
         .trend-compare-hbar-fill { height: 100%; border-radius: 0; min-width: 0; transition: width 0.25s ease; }
-        .trend-compare-hbar-val { flex: 0 0 auto; font-size: 11px; font-weight: 800; color: var(--text-muted); white-space: nowrap; min-width: 48px; text-align: right; }
+        .trend-compare-hbar-val { flex: 0 0 auto; font-size: 11px; font-weight: 800; white-space: nowrap; min-width: 48px; text-align: right; }
+        .trend-compare-hbar-val--projected { color: var(--purple-fill); }
+        .trend-compare-hbar-val--actual { color: var(--blue-fill); }
+        body.green-theme .trend-compare-hbar-val--actual { color: var(--green); }
         .trend-compare-hbar-fill--primary { background: var(--blue-fill); }
+        body.green-theme .trend-compare-hbar-fill--primary { background: var(--green); }
         .trend-compare-hbar-fill--secondary { background: var(--purple-fill); }
         body.dark-mode .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 92%, #c084fc 8%); }
         body:not(.dark-mode) .trend-compare-hbar-fill--secondary { background: color-mix(in srgb, var(--purple-fill) 88%, #7c3aed 12%); }
+        .trend-compare-hbar-fill--projected { background: var(--purple-fill); }
+        body.dark-mode .trend-compare-hbar-fill--projected { background: color-mix(in srgb, var(--purple-fill) 92%, #c084fc 8%); }
+        body:not(.dark-mode) .trend-compare-hbar-fill--projected { background: color-mix(in srgb, var(--purple-fill) 88%, #7c3aed 12%); }
+        .trend-compare-hbar-fill--actual { background: var(--blue-fill); }
+        body.green-theme .trend-compare-hbar-fill--actual { background: var(--green); }
+        body.dark-mode .trend-compare-hbar-fill--actual { background: color-mix(in srgb, var(--blue-fill) 92%, #93c5fd 8%); }
+        body.green-theme.dark-mode .trend-compare-hbar-fill--actual { background: color-mix(in srgb, var(--green) 88%, #4ade80 12%); }
         .trend-compare-hbar-fill--green { background: var(--green); }
         body.dark-mode .trend-compare-hbar-fill--green { background: color-mix(in srgb, var(--green) 88%, #4ade80 12%); }
         .pdf-generate-panel.card { padding: 12px 14px 14px; margin-bottom: 8px; }
@@ -1087,6 +1116,9 @@
         .salary-occasional { color: var(--purple) !important; }
         #screen-salary .salary-accent { color: var(--blue); }
         body.green-theme #screen-salary .salary-accent { color: var(--green); }
+        #screen-salary .salary-accent-projected { color: var(--purple-fill); }
+        #screen-salary .salary-accent-expected { color: var(--blue); }
+        body.green-theme #screen-salary .salary-accent-expected { color: var(--green); }
         .month-nav-arrow-btn.prev { padding-right: 2px !important; }
         .month-nav-arrow-btn.next { padding-left: 2px !important; }
         .tab-btn { flex: 1; padding: 8px 6px; background: transparent !important; color: var(--text-muted); font-weight: bold; border-radius: 8px !important; border: none !important; margin: 0; text-align: center; cursor: pointer; box-shadow: none !important; transition: background 0.3s, color 0.3s; display: flex; align-items: center; justify-content: center; font-size: 13px; min-height: 36px !important; width: auto !important; }
@@ -16288,7 +16320,6 @@
             return `<div class="trend-compare-col trend-compare-act">${metric}${journey}${dateLabel}</div>`;
         }
         const dummyStyle = row.isDummy ? 'color:var(--orange);' : '';
-        const actualOnlyStyle = isActualOnly ? 'color:var(--purple);' : '';
         let metric = '<span class="trend-compare-metric trend-compare-empty">—</span>';
         if (row.nonDutyLabel) metric = `<span class="trend-compare-metric" style="font-size:10px; font-weight:700;">${window.escapeHtml(row.nonDutyLabel)}</span>`;
         else if (row.pct != null) metric = `<span class="trend-compare-metric">${row.pct}%</span>`;
@@ -16298,7 +16329,7 @@
         }
         const journey = row.nonDutyLabel
             ? `<span class="trend-compare-journey trend-compare-empty">—</span>`
-            : `<span class="trend-compare-journey" style="${dummyStyle}${actualOnlyStyle}"><b>${row.train}</b> ${row.depStn || ''} ${row.depTime || ''} → ${row.arrStn || ''} ${row.arrTime || ''}</span>`;
+            : `<span class="trend-compare-journey" style="${dummyStyle}"><b>${row.train}</b> ${row.depStn || ''} ${row.depTime || ''} → ${row.arrStn || ''} ${row.arrTime || ''}</span>`;
         const dateLabel = row.date ? `<span class="trend-compare-date">${formatDateShort(row.date)}</span>` : '';
         const actualOnlyClass = isActualOnly ? ' trend-compare-actual-only' : '';
         return `<div class="trend-compare-col trend-compare-act${actualOnlyClass}">${metric}${journey}${dateLabel}</div>`;
@@ -16515,7 +16546,7 @@
                 ndaCompare = window.buildTrendNdaComparePairs(ndaData, actualNda.ndaData);
                 rowsHtml = window.renderTrendCompareSideBySideHtml(ndaCompare.pairs, true);
                 if (ndaCompare.actualOnly.length) {
-                    actualOnlyNote = `<p style="font-size:11px; color:var(--purple); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_nda', '+{n} actual night duty spell(s) not in roster').replace('{n}', ndaCompare.actualOnly.length)}</p>`;
+                    actualOnlyNote = `<p class="trend-compare-note-actual-only" style="font-size:11px; text-align:center; margin:8px 4px 0;">${t('trend_actual_only_nda', '+{n} actual night duty spell(s) not in roster').replace('{n}', ndaCompare.actualOnly.length)}</p>`;
                 }
             } else {
                 const groups = ndaData.map(entry => {
@@ -16554,11 +16585,11 @@
                     actNdaMoney = Math.round((Math.floor(actualNdaTotal / 60) / 6) * rate);
                 }
                 footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
-                    <div class="trend-summary-box" style="display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; color:var(--blue);">
+                    <div class="trend-summary-box trend-summary-projected" style="display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800;">
                         <span>${t('future_trends_total_projected_nda', 'Total Projected NDA')}</span>
                         <span>${String(totalH).padStart(2, '0')}:${String(totalM).padStart(2, '0')} ${hrsSuffix}${ndaMoney > 0 ? ` · ₹${ndaMoney}` : ''}</span>
                     </div>
-                    <div class="trend-summary-box" style="display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800; color:var(--text-muted);">
+                    <div class="trend-summary-box trend-summary-actual" style="display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800;">
                         <span>${t('trend_actual_total_nda', 'Total Actual NDA')}</span>
                         <span>${String(actH).padStart(2, '0')}:${String(actM).padStart(2, '0')} ${hrsSuffix}${actNdaMoney > 0 ? ` · ₹${actNdaMoney}` : ''}</span>
                     </div>
@@ -16585,7 +16616,7 @@
                 const projectedDates = new Set(projRows.map(r => r.date));
                 const actualOnlyDates = Object.keys(actualIndex.byDate).filter(d => d.startsWith(moKey) && !projectedDates.has(d) && actualIndex.byDate[d].hasDuty);
                 if (actualOnlyDates.length) {
-                    actualOnlyNote = `<p style="font-size:11px; color:var(--purple); text-align:center; margin:8px 4px 0;">${t('trend_actual_only_days', '+{n} actual duty day(s) not in roster').replace('{n}', actualOnlyDates.length)}</p>`;
+                    actualOnlyNote = `<p class="trend-compare-note-actual-only" style="font-size:11px; text-align:center; margin:8px 4px 0;">${t('trend_actual_only_days', '+{n} actual duty day(s) not in roster').replace('{n}', actualOnlyDates.length)}</p>`;
                 }
             } else {
                 const groups = [];
@@ -16622,19 +16653,19 @@
                 const actCounts = actualIndex.counts;
                 const actPctParts = [30, 70, 100].filter(pct => actCounts[pct] > 0).map(pct => `${pct}% × ${actCounts[pct]}`).join(' · ');
                 footerHtml = `<div style="margin-top:10px; display:flex; flex-direction:column; gap:8px;">
-                    <div class="trend-summary-box" style="display:flex; flex-direction:column; gap:4px; font-size:13px; font-weight:800; color:var(--blue);">
+                    <div class="trend-summary-box trend-summary-projected" style="display:flex; flex-direction:column; gap:4px; font-size:13px; font-weight:800;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span>${t('future_trends_total_projected_ta', 'Total Projected TA')}</span>
                             <span>₹${Math.floor(totalMoney)}</span>
                         </div>
-                        ${pctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${pctParts}</div>` : ''}
+                        ${pctParts ? `<div style="font-size:11px; font-weight:700; text-align:right; opacity:0.92;">${pctParts}</div>` : ''}
                     </div>
-                    <div class="trend-summary-box" style="display:flex; flex-direction:column; gap:4px; font-size:13px; font-weight:800; color:var(--text-muted);">
+                    <div class="trend-summary-box trend-summary-actual" style="display:flex; flex-direction:column; gap:4px; font-size:13px; font-weight:800;">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span>${t('trend_actual_total_ta', 'Total Actual TA')}</span>
                             <span>₹${actualIndex.monthTotal}</span>
                         </div>
-                        ${actPctParts ? `<div style="font-size:11px; font-weight:700; color:var(--text-muted); text-align:right;">${actPctParts}</div>` : ''}
+                        ${actPctParts ? `<div style="font-size:11px; font-weight:700; text-align:right; opacity:0.92;">${actPctParts}</div>` : ''}
                     </div>
                 </div>`;
             } else {
@@ -16777,7 +16808,10 @@
         return null;
     };
 
-    window.TREND_COMPARE_ACTUAL_LINE_COLOR = 'var(--purple-fill)';
+    window.TREND_COMPARE_PROJECTED_COLOR = 'var(--purple-fill)';
+    window.getTrendCompareActualColor = function() {
+        return document.body.classList.contains('green-theme') ? 'var(--green)' : 'var(--blue-fill)';
+    };
 
     window.buildTrendCompareBarChart = function(projValues, actValues, monthLabels, opts) {
         opts = opts || {};
@@ -16803,20 +16837,21 @@
                 <span class="trend-compare-hbar-label">${name}</span>
                 <div class="trend-compare-hbar-bars">
                     <div class="trend-compare-hbar-barline">
-                        <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill trend-compare-hbar-fill--primary" style="width:${pW.toFixed(1)}%;"></div></div>
-                        <span class="trend-compare-hbar-val">${fmtVal(p)}</span>
+                        <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill trend-compare-hbar-fill--projected" style="width:${pW.toFixed(1)}%;"></div></div>
+                        <span class="trend-compare-hbar-val trend-compare-hbar-val--projected">${fmtVal(p)}</span>
                     </div>
                     <div class="trend-compare-hbar-barline">
-                        <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill trend-compare-hbar-fill--secondary" style="width:${aW.toFixed(1)}%;"></div></div>
-                        <span class="trend-compare-hbar-val">${fmtSec(a)}</span>
+                        <div class="trend-compare-hbar-track"><div class="trend-compare-hbar-fill trend-compare-hbar-fill--actual" style="width:${aW.toFixed(1)}%;"></div></div>
+                        <span class="trend-compare-hbar-val trend-compare-hbar-val--actual">${fmtSec(a)}</span>
                     </div>
                 </div>
             </div>`;
         }).join('');
+        const actualDotColor = window.getTrendCompareActualColor();
         return `<div class="trend-compare-hbar-chart">
             <div class="trend-compare-hbar-legend">
-                <span><span class="trend-compare-hbar-dot" style="background:var(--blue-fill);"></span>${primaryLabel}</span>
-                <span><span class="trend-compare-hbar-dot" style="background:var(--purple-fill);"></span>${secondaryLabel}</span>
+                <span><span class="trend-compare-hbar-dot" style="background:var(--purple-fill);"></span>${primaryLabel}</span>
+                <span><span class="trend-compare-hbar-dot" style="background:${actualDotColor};"></span>${secondaryLabel}</span>
             </div>
             <div class="trend-compare-hbar-rows">${rows}</div>
         </div>`;
@@ -16987,7 +17022,7 @@
             const labelY = Math.max(10, toY(v) - 9).toFixed(1);
             const isHl = highlightIdx !== null && highlightIdx !== undefined && i === highlightIdx;
             const dotColor = isHl ? highlightColor : color;
-            const textFill = isHl ? highlightColor : defaultText;
+            const textFill = opts.valueLabelsUseSeriesColor ? dotColor : (isHl ? highlightColor : defaultText);
             const labelText = formatValueLabel(v);
             return `<circle cx="${dotX}" cy="${y}" r="3.5" fill="${dotColor}" stroke="var(--card)" stroke-width="1.2"></circle>
                 ${v > 0 ? `<text x="${dotX}" y="${labelY}" font-size="${dotLabelSize}" font-weight="${dotLabelWeight}" fill="${textFill}" text-anchor="start" transform="rotate(-90 ${dotX} ${labelY})">${labelText}</text>` : ''}`;
@@ -17016,7 +17051,8 @@
             highlightBandSvg = `<defs><clipPath id="${clipUid}"><rect x="${bandX.toFixed(1)}" y="${topMargin}" width="${stepX.toFixed(1)}" height="${height}"/></clipPath></defs>
                 <path d="${areaPathD}" fill="${highlightColor}" fill-opacity="0.28" stroke="none" clip-path="url(#${clipUid})"/>`;
         }
-        const titleHtml = graphTitle ? `<div class="trend-graph-heading">${graphTitle}</div>` : '';
+        const headingClass = 'trend-graph-heading' + (opts.graphTitleClass ? ' ' + opts.graphTitleClass : '');
+        const titleHtml = graphTitle ? `<div class="${headingClass}">${graphTitle}</div>` : '';
         const svgH = topMargin + height + 26;
         return `
             ${titleHtml}
@@ -17224,9 +17260,11 @@
                 const highlightIdx = window.getTrendGraphHighlightIdx(year, isNDA, window._futureTrendMonthKey);
                 const graphHtml = window.buildResponsiveTrendLineGraph({
                     values, color, highlightColor: color, unitSuffix, avgDisplay, overlayHtml,
-                    graphTitle: opts.graphTitle || '', gridlineCount, xOffset, highlightIdx,
+                    graphTitle: opts.graphTitle || '', graphTitleClass: opts.graphTitleClass || '',
+                    gridlineCount, xOffset, highlightIdx,
                     monthLabelNames: labelNames, compactBottom: opts.compactBottom,
-                    dotLabelFontSize: '9', monthLabelAtBoundary: isNDA
+                    dotLabelFontSize: '9', monthLabelAtBoundary: isNDA,
+                    valueLabelsUseSeriesColor: !!opts.valueLabelsUseSeriesColor
                 });
                 return (opts.marginTop ? `<div style="margin-top:${opts.marginTop}px;"></div>` : '') + graphHtml;
             }
@@ -17250,10 +17288,17 @@
                         <button type="button" onclick="window.switchTrendFutureNdaMetric('money')" style="background:${metric === 'money' ? 'var(--green)' : 'transparent'}; color:${metric === 'money' ? 'white' : 'var(--text-muted)'};">${moneyLabel}</button>
                     </div>`;
                 const projVals = metric === 'hours' ? hourValues : moneyValues;
-                const projColor = metric === 'hours' ? 'var(--blue)' : 'var(--green)';
+                const projColor = compareOn
+                    ? window.TREND_COMPARE_PROJECTED_COLOR
+                    : (metric === 'hours' ? 'var(--blue)' : 'var(--green)');
                 const projSuffix = metric === 'hours' ? 'h' : '₹';
                 const projAvgKey = metric === 'hours' ? 'trend_graph_avg_nda_hrs' : 'trend_graph_avg_nda_money';
-                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, { graphTitle: compareOn ? projectedTitle : '', compactBottom: true });
+                html += buildFutureGraph(projVals, projColor, projSuffix, projAvgKey, toggleHtml, {
+                    graphTitle: compareOn ? projectedTitle : '',
+                    graphTitleClass: compareOn ? 'trend-graph-heading--projected' : '',
+                    compactBottom: true,
+                    valueLabelsUseSeriesColor: compareOn
+                });
                 if (compareOn && actualValues) {
                     const actVals = metric === 'hours' ? actualValues.hourValues : actualValues.moneyValues;
                     html += window.buildTrendCompareBarChart(projVals, actVals, MONTH_SHORT, { primaryLabel: projectedTitle, secondaryLabel: actualTitle, unitSuffix: projSuffix });
@@ -17261,7 +17306,13 @@
                     html += window.buildTrendSingleSeriesBarChart(projVals, MONTH_SHORT, { unitSuffix: projSuffix, seriesLabel: projectedTitle });
                 }
             } else {
-                html += buildFutureGraph(moneyValues, 'var(--blue)', '₹', 'trend_graph_avg_ta', null, { graphTitle: compareOn ? projectedTitle : '', compactBottom: true });
+                const taProjColor = compareOn ? window.TREND_COMPARE_PROJECTED_COLOR : 'var(--blue)';
+                html += buildFutureGraph(moneyValues, taProjColor, '₹', 'trend_graph_avg_ta', null, {
+                    graphTitle: compareOn ? projectedTitle : '',
+                    graphTitleClass: compareOn ? 'trend-graph-heading--projected' : '',
+                    compactBottom: true,
+                    valueLabelsUseSeriesColor: compareOn
+                });
                 if (compareOn && actualValues) {
                     html += window.buildTrendCompareBarChart(moneyValues, actualValues.moneyValues, MONTH_SHORT, { primaryLabel: projectedTitle, secondaryLabel: actualTitle, unitSuffix: '₹' });
                 } else {
@@ -17536,8 +17587,10 @@
             : t('salary_graph_avg', 'Average : ₹{avg}/month').replace('{avg}', Math.round(avg).toLocaleString('en-IN'));
         return (opts.marginTop ? `<div style="margin-top:${opts.marginTop}px;"></div>` : '') + window.buildResponsiveTrendLineGraph({
             values, color, highlightColor: color, unitSuffix: '₹', avgDisplay, graphTitle: sectionTitle || '',
+            graphTitleClass: opts.graphTitleClass || '',
             gridlineCount: 12, xOffset: 0, highlightIdx: highlightMonthIdx,
-            monthLabelNames: MONTH_SHORT, compactBottom: opts.compactBottom
+            monthLabelNames: MONTH_SHORT, compactBottom: opts.compactBottom,
+            valueLabelsUseSeriesColor: !!opts.valueLabelsUseSeriesColor
         });
     }
 
@@ -17566,24 +17619,29 @@
         if (result.plbAmount > 0) rows.push([t('salary_row_plb', 'Productivity Linked Bonus (PLB)'), result.plbAmount, true]);
         rows.push([t('salary_row_reis', 'Railway Employee Insurance Scheme'), -result.relsAmount]);
         rows.push([result.usesPfSubs ? t('salary_pf_subs_row', 'PF-SUBS (1/12 of Basic Pay)') : t('salary_nps_row', 'NPS (10% of Basic+DA)'), -result.npsAmount]);
-        const rowsHtml = rows.map(([label, val, isOccasional], idx) =>
-            `<div style="display:flex; align-items:center; justify-content:space-between; padding:9px 0; ${idx < rows.length - 1 ? 'border-bottom:1px dashed var(--border);' : ''} font-size:13px;">
-                <span class="${isOccasional ? 'salary-occasional' : ''}" style="color:${isOccasional ? 'var(--purple)' : 'var(--text-muted)'};"><span style="color:var(--text-muted); margin-right:6px;">›</span>${label}</span>
-                <span style="font-weight:800; color:${val < 0 ? 'var(--red)' : isOccasional ? 'var(--purple)' : 'var(--text)'};">${val < 0 ? '-' : ''}₹${Math.abs(Math.round(val)).toLocaleString('en-IN')}</span>
-            </div>`
-        ).join('');
+        const projectedRowAccent = isProjected && compareExpected;
+        const rowsHtml = rows.map(([label, val, isOccasional], idx) => {
+            const isProjTaNda = projectedRowAccent && (idx === 4 || idx === 5);
+            const valueColor = val < 0 ? 'var(--red)' : (isOccasional ? 'var(--purple)' : (isProjTaNda ? 'var(--purple-fill)' : 'var(--text)'));
+            const labelColor = isOccasional ? 'var(--purple)' : (isProjTaNda ? 'var(--purple-fill)' : 'var(--text-muted)');
+            return `<div style="display:flex; align-items:center; justify-content:space-between; padding:9px 0; ${idx < rows.length - 1 ? 'border-bottom:1px dashed var(--border);' : ''} font-size:13px;">
+                <span class="${isOccasional ? 'salary-occasional' : ''}" style="color:${labelColor};"><span style="color:var(--text-muted); margin-right:6px;">›</span>${label}</span>
+                <span style="font-weight:800; color:${valueColor};">${val < 0 ? '-' : ''}₹${Math.abs(Math.round(val)).toLocaleString('en-IN')}</span>
+            </div>`;
+        }).join('');
         const totalLabel = isProjected ? t('salary_total_projected', 'Total Projected Salary') : t('salary_total_expected', 'Total Expected Salary');
-        let footerHtml = `<div class="trend-summary-box salary-accent" style="margin-top:10px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800;">
+        const totalAccentClass = isProjected && compareExpected ? 'salary-accent-projected' : 'salary-accent';
+        let footerHtml = `<div class="trend-summary-box ${totalAccentClass}" style="margin-top:10px; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; font-size:13px; font-weight:800;">
             <span>${totalLabel}</span>
             <span style="font-size:15px;">₹${result.total.toLocaleString('en-IN')}</span>
         </div>`;
         if (compareExpected && expectedResult) {
             footerHtml = `<div class="trend-summary-box" style="margin-top:10px; margin-bottom:14px; display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:800;">
-                <div class="salary-accent" style="display:flex; justify-content:space-between; align-items:center;">
+                <div class="salary-accent-projected" style="display:flex; justify-content:space-between; align-items:center;">
                     <span>${totalLabel}</span>
                     <span style="font-size:15px;">₹${result.total.toLocaleString('en-IN')}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; align-items:center; color:var(--text-muted);">
+                <div class="salary-accent-expected" style="display:flex; justify-content:space-between; align-items:center;">
                     <span>${t('salary_total_expected', 'Total Expected Salary')}</span>
                     <span>₹${expectedResult.total.toLocaleString('en-IN')}</span>
                 </div>
@@ -17705,7 +17763,12 @@
             const projectedTitle = t('salary_graph_projected', 'Projected Salary');
             const expectedTitle = t('salary_graph_expected', 'Expected Salary');
             const monthShort = trendLocalizedMonthShorts(y);
-            let html = buildSalaryGraph(projectedValues, y, m - 1, compareOn ? projectedTitle : '', { compactBottom: true });
+            let html = buildSalaryGraph(projectedValues, y, m - 1, compareOn ? projectedTitle : '', {
+                compactBottom: true,
+                color: compareOn ? window.TREND_COMPARE_PROJECTED_COLOR : undefined,
+                graphTitleClass: compareOn ? 'trend-graph-heading--projected' : '',
+                valueLabelsUseSeriesColor: compareOn
+            });
             if (compareOn) {
                 html += window.buildTrendCompareBarChart(projectedValues, expectedValues, monthShort, { primaryLabel: projectedTitle, secondaryLabel: expectedTitle, unitSuffix: '₹' });
             } else {
