@@ -898,6 +898,7 @@
         .sheet-action-cancel svg, .all-journey-action-cancel svg { width: 14px; height: 14px; flex-shrink: 0; display: block; }
         .circ-icon-action svg { width: 16px; height: 16px; fill: currentColor; display: block; }
         .ui-icon-only-btn svg { width: 14px; height: 14px; fill: currentColor; display: block; }
+        .all-journey-action-edit { background: var(--blue-fill) !important; }
         .all-journey-action-delete { background: var(--red) !important; }
         .all-journey-action-cancel,
         .sheet-action-cancel {
@@ -1477,8 +1478,25 @@
         #nda-signon-scroll-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: visible; }
         .subtle-pill-banner { color: var(--text-muted) !important; background: color-mix(in srgb, var(--blue) 10%, var(--card)) !important; border: 1px dashed color-mix(in srgb, var(--blue) 38%, var(--border)) !important; border-radius: 20px !important; box-shadow: none !important; font-size: 11px !important; font-weight: 700; line-height: 1.45; }
         body:not(.dark-mode) .subtle-pill-banner { background: color-mix(in srgb, var(--blue) 12%, var(--input-bg)) !important; border-color: color-mix(in srgb, var(--blue) 42%, var(--border)) !important; }
-        .add-signon-link-btn { width: auto !important; max-width: 220px; margin: 14px auto 0 !important; padding: 6px 14px !important; display: block; }
-        .add-signon-link-btn:active { opacity: 0.85; transform: translateY(1px); }
+        .add-signon-link-btn { width: auto !important; max-width: none; margin: 0 !important; padding: 12px 14px !important; display: block; border-radius: 0 !important; border: none !important; text-align: left; min-height: 48px; box-sizing: border-box; }
+        .add-signon-link-btn:active { opacity: 0.85; transform: none; background: color-mix(in srgb, var(--blue) 8%, var(--card)) !important; }
+        .aj-secondary-action-box { margin-top: 12px; border-radius: 16px; border: 1px solid var(--border); background: var(--card); overflow: hidden; box-shadow: var(--md-elevation-1); }
+        .aj-team-select-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; min-height: 48px; box-sizing: border-box; cursor: pointer; border-top: 1px solid var(--border); }
+        .aj-team-select-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
+        .aj-team-select-label { font-size: 13px; font-weight: 700; color: var(--text); }
+        .aj-team-select-value { font-size: 12px; font-weight: 800; color: var(--blue-fill); }
+        #form-duty .aj-duty-form-card input:not([type="checkbox"]):not([type="radio"]) {
+            border: none !important; background: transparent !important; box-shadow: none !important;
+            margin-top: 0; min-height: 36px; padding: 7px 8px; border-radius: 0 !important;
+        }
+        #form-duty .aj-duty-form-card input:focus { box-shadow: none !important; border: none !important; outline: 2px solid color-mix(in srgb, var(--blue-fill) 35%, transparent); outline-offset: -2px; }
+        .aj-duty-form-footer { padding: 10px 12px; border-top: 1px solid var(--border); }
+        .aj-duty-form-footer #btn-save-duty { width: 100%; margin: 0; }
+        .quick-add-modal-header { display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 8px; flex-shrink: 0; padding-right: 36px; padding-left: 36px; box-sizing: border-box; }
+        .quick-add-modal-header .modal-icon-close { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
+        .quick-add-leg-choice-header { position: relative; margin: 0 0 12px; padding-right: 40px; }
+        .quick-add-leg-choice-header .modal-icon-close { position: absolute; right: 0; top: 0; }
+        .quick-add-leg-choice-wrap { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
         #sync-status-toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-20px); padding: 10px 16px; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.2s, transform 0.2s; text-align: center; width: 350px; max-width: 92vw; white-space: pre-line; box-sizing: border-box; }
         .inline-save-btn { background: var(--green); color: white; border: none; border-radius: 8px; padding: 4px 8px; font-size: 13px; cursor: pointer; box-shadow: 0 2px 5px rgba(34,197,94,0.3); }
         .station-chip { display: inline-flex; align-items: center; gap: 5px; background: color-mix(in srgb, var(--blue) 12%, transparent); border: 1px solid var(--blue); color: var(--blue); font-weight: 800; font-size: 11px; padding: 3px 6px 3px 10px; border-radius: 16px; }
@@ -2163,6 +2181,18 @@
                     (window.i18n ? window.i18n.tOr('sheet_unsaved_message', "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") : "You haven't saved this entry yet. If you leave now, it will be discarded and nothing will be added.") +
                     '</p>' +
                     '<button onclick="window._tripFormDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
+                    '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
+                    '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
+                showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
+                return;
+            }
+            const regElBack = document.getElementById('screen-register');
+            if (regElBack && !regElBack.classList.contains('hidden') && window.profileHasUnsavedChanges && window.profileHasUnsavedChanges()) {
+                window._pendingNavAfterProfileDiscard = 'screen-dashboard';
+                const msg = '<p style="margin:0 0 16px; color:var(--text); font-size:14px; line-height:1.6;">' +
+                    (window.i18n ? window.i18n.tOr('profile_unsaved_message', "You haven't saved these profile changes yet. If you leave now, they will be discarded.") : "You haven't saved these profile changes yet. If you leave now, they will be discarded.") +
+                    '</p>' +
+                    '<button onclick="window._profileDiscardAndLeave()" style="background:var(--red); margin-bottom:10px;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_discard_btn', 'Discard &amp; Leave') : 'Discard &amp; Leave') + '</button>' +
                     '<button onclick="window.closeCustomModal()" style="background:var(--card); color:var(--text-muted); border:1px solid var(--border); box-shadow:none;">' + (window.i18n ? window.i18n.tOr('sheet_unsaved_keep_btn', 'Keep Editing') : 'Keep Editing') + '</button>' +
                     '<style>#modal-ok, #modal-cancel { display: none !important; }</style>';
                 showModal((window.i18n ? window.i18n.tOr('sheet_unsaved_title', 'Unsaved Changes') : 'Unsaved Changes'), msg, 'warning', false);
@@ -4559,7 +4589,7 @@
         </div>
         <div class="screen-content">
             <div id="form-duty">
-                <div class="card" style="padding:0; overflow:hidden;">
+                <div class="card aj-duty-form-card" style="padding:0; overflow:hidden;">
                     <div style="padding: 10px 12px; border-bottom: 1px solid var(--border);">
                         <label data-i18n="aj_label_train" class="form-field-lbl" for="trip-train" style="font-size: 13px;">Train No.</label>
                         <input type="text" id="trip-train" inputmode="numeric" maxlength="5" aria-required="true" style="margin: 0; width: 100%;">
@@ -4594,6 +4624,9 @@
                             <input list="stn-list" id="trip-arr-stn" aria-required="true" placeholder="TYPE OR SELECT" style="margin: 0; width: 100%; text-transform: uppercase;" oninput="window.filterAlphaOnly(this)" onfocus="window.populateStnList()">
                             <datalist id="stn-list"></datalist>
                         </div>
+                    </div>
+                    <div class="aj-duty-form-footer">
+                        <button id="btn-save-duty" onclick="window.saveLeg()" style="background:var(--blue-fill);" data-i18n="save_this_journey">Save This Journey</button>
                     </div>
                 </div>
             </div>
@@ -4693,7 +4726,6 @@
                 </div>
             </div>
 
-            <button id="btn-save-duty" onclick="window.saveLeg()" style="background:var(--blue-fill);">Save This Journey</button>
             <p id="quick-add-desc" data-i18n-html="quickadd_desc_hint" style="font-size:11px; color:var(--text-muted); text-align:center; margin:14px 0 0; line-height:1.4;">📍 Add your upcoming duties here in a single tap by clicking Quick Add.</p>
             <div id="quick-add-btn-row" style="display:flex; gap:20px; margin-top:10px; justify-content:center; align-items:flex-start;">
                 <div id="btn-quick-add-wrap" style="display:flex; flex-direction:column; align-items:center; gap:5px; width:66px;">
@@ -4709,7 +4741,13 @@
                     <span style="font-size:10.5px; font-weight:800; color:var(--text-muted); text-align:center; white-space:nowrap;">Add Rest/Leave</span>
                 </div>
             </div>
-            <button type="button" id="btn-add-signon-time" class="add-signon-link-btn subtle-pill-banner" onclick="window.openNdaSignOnFromAddJourney()" data-i18n="add_signon_time_btn">Add Sign On Time</button>
+            <div id="add-journey-secondary-actions" class="aj-secondary-action-box">
+                <button type="button" id="btn-add-signon-time" class="add-signon-link-btn subtle-pill-banner" onclick="window.openNdaSignOnFromAddJourney()" data-i18n="add_signon_time_btn">Add Sign On Time</button>
+                <div id="add-journey-team-sheet-row" class="aj-team-select-row" role="button" tabindex="0" onclick="window.openSelectTeamModal()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.openSelectTeamModal();}">
+                    <span class="aj-team-select-label" data-i18n="add_select_team_no">Select Team No</span>
+                    <span class="aj-team-select-value" id="select-team-current">Not Selected</span>
+                </div>
+            </div>
 
             <!-- Point: compact spreadsheet view of duty history, same underlying data/rendering
                  approach as the Dashboard's sheet, but with its own dedicated DOM ids (separate
@@ -4938,9 +4976,9 @@
 
     <div id="quick-add-cal-modal" class="hidden" style="z-index:6600;" onclick="if(event.target === this) this.classList.add('hidden')">
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 14px; border-radius: 16px; width: 96%; max-width: 420px; max-height: 90vh; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); display: flex; flex-direction: column;">
-            <div style="position:relative; display:flex; align-items:center; margin-bottom:8px; flex-shrink:0;">
-                <h4 style="margin:0; font-size:14px; font-weight:900; color:#d97706; width:100%; text-align:center;">⚡ Quick Add Duty</h4>
-                <button onclick="document.getElementById('quick-add-cal-modal').classList.add('hidden')" style="position:absolute; right:0; top:50%; transform:translateY(-50%); width:28px; height:28px; padding:0; margin:0; font-size:13px; font-weight:900; background:#64748b; border-radius:50%; box-shadow:none; display:flex; align-items:center; justify-content:center; flex-shrink:0;">✕</button>
+            <div class="quick-add-modal-header">
+                <h4 style="margin:0; font-size:14px; font-weight:900; color:#d97706; text-align:center;">⚡ Quick Add Duty</h4>
+                <button type="button" class="modal-icon-close" onclick="document.getElementById('quick-add-cal-modal').classList.add('hidden')" aria-label="Close">✕</button>
             </div>
             <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px; flex-shrink:0;">
                 <button onclick="window.qaddChangeMonth(-1)" class="month-nav-arrow-btn prev" type="button">‹</button>
@@ -8369,6 +8407,7 @@
                     const depStnEl = document.getElementById('trip-dep-stn');
                     if (depStnEl && !depStnEl.value) { depStnEl.value = lastLeg.arrStn; window._tripAutoDepStn = lastLeg.arrStn; }
                 }
+                if (window.captureTripFormBaseline) window.captureTripFormBaseline();
             }
         }
 
@@ -8807,16 +8846,68 @@
         }
     }
 
+    window.getProfileStationStateJson = function() {
+        return JSON.stringify({
+            nearby: (window._nearbyStations || []).slice(),
+            nearbyTaClaimed: (window._nearbyTaClaimedStations || []).slice(),
+            originatingTrains: (window._originatingTrains || []).slice(),
+            dest: (window._destStations || []).slice(),
+            diversionMap: window._diversionMap || {}
+        });
+    };
+
+    window.syncProfileStationsToAppState = function() {
+        if (!window.appState) window.appState = {};
+        if (!window.appState.profile) window.appState.profile = {};
+        window.appState.profile.nearby = (window._nearbyStations || []).slice();
+        window.appState.profile.nearbyTaClaimed = (window._nearbyTaClaimedStations || []).slice();
+        window.appState.profile.originatingTrains = (window._originatingTrains || []).slice();
+        window.appState.profile.dest = (window._destStations || []).slice();
+        window.appState.profile.diversionMap = JSON.parse(JSON.stringify(window._diversionMap || {}));
+        if (window.saveData) window.saveData();
+        if (window._profileSnapshotOnUnlock) {
+            window._profileSnapshotOnUnlock._stationsJson = window.getProfileStationStateJson();
+        }
+    };
+
     window.profileHasUnsavedChanges = function() {
         if (!window._profileSnapshotOnUnlock) return false;
-        return Object.keys(window._profileSnapshotOnUnlock).some(id => {
+        const fieldsDirty = Object.keys(window._profileSnapshotOnUnlock).some(id => {
+            if (id === '_stationsJson') return false;
             const el = document.getElementById(id);
             return el && el.value !== window._profileSnapshotOnUnlock[id];
         });
+        if (fieldsDirty) return true;
+        const snapStations = window._profileSnapshotOnUnlock._stationsJson || window.getProfileStationStateJson();
+        return snapStations !== window.getProfileStationStateJson();
     };
     window._profileDiscardAndLeave = function() {
         window.closeCustomModal();
         window._profileDiscardInProgress = true;
+        const snapJson = window._profileSnapshotOnUnlock && window._profileSnapshotOnUnlock._stationsJson;
+        if (snapJson) {
+            try {
+                const snap = JSON.parse(snapJson);
+                window._nearbyStations = (snap.nearby || []).slice();
+                window._nearbyTaClaimedStations = (snap.nearbyTaClaimed || []).slice();
+                window._originatingTrains = (snap.originatingTrains || []).slice();
+                window._destStations = (snap.dest || []).slice();
+                window._diversionMap = JSON.parse(JSON.stringify(snap.diversionMap || {}));
+                window.renderNearbyChips();
+                window.renderNearbyTaClaimedChips();
+                window.renderOriginatingTrainChips();
+                window.renderDestChips();
+                window.renderDiversionSummary();
+                if (window.appState && window.appState.profile) {
+                    window.appState.profile.nearby = window._nearbyStations.slice();
+                    window.appState.profile.nearbyTaClaimed = window._nearbyTaClaimedStations.slice();
+                    window.appState.profile.originatingTrains = window._originatingTrains.slice();
+                    window.appState.profile.dest = window._destStations.slice();
+                    window.appState.profile.diversionMap = JSON.parse(JSON.stringify(window._diversionMap || {}));
+                    if (window.saveData) window.saveData();
+                }
+            } catch (e) { /* ignore */ }
+        }
         window._profileSnapshotOnUnlock = null;
         openSettings();
         const target = window._pendingNavAfterProfileDiscard;
@@ -8833,6 +8924,7 @@
         document.querySelectorAll('input[id^="reg-"], select[id^="reg-"]').forEach(inp => {
             window._profileSnapshotOnUnlock[inp.id] = inp.value;
         });
+        window._profileSnapshotOnUnlock._stationsJson = window.getProfileStationStateJson();
     }
 
     function lockProfile() {
@@ -8978,11 +9070,13 @@
         codes.forEach(val => { if (!window._nearbyStations.includes(val)) window._nearbyStations.push(val); });
         input.value = '';
         window.renderNearbyChips();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.removeNearbyHQ = function(stn) {
         window._nearbyStations = window._nearbyStations.filter(s => s !== stn);
         window.renderNearbyChips();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.renderNearbyChips = function() {
@@ -9007,11 +9101,13 @@
         codes.forEach(val => { if (!window._nearbyTaClaimedStations.includes(val)) window._nearbyTaClaimedStations.push(val); });
         input.value = '';
         window.renderNearbyTaClaimedChips();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.removeNearbyTaClaimedHQ = function(stn) {
         window._nearbyTaClaimedStations = window._nearbyTaClaimedStations.filter(s => s !== stn);
         window.renderNearbyTaClaimedChips();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.renderNearbyTaClaimedChips = function() {
@@ -9032,11 +9128,13 @@
         if (!window._originatingTrains.includes(val)) window._originatingTrains.push(val);
         input.value = '';
         window.renderOriginatingTrainChips();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.removeOriginatingTrain = function(trainNo) {
         window._originatingTrains = window._originatingTrains.filter(t => t !== trainNo);
         window.renderOriginatingTrainChips();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.renderOriginatingTrainChips = function() {
@@ -9127,12 +9225,14 @@
         input.value = '';
         window.renderDestChips();
         window.populateDiversionMajorDropdown();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.removeDestStation = function(stn) {
         window._destStations = window._destStations.filter(s => s !== stn);
         window.renderDestChips();
         window.populateDiversionMajorDropdown();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.renderDestChips = function() {
@@ -9204,6 +9304,7 @@
         input.value = '';
         window.renderDiversionSubChips();
         window.renderDiversionSummary();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     // Point 3: A diversion is inherently mutual — if AMG can substitute for LKO, then LKO can
@@ -9245,6 +9346,7 @@
         }
         window.renderDiversionSubChips();
         window.renderDiversionSummary();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.renderDiversionSubChips = function() {
@@ -9278,6 +9380,7 @@
         target.forEach(s => delete window._diversionMap[s]);
         window.renderDiversionSubChips();
         window.renderDiversionSummary();
+        if (window.syncProfileStationsToAppState) window.syncProfileStationsToAppState();
     };
 
     window.renderDiversionSummary = function() {
@@ -10313,7 +10416,8 @@
             document.getElementById('trip-arr-stn').value = leg.arrStn; 
             document.getElementById('trip-arr-time').value = leg.arrTime; 
         }
-        navTo('screen-add'); 
+        navTo('screen-add');
+        if (window.captureTripFormBaseline) window.captureTripFormBaseline();
     }
     
     function triggerDelete() { closeManage(); deleteLeg(parseInt(document.getElementById('manage-id').value)); }
@@ -10436,6 +10540,7 @@
         document.getElementById('trip-arr-time').value = ''; 
         document.getElementById('trip-dep-stn').value = leg.arrStn;
         window._tripAutoDepStn = leg.arrStn;
+        if (window.captureTripFormBaseline) window.captureTripFormBaseline();
         
         const wasEditing = !!window.editModeId;
         pushUndoState();
@@ -11084,6 +11189,7 @@
         // red "invalid" border markFieldsInvalid() applies was never being cleared by this - it
         // would persist indefinitely until the user happened to type into that exact field again.
         window.clearFieldsInvalid(['trip-train', 'trip-dep-date', 'trip-dep-time', 'trip-arr-date', 'trip-arr-time', 'trip-dep-stn', 'trip-arr-stn']);
+        if (window.captureTripFormBaseline) window.captureTripFormBaseline();
     };
 
     // Split-train duty (e.g. "13239/14213") — same team, two groups, both going the same
@@ -11091,11 +11197,13 @@
     function showQuickAddLegChoice(legs, onPick) {
         window._quickAddPickCallback = onPick;
         const buttons = legs.map(tn => `<button type="button" class="quick-add-leg-btn" onclick="window._quickAddPick('${tn}')">${tn}</button>`).join('');
-        const html = `<div style="display:flex; justify-content:flex-end; margin:-10px -5px 0 0;">
-                <button type="button" onclick="window._quickAddPickCancel()" style="width:28px; height:28px; border-radius:50%; background:#64748b; color:white; font-size:13px; font-weight:900; padding:0; margin:0;">✕</button>
+        const hint = window.i18n ? window.i18n.tOr('quickadd_pick_train_hint', 'Tap your train number') : 'Tap your train number';
+        const html = `<div class="quick-add-leg-choice-header">
+                <p style="margin:0; font-size:13px; color:var(--text-muted); text-align:center; line-height:1.45;">${hint}</p>
+                <button type="button" class="modal-icon-close" onclick="window._quickAddPickCancel()" aria-label="Close">✕</button>
             </div>
-            <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:4px;">${buttons}</div>`;
-        showModal("Which train is yours?", html, "warning", false);
+            <div class="quick-add-leg-choice-wrap">${buttons}</div>`;
+        showModal((window.i18n ? window.i18n.tOr('quickadd_pick_train_title', 'Which train is yours?') : 'Which train is yours?'), html, 'warning', false, null, null, true);
     }
     window._quickAddPickCancel = function() {
         window.closeCustomModal();
@@ -11149,6 +11257,7 @@
         // red field-invalid highlight from a prior failed save attempt would otherwise stay stuck
         // even though every field is now correctly filled — clear it explicitly here instead.
         window.clearFieldsInvalid(['trip-train', 'trip-dep-date', 'trip-dep-time', 'trip-arr-date', 'trip-arr-time', 'trip-dep-stn', 'trip-arr-stn']);
+        if (window.captureTripFormBaseline) window.captureTripFormBaseline();
     }
 
     // ===================================================================================
@@ -11378,18 +11487,20 @@
     // inputs directly from the live DOM rather than row.values, since values only get copied
     // into row.values at actual save time — checking row.values here would miss anything the
     // person just typed but hasn't saved yet. Also covers mid-bulk-edit ("Save Edited" pending).
-    window.tripFormHasUnsavedWork = function() {
+    window.captureTripFormBaseline = function() {
         const ids = ['trip-train', 'trip-dep-date', 'trip-dep-time', 'trip-arr-date', 'trip-arr-time', 'trip-dep-stn', 'trip-arr-stn'];
-        return ids.some(id => {
+        window._tripFormBaseline = {};
+        ids.forEach(id => {
             const el = document.getElementById(id);
-            if (!el || !el.value || el.value.trim() === '') return false;
-            // Point (unsaved-guard fix): trip-dep-stn is pre-populated automatically when the form
-            // opens fresh (continuing from the last known arrival station) - that auto-fill alone
-            // isn't "work" the person did, so it shouldn't trip the false "unsaved changes" warning
-            // until they actually change it or fill in something else. Same exclusion
-            // sheetHasUnsavedWork() already applies to its own equivalent auto-fill.
-            if (id === 'trip-dep-stn' && el.value.trim() === (window._tripAutoDepStn || '')) return false;
-            return true;
+            window._tripFormBaseline[id] = el ? el.value : '';
+        });
+    };
+
+    window.tripFormHasUnsavedWork = function() {
+        if (!window._tripFormBaseline) return false;
+        return Object.keys(window._tripFormBaseline).some(id => {
+            const el = document.getElementById(id);
+            return el && el.value !== window._tripFormBaseline[id];
         });
     };
     window._tripFormDiscardAndLeave = function() {
@@ -11398,6 +11509,8 @@
             const el = document.getElementById(id);
             if (el) el.value = '';
         });
+        window._tripAutoDepStn = '';
+        if (window.captureTripFormBaseline) window.captureTripFormBaseline();
         window.navTo('screen-dashboard', true);
     };
     window.sheetHasUnsavedWork = function() {
@@ -11746,6 +11859,7 @@
         localStorage.setItem('roster_my_team', val);
         window.updateSelectTeamDisplay();
         showModal('✅ Saved', 'Team ' + val + ' saved.', 'success', false);
+        if (window.captureTripFormBaseline) window.captureTripFormBaseline();
     };
 
     // Point (Add Journey - Duty Sheet): a compact, read-only spreadsheet view reusing the exact
