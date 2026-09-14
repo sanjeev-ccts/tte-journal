@@ -32,6 +32,7 @@
         --table-border: #a5b4fc;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
         --md-elevation-3: 0 4px 8px rgba(15, 23, 42, 0.12), 0 8px 24px rgba(15, 23, 42, 0.10);
+        --cal-outer-border: #c5cdd8;
     }
     body.green-theme {
         --blue: #16a34a;
@@ -54,6 +55,7 @@
         --table-border: #232d42;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
         --md-elevation-3: 0 4px 8px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
+        --cal-outer-border: #3d4d66;
     }
     body.dark-mode.green-theme {
         --blue: #4ade80;
@@ -465,8 +467,8 @@
     }
     .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12.5px; font-weight: 800; color: var(--text-muted); margin-bottom: 10px; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-    .cal-day { border-radius: 8px; background: var(--card); border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px; cursor: pointer; overflow: hidden; min-height: 92px; padding: 12px 2px 2px; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06); position: relative; }
-    body.dark-mode .cal-day { box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3); }
+    .cal-day { border-radius: 8px; background: var(--card); border: 1px solid var(--cal-outer-border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px; cursor: pointer; overflow: hidden; min-height: 92px; padding: 12px 2px 2px; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06); position: relative; }
+    body.dark-mode .cal-day { box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3); border-color: var(--cal-outer-border); }
     .cal-day.cal-empty { visibility: hidden; cursor: default; }
     .cal-month-pill {
         width: 100%; height: 100%; min-height: 92px; border-radius: 14px;
@@ -514,8 +516,22 @@
        by side, so the border is always one unbroken rectangle with no seam. Green = the trip
        covering today; light-but-visible blue = every other trip. Today's own cell/wrapper gets a
        slightly thicker border. */
-    .cal-trip-wrapper { border-radius: 8px; overflow: hidden; box-sizing: border-box; min-height: 92px; box-shadow: 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06); }
-    body.dark-mode .cal-trip-wrapper { box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3); }
+    .cal-trip-wrapper {
+        border-radius: 8px; overflow: hidden; box-sizing: border-box; min-height: 92px;
+        border: 1px solid var(--cal-outer-border);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06);
+    }
+    .cal-trip-wrapper.cal-trip-today { border-color: #ea580c; }
+    body.dark-mode .cal-trip-wrapper { box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3); border-color: var(--cal-outer-border); }
+    body.dark-mode .cal-trip-wrapper.cal-trip-today { border-color: #fb923c; }
+    .mandali-live-clock {
+        display: flex; align-items: center; justify-content: center; gap: 8px;
+        margin: 10px 0 0; min-height: 26px;
+    }
+    .mandali-live-clock__badge { display: inline-flex; align-items: center; line-height: 0; flex-shrink: 0; }
+    .mandali-live-clock__badge svg { height: 22px; width: auto; display: block; }
+    .mandali-live-clock__time { font-size: 13px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+    .mandali-live-clock--viewing { font-size: 12px; font-weight: 700; color: var(--text-muted); }
     .cal-subday { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px; cursor: pointer; padding: 12px 2px 2px; box-sizing: border-box; height: 100%; position: relative; }
     .daycard-status { text-align: center; font-size: 14px; font-weight: 800; margin: 0 0 10px; }
     .daycard-train { background: rgba(59,130,246,0.06); border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; font-size: 13px; }
@@ -948,7 +964,7 @@ if (window.parent !== window) {
                     <span>00</span><span>03</span><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span><span>21</span><span>24</span>
                 </div>
             </div>
-            <p id="lobby-live-clock" style="text-align:center; font-size:12px; font-weight:800; color:var(--red); margin:10px 0 0;"></p>
+            <div id="lobby-live-clock" class="mandali-live-clock" role="status" aria-live="polite"></div>
         </div>
     </div>
     <div style="padding:15px 8px 90px; max-width:640px; margin:0 auto;">
@@ -2180,9 +2196,9 @@ function buildCalendarGridCells(teamNo, year, month, navPrefix) {
                 let runLen = 1;
                 while (col + runLen < 7 && rowCells[col + runLen] && rowCells[col + runLen].groupKey === c.groupKey) runLen++;
                 const runCells = rowCells.slice(col, col + runLen);
-                const isDarkMode = document.body.classList.contains('dark-mode');
-                const color = c.groupKey === todayTripKey ? '#ea580c' /* current trip: orange */ : (isDarkMode ? '#1e40af' /* other trips, dark mode: dark blue */ : '#111827' /* other trips, light mode: black */);
-                const bw = runCells.some(x => x.dateStr === todayStr) ? BW_TODAY : BW;
+                const isTodayTrip = c.groupKey === todayTripKey || runCells.some(x => x.dateStr === todayStr);
+                const tripWrapClass = isTodayTrip ? 'cal-trip-today' : '';
+                const bw = isTodayTrip ? BW_TODAY : BW;
 
                 const subHtml = runCells.map(cc => {
                     const ccMeta = STATUS_META[cc.status.type];
@@ -2190,14 +2206,15 @@ function buildCalendarGridCells(teamNo, year, month, navPrefix) {
                     return `<div class="cal-subday ${ccMeta ? ccMeta.cls : ''}" onclick="window.openDayDetail('${teamNo}','${cc.dateStr}')">${calDayInnerHtml(cc.dayNum, ccMeta, ccTrainHtml, cc.dateStr, navPrefix)}</div>`;
                 }).join('');
 
-                cellsHtml += `<div class="cal-trip-wrapper" style="grid-column: span ${runLen}; border:${bw} solid ${color};">
+                cellsHtml += `<div class="cal-trip-wrapper ${tripWrapClass}" style="grid-column: span ${runLen}; border-width:${bw};">
                     <div style="display:grid; grid-template-columns:repeat(${runLen},1fr); height:100%;">${subHtml}</div>
                 </div>`;
                 col += runLen;
             } else {
                 let borderStyle = '';
                 const bw = c.dateStr === todayStr ? BW_TODAY : BW;
-                if (meta && meta.borderColor) borderStyle = `border:${bw} solid ${meta.borderColor};`;
+                if (meta && meta.borderColor) borderStyle = `border-width:${bw}; border-color:${meta.borderColor};`;
+                else if (c.dateStr === todayStr) borderStyle = `border-width:${BW_TODAY};`;
                 cellsHtml += `<div class="cal-day ${meta ? meta.cls : ''}" style="${borderStyle}" onclick="window.openDayDetail('${teamNo}','${c.dateStr}')">${calDayInnerHtml(c.dayNum, meta, trainHtml, c.dateStr, navPrefix)}</div>`;
                 col++;
             }
@@ -3524,6 +3541,21 @@ function buildMandaliStationSection(sectionId, title, subline, bodyHtml) {
     </div>`;
 }
 
+const MANDALI_LIVE_BADGE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 441 512.49" aria-hidden="true"><path fill="#FE0000" fill-rule="nonzero" d="M220.5 0c60.89 0 116.02 24.69 155.92 64.58 39.9 39.9 64.58 95.04 64.58 155.92 0 33.84-7.63 65.9-21.25 94.55-.46-.5-.94-.99-1.42-1.48a50.983 50.983 0 00-18.43-11.8c11.24-24.78 17.5-52.29 17.5-81.27 0-54.37-22.04-103.6-57.67-139.23C324.1 45.64 274.87 23.6 220.5 23.6c-54.37 0-103.6 22.04-139.23 57.67C45.64 116.9 23.6 166.13 23.6 220.5c0 28.98 6.26 56.49 17.5 81.27a50.983 50.983 0 00-18.43 11.8c-.48.49-.95.98-1.42 1.48C7.63 286.4 0 254.34 0 220.5c0-60.89 24.69-116.02 64.58-155.92C104.48 24.69 159.61 0 220.5 0zm0 64.27c86.28 0 156.23 69.95 156.23 156.23 0 28.48-7.62 55.18-20.94 78.17H85.21c-13.32-22.99-20.94-49.69-20.94-78.17 0-86.28 69.95-156.23 156.23-156.23z"/><path fill="#fff" d="M270.57 213.92c8.58-5.28 8.53-11.22 0-15.92l-70.1-48.77c-7-4.21-14.39-1.72-14.1 7l.24 98.63c.62 9.59 6.28 12.09 14.38 7.67l69.58-48.61z"/><path fill="#242424" d="M58.55 320.23h323.9c16.08 0 29.22 13.17 29.22 29.23v133.8c0 16.06-13.16 29.23-29.22 29.23H58.55c-16.06 0-29.22-13.15-29.22-29.23v-133.8c0-16.08 13.15-29.23 29.22-29.23z"/><path fill="#fff" fill-rule="nonzero" d="M147.21 459.19H92.39v-85.66h27.41v63.73h27.41v21.93zm10.63 0v-85.66h27.4v85.66h-27.4zm90.93-85.66h28.92l-21.25 85.66h-40.02l-21.24-85.66h28.92l11.65 54.41h1.23l11.79-54.41zm93.67 53.31h-27.41v10.42h33.58v21.93h-60.99v-85.66h60.31l-3.43 21.93h-29.47v11.51h27.41v19.87z"/></svg>';
+
+function renderMandaliLiveClock(clockEl, refTime) {
+    if (!clockEl) return;
+    if (window._mandaliManualTime) {
+        clockEl.className = 'mandali-live-clock mandali-live-clock--viewing';
+        clockEl.textContent = `Viewing ${refTime}`;
+        return;
+    }
+    const now = new Date();
+    const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    clockEl.className = 'mandali-live-clock';
+    clockEl.innerHTML = `<span class="mandali-live-clock__badge">${MANDALI_LIVE_BADGE_SVG}</span><span class="mandali-live-clock__time">${timeStr}</span>`;
+}
+
 window.renderLobbyResults = function() {
     const dateStr = document.getElementById('lobby-date').value;
     const resultsEl = document.getElementById('lobby-results');
@@ -3532,11 +3564,7 @@ window.renderLobbyResults = function() {
 
     const refTime = window.getMandaliReferenceTime();
     const nowMoment = combineDateTime(dateStr, refTime);
-    if (clockEl) {
-        clockEl.textContent = window._mandaliManualTime
-            ? `🕐 Viewing — ${refTime}`
-            : `🔴 LIVE — ${String(new Date().getHours()).padStart(2,'0')}:${String(new Date().getMinutes()).padStart(2,'0')}`;
-    }
+    renderMandaliLiveClock(clockEl, refTime);
 
     const buckets = computeMandaliBuckets(dateStr, nowMoment);
 
