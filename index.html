@@ -6800,14 +6800,30 @@
         if(rUI) rUI.innerText = "Last Restored: " + window.lastRestoreTime;
     }
     
+    const THEME_COLOR_LIGHT = '#eef2f8';
+    const THEME_COLOR_DARK = '#0b0f19';
     function updateThemeColorMeta() {
-        const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) meta.setAttribute('content', getComputedStyle(document.body).getPropertyValue('--top-bar-bg').trim());
+        const isDark = document.body.classList.contains('dark-mode');
+        const hex = isDark ? THEME_COLOR_DARK : THEME_COLOR_LIGHT;
+        document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+        let meta = document.querySelector('meta[name="theme-color"]');
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', 'theme-color');
+            document.head.appendChild(meta);
+        }
+        if (meta.getAttribute('content') === hex) return;
+        const fresh = document.createElement('meta');
+        fresh.setAttribute('name', 'theme-color');
+        fresh.setAttribute('content', hex);
+        meta.replaceWith(fresh);
     }
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
         localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
+        updateThemeColorMeta();
+        requestAnimationFrame(() => updateThemeColorMeta());
         document.getElementById('theme-toggle').innerHTML = isDark
             ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
             : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
@@ -6825,7 +6841,6 @@
             if (window.renderSalaryProjectedYearGraph) window.renderSalaryProjectedYearGraph();
         }
         window.broadcastSettingToRoster('THEME_CHANGED', isDark);
-        updateThemeColorMeta();
     }
 
     // Point: i18n.js's own toggleLanguage() calls window.onLanguageChanged() if defined, right

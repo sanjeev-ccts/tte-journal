@@ -5644,6 +5644,7 @@
     window.saveProfile = saveProfile;
     window.setDAReminder = setDAReminder;
     window.toggleTheme = toggleTheme;
+    window.updateThemeColorMeta = updateThemeColorMeta;
     window.shareApp = shareApp;
     window.showNotifications = showNotifications;
     window.switchAddTab = switchAddTab;
@@ -7660,26 +7661,33 @@
         if(rUI) rUI.innerText = "Last Restored: " + window.lastRestoreTime;
     }
     
-    function cssColorToThemeHex(cssColor) {
-        if (!cssColor) return '';
-        const t = cssColor.trim();
-        if (t.startsWith('#')) return t;
-        const m = t.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
-        if (!m) return t;
-        const hex = (n) => Number(n).toString(16).padStart(2, '0');
-        return `#${hex(m[1])}${hex(m[2])}${hex(m[3])}`;
+    const THEME_COLOR_LIGHT = '#eef2f8';
+    const THEME_COLOR_DARK = '#0b0f19';
+    function resolveThemeColorHex() {
+        return document.body.classList.contains('dark-mode') ? THEME_COLOR_DARK : THEME_COLOR_LIGHT;
     }
     function updateThemeColorMeta() {
-        const meta = document.querySelector('meta[name="theme-color"]');
-        if (!meta) return;
-        const pageBg = getComputedStyle(document.body).backgroundColor;
-        const hex = cssColorToThemeHex(pageBg);
-        if (hex) meta.setAttribute('content', hex);
+        const isDark = document.body.classList.contains('dark-mode');
+        const hex = resolveThemeColorHex();
+        document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+        let meta = document.querySelector('meta[name="theme-color"]');
+        if (!meta) {
+            meta = document.createElement('meta');
+            meta.setAttribute('name', 'theme-color');
+            document.head.appendChild(meta);
+        }
+        if (meta.getAttribute('content') === hex) return;
+        const fresh = document.createElement('meta');
+        fresh.setAttribute('name', 'theme-color');
+        fresh.setAttribute('content', hex);
+        meta.replaceWith(fresh);
     }
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
         const isDark = document.body.classList.contains('dark-mode');
         localStorage.setItem('app_theme', isDark ? 'dark' : 'light');
+        updateThemeColorMeta();
+        requestAnimationFrame(() => updateThemeColorMeta());
         window.updateSettingsToggleSwitches();
         if (!document.getElementById('screen-dashboard').classList.contains('hidden')) updateDashboardUI();
         if (!document.getElementById('screen-all').classList.contains('hidden')) renderAllLogs();
@@ -7692,7 +7700,6 @@
             if (window.renderSalaryProjectedYearGraph) window.renderSalaryProjectedYearGraph();
         }
         window.broadcastSettingToRoster('THEME_CHANGED', isDark);
-        updateThemeColorMeta();
     }
 
     // Point: i18n.js's own toggleLanguage() calls window.onLanguageChanged() if defined, right
