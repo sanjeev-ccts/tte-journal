@@ -1187,11 +1187,10 @@
         body.page-anim-on #modal-box { animation: settings-sheet-slide-up 0.28s ease-out; }
         #modal-box { background: var(--modal-bg) !important; border: none !important; }
         #custom-modal.centered-modal #modal-box { background: var(--modal-bg) !important; width: 92% !important; max-width: 420px !important; border-radius: 18px !important; }
-        #custom-modal.compact-leg-modal #modal-box { padding: 16px 16px 18px !important; }
-        #custom-modal.compact-leg-modal #modal-title { margin-bottom: 6px !important; font-size: 16px !important; }
+        #custom-modal.compact-leg-modal #modal-box { position: relative; padding: 14px 16px 16px !important; }
+        #custom-modal.compact-leg-modal #modal-title { margin: 0 0 12px !important; font-size: 16px !important; padding-right: 40px; text-align: center; }
         #custom-modal.compact-leg-modal #modal-msg { margin-bottom: 0 !important; }
-        .quick-add-leg-choice-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin: 0 0 12px; }
-        .quick-add-leg-choice-top p { margin: 0; flex: 1; min-width: 0; font-size: 13px; color: var(--text-muted); text-align: center; line-height: 1.4; }
+        #custom-modal.compact-leg-modal .quick-add-leg-modal-close { position: absolute; top: 10px; right: 10px; z-index: 2; }
 
         /* Point (app-wide entrance polish): every OTHER modal in the shared list above previously
            popped in instantly with zero transition, unlike Settings/alerts which already slide up.
@@ -4052,7 +4051,7 @@
                         <div id="profile-section-nearby-ta" class="profile-station-expand hidden">
                             <details class="profile-station-help">
                                 <summary data-i18n="profile_whats_this">What's this?</summary>
-                                <p data-i18n="profile_nearby_ta_desc">This is a nearby station (other than your Main HQ) from which you sometimes start journeys and claim TA — e.g. DDU for BSB HQ staff.</p>
+                                <p data-i18n="profile_nearby_ta_desc">A nearby station (not your Main HQ) where you sometimes start journeys and claim TA for travel between your Main HQ and this station — e.g. DDU for BSB HQ staff. Different from “Nearby HQ · no TA”, where TA is not claimed for travel within that HQ group.</p>
                             </details>
                             <div style="display:flex; gap:8px; margin-top:8px;">
                                 <input type="text" id="reg-nearby-ta-input" placeholder="e.g. DDU" style="text-transform: uppercase; margin:0; flex:1;">
@@ -5202,7 +5201,7 @@
             <div class="card" style="padding: 14px 15px; margin-bottom: 14px;">
                 <h3 style="color: var(--blue); margin: 0 0 6px 0; font-size: 14px;" data-i18n="my_archive_what_is_this">📂 What is this?</h3>
                 <div id="my-archive-info-collapse" style="max-height:100px; overflow:hidden; position:relative; transition:max-height 0.25s ease;">
-                    <p style="font-size: 12.5px; color: var(--text); margin: 0 0 8px 0; line-height:1.5;" data-i18n="my_archive_desc_1">To keep the app fast, an admin periodically moves very old duty entries out of active storage — this is called <b>archiving</b>. It's a routine housekeeping step, not something you did wrong, and it doesn't affect your recent data at all.</p>
+                    <p style="font-size: 12.5px; color: var(--text); margin: 0 0 8px 0; line-height:1.5;" data-i18n-html="my_archive_desc_1">To keep the app fast, an admin periodically moves very old duty entries out of active storage — this is called <b>archiving</b>. It's a routine housekeeping step, not something you did wrong, and it doesn't affect your recent data at all.</p>
                     <p style="font-size: 12.5px; color: var(--text); margin: 0; line-height:1.5;" data-i18n-html="my_archive_desc_2"><b>What you can do here:</b> browse any of your own archived entries below, and regenerate a TA or NDA PDF for any archived month, exactly as it would have looked at the time. <b>What you can't do:</b> edit archived entries directly, or move them back into your active journal yourself — if you need that, ask your admin to restore that period.</p>
                     <div id="my-archive-info-fade" style="position:absolute; bottom:0; left:0; right:0; height:24px; background:linear-gradient(to bottom, transparent, var(--card));"></div>
                 </div>
@@ -7873,14 +7872,19 @@
         if (window.applyPageAnimBodyClass) window.applyPageAnimBodyClass();
         if (window.applyCardShadowBodyClass) window.applyCardShadowBodyClass();
         if (window.applyGreenThemeBodyClass) window.applyGreenThemeBodyClass();
-        // Point: default to dark ONLY for a genuinely new user (no app_theme key at all yet) -
-        // never overrides an existing user's already-saved choice, whatever it is.
+        // One-time rollout: default everyone to light on first open after this update; users can
+        // switch back to dark in Settings anytime afterward.
+        const LIGHT_THEME_ROLLOUT_KEY = 'app_theme_light_rollout_v1';
+        if (!localStorage.getItem(LIGHT_THEME_ROLLOUT_KEY)) {
+            localStorage.setItem('app_theme', 'light');
+            localStorage.setItem(LIGHT_THEME_ROLLOUT_KEY, '1');
+        }
         if (localStorage.getItem('app_theme') === null) {
-            localStorage.setItem('app_theme', 'dark');
+            localStorage.setItem('app_theme', 'light');
         }
         const savedTheme = localStorage.getItem('app_theme');
         const isDarkOnLoad = savedTheme === 'dark';
-        if (isDarkOnLoad) document.body.classList.add('dark-mode');
+        document.body.classList.toggle('dark-mode', isDarkOnLoad);
         updateThemeColorMeta();
         window.updateSettingsToggleSwitches();
         if (window.initAppZoomIndicator) window.initAppZoomIndicator();
@@ -11209,12 +11213,8 @@
     function showQuickAddLegChoice(legs, onPick) {
         window._quickAddPickCallback = onPick;
         const buttons = legs.map(tn => `<button type="button" class="quick-add-leg-btn" onclick="window._quickAddPick('${tn}')">${tn}</button>`).join('');
-        const hint = window.i18n ? window.i18n.tOr('quickadd_pick_train_hint', 'Tap your train number') : 'Tap your train number';
         const html = `<style>#modal-ok, #modal-cancel { display: none !important; }</style>
-            <div class="quick-add-leg-choice-top">
-                <p>${hint}</p>
-                <button type="button" class="modal-icon-close" onclick="window._quickAddPickCancel()" aria-label="Close">✕</button>
-            </div>
+            <button type="button" class="modal-icon-close quick-add-leg-modal-close" onclick="window._quickAddPickCancel()" aria-label="Close">✕</button>
             <div class="quick-add-leg-choice-wrap">${buttons}</div>`;
         const modal = document.getElementById('custom-modal');
         if (modal) modal.classList.add('compact-leg-modal');
@@ -11881,7 +11881,8 @@
         if (!val) { showModal('Select a Team', 'Please select a valid team number.', 'warning', false); return; }
         localStorage.setItem('roster_my_team', val);
         window.updateSelectTeamDisplay();
-        showModal('✅ Saved', 'Team ' + val + ' saved.', 'success', false);
+        const msg = window.i18n ? window.i18n.tf('team_saved_toast', { no: val }) : ('Team ' + val + ' saved.');
+        if (window.showSuccessSnackbar) window.showSuccessSnackbar(msg);
         if (window.captureTripFormBaseline) window.captureTripFormBaseline();
     };
 
