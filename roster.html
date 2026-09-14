@@ -32,7 +32,8 @@
         --table-border: #a5b4fc;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
         --md-elevation-3: 0 4px 8px rgba(15, 23, 42, 0.12), 0 8px 24px rgba(15, 23, 42, 0.10);
-        --cal-outer-border: #c5cdd8;
+        --cal-outer-border: color-mix(in srgb, var(--blue-fill) 38%, var(--border));
+        --cal-today-border: var(--blue-fill);
     }
     body.green-theme {
         --blue: #16a34a;
@@ -55,7 +56,8 @@
         --table-border: #232d42;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
         --md-elevation-3: 0 4px 8px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
-        --cal-outer-border: #3d4d66;
+        --cal-outer-border: color-mix(in srgb, var(--blue) 30%, var(--border));
+        --cal-today-border: var(--blue);
     }
     body.dark-mode.green-theme {
         --blue: #4ade80;
@@ -521,16 +523,17 @@
         border: 1px solid var(--cal-outer-border);
         box-shadow: 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06);
     }
-    .cal-trip-wrapper.cal-trip-today { border-color: #ea580c; }
+    .cal-trip-wrapper.cal-trip-today { border-color: var(--cal-today-border); }
+    .cal-day.cal-day-today { border-color: var(--cal-today-border) !important; }
     body.dark-mode .cal-trip-wrapper { box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3); border-color: var(--cal-outer-border); }
-    body.dark-mode .cal-trip-wrapper.cal-trip-today { border-color: #fb923c; }
+    body.dark-mode .cal-trip-wrapper.cal-trip-today { border-color: var(--cal-today-border); }
     .mandali-live-clock {
         display: flex; align-items: center; justify-content: center; gap: 8px;
         margin: 10px 0 0; min-height: 26px;
     }
     .mandali-live-clock__badge { display: inline-flex; align-items: center; line-height: 0; flex-shrink: 0; }
     .mandali-live-clock__badge svg { height: 22px; width: auto; display: block; }
-    .mandali-live-clock__time { font-size: 13px; font-weight: 800; color: var(--text); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+    .mandali-live-clock__time { font-size: 13px; font-weight: 800; color: #fe0000; font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
     .mandali-live-clock--viewing { font-size: 12px; font-weight: 700; color: var(--text-muted); }
     .cal-subday { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px; cursor: pointer; padding: 12px 2px 2px; box-sizing: border-box; height: 100%; position: relative; }
     .daycard-status { text-align: center; font-size: 14px; font-weight: 800; margin: 0 0 10px; }
@@ -2214,8 +2217,9 @@ function buildCalendarGridCells(teamNo, year, month, navPrefix) {
                 let borderStyle = '';
                 const bw = c.dateStr === todayStr ? BW_TODAY : BW;
                 if (meta && meta.borderColor) borderStyle = `border-width:${bw}; border-color:${meta.borderColor};`;
-                else if (c.dateStr === todayStr) borderStyle = `border-width:${BW_TODAY};`;
-                cellsHtml += `<div class="cal-day ${meta ? meta.cls : ''}" style="${borderStyle}" onclick="window.openDayDetail('${teamNo}','${c.dateStr}')">${calDayInnerHtml(c.dayNum, meta, trainHtml, c.dateStr, navPrefix)}</div>`;
+                const todayCls = c.dateStr === todayStr ? ' cal-day-today' : '';
+                if (c.dateStr === todayStr) borderStyle = `border-width:${BW_TODAY};`;
+                cellsHtml += `<div class="cal-day ${meta ? meta.cls : ''}${todayCls}" style="${borderStyle}" onclick="window.openDayDetail('${teamNo}','${c.dateStr}')">${calDayInnerHtml(c.dayNum, meta, trainHtml, c.dateStr, navPrefix)}</div>`;
                 col++;
             }
         }
