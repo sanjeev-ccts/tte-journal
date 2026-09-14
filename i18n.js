@@ -116,7 +116,7 @@
             profile_nearby_ta_desc: "A nearby station (not your Main HQ) where you sometimes start journeys and claim TA for travel between your Main HQ and this station — e.g. DDU for BSB HQ staff. Different from “Nearby HQ · no TA”, where TA is not claimed for travel within that HQ group.",
             team_saved_toast: "Team {no} saved.",
             profile_diversion_stn_desc: "This is the station from which a journey starts with TA claimed, other than your Main or Nearby HQ — e.g. DDU for BSB HQ staff. It is primarily for BSB HQ staff. Staff at other HQs rarely use this, because BSB staff often travel far from their HQ to start or end journeys at DDU and claim proper TA and continuous NDA for those journeys.",
-            notifications_no_active: "No active warnings right now.",
+            notifications_no_active: "No active alerts right now.",
             profile_originating_trains_toggle: "Originating Trains (NDA)",
             profile_originating_trains_desc: "Optional — add only if you have originating trains. These get a 45-minute NDA sign-on margin (30 minutes for all others). Only hours between 22:00 and 06:00 count toward NDA.",
             profile_dest_stations_desc: "Set your usual outward destination stations and any known diversion routes (e.g. LKO trains sometimes diverting via AMG) — helps the app auto-recognize your journeys correctly.",
@@ -386,7 +386,8 @@
             already_installed_title: "Already Installed",
             app_already_installed: "TTE LOGS is already installed on this device.",
             notifications_title: "Notifications",
-            notifications_all_caught_up: "You are all caught up! No active warnings.",
+            notifications_all_caught_up: "You are all caught up! No active alerts.",
+            quick_add_duty: "Quick Add Duty",
             connectivity_offline: "You are offline",
             connectivity_online: "Back online",
             sync_syncing_ellipsis: "Syncing...",
@@ -555,7 +556,7 @@
             pdf_recheck_values: "Working Days: {wDays} · Earnings: ₹{earn}\n\nThese were auto-fetched from your logged entries — please double-check both are correct before printing.",
 
             dest_diversion_stations_desc: "For trains that sometimes divert away from a major destination station to a nearby one (e.g. LKO trains diverting via AMG). Optional — only add if you know of specific diversions on your usual routes.",
-            quickadd_desc_hint: "📍 Add your upcoming duties here in a single tap by clicking Quick Add.",
+            quickadd_desc_hint: "📍 Add your upcoming duties here in a single tap by clicking Quick Add Duty.",
             delete_entry_warning: "Deleting an entry may break your continuous journey chain. You can fix it by adding missing legs later.\n\nDo you really want to delete?",
             journey_time_overlap: "This journey's arrival time overlaps with your next journey's departure time ({date} {time}).\n\nOnly one train journey is possible at a time — please check the times."
         },
@@ -661,7 +662,7 @@
             profile_nearby_ta_desc: "आपके मुख्य HQ के अलावा एक नजदीकी स्टेशन जहां से आप कभी-कभी यात्रा शुरू करते हैं और मुख्य HQ से इस स्टेशन तक यात्रा के लिए TA का दावा करते हैं — जैसे BSB HQ के लिए DDU। यह “नजदीकी HQ · TA नहीं” से अलग है, जहां उस HQ समूह के भीतर यात्रा पर TA नहीं मिलता।",
             team_saved_toast: "टीम {no} सहेजी गई।",
             profile_diversion_stn_desc: "आपके मुख्य या नजदीक के हेडक्वार्टर के अलावा, यह वह स्टेशन है जहां से कभी-कभी यात्रा शुरू होती है, अपने HQ से यहां यात्रा के लिए TA मिलता है, जैसे- BSB HQ के लिए DDU स्टेशन है",
-            notifications_no_active: "अभी कोई सक्रिय चेतावनी नहीं है।",
+            notifications_no_active: "अभी कोई सक्रिय अलर्ट नहीं है।",
             profile_originating_trains_toggle: "ओरिजिनेटिंग ट्रेनें (NDA)",
             profile_originating_trains_desc: "वैकल्पिक — केवल तभी जोड़ें जब आपकी ओरिजिनेटिंग ट्रेनें हों। इनके लिए NDA साइन-ऑन मार्जिन 45 मिनट है (बाकी सभी के लिए 30 मिनट)। NDA केवल 22:00 से 06:00 के बीच के घंटों पर ही गिना जाता है।",
             profile_dest_stations_desc: "अपने सामान्य गंतव्य स्टेशन और जाने-पहचाने डायवर्जन रूट सेट करें (जैसे LKO की ट्रेन कभी-कभी AMG से डाईवर्टेड होती हैं) — इससे app आपकी यात्रा सही तरीके से पहचान पाएगा।",
@@ -899,7 +900,8 @@
             already_installed_title: "पहले से इंस्टॉल है",
             app_already_installed: "TTE LOGS इस डिवाइस पर पहले से इंस्टॉल है।",
             notifications_title: "नोटिफिकेशन",
-            notifications_all_caught_up: "आप पूरी तरह से अपडेट हैं! कोई सक्रिय नोटिफिकेशन नहीं है।",
+            notifications_all_caught_up: "आप पूरी तरह से अपडेट हैं! कोई सक्रिय अलर्ट नहीं है।",
+            quick_add_duty: "क्विक ऐड ड्यूटी",
             connectivity_offline: "आप ऑफ़लाइन हैं",
             connectivity_online: "वापस ऑनलाइन",
             sync_syncing_ellipsis: "सिंक हो रहा है...",
@@ -1098,7 +1100,7 @@
             pdf_recheck_values: "Working Days: {wDays} · Earnings: ₹{earn}\n\nये आपकी भरी हुई यात्राओं से खुद ऐड हुए हैं — प्रिंट करने से पहले दोनों एक बार ज़रूर चेक कर लें।",
 
             dest_diversion_stations_desc: "यह उन ट्रेनों के लिए है जो कभी-कभी अपने मुख्य गंतव्य स्टेशन से किसी नज़दीकी स्टेशन पर diversion लेती हैं (जैसे LKO की ट्रेनें कभी-कभी AMG या UTR से diverting होती हैं)।",
-            quickadd_desc_hint: "📍 अपनी आने वाली ड्यूटीज यहां क्विक ऐड पर एक क्लिक से ऐड कर सकते हैं।",
+            quickadd_desc_hint: "📍 अपनी आने वाली ड्यूटीज यहां क्विक ऐड ड्यूटी पर एक क्लिक से ऐड कर सकते हैं।",
             delete_entry_warning: "यात्रा डिलीट करने से आपकी continuous यात्रा की चैन टूट सकती है। बाद में missing यात्रा जोड़कर इसे ठीक किया जा सकता है।\n\nक्या आप वाकई डिलीट करना चाहते हैं?",
             journey_time_overlap: "इस यात्रा का arrival time आपकी अगली यात्रा के departure time ({date} {time}) से ओवरलैप कर रहा है।\n\nएक समय पर सिर्फ एक ही ट्रेन की यात्रा संभव है — कृपया समय चेक करें।"
         }
