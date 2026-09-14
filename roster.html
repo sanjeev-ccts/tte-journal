@@ -92,7 +92,10 @@
     .result-modal-box { background: var(--card); box-shadow: 0 -8px 30px rgba(0,0,0,0.5) !important; }
     body.dark-mode .team-info-card { background: rgba(234,179,8,0.12); }
     body.dark-mode .team-info-card .cor-name, body.dark-mode .team-info-card .tte-name { color: var(--orange); }
-    body.dark-mode .team-saved-card, body.dark-mode .view-edit-team-btn { background: rgba(59,130,246,0.10); }
+    body.dark-mode .two-col-row.my-team-two-col .team-saved-card,
+    body.dark-mode .two-col-row.my-team-two-col .view-edit-team-btn,
+    body.green-theme .two-col-row.my-team-two-col .team-saved-card,
+    body.green-theme .two-col-row.my-team-two-col .view-edit-team-btn { background: var(--card) !important; }
     body.dark-mode table.trip-table td.td-date { color: #60a5fa; }
     body.dark-mode table.trip-table td.td-day { color: #2dd4bf; }
     body.dark-mode table.trip-table td.td-day.day-sun { color: #f87171; }
@@ -219,24 +222,32 @@
     .team-select-card { padding: 14px 16px; text-align: center; background: var(--card) !important; background-image: none !important; }
     .team-select-card label { font-size: 12px; font-weight: 700; color: var(--green); display: block; margin-bottom: 5px; text-align: center; }
     #my-team-select { font-size: 16px; font-weight: 800; padding: 10px 14px; text-align: center; text-align-last: center; background: var(--card); border: 1px solid var(--border); box-shadow: none; min-height: 44px; }
-    .team-saved-card { padding: 8px 12px; border-radius: 30px; margin-bottom: 0; min-height: 52px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
-    .tsc-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-    .tsc-team { flex: 1; text-align: center; cursor: pointer; }
-    .tsc-team-chip { display: inline-block; padding: 0; border-radius: 0; border: none; color: var(--blue); font-weight: 900; font-size: 16px; background: none; box-shadow: none; }
+    .two-col-row.my-team-two-col { align-items: center; }
+    .two-col-row.my-team-two-col .team-saved-card,
+    .two-col-row.my-team-two-col .view-edit-team-btn {
+        flex: 1 1 0; min-width: 0; min-height: 40px; height: 40px; max-height: 40px;
+        padding: 0 12px; margin-bottom: 0; border-radius: 30px;
+        border: 1px solid var(--border); box-sizing: border-box;
+        background: var(--card) !important; background-image: none !important;
+        box-shadow: none !important;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .team-saved-card { padding: 0; border-radius: 30px; margin-bottom: 0; }
+    .tsc-row { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; }
+    .tsc-team { flex: 0 1 auto; text-align: center; cursor: pointer; }
+    .tsc-team-chip { display: inline-block; padding: 0; border-radius: 0; border: none; color: var(--blue); font-weight: 800; font-size: 13px; background: none; box-shadow: none; line-height: 1.2; }
     .tsc-edit-btn { width: auto; flex-shrink: 0; padding: 6px 10px; border-radius: 20px; background: var(--blue-fill); color: white; border: none; font-size: 13px; cursor: pointer; font-family: 'Roboto', sans-serif; }
     .two-col-row { display: flex; gap: 10px; margin-bottom: 14px; align-items: stretch; }
     .two-col-row .card { flex: 1 1 0; margin-bottom: 0; min-width: 0; }
     .view-edit-team-btn {
-        border: 1px solid var(--border); border-radius: 30px !important; cursor: pointer;
-        display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--blue-fill);
-        font-weight: 900; font-size: 14px; font-family: 'Roboto', sans-serif; background: var(--card) !important;
-        box-shadow: none !important; width: auto; flex: 1 1 0; min-height: 52px; padding: 8px 10px; box-sizing: border-box;
+        cursor: pointer; gap: 6px; color: var(--blue-fill);
+        font-weight: 800; font-size: 13px; font-family: 'Roboto', sans-serif;
     }
     .mandali-sphere-btn {
         background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--blue-fill) 45%, #ffffff) 0%, var(--blue-fill) 52%, color-mix(in srgb, var(--blue-fill) 75%, #000000) 100%) !important;
-        box-shadow: inset -5px -5px 10px rgba(0,0,0,0.3), inset 4px 4px 8px rgba(255,255,255,0.25), 0 4px 10px rgba(0,0,0,0.3) !important;
-        width: 84px; height: 84px; border-radius: 50%; padding: 0; margin: 0; display: flex; align-items: center; justify-content: center;
-        font-size: 14px; font-weight: 800; color: #ffffff !important; border: none; cursor: pointer;
+        box-shadow: inset -4px -4px 8px rgba(0,0,0,0.28), inset 3px 3px 6px rgba(255,255,255,0.22), 0 3px 8px rgba(0,0,0,0.28) !important;
+        width: 68px; height: 68px; border-radius: 50%; padding: 0; margin: 0; display: flex; align-items: center; justify-content: center;
+        font-size: 12px; font-weight: 800; color: #ffffff !important; border: none; cursor: pointer;
     }
     @keyframes rosterHeaderTabFlash {
         0% { background: color-mix(in srgb, var(--blue) 9%, transparent); }
@@ -254,13 +265,23 @@
     #view-admin button.action { padding: 9px; font-size: 13.5px; margin-top: 4px; margin-bottom: 6px; }
     #view-admin label { font-size: 12px !important; }
     #view-admin input, #view-admin select { padding: 7px 12px; height: 36px; margin-bottom: 6px; }
-    .admin-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .admin-quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; margin-bottom: 14px; }
     .admin-quick-card {
-        background: var(--card);
-        background: linear-gradient(155deg, color-mix(in srgb, var(--card) 92%, white 8%) 0%, var(--card) 55%, color-mix(in srgb, var(--card) 90%, black 10%) 100%);
-        border-radius: 16px; padding: 16px 10px;
-        border: 1px solid var(--border); text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 78px;
+        background: var(--card); background-image: none;
+        border-radius: 16px; padding: 12px 10px;
+        border: 1px solid var(--md-outline-variant); text-align: center; cursor: pointer;
+        display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 80px;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), 0 1px 2px rgba(15, 23, 42, 0.08);
+        transition: transform 0.1s, box-shadow 0.15s;
     }
+    body.card-shadow-on .admin-quick-card {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.55) !important;
+    }
+    body.dark-mode.card-shadow-on .admin-quick-card {
+        box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07) !important;
+    }
+    body:not(.card-shadow-on) .admin-quick-card { box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12), 0 1px 2px rgba(15, 23, 42, 0.08); }
+    body.dark-mode:not(.card-shadow-on) .admin-quick-card { box-shadow: 0 2px 6px rgba(0,0,0,0.35); }
     .admin-quick-card .aq-icon { font-size: 22px; }
     .admin-quick-card .aq-label { font-size: 13px; font-weight: 800; text-align: center; }
     .admin-quick-card.aq-save .aq-label { color: var(--green); }
@@ -357,10 +378,21 @@
     .name-search-row .nsr-role { font-size: 10.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
     .name-search-row .nsr-team { font-size: 12.5px; font-weight: 900; color: var(--blue); background: rgba(59,130,246,0.14); padding: 3px 10px; border-radius: 20px; }
     .name-search-empty { text-align: center; font-size: 12.5px; color: var(--text-muted); padding: 8px; }
-    .mandali-station-block { padding: 0 !important; margin-bottom: 8px; overflow: hidden; }
+    .mandali-tabs-wrap {
+        display: flex; margin-bottom: 12px; border-radius: 14px; overflow: hidden;
+        border: 1px solid var(--border); background: var(--card);
+    }
+    .mandali-tabs-wrap .mandali-tab-btn { border: none !important; box-shadow: none !important; }
+    .mandali-station-block {
+        padding: 0 !important; margin-bottom: 8px; overflow: hidden;
+        background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+        box-shadow: none;
+    }
+    body:not(.card-shadow-on) .mandali-station-block { box-shadow: none; }
+    body.card-shadow-on .mandali-station-block { box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
     .mandali-station-row {
-        width: 100% !important; display: flex; align-items: center; justify-content: space-between; gap: 12px;
-        min-height: 56px; padding: 12px 14px; margin: 0; border: none; border-radius: 0; cursor: pointer;
+        width: 100% !important; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+        min-height: 46px; padding: 8px 12px; margin: 0; border: none; border-radius: 0; cursor: pointer;
         background: transparent !important; color: inherit !important; box-shadow: none !important;
         font-family: inherit; text-align: left;
     }
@@ -369,18 +401,23 @@
     .mandali-station-row-title { display: block; font-size: 13px; font-weight: 800; color: var(--blue); line-height: 1.25; }
     .mandali-station-row-sub { display: block; font-size: 11px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
     .mandali-station-row-chevron {
-        flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%;
-        border: 1px solid var(--border); background: var(--card);
+        flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+        border: 1px solid var(--border); background: var(--bg);
         display: flex; align-items: center; justify-content: center; color: var(--text-muted);
         transition: transform 0.15s, color 0.15s, border-color 0.15s;
     }
     .mandali-station-block.expanded .mandali-station-row-chevron { transform: rotate(90deg); color: var(--blue); border-color: color-mix(in srgb, var(--blue) 35%, var(--border)); }
-    .mandali-station-body { padding: 0 8px 10px; border-top: 1px solid var(--border); }
-    .mandali-station-body .admin-table th {
-        position: static; background: var(--sheet-header-bg) !important; color: var(--sheet-header-text) !important;
-        border-color: color-mix(in srgb, var(--sheet-header-bg) 70%, black);
+    .mandali-station-body { padding: 0 6px 8px; border-top: 1px solid var(--border); }
+    .mandali-station-body .admin-table.mandali-table th,
+    .mandali-station-body .admin-table.mandali-table td {
+        border: 1px solid var(--border) !important; white-space: nowrap;
     }
-    .mandali-station-body .admin-table td, .mandali-station-body .admin-table th { white-space: nowrap; }
+    .mandali-station-body .admin-table.mandali-table th {
+        position: static; background: var(--sheet-header-bg) !important; color: var(--sheet-header-text) !important;
+        border-color: color-mix(in srgb, var(--sheet-header-bg) 55%, var(--border)) !important;
+        font-size: 10px; padding: 6px 8px;
+    }
+    .mandali-station-body .admin-table.mandali-table td { padding: 6px 8px; font-size: 12px; }
     .lobby-dest-box .admin-table th { position: static; background: var(--sheet-header-bg) !important; color: var(--sheet-header-text) !important; }
     .lobby-dest-box .admin-table td, .lobby-dest-box .admin-table th { white-space: nowrap; }
     .lobby-team-chip { display: flex; flex-direction: column; align-items: center; gap: 2px; background: rgba(59,130,246,0.14); border: 1px solid rgba(59,130,246,0.3); border-radius: 12px; padding: 6px 12px; margin: 4px auto; font-size: 12.5px; font-weight: 800; color: var(--blue); cursor: pointer; width: fit-content; max-width: 100%; box-sizing: border-box; }
@@ -689,7 +726,7 @@ if (window.parent !== window) {
             <button class="action" style="background:var(--green); margin-top:6px;" onclick="window.saveMyTeamNumber()" data-i18n="save">Save</button>
             <p style="font-size:11px; color:var(--text-muted); margin:8px 0 0 0;" data-i18n="roster_team_search_hint">Don't know your team? Use Search tab and find your name.</p>
         </div>
-        <div class="two-col-row">
+        <div class="two-col-row my-team-two-col">
             <div class="card team-saved-card hidden" id="team-saved-card" onclick="window.editMyTeam()" style="cursor:pointer;">
                 <div class="tsc-row">
                     <span class="tsc-team tsc-team-chip" id="tsc-team-no">Team --</span>
@@ -916,9 +953,9 @@ if (window.parent !== window) {
         </div>
     </div>
     <div style="padding:15px 8px 90px; max-width:640px; margin:0 auto;">
-        <div style="display:flex; margin-bottom:12px; border-radius:14px; overflow:hidden; border:1px solid var(--border);">
+        <div class="mandali-tabs-wrap">
             <button id="mandali-tab-team-btn" class="mandali-tab-btn active" onclick="window.switchMandaliTab('team')" style="flex:1; margin:0; padding:8px; border-radius:0; font-size:13px; font-weight:800;">👥 <span data-i18n="mandali_tab_team">Team Wise</span></button>
-            <button id="mandali-tab-train-btn" class="mandali-tab-btn" onclick="window.switchMandaliTab('train')" style="flex:1; margin:0; padding:8px; border-radius:0; font-size:13px; font-weight:800; box-shadow:none;">🚂 <span data-i18n="mandali_tab_train">Train Wise</span></button>
+            <button id="mandali-tab-train-btn" class="mandali-tab-btn" onclick="window.switchMandaliTab('train')" style="flex:1; margin:0; padding:8px; border-radius:0; font-size:13px; font-weight:800;">🚂 <span data-i18n="mandali_tab_train">Train Wise</span></button>
         </div>
         <div id="mandali-tab-team-panel">
             <p style="font-size:11.5px; color:var(--text-muted); text-align:center; margin:0 0 10px;" data-i18n="mandali_row_hint">Click any row inside Mandali to show the duty of team</p>
@@ -3348,6 +3385,7 @@ window.openLobbyModal = function() {
     const slider = document.getElementById('mandali-time-slider');
     if (slider) slider.value = now.getHours() * 60 + now.getMinutes();
     window.setMandaliSliderFill(now.getHours() * 60 + now.getMinutes());
+    window._mandaliExpandedSections = new Set();
     document.getElementById('mandali-page-overlay').classList.remove('hidden');
     document.body.classList.add('mandali-open');
     if (localStorage.getItem('page_anim_enabled') !== 'false') {
@@ -3467,12 +3505,15 @@ window.toggleMandaliStationRow = function(blockId) {
     const willExpand = body && body.classList.contains('hidden');
     block.classList.toggle('expanded', willExpand);
     if (body) body.classList.toggle('hidden', !willExpand);
+    if (!window._mandaliExpandedSections) window._mandaliExpandedSections = new Set();
+    if (willExpand) window._mandaliExpandedSections.add(blockId);
+    else window._mandaliExpandedSections.delete(blockId);
     window.hapticTap && window.hapticTap();
 };
 
-function buildMandaliStationSection(sectionId, title, subline, bodyHtml, startExpanded) {
-    const expanded = startExpanded !== false;
-    return `<div id="${sectionId}" class="card mandali-station-block${expanded ? ' expanded' : ''}">
+function buildMandaliStationSection(sectionId, title, subline, bodyHtml) {
+    const expanded = window._mandaliExpandedSections && window._mandaliExpandedSections.has(sectionId);
+    return `<div id="${sectionId}" class="mandali-station-block${expanded ? ' expanded' : ''}">
         <button type="button" class="mandali-station-row" onclick="window.toggleMandaliStationRow('${sectionId}')">
             <div class="mandali-station-row-main">
                 <span class="mandali-station-row-title">${title}</span>
@@ -3505,7 +3546,7 @@ window.renderLobbyResults = function() {
         const list = buckets[st];
         const body = list.length
             ? `<div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-                <table class="admin-table" style="min-width:420px;">
+                <table class="admin-table mandali-table" style="min-width:420px;">
                     <thead><tr><th>Teams</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead>
                     <tbody>${list.map(x => {
                         const team = teamMaster[x.t] || {};
@@ -3528,7 +3569,7 @@ window.renderLobbyResults = function() {
         const countLabel = window.i18n
             ? window.i18n.tf('mandali_teams_count', { count: list.length })
             : (list.length === 1 ? '1 team' : `${list.length} teams`);
-        return buildMandaliStationSection(`mandali-team-${st}`, `${st} मंडली`, countLabel, body, list.length > 0);
+        return buildMandaliStationSection(`mandali-team-${st}`, `${st} मंडली`, countLabel, body);
     }).join('');
 
     // Point: Mixed box only renders at all when it actually has someone in it — no empty
@@ -3537,7 +3578,7 @@ window.renderLobbyResults = function() {
     const mixedHtml = mixedList.length
         ? (() => {
             const mixedBody = `<div style="overflow-x:auto; -webkit-overflow-scrolling:touch;">
-                <table class="admin-table" style="min-width:480px;">
+                <table class="admin-table mandali-table" style="min-width:480px;">
                     <thead><tr><th>Station</th><th>Teams</th><th>COR</th><th>TTE-1</th><th>TTE-2</th></tr></thead>
                     <tbody>${mixedList.map(x => {
                         const team = teamMaster[x.t] || {};
@@ -3560,7 +3601,7 @@ window.renderLobbyResults = function() {
             const mixedCount = window.i18n
                 ? window.i18n.tf('mandali_teams_count', { count: mixedList.length })
                 : (mixedList.length === 1 ? '1 team' : `${mixedList.length} teams`);
-            return buildMandaliStationSection('mandali-team-mixed', 'Mixed मंडली', mixedCount, mixedBody, true);
+            return buildMandaliStationSection('mandali-team-mixed', 'Mixed मंडली', mixedCount, mixedBody);
         })()
         : '';
 
@@ -3638,7 +3679,7 @@ window.renderTrainWiseResults = function() {
         const countLabel = window.i18n
             ? window.i18n.tf('mandali_trains_count', { count: trainCount })
             : (trainCount === 1 ? '1 train' : `${trainCount} trains`);
-        return buildMandaliStationSection(`mandali-train-${st}`, `${st} मंडली`, countLabel, body, trainCount > 0);
+        return buildMandaliStationSection(`mandali-train-${st}`, `${st} मंडली`, countLabel, body);
     }).join('');
 
     const { up: mixedUp, down: mixedDown } = splitTrainChips(buckets.Mixed);
@@ -3647,7 +3688,7 @@ window.renderTrainWiseResults = function() {
     const mixedHtml = mixedBody
         ? buildMandaliStationSection('mandali-train-mixed', 'Mixed मंडली',
             window.i18n ? window.i18n.tf('mandali_trains_count', { count: mixedTrainCount }) : `${mixedTrainCount} trains`,
-            mixedBody, true)
+            mixedBody)
         : '';
 
     resultsEl.innerHTML = mainBoxesHtml + mixedHtml;
