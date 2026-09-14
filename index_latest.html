@@ -819,11 +819,24 @@
             overflow: hidden;
         }
         .profile-station-block.expanded {
-            border-color: color-mix(in srgb, var(--blue) 42%, var(--border));
+            border-color: var(--blue-fill);
             background: var(--card);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-fill) 18%, transparent);
         }
         body.green-theme .profile-station-block.expanded {
-            border-color: color-mix(in srgb, var(--green) 42%, var(--border));
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 18%, transparent);
+        }
+        .profile-stations-card .profile-station-expand input:not([type="checkbox"]):not([type="radio"]):focus,
+        .profile-stations-card .profile-station-expand select:focus {
+            outline: none;
+            border-color: var(--blue-fill);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-fill) 18%, transparent);
+        }
+        body.green-theme .profile-stations-card .profile-station-expand input:not([type="checkbox"]):not([type="radio"]):focus,
+        body.green-theme .profile-stations-card .profile-station-expand select:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 18%, transparent);
         }
         .profile-station-divider { display: none; }
         .profile-station-help { margin: 6px 0 0; }
@@ -3126,7 +3139,7 @@
             }
         });
     </script>
-<script src="./i18n.js?v=1.5"></script>
+<script src="./i18n.js?v=1.6"></script>
     <!-- Point: PDF.js renders PDF pages onto a canvas ourselves, instead of relying on the browser's
          native inline PDF support — Android Chrome doesn't reliably render PDFs inside an <iframe>,
          instead showing a native "open with..." placeholder. This works identically everywhere. -->
@@ -4092,7 +4105,7 @@
                         <div class="profile-station-divider" aria-hidden="true"></div>
                         <div class="profile-station-row" data-profile-section="nearby" onclick="window.toggleProfileStationSection('nearby')">
                             <div class="profile-station-row-main">
-                                <span class="profile-station-row-title"><span data-i18n="profile_nearby_no_ta_short">Nearby HQ · no TA</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
+                                <span class="profile-station-row-title"><span data-i18n="profile_nearby_no_ta_short">Nearby HQ</span><span class="profile-station-opt" data-i18n="profile_label_opt">(opt)</span></span>
                                 <span id="profile-summary-nearby" class="profile-station-row-value">Not set</span>
                             </div>
                             <span class="profile-station-row-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
@@ -4100,7 +4113,7 @@
                         <div id="profile-section-nearby" class="profile-station-expand hidden">
                             <details class="profile-station-help">
                                 <summary data-i18n="profile_whats_this">What's this?</summary>
-                                <p data-i18n="profile_nearby_hq_desc">This is a nearby HQ station your journey sometimes starts from, other than your Main HQ — you do NOT claim TA for travel within this group.</p>
+                                <p data-i18n="profile_nearby_hq_desc">This is a nearby station your journey sometimes starts from, other than your Main HQ e.g. BSB HQ trains sometime starts from BCY or BNRS</p>
                             </details>
                             <div style="display:flex; gap:8px; margin-top:8px;">
                                 <input type="text" id="reg-nearby-input" placeholder="e.g. BCY, BNRS" style="text-transform: uppercase; margin:0; flex:1;">
@@ -4122,7 +4135,7 @@
                         <div id="profile-section-nearby-ta" class="profile-station-expand hidden">
                             <details class="profile-station-help">
                                 <summary data-i18n="profile_whats_this">What's this?</summary>
-                                <p data-i18n="profile_nearby_ta_desc">A nearby station (not your Main HQ) where you sometimes start journeys and claim TA for travel between your Main HQ and this station — e.g. DDU for BSB HQ staff. Different from “Nearby HQ · no TA”, where TA is not claimed for travel within that HQ group.</p>
+                                <p data-i18n="profile_nearby_ta_desc">A nearby station where you sometimes start journeys and claim TA for travel between your Main HQ and this station — e.g. BSB HQ trains starts from DDU station. This option is added specifically for BSB HQ staffs whose journey starts from DDU which is far enough to claim TA/NDA. If you add stations here, App will count NDA continuously from your main HQ to this station.</p>
                             </details>
                             <div style="display:flex; gap:8px; margin-top:8px;">
                                 <input type="text" id="reg-nearby-ta-input" placeholder="e.g. DDU" style="text-transform: uppercase; margin:0; flex:1;">
@@ -4144,7 +4157,7 @@
                         <div id="profile-section-dest" class="profile-station-expand hidden">
                             <details class="profile-station-help">
                                 <summary data-i18n="profile_whats_this">What's this?</summary>
-                                <p data-i18n="profile_dest_stations_desc">Set your usual outward destination stations and any known diversion routes (e.g. LKO trains sometimes diverting via AMG) — helps the app auto-recognize your journeys correctly.</p>
+                                <p data-i18n="profile_dest_stations_desc">Set your usual outward destination stations where you stay in Rest house after completing journey</p>
                             </details>
                             <div style="display:flex; gap:8px; margin-top:8px;">
                                 <input type="text" id="reg-dest-input" placeholder="e.g. LKO PRYJ" style="text-transform: uppercase; margin:0; flex:1;">
@@ -8606,6 +8619,8 @@
         if(screenId === 'screen-register') {
             openSettings();
             if (window.updatePWAInstallUI) window.updatePWAInstallUI();
+            const profileScreen = document.getElementById('screen-register');
+            if (profileScreen && window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(profileScreen);
         }
         // Point (Circulars merge): lazy-load circulars data only the first time this screen is
         // actually visited this session — not on login, not on preload — same "don't connect/read
@@ -9129,6 +9144,7 @@
         panel.classList.toggle('expanded', opening);
         if (block) block.classList.toggle('expanded', opening);
         if (opening) {
+            if (window.i18n && window.i18n.applyTranslations) window.i18n.applyTranslations(panel);
             const help = panel.querySelector('.profile-station-help');
             if (help) {
                 help.open = true;
