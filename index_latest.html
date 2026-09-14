@@ -262,7 +262,20 @@
             min-height: 100dvh;
             min-height: 100vh;
         }
-        html { -webkit-overflow-scrolling: touch; background: var(--bg); }
+        html { -webkit-overflow-scrolling: touch; background: var(--bg); min-height: 100%; }
+        @supports (padding: env(safe-area-inset-top)) {
+            html::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: env(safe-area-inset-top, 0px);
+                background: var(--bg);
+                z-index: 10000000;
+                pointer-events: none;
+            }
+        }
         [id^="screen-"]:not(#screen-login) {
             background: var(--bg);
             min-height: 100dvh;
@@ -797,16 +810,27 @@
         .profile-station-hq-block input { font-size: 16px; font-weight: 800; letter-spacing: 0.5px; }
         .profile-stations-rows { margin-left: -15px; margin-right: -15px; }
         .profile-station-divider { border-top: 1px solid var(--border); margin: 0; }
-        .profile-station-block.expanded { background: color-mix(in srgb, var(--blue) 18%, var(--card)); }
-        body:not(.dark-mode) .profile-station-block.expanded { background: color-mix(in srgb, var(--blue) 14%, var(--input-bg)); }
-        .profile-station-block.expanded .profile-station-divider { border-top-color: transparent; }
-        .profile-station-block.expanded + .profile-station-block .profile-station-divider { border-top-color: transparent; }
+        .profile-stations-rows { display: flex; flex-direction: column; gap: 10px; }
+        .profile-station-block {
+            border: 1px solid var(--border);
+            border-radius: var(--md-radius-input);
+            background: var(--card);
+            overflow: hidden;
+        }
+        .profile-station-block.expanded {
+            border-color: color-mix(in srgb, var(--blue) 42%, var(--border));
+            background: var(--card);
+        }
+        body.green-theme .profile-station-block.expanded {
+            border-color: color-mix(in srgb, var(--green) 42%, var(--border));
+        }
+        .profile-station-divider { display: none; }
         .profile-station-help { margin: 6px 0 0; }
         .profile-station-help summary { font-size: 10px; font-weight: 700; color: var(--text-muted); cursor: pointer; list-style: none; }
         .profile-station-help summary::-webkit-details-marker { display: none; }
         .profile-station-help p { font-size: 10.5px; color: var(--text-muted); margin: 6px 0 0; line-height: 1.45; }
-        .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: var(--list-row-min-h); padding: 8px 15px; box-sizing: border-box; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: background 0.15s; }
-        .profile-station-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
+        .profile-station-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 12px 14px; box-sizing: border-box; margin: 0; border-radius: 0; cursor: pointer; border: none; background: transparent; transition: opacity 0.15s, border-color 0.15s; }
+        .profile-station-row:active { background: transparent; opacity: 0.88; }
         .profile-station-block.expanded .profile-station-row { padding-bottom: 0; }
         .profile-station-block.expanded .profile-station-expand:not(.hidden) { margin: 0; padding: 0 15px 14px; }
         .profile-station-row-main { flex: 1; min-width: 0; }
@@ -1887,7 +1911,7 @@
                 } else if (window._firebaseConnected) {
                     const isDark = document.body.classList.contains('dark-mode');
                     const isGreen = document.body.classList.contains('green-theme');
-                    iconColor = isDark ? '#f8fafc' : (isGreen ? '#15803d' : '#64748b');
+                    iconColor = isDark ? '#f8fafc' : '#64748b';
                 } else if (pending) {
                     iconColor = '#f97316';
                 } else {
@@ -3431,6 +3455,7 @@
         <div class="screen-content">
             <div id="trend-year-nav-wrap" style="margin-bottom:12px;"></div>
             <div id="trend-future-month-nav-wrap" class="hidden" style="margin-bottom:12px;"></div>
+            <p id="trend-future-page-hint" class="hidden" data-i18n="future_trends_hint" style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:0 0 12px; padding:0 4px;">Projected from your roster link programme and train timings. For DDU (Nearby Station · TA claimed), dummy trains XXXXX/YYYYY cover BSB↔DDU travel — BSB departure is taken 3 hours before the DDU train, with 1 hour shuttle time to reach DDU.</p>
             <div id="trend-chart-area" style="width: 100%; overflow-x: auto;"></div>
             <div id="trend-future-detail-wrap" class="hidden" style="margin-top:16px;"></div>
             <div id="trend-list-below-graph" class="hidden" style="margin-top:16px;"></div>
@@ -15447,6 +15472,8 @@
         if (yearNav) yearNav.classList.toggle('hidden', true);
         if (futureMonthNav) futureMonthNav.classList.toggle('hidden', !showMonthNav);
         if (futureDetail) futureDetail.classList.toggle('hidden', view !== 'future');
+        const futurePageHint = document.getElementById('trend-future-page-hint');
+        if (futurePageHint) futurePageHint.classList.toggle('hidden', view !== 'future');
         if (signonArea) signonArea.classList.toggle('hidden', view !== 'signon');
         if (showMonthNav) {
             if (view === 'signon') window.renderTrendMonthNav('signon');
@@ -16529,8 +16556,7 @@
         const compareHint = compareOn ? `<p style="font-size:10px; color:var(--text-muted); text-align:center; margin:0 0 8px;">${t('trend_compare_scroll_hint', 'Swipe horizontally to compare projected (left) and actual (right).')}</p>` : '';
         const inner = `${compareHint}
             <div style="background:var(--card); border:1px solid var(--border); border-radius:12px; padding:4px 12px; box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">${rowsHtml}${footerHtml}</div>
-            ${actualOnlyNote}
-            <p style="font-size:11px; color:var(--text-muted); text-align:center; line-height:1.45; margin:12px 8px 0; padding:0 4px;">${t('future_trends_hint', 'Projected from your roster link programme and train timings. For DDU (Nearby Station · TA claimed), dummy trains XXXXX/YYYYY cover BSB↔DDU travel — BSB departure is taken 3 hours before the DDU train, with 1 hour shuttle time to reach DDU.')}</p>`;
+            ${actualOnlyNote}`;
         return window.buildTrendCollapsibleSection('future-detail', sectionHeading, inner);
     };
 
