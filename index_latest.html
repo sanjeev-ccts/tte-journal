@@ -112,21 +112,21 @@
         }
 
         body.green-theme {
-            --nav-indicator-bg: rgba(22, 163, 74, 0.16);
-            --blue: #16a34a;
-            --blue-fill: #15803d;
-            --row-blue-text: #166534;
+            --nav-indicator-bg: rgba(34, 197, 94, 0.2);
+            --blue: #22c55e;
+            --blue-fill: #22c55e;
+            --row-blue-text: #15803d;
             --table-header-bg: #dcfce7;
             --table-header-text: #14532d;
             --table-border: #86efac;
-            --sheet-grid-border: #17803d;
+            --sheet-grid-border: #4ade80;
             --sheet-locked-bg: #f0fdf4;
             --sheet-unlocked-bg: #dcfce7;
-            --sheet-header-bg: #15803d;
+            --sheet-header-bg: #22c55e;
             --sheet-header-text: #ecfdf5;
-            --all-header-bg: #15803d;
+            --all-header-bg: #22c55e;
             --all-header-text: #ecfdf5;
-            --all-header-border: #16a34a;
+            --all-header-border: #22c55e;
             --earnings-total-bg: #f0fdf4;
         }
 
@@ -201,24 +201,34 @@
         }
 
         body.dark-mode.green-theme {
-            --nav-indicator-bg: rgba(134, 239, 172, 0.14);
+            --nav-indicator-bg: rgba(134, 239, 172, 0.18);
             --row-stripe-bg: color-mix(in srgb, var(--card) 88%, #86efac 12%);
             --blue: #4ade80;
-            --blue-fill: #166534;
+            --blue-fill: #22c55e;
             --row-blue-text: #86efac;
-            --table-header-bg: #14532d;
+            --table-header-bg: #166534;
             --table-header-text: #bbf7d0;
-            --table-border: #166534;
-            --sheet-grid-border: #2f5a42;
+            --table-border: #22c55e;
+            --sheet-grid-border: #3d9e5c;
             --sheet-locked-bg: #14261a;
             --sheet-unlocked-bg: #1a3a24;
-            --sheet-header-bg: #166534;
-            --sheet-header-text: #dcfce7;
-            --all-header-bg: #166534;
-            --all-header-text: #dcfce7;
-            --all-header-border: #22c55e;
+            --sheet-header-bg: #22c55e;
+            --sheet-header-text: #ecfdf5;
+            --all-header-bg: #22c55e;
+            --all-header-text: #ecfdf5;
+            --all-header-border: #4ade80;
             --earnings-total-bg: #14261a;
         }
+        body.green-theme .nav-fab {
+            background: linear-gradient(165deg, #86efac 0%, #22c55e 42%, #16a34a 100%);
+            box-shadow: 0 4px 18px rgba(34, 197, 94, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.38);
+        }
+        body.green-theme button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.trend-collapse-header):not(#app-zoom-indicator):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn):not(.quick-add-leg-btn):not(.add-signon-link-btn):not(.dashboard-period-banner__close):not(.squeeze-ball) {
+            background: linear-gradient(165deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
+            box-shadow: 0 2px 10px rgba(34, 197, 94, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+        }
+        body.green-theme .trend-compare-hbar-fill--green,
+        body.green-theme .trend-hbar-fill--green { background: linear-gradient(90deg, #4ade80, #22c55e) !important; }
 
         body.dark-mode .summary-pill { background: linear-gradient(135deg, #1a2035, #0d2010) !important; color: #79c0ff !important; border-color: #30363d !important; }
         body.green-theme .summary-pill { color: var(--blue) !important; }
@@ -1305,25 +1315,40 @@
             100% { background-position: 400% 50%; }
         }
         .dashboard-period-banner__inner {
-            display: flex; flex-direction: row; align-items: center; gap: 10px; width: 100%; box-sizing: border-box;
-            background: var(--card); border-radius: 12px; padding: 10px 12px;
+            display: flex; flex-direction: row; align-items: center; gap: 8px; width: 100%; box-sizing: border-box;
+            background: var(--card); border-radius: 12px; padding: 10px 10px 10px 12px;
+        }
+        body:not(.dark-mode) .dashboard-period-banner--nda .dashboard-period-banner__inner {
+            background: linear-gradient(135deg, color-mix(in srgb, var(--purple) 14%, var(--card)) 0%, var(--card) 55%);
+            box-shadow: inset 0 0 22px color-mix(in srgb, var(--purple) 18%, transparent), 0 0 12px color-mix(in srgb, var(--purple) 12%, transparent);
+        }
+        body:not(.dark-mode) .dashboard-period-banner--ta .dashboard-period-banner__inner {
+            background: linear-gradient(135deg, color-mix(in srgb, var(--ta-accent) 14%, var(--card)) 0%, var(--card) 55%);
+            box-shadow: inset 0 0 22px color-mix(in srgb, var(--ta-accent) 18%, transparent), 0 0 12px color-mix(in srgb, var(--ta-accent) 12%, transparent);
+        }
+        body.dark-mode .dashboard-period-banner--nda .dashboard-period-banner__inner {
+            box-shadow: inset 0 0 24px color-mix(in srgb, var(--purple) 22%, transparent), 0 0 14px color-mix(in srgb, var(--purple) 15%, transparent);
+        }
+        body.dark-mode .dashboard-period-banner--ta .dashboard-period-banner__inner {
+            box-shadow: inset 0 0 24px color-mix(in srgb, var(--ta-accent) 22%, transparent), 0 0 14px color-mix(in srgb, var(--ta-accent) 15%, transparent);
         }
         .dashboard-period-banner__text {
             flex: 1 1 auto; min-width: 0; font-size: 12px; font-weight: 700; line-height: 1.45; color: var(--text);
-            word-break: normal; overflow-wrap: anywhere;
+            word-break: normal; overflow-wrap: anywhere; padding-right: 4px;
         }
+        .period-banner-value { font-weight: 900; white-space: nowrap; }
+        .dashboard-period-banner--nda .period-banner-value { color: var(--purple); }
+        .dashboard-period-banner--ta .period-banner-value { color: var(--ta-accent); }
         .dashboard-period-banner__close {
-            flex: 0 0 auto; width: auto !important; min-height: 0 !important; min-width: 32px !important;
-            margin: 0 !important; padding: 4px 10px !important; font-size: 12px !important; line-height: 1 !important;
+            flex: 0 0 auto; margin: 0 0 0 auto !important;
+            width: 30px !important; height: 30px !important; min-width: 30px !important; min-height: 30px !important;
+            padding: 0 !important; font-size: 14px !important; line-height: 1 !important;
             font-weight: 700 !important; color: var(--text-muted) !important;
-            background: var(--input-bg) !important; border-radius: 14px !important;
+            background: var(--input-bg) !important; border-radius: 50% !important;
             box-shadow: none !important; border: 1px solid var(--border) !important;
-            transform: none !important;
+            transform: none !important; display: inline-flex !important; align-items: center !important; justify-content: center !important;
         }
         .dashboard-period-banner__close:active { opacity: 0.85; transform: none !important; }
-        .period-banner-nda-hrs { color: var(--purple); font-weight: 900; }
-        .period-banner-nda-mins { color: var(--blue); font-weight: 900; }
-        .period-banner-ta-amt { color: var(--ta-accent); font-weight: 900; }
         .bottom-icon-wrap { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 5px; padding-bottom: 14px; flex-shrink: 0; }
         .bottom-icon-wrap:not(#bottom-fab-wrap) .bottom-icon { transform: none; }
         .bottom-icon-label { font-size: var(--text-caption); font-weight: 600; color: var(--md-on-surface-variant); white-space: nowrap; line-height: 1; letter-spacing: 0.2px; transition: color 0.15s; }
@@ -1541,14 +1566,9 @@
         #nda-signon-scroll-wrap { border: 1px solid var(--border); border-radius: 10px; overflow: visible; }
         .subtle-pill-banner { color: var(--text-muted) !important; background: color-mix(in srgb, var(--blue) 10%, var(--card)) !important; border: 1px dashed color-mix(in srgb, var(--blue) 38%, var(--border)) !important; border-radius: 20px !important; box-shadow: none !important; font-size: 11px !important; font-weight: 700; line-height: 1.45; }
         body:not(.dark-mode) .subtle-pill-banner { background: color-mix(in srgb, var(--blue) 12%, var(--input-bg)) !important; border-color: color-mix(in srgb, var(--blue) 42%, var(--border)) !important; }
-        .aj-secondary-action-box { margin-top: 12px; border-radius: 16px; border: 1px solid var(--border); background: var(--card); overflow: hidden; box-shadow: var(--md-elevation-1); }
-        .aj-team-select-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 14px; min-height: 48px; box-sizing: border-box; cursor: pointer; border-top: 1px solid var(--border); -webkit-tap-highlight-color: transparent; }
-        .aj-secondary-action-box > .aj-team-select-row:first-child { border-top: none; }
-        .aj-team-select-row:active { background: color-mix(in srgb, var(--blue) 8%, transparent); }
-        .aj-team-select-label { font-size: 13px; font-weight: 700; color: var(--text); }
-        .aj-team-select-value { font-size: 12px; font-weight: 800; color: var(--blue-fill); flex-shrink: 0; max-width: 55%; text-align: right; }
-        .aj-team-select-chevron { flex-shrink: 0; color: var(--text-muted); display: flex; align-items: center; opacity: 0.85; }
-        .aj-team-select-chevron svg { width: 20px; height: 20px; }
+        .aj-secondary-action-stack { margin-top: 12px; display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+        .add-signon-link-btn { width: auto !important; max-width: min(320px, 92%); margin: 0 !important; padding: 8px 18px !important; display: block; text-align: center; font-size: 12px !important; font-weight: 700 !important; min-height: 0 !important; line-height: 1.35 !important; box-shadow: none !important; }
+        .add-signon-link-btn:active { opacity: 0.88; transform: translateY(1px); }
         #form-duty .aj-duty-form-card input:not([type="checkbox"]):not([type="radio"]) {
             margin-top: 6px; min-height: 40px; padding: 8px 10px; font-size: 15px;
         }
@@ -4808,15 +4828,9 @@
                     <span class="quick-add-action-label" style="white-space:nowrap;">Add Rest/Leave</span>
                 </div>
             </div>
-            <div id="add-journey-secondary-actions" class="aj-secondary-action-box">
-                <div id="btn-add-signon-time" class="aj-team-select-row" role="button" tabindex="0" onclick="window.openNdaSignOnFromAddJourney()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.openNdaSignOnFromAddJourney();}">
-                    <span class="aj-team-select-label" data-i18n="add_signon_time_btn">Add Sign on time manually</span>
-                    <span class="aj-team-select-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                </div>
-                <div id="add-journey-team-sheet-row" class="aj-team-select-row" role="button" tabindex="0" onclick="window.openSelectTeamModal()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.openSelectTeamModal();}">
-                    <span class="aj-team-select-label" id="select-team-line">Select Team no — Not Selected</span>
-                    <span class="aj-team-select-chevron" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-                </div>
+            <div id="add-journey-secondary-actions" class="aj-secondary-action-stack">
+                <button type="button" id="btn-add-signon-time" class="add-signon-link-btn subtle-pill-banner" onclick="window.openNdaSignOnFromAddJourney()" data-i18n="add_signon_time_btn">Sign on time</button>
+                <button type="button" id="add-journey-team-sheet-row" class="add-signon-link-btn subtle-pill-banner" onclick="window.openSelectTeamModal()"><span id="select-team-line">Select team-</span></button>
             </div>
 
             <!-- Point: compact spreadsheet view of duty history, same underlying data/rendering
@@ -11871,10 +11885,9 @@
     window.updateSelectTeamDisplay = function() {
         const el = document.getElementById('select-team-line');
         if (!el) return;
-        const prefix = window.i18n ? window.i18n.tOr('add_select_team_no', 'Select Team no') : 'Select Team no';
+        const prefix = window.i18n ? window.i18n.tOr('add_select_team_short', 'Select team') : 'Select team';
         const saved = localStorage.getItem('roster_my_team');
-        const suffix = saved ? ('Team ' + saved) : (window.i18n ? window.i18n.tOr('team_not_selected', 'Not Selected') : 'Not Selected');
-        el.textContent = prefix + ' — ' + suffix;
+        el.textContent = saved ? `${prefix}-${saved}` : `${prefix}-`;
     };
 
     window.openSelectTeamModal = function() {
@@ -17812,7 +17825,7 @@
                     : `This is your NDA from ${range}`;
                 parts.push(`<div class="dashboard-period-banner dashboard-period-banner--nda" role="status">
                     <div class="dashboard-period-banner__inner">
-                        <div class="dashboard-period-banner__text">${escapeHtml(prefix)} : <span class="period-banner-nda-hrs">${hrsStr}</span>:<span class="period-banner-nda-mins">${minsStr}</span> hrs</div>
+                        <div class="dashboard-period-banner__text">${escapeHtml(prefix)} : <span class="period-banner-value">${hrsStr}:${minsStr} hrs</span></div>
                         <button type="button" class="dashboard-period-banner__close" onclick="window.dismissPeriodSummaryBanner('nda')" aria-label="Close">✕</button>
                     </div>
                 </div>`);
@@ -17833,7 +17846,7 @@
                     : `This is your ${labelMonth} ${y} TA`;
                 parts.push(`<div class="dashboard-period-banner dashboard-period-banner--ta" role="status">
                     <div class="dashboard-period-banner__inner">
-                        <div class="dashboard-period-banner__text">${escapeHtml(prefix)} : <span class="period-banner-ta-amt">₹${taAmt}</span></div>
+                        <div class="dashboard-period-banner__text">${escapeHtml(prefix)} : <span class="period-banner-value">₹${taAmt}</span></div>
                         <button type="button" class="dashboard-period-banner__close" onclick="window.dismissPeriodSummaryBanner('ta')" aria-label="Close">✕</button>
                     </div>
                 </div>`);
