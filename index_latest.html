@@ -643,6 +643,7 @@
             height: calc(100% - var(--bottom-ui-offset) - var(--connectivity-bar-h)) !important;
         }
         body.roster-iframe-open #main-bottom-bar { z-index: 1000002 !important; }
+        body.roster-iframe-open #bottom-nav-indicator { opacity: 0 !important; pointer-events: none; }
         body.roster-mandali-open #main-bottom-bar,
         body.roster-mandali-open #bottom-nav-chrome { visibility: hidden; pointer-events: none; }
         
@@ -2210,7 +2211,7 @@
                                 responded = true;
                                 window.removeEventListener('message', onRosterBackResponse);
                                 const el = document.getElementById('roster-iframe-modal');
-                                if (el) { window._backButtonClosingModalId = 'roster-iframe-modal'; el.classList.add('hidden'); }
+                                if (el) { window._backButtonClosingModalId = 'roster-iframe-modal'; el.classList.add('hidden'); window.notifyRosterIframeHidden && window.notifyRosterIframeHidden(); }
                             }
                         };
                         window.addEventListener('message', onRosterBackResponse);
@@ -2221,11 +2222,11 @@
                             if (responded) return;
                             window.removeEventListener('message', onRosterBackResponse);
                             const el = document.getElementById('roster-iframe-modal');
-                            if (el && !el.classList.contains('hidden')) { window._backButtonClosingModalId = 'roster-iframe-modal'; el.classList.add('hidden'); }
+                            if (el && !el.classList.contains('hidden')) { window._backButtonClosingModalId = 'roster-iframe-modal'; el.classList.add('hidden'); window.notifyRosterIframeHidden && window.notifyRosterIframeHidden(); }
                         }, 1200);
                     } else {
                         const el = document.getElementById('roster-iframe-modal');
-                        if (el) { window._backButtonClosingModalId = 'roster-iframe-modal'; el.classList.add('hidden'); }
+                        if (el) { window._backButtonClosingModalId = 'roster-iframe-modal'; el.classList.add('hidden'); window.notifyRosterIframeHidden && window.notifyRosterIframeHidden(); }
                     }
                     return;
                 }
@@ -5929,10 +5930,57 @@
         }
     };
 
+    window.suppressParentBottomNavForRoster = function() {
+        const indicator = document.getElementById('bottom-nav-indicator');
+        if (indicator) indicator.classList.remove('visible');
+        ['bottom-profile-wrap', 'bottom-alerts-wrap', 'bottom-settings-wrap', 'bottom-home-wrap', 'bottom-fab-wrap'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('illuminated');
+        });
+    };
+
+    window.restoreParentBottomNavForActiveScreen = function() {
+        const settingsEl = document.getElementById('screen-settings');
+        const settingsVisible = settingsEl && !settingsEl.classList.contains('hidden');
+        let screenId = 'screen-dashboard';
+        if (settingsVisible && window._settingsOpenedFromRoster) screenId = 'screen-settings';
+        else {
+            const active = document.querySelector('[id^="screen-"]:not(.hidden)');
+            if (active) screenId = active.id;
+        }
+        const profileWrap = document.getElementById('bottom-profile-wrap');
+        if (profileWrap) profileWrap.classList.toggle('illuminated', screenId === 'screen-register');
+        const alertsWrap = document.getElementById('bottom-alerts-wrap');
+        if (alertsWrap) alertsWrap.classList.toggle('illuminated', screenId === 'screen-alerts');
+        const settingsWrap = document.getElementById('bottom-settings-wrap');
+        if (settingsWrap) settingsWrap.classList.toggle('illuminated', screenId === 'screen-settings');
+        const homeWrap = document.getElementById('bottom-home-wrap');
+        if (homeWrap) homeWrap.classList.toggle('illuminated', screenId === 'screen-dashboard');
+        const fabWrap = document.getElementById('bottom-fab-wrap');
+        if (fabWrap) fabWrap.classList.toggle('illuminated', screenId === 'screen-add');
+        if (window.updateBottomNavIndicator) {
+            window.updateBottomNavIndicator(screenId);
+            requestAnimationFrame(() => window.updateBottomNavIndicator(screenId));
+        }
+    };
+
+    window.notifyRosterIframeHidden = function() {
+        if (!document.body.classList.contains('roster-iframe-open')) return;
+        document.body.classList.remove('roster-iframe-open', 'roster-mandali-open');
+        window._rosterMandaliOpen = false;
+        window.restoreParentBottomNavForActiveScreen();
+        window.renderYourDutyBox && window.renderYourDutyBox();
+        window.renderNextDutyBox && window.renderNextDutyBox();
+    };
+
     window.updateBottomNavIndicator = function(screenId) {
         const indicator = document.getElementById('bottom-nav-indicator');
         const bar = document.getElementById('main-bottom-bar');
         if (!indicator || !bar || bar.classList.contains('hidden')) return;
+        if (document.body.classList.contains('roster-iframe-open')) {
+            indicator.classList.remove('visible');
+            return;
+        }
         const wrapMap = {
             'screen-register': 'bottom-profile-wrap',
             'screen-alerts': 'bottom-alerts-wrap',
@@ -13495,9 +13543,7 @@
         const rosterEl = document.getElementById('roster-iframe-modal');
         if (!rosterEl || rosterEl.classList.contains('hidden')) return false;
         rosterEl.classList.add('hidden');
-        document.body.classList.remove('roster-iframe-open', 'roster-mandali-open');
-        window.renderYourDutyBox && window.renderYourDutyBox();
-        window.renderNextDutyBox && window.renderNextDutyBox();
+        window.notifyRosterIframeHidden();
         return true;
     };
 
@@ -13524,10 +13570,7 @@
         document.body.classList.add('roster-iframe-open');
         const bBar = document.getElementById('main-bottom-bar');
         if (bBar) bBar.classList.remove('hidden');
-        if (window.updateBottomNavIndicator) {
-            window.updateBottomNavIndicator('screen-dashboard');
-            requestAnimationFrame(() => window.updateBottomNavIndicator('screen-dashboard'));
-        }
+        if (window.suppressParentBottomNavForRoster) window.suppressParentBottomNavForRoster();
     };
 
     window._rosterMandaliOpen = false;
@@ -13588,10 +13631,7 @@
         // app's bar, but Roster has no journey-logging concept of its own - tapping it there
         // signals here instead, closing the Roster iframe and opening the real Add Journey screen.
         if (event.data && event.data.type === 'OPEN_ADD_JOURNEY') {
-            const rosterEl = document.getElementById('roster-iframe-modal');
-            if (rosterEl && !rosterEl.classList.contains('hidden')) {
-                rosterEl.classList.add('hidden');
-            }
+            window.dismissRosterIframeIfOpen();
             window._sheetModeActive = false;
             window._sheetModeSaveCallback = null;
             window._sheetModeNonDutySaveCallback = null;
@@ -13600,20 +13640,14 @@
             window.navTo('screen-add');
         }
         if (event.data && event.data.type === 'OPEN_PROFILE') {
-            const rosterEl = document.getElementById('roster-iframe-modal');
-            if (rosterEl && !rosterEl.classList.contains('hidden')) {
-                rosterEl.classList.add('hidden');
-            }
+            window.dismissRosterIframeIfOpen();
             window.navTo('screen-register');
         }
         if (event.data && event.data.type === 'OPEN_SETTINGS') {
             window.openSettingsModal();
         }
         if (event.data && event.data.type === 'OPEN_NOTIFICATIONS') {
-            const rosterEl = document.getElementById('roster-iframe-modal');
-            if (rosterEl && !rosterEl.classList.contains('hidden')) {
-                rosterEl.classList.add('hidden');
-            }
+            window.dismissRosterIframeIfOpen();
             window.showNotifications();
         }
         if (event.data && event.data.type === 'LANGUAGE_CHANGED') {
