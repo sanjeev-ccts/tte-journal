@@ -181,7 +181,7 @@
         body.green-theme .nav-card:has(#dash-ta-val) .nav-icon { color: var(--ta-accent) !important; }
         .profile-inline-add-btn {
             width: auto !important; margin: 0 !important; padding: 0 16px !important;
-            background: var(--blue-fill) !important; flex-shrink: 0;
+            background: var(--blue-fill) !important; color: #fff !important; flex-shrink: 0;
             min-height: 40px !important; border-radius: 8px !important;
             box-shadow: none !important; border: none !important; font-size: 13px !important;
         }
@@ -486,6 +486,7 @@
         .nav-sub-text { font-size: 11.5px; color: var(--text-muted); font-weight: normal; }
         .nav-icon { font-size: 19px; margin-bottom: 2px; display: inline-block; }
         .nav-icon svg { width: 22px; height: 22px; }
+        .nav-card:has(#dash-ta-val) .nav-icon svg { width: 28px !important; height: 28px !important; }
         
         input:not([type="checkbox"]):not([type="radio"]), select { width: 100%; padding: 8px 12px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: 30px; margin-top: 4px; font-size: 14.5px; font-weight: 500; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s; box-sizing: border-box; -webkit-appearance: none; appearance: none; }
         input::placeholder, textarea::placeholder { color: var(--text-muted); opacity: 0.6; text-transform: none; }
@@ -541,11 +542,11 @@
         .profile-chip-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; min-height: 0; }
         .profile-station-expand .profile-chip-row:empty::after { content: attr(data-empty-label); font-size: 10.5px; color: var(--text-muted); font-style: italic; }
         
-        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.trend-collapse-header):not(#app-zoom-indicator):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn):not(.quick-add-leg-btn):not(.add-signon-link-btn):not(.dashboard-period-banner__close) {
+        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.compare-pill-fab):not(.tab-btn):not(.month-nav-arrow-btn):not(.back-btn):not(.dash-hamburger-btn):not(.slider-btn):not(.modal-icon-close):not(.modal-close-btn):not(.modal-inline-action-btn):not(.trend-collapse-header):not(#app-zoom-indicator):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-share):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-share):not(.all-journey-action-cancel):not(.manage-action-edit):not(.manage-action-delete):not(.ui-icon-only-btn):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):not(.circ-btn):not(.circ-modal-close-btn):not(.quick-add-leg-btn):not(.add-signon-link-btn):not(.dashboard-period-banner__close) {
             width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue-fill); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); transition: background 0.3s;
         }
         .quick-add-leg-btn { width: auto; padding: 10px 20px; border-radius: 20px; background: linear-gradient(135deg, #f59e0b, #d97706); font-size: 16px; font-weight: 900; }
-        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-cancel):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
+        button:not(.bottom-icon):not(.nav-fab):not(.header-tab):not(.sheet-action-edit):not(.sheet-action-delete):not(.sheet-action-share):not(.sheet-action-cancel):not(.all-journey-action-edit):not(.all-journey-action-delete):not(.all-journey-action-share):not(.all-journey-action-cancel):not(.profile-inline-add-btn):not(.circ-fab-3d):not(.circ-icon-action):not(.circ-clear-filters-btn):active { opacity: 0.8; transform: translateY(2px); box-shadow: none; }
         .sheet-action-row button, .all-journey-action-row button {
             box-shadow: none !important; background-image: none !important; border: none !important;
             outline: none !important; -webkit-tap-highlight-color: transparent; filter: none !important;
@@ -592,8 +593,20 @@
             gap: 5px !important; box-shadow: none !important;
         }
         .all-journey-action-row .all-journey-action-cancel,
-        .sheet-action-row .sheet-action-cancel {
+        .all-journey-action-row .all-journey-action-share,
+        .sheet-action-row .sheet-action-cancel,
+        .sheet-action-row .sheet-action-share {
             flex: 0 0 44px !important; min-width: 44px !important; padding: 8px !important;
+        }
+        .sheet-action-edit, .sheet-action-delete,
+        .all-journey-action-edit, .all-journey-action-delete {
+            color: #fff !important;
+        }
+        .sheet-action-share, .all-journey-action-share {
+            background: #0ea5e9 !important; color: #fff !important;
+        }
+        .sheet-action-share svg, .all-journey-action-share svg {
+            width: 16px; height: 16px; fill: #fff; flex-shrink: 0; display: block;
         }
         .all-journey-action-edit svg, .sheet-action-edit svg, .manage-action-edit svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
         .all-journey-action-delete svg, .sheet-action-delete svg, .manage-action-delete svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
@@ -4772,6 +4785,54 @@
         size = size || 14;
         color = color || 'currentColor';
         return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="display:block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    };
+    window.svgShareIcon = function(size, color) {
+        size = size || 16;
+        color = color || '#fff';
+        return '<svg viewBox="0 0 640 640" width="' + size + '" height="' + size + '" fill="' + color + '" aria-hidden="true" style="display:block;"><path d="M371.8 82.4C359.8 87.4 352 99 352 112L352 192L240 192C142.8 192 64 270.8 64 368C64 481.3 145.5 531.9 164.2 542.1C166.7 543.5 169.5 544 172.3 544C183.2 544 192 535.1 192 524.3C192 516.8 187.7 509.9 182.2 504.8C172.8 496 160 478.4 160 448.1C160 395.1 203 352.1 256 352.1L352 352.1L352 432.1C352 445 359.8 456.7 371.8 461.7C383.8 466.7 397.5 463.9 406.7 454.8L566.7 294.8C579.2 282.3 579.2 262 566.7 249.5L406.7 89.5C397.5 80.3 383.8 77.6 371.8 82.6z"/></svg>';
+    };
+    function formatJourneyShareText(data) {
+        if (!data) return '';
+        const train = String(data.train || '').trim();
+        if (!train) return '';
+        const depStn = String(data.depStn || '').trim();
+        const arrStn = String(data.arrStn || '').trim();
+        const depTime = String(data.depTime || '').trim();
+        const arrTime = String(data.arrTime || '').trim();
+        const lines = ['Train No: ' + train];
+        if (depStn || arrStn) {
+            lines.push((depStn || '—') + '→' + (arrStn || '—'));
+        }
+        if (depTime || arrTime) {
+            lines.push((depTime || '—') + '-' + (arrTime || '—'));
+        }
+        return lines.join('\n');
+    }
+    window.shareJourneyText = function(text) {
+        if (!text) return;
+        if (navigator.share) {
+            navigator.share({ title: 'TTE LOGS — Journey', text }).catch(function() {});
+            return;
+        }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function() {
+                if (window.showSuccessSnackbar) window.showSuccessSnackbar('Copied to clipboard');
+            }).catch(function() {});
+        }
+    };
+    window.shareSheetJourneyRow = function(rowId) {
+        const row = (window._sheetRows || []).find(function(r) { return r.rowId === rowId; });
+        if (!row || row.isNonDutyRow || row.isChainBreakRow) return;
+        const text = formatJourneyShareText(row.values || {});
+        if (!text) return;
+        window.shareJourneyText(text);
+    };
+    window.shareAllJourneyEntry = function(legId) {
+        const leg = (window.appState.legs || []).find(function(l) { return String(l.id) === String(legId); });
+        if (!leg || leg.isNonDuty) return;
+        const text = formatJourneyShareText(leg);
+        if (!text) return;
+        window.shareJourneyText(text);
     };
     window.allJourneySelectMark = function(checked) {
         return checked
@@ -11068,11 +11129,15 @@
         const editCall = row.isNonDutyRow
             ? `window.sheetEditNonDutyRow(${row.rowId})`
             : `window.sheetEditRow(${row.rowId})`;
+        const shareBtn = (!row.isNonDutyRow && !row.isChainBreakRow)
+            ? `<button type="button" class="sheet-action-share" aria-label="Share" onclick="event.stopPropagation(); window.shareSheetJourneyRow(${row.rowId})">${window.svgShareIcon(16, '#fff')}</button>`
+            : '';
         return `<tr class="sheet-action-row" data-sheet-action-row="${row.rowId}">
             <td colspan="7">
                 <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap;">
                     <button type="button" class="sheet-action-edit" onclick="event.stopPropagation(); ${editCall}">${window.svgEditIcon(14, '#fff')} Edit</button>
                     <button type="button" class="sheet-action-delete" onclick="event.stopPropagation(); window.sheetDeleteRow(${row.rowId})">${window.svgTrashIcon(14, '#fff')} Delete</button>
+                    ${shareBtn}
                     <button type="button" class="sheet-action-cancel" onclick="event.stopPropagation(); window.sheetCancelActionRow(${row.rowId})" aria-label="Cancel">${window.svgCrossIcon(14, '#fff')}</button>
                 </div>
             </td>
@@ -11700,9 +11765,13 @@
     function buildAllJourneyActionRow(leg) {
         const id = String(leg.id);
         const isMultiDayLeave = leg.isNonDuty && leg.dutyType === 'Leave' && leg.fromDate !== leg.toDate;
+        const shareBtn = !leg.isNonDuty
+            ? `<button type="button" class="all-journey-action-share" aria-label="Share" onclick="event.stopPropagation(); window.shareAllJourneyEntry('${id}')">${window.svgShareIcon(16, '#fff')}</button>`
+            : '';
         return `<div class="all-journey-action-row" data-action-for="${id}">
             <button type="button" class="all-journey-action-edit" aria-label="${isMultiDayLeave ? 'Edit complete leave period' : 'Edit entry'}" onclick="event.stopPropagation(); window.editAllJourneyEntry('${id}')">${window.svgEditIcon(14, '#fff')} Edit</button>
             <button type="button" class="all-journey-action-delete" aria-label="${isMultiDayLeave ? 'Delete complete leave period' : 'Delete entry'}" onclick="event.stopPropagation(); window.deleteAllJourneyEntry('${id}')">${window.svgTrashIcon(14, '#fff')} Delete</button>
+            ${shareBtn}
             <button type="button" class="all-journey-action-cancel" aria-label="Cancel" onclick="event.stopPropagation(); window.toggleAllJourneyExpand('${id}')">${window.svgCrossIcon(14, '#fff')}</button>
         </div>`;
     }
