@@ -380,10 +380,24 @@
     .select-clear-row select { flex: 1; margin-bottom: 10px; }
     .search-card { border-radius: 30px; padding: 8px 14px; margin-bottom: 14px; }
     .search-card label { display: block; text-align: center; font-size: 12.5px; font-weight: 900; margin-bottom: 5px; padding: 2px 12px; color: var(--blue); }
-    .search-row-3 { display: flex; gap: 6px; align-items: flex-start; }
+    .search-row-3 { display: flex; gap: 6px; align-items: stretch; }
     .search-row-3 input { flex: 1; margin-bottom: 0; padding: 0 10px; font-size: 12.5px; height: 34px; min-height: 34px; max-height: 34px; line-height: 34px; border-radius: var(--md-radius-input); box-sizing: border-box; }
-    .search-field-wrap { flex: 1; min-width: 0; }
-    .search-field-caption { font-size: 9.5px; font-weight: 600; color: var(--text-muted); text-align: center; margin: 2px 0 0 0; }
+    .search-field-wrap {
+        flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: stretch;
+        border: 1px solid var(--border); border-radius: var(--md-radius-input);
+        background: var(--input-bg); overflow: hidden; min-height: 58px;
+    }
+    .search-field-wrap input {
+        flex: 1; border: none !important; border-radius: 0 !important; box-shadow: none !important;
+        background: transparent !important; margin: 0 !important;
+    }
+    .search-field-caption {
+        font-size: 9.5px; font-weight: 600; color: var(--text-muted); text-align: center;
+        margin: 0; padding: 4px 6px 5px; min-height: 22px; box-sizing: border-box;
+        display: flex; align-items: center; justify-content: center;
+        border-top: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+        background: color-mix(in srgb, var(--card) 55%, var(--input-bg));
+    }
     .icon-search-btn, .clear-btn { width: 36px; height: 36px; min-width: 36px; min-height: 36px; flex-shrink: 0; padding: 0; border-radius: 12px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-sizing: border-box; line-height: 1; }
     .icon-search-btn { background: var(--blue-fill); color: var(--on-accent-fill); border: none; box-shadow: none; }
     .icon-search-btn svg { width: 18px; height: 18px; display: block; }
@@ -485,8 +499,11 @@
     .cal-day { border-radius: 8px; background: var(--card); border: 1px solid var(--cal-outer-border); display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 1px; cursor: pointer; overflow: hidden; min-height: 92px; padding: 12px 2px 2px; box-sizing: border-box; box-shadow: 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06); position: relative; }
     body.dark-mode .cal-day { box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3); border-color: var(--cal-outer-border); }
     .cal-day.cal-empty { visibility: hidden; cursor: default; }
+    .cal-day:has(.cal-month-pill) {
+        padding: 0; border: none; background: transparent; box-shadow: none; overflow: hidden;
+    }
     .cal-month-pill {
-        width: 100%; height: 100%; min-height: 92px; border-radius: 14px;
+        width: 100%; height: 100%; min-height: 92px; border-radius: 8px;
         background: linear-gradient(155deg,
             color-mix(in srgb, var(--blue-fill) 16%, var(--card)) 0%,
             color-mix(in srgb, var(--blue-fill) 28%, var(--input-bg)) 100%);
@@ -881,16 +898,16 @@ if (window.parent !== window) {
                 <div class="aq-label">Edit Teams</div>
             </div>
             <div class="admin-quick-card aq-feedback" onclick="window.openFeedbackInboxModal()">
-                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M112 128C85.5 128 64 149.5 64 176L64 384C64 410.5 85.5 432 112 432L160 432L160 512.2C160 520.4 165.6 527.7 173.4 530.3C181.2 532.9 189.8 530.3 195.1 524.2L334.9 360.2C338.3 356.3 343.1 354.1 348.1 354.1L528 354.1C554.5 354.1 576 332.6 576 306.1L576 176C576 149.5 554.5 128 528 128L112 128z"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 544C461.4 544 576 436.5 576 304C576 171.5 461.4 64 320 64C178.6 64 64 171.5 64 304C64 358.3 83.2 408.3 115.6 448.5L66.8 540.8C62 549.8 63.5 560.8 70.4 568.3C77.3 575.8 88.2 578.1 97.5 574.1L215.9 523.4C247.7 536.6 282.9 544 320 544zM192 272C209.7 272 224 286.3 224 304C224 321.7 209.7 336 192 336C174.3 336 160 321.7 160 304C160 286.3 174.3 272 192 272zM320 272C337.7 272 352 286.3 352 304C352 321.7 337.7 336 320 336C302.3 336 288 321.7 288 304C288 286.3 302.3 272 320 272zM416 304C416 286.3 430.3 272 448 272C465.7 272 480 286.3 480 304C480 321.7 465.7 336 448 336C430.3 336 416 321.7 416 304z"/></svg></div>
                 <div class="aq-label">Feedback</div>
                 <span id="admin-feedback-count-badge" class="hidden aq-badge">0</span>
             </div>
             <div class="admin-quick-card aq-schedule" onclick="window.toggleScheduleTable()">
-                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M224 64C241.7 64 256 78.3 256 96L256 128L384 128L384 96C384 78.3 398.3 64 416 64C433.7 64 448 78.3 448 96L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 96C192 78.3 206.3 64 224 64zM464 288L176 288C167.2 288 160 295.2 160 304L160 336C160 344.8 167.2 352 176 352L464 352C472.8 352 480 344.8 480 336L480 304C480 295.2 472.8 288 464 288z"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C178.6 576 64 461.4 64 320C64 178.6 178.6 64 320 64zM288 320C288 337.7 302.3 352 320 352C337.7 352 352 337.7 352 320L352 192C352 174.3 337.7 160 320 160C302.3 160 288 174.3 288 192L288 320z"/></svg></div>
                 <div class="aq-label">Edit Schedule</div>
             </div>
             <div class="admin-quick-card aq-save" onclick="window.openAnchorDateModal()">
-                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M160 64C124.7 64 96 92.7 96 128L96 512C96 547.3 124.7 576 160 576L480 576C515.3 576 544 547.3 544 512L544 237.3C544 220.3 537.3 204 525.3 192L432 98.7C420 86.7 403.7 80 386.7 80L160 80zM416 128.1L495.9 208L416 208L416 128.1zM192 448L448 448L448 512L192 512L192 448z"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 128C302.3 128 288 142.3 288 160C288 177.7 302.3 192 320 192C337.7 192 352 177.7 352 160C352 142.3 337.7 128 320 128zM224 160C224 107 267 64 320 64C373 64 416 107 416 160C416 201.8 389.3 237.4 352 250.5L352 508.4C414.9 494.1 462.2 438.7 463.9 371.9L447.8 386C437.8 394.7 422.7 393.7 413.9 383.7C405.1 373.7 406.2 358.6 416.2 349.8L480.2 293.8C489.2 285.9 502.8 285.9 511.8 293.8L575.8 349.8C585.8 358.5 586.8 373.7 578.1 383.7C569.4 393.7 554.2 394.7 544.2 386L528 371.9C525.9 485 433.6 576 320 576C206.4 576 114.1 485 112 371.9L95.8 386.1C85.8 394.8 70.7 393.8 61.9 383.8C53.1 373.8 54.2 358.7 64.2 349.9L128.2 293.9C137.2 286 150.8 286 159.8 293.9L223.8 349.9C233.8 358.6 234.8 373.8 226.1 383.8C217.4 393.8 202.2 394.8 192.2 386.1L176.1 372C177.9 438.8 225.2 494.2 288 508.5L288 250.6C250.7 237.4 224 201.9 224 160.1z"/></svg></div>
                 <div class="aq-label">Anchor Date</div>
             </div>
             <div class="admin-quick-card aq-progs" onclick="window.toggleProgTable()">

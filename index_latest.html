@@ -693,11 +693,11 @@
             box-shadow: var(--md-elevation-1);
         }
         .dash-link-card .dash-link-row {
-            min-height: var(--list-row-min-h); padding: 8px 16px; box-sizing: border-box;
+            min-height: var(--list-row-min-h); padding: 8px 18px; box-sizing: border-box;
             background: transparent; border-radius: 0;
             box-shadow: none !important;
         }
-        .dash-link-divider { border-top: 1px dashed var(--border); margin: 0 16px; }
+        .dash-link-divider { border-top: 1px solid var(--border); margin: 0; }
         .dash-link-row {
             display: flex; align-items: center; justify-content: space-between; gap: 12px;
             min-height: var(--list-row-min-h); padding: 8px 16px; box-sizing: border-box;
@@ -725,23 +725,38 @@
             background: var(--card);
         }
         .dash-link-row:active { transform: scale(0.98); }
-        .dash-link-label { display: flex; align-items: center; gap: 10px; }
-        .dash-link-label svg { width: 20px; height: 20px; flex-shrink: 0; }
-        .dash-link-label svg.dash-link-icon--fa { width: 22px; height: 22px; }
+        .dash-link-label { display: flex; align-items: center; gap: 12px; }
         .dash-link-label > svg,
         .dash-link-label > .dash-link-icon-badge {
-            width: 36px; height: 36px; padding: 7px; box-sizing: border-box; border-radius: 10px;
+            width: 36px; height: 36px; flex-shrink: 0;
+            padding: 8px; box-sizing: border-box; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
             background: color-mix(in srgb, var(--blue) 13%, transparent);
+            color: var(--blue);
         }
+        .dash-link-label > svg { width: 36px; height: 36px; }
+        .dash-link-label svg.dash-link-icon--fa { width: 20px; height: 20px; display: block; }
         .dash-link-label .dash-link-icon--circular-book .circ-book-page { fill: var(--orange); }
-        .dash-link-label .dash-link-icon--circular-book .circ-book-cover { fill: var(--blue); }
+        .dash-link-label .dash-link-icon--circular-book .circ-book-cover {
+            fill: none; stroke: var(--blue); stroke-width: 22px; stroke-linejoin: round;
+        }
         .dash-link-row--blue .dash-link-label { color: var(--blue); }
         .dash-link-row--blue .dash-link-chevron { color: var(--blue); opacity: 0.85; }
         body.card-shadow-on:not(.dark-mode) .dash-link-row { box-shadow: 0 3px 10px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.55); }
         body.dark-mode.card-shadow-on .dash-link-row { box-shadow: 0 3px 10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.07); }
-        .dash-link-chevron { flex-shrink: 0; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
-        .dash-link-chevron svg { width: 28px; height: 28px; stroke-width: 3; }
-        .dash-link-chevron--sm svg { width: 20px; height: 20px; stroke-width: 2.5; }
+        .dash-link-chevron-wrap {
+            flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+            display: inline-flex; align-items: center; justify-content: center;
+            background: color-mix(in srgb, var(--blue) 10%, var(--input-bg));
+            border: 1px solid color-mix(in srgb, var(--blue) 22%, var(--border));
+            color: var(--blue);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+        body.dark-mode .dash-link-chevron-wrap {
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        }
+        .dash-link-chevron { display: flex; align-items: center; justify-content: center; line-height: 0; }
+        .dash-link-chevron svg { width: 14px; height: 14px; stroke-width: 2.5; }
         .dash-global-search { position: relative; margin-bottom: 12px; z-index: 120; }
         .dash-global-search-box { display: flex; align-items: center; gap: 8px; background: var(--md-surface-container-high); border: 1px solid var(--md-outline-variant); border-radius: var(--md-radius-full); padding: 7px 12px; box-shadow: var(--md-elevation-1); min-height: 40px; box-sizing: border-box; }
         .dash-global-search-box svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted); }
@@ -771,7 +786,17 @@
             background: color-mix(in srgb, currentColor 13%, transparent);
             margin-bottom: 4px; flex-shrink: 0;
         }
-        #screen-admin .nav-card > .nav-icon { width: 42px; height: 42px; min-height: 42px; }
+        #screen-admin .nav-card > .nav-icon {
+            width: 42px; height: 42px; min-height: 42px;
+            display: inline-flex; align-items: center; justify-content: center;
+        }
+        #screen-admin .nav-card > .nav-icon svg { width: 22px; height: 22px; display: block; flex-shrink: 0; }
+        #screen-admin .nav-card > .nav-icon svg path,
+        #screen-admin .nav-card > .nav-icon svg circle,
+        #screen-admin .nav-card > .nav-icon svg rect,
+        #screen-admin .nav-card > .nav-icon svg polyline,
+        #screen-admin .nav-card > .nav-icon svg line { fill: currentColor; stroke: none; }
+        #screen-admin .nav-card > .nav-icon svg text { fill: currentColor; }
         #roster-nav-card .nav-icon svg { width: 28px; height: 28px; }
         .nav-card:has(#dash-ta-val) .nav-icon svg { width: 28px !important; height: 28px !important; }
         .nav-card:has([data-i18n="nav_pdf"]) .nav-icon svg { width: 32px !important; height: 28px !important; }
@@ -1231,7 +1256,24 @@
             font-size: var(--text-body); font-weight: var(--font-weight-medium);
             display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;
         }
-        .settings-row-label svg { width: 16px; height: 16px; flex-shrink: 0; }
+        .settings-row-label svg {
+            width: 36px; height: 36px; flex-shrink: 0; padding: 8px; box-sizing: border-box;
+            border-radius: 10px; display: block;
+            background: color-mix(in srgb, currentColor 13%, transparent);
+        }
+        .settings-row-label svg[fill="none"] path,
+        .settings-row-label svg[fill="none"] circle,
+        .settings-row-label svg[fill="none"] rect,
+        .settings-row-label svg[fill="none"] line,
+        .settings-row-label svg[fill="none"] polyline { stroke: currentColor; }
+        .backup-section-head { display: flex; align-items: center; gap: 10px; margin: 0 0 4px 0; }
+        .backup-section-head h3 { margin: 0; font-size: 15px; }
+        .backup-heading-icon {
+            width: 36px; height: 36px; flex-shrink: 0; padding: 8px; box-sizing: border-box;
+            border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+            background: color-mix(in srgb, currentColor 13%, transparent); color: inherit;
+        }
+        .backup-heading-icon svg { width: 20px; height: 20px; display: block; }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -3462,24 +3504,24 @@
             <div class="card settings-list">
 
             <div class="settings-row settings-row-nav" role="button" tabindex="0" onclick="window.toggleSettingsAnimationGroup()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.toggleSettingsAnimationGroup();}">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="#eab308" style="width:16px; height:16px; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="settings_animations_group">Animation</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="currentColor" style="color:#eab308; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="settings_animations_group">Animation</span></span>
                 <span id="settings-animation-chevron" class="settings-row-chevron" aria-hidden="true">›</span>
             </div>
             <div id="settings-animation-group" class="settings-animation-group hidden">
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="#eab308" style="width:16px; height:16px; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="page_anim_row">Page Opening Animation</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="currentColor" style="color:#eab308; flex-shrink:0;"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg><span data-i18n="page_anim_row">Page Opening Animation</span></span>
                 <div id="pageanim-toggle-switch" onclick="window.togglePageAnimSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="pageanim-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ec4899;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span data-i18n="close_anim_row">Dialog Close Animation</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#ec4899;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg><span data-i18n="close_anim_row">Dialog Close Animation</span></span>
                 <div id="closeanim-toggle-switch" onclick="window.toggleCloseAnimSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="closeanim-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#3b82f6;"><path d="M4 12c2-4 4-4 6 0s4 4 6 0 4-4 4 0"/></svg><span data-i18n="scroll_bounce_row">Scroll Stretch</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#3b82f6;"><path d="M4 12c2-4 4-4 6 0s4 4 6 0 4-4 4 0"/></svg><span data-i18n="scroll_bounce_row">Scroll Stretch</span></span>
                 <div id="scrollbounce-toggle-switch" onclick="window.toggleScrollBounceSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="scrollbounce-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
@@ -3487,70 +3529,70 @@
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 8v8"/><path d="M20 8v8"/></svg><span data-i18n="haptic_feedback_row">Haptic Feedback</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#f97316;"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4 8v8"/><path d="M20 8v8"/></svg><span data-i18n="haptic_feedback_row">Haptic Feedback</span></span>
                 <div id="haptic-toggle-switch" onclick="window.toggleHapticSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="haptic-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#ef4444;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span data-i18n="floating_back_button_row">Floating Back Button</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#ef4444;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg><span data-i18n="floating_back_button_row">Floating Back Button</span></span>
                 <div id="floatback-toggle-switch" onclick="window.toggleFloatingBackSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="floatback-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#10b981;"><polyline points="9 18 15 12 9 6"/></svg><span data-i18n="sidebar_handle_row">Sidebar Pull Handle</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#10b981;"><polyline points="9 18 15 12 9 6"/></svg><span data-i18n="sidebar_handle_row">Sidebar Pull Handle</span></span>
                 <div id="sidebarhandle-toggle-switch" onclick="window.toggleSidebarHandleSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="sidebarhandle-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#f97316;"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="4" x2="8" y2="10"/></svg><span data-i18n="sheet_nonduty_row">Non-Duty Rows in Sheet</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#f97316;"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="4" x2="8" y2="10"/></svg><span data-i18n="sheet_nonduty_row">Non-Duty Rows in Sheet</span></span>
                 <div id="sheetnonduty-toggle-switch" onclick="window.toggleSheetNonDutyVisibleSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="sheetnonduty-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#a855f7;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><span data-i18n="ta_autofill_row">Autofill Working Days &amp; Earnings</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#a855f7;"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg><span data-i18n="ta_autofill_row">Autofill Working Days &amp; Earnings</span></span>
                 <div id="taautofill-toggle-switch" onclick="window.toggleTaAutofillSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="taautofill-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><path d="M12 11V7a4 4 0 1 1 8 0v4"/><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="16" r="1"/></svg><span data-i18n="biometric_lock_row">Biometric Lock</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#22c55e;"><path d="M12 11V7a4 4 0 1 1 8 0v4"/><rect x="3" y="11" width="18" height="11" rx="2"/><circle cx="12" cy="16" r="1"/></svg><span data-i18n="biometric_lock_row">Biometric Lock</span></span>
                 <div id="biometric-toggle-switch" onclick="window.toggleBiometricLockSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="biometric-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#06b6d4;"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/></svg><span data-i18n="card_shadow_row">Card Shadow</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#06b6d4;"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/></svg><span data-i18n="card_shadow_row">Card Shadow</span></span>
                 <div id="cardshadow-toggle-switch" onclick="window.toggleCardShadowSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="cardshadow-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#0ea5e9;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="hindi_language_row">Hindi Language</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#0ea5e9;"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="hindi_language_row">Hindi Language</span></span>
                 <div id="settings-lang-toggle-switch" onclick="window.toggleSettingsLanguage()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="settings-lang-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#22c55e;"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><span data-i18n="green_theme_row">Green Theme</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#22c55e;"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg><span data-i18n="green_theme_row">Green Theme</span></span>
                 <div id="greentheme-toggle-switch" onclick="window.toggleGreenThemeSetting()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="greentheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
             </div>
 
             <div class="settings-row" role="group">
-                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px; flex-shrink:0; color:#6366f1;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="dark_theme_row">Dark Theme</span></span>
+                <span class="settings-row-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#6366f1;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span data-i18n="dark_theme_row">Dark Theme</span></span>
                 <div id="darktheme-toggle-switch" onclick="window.toggleTheme()" style="width:46px; height:26px; border-radius:15px; position:relative; cursor:pointer; transition:background 0.2s;">
                     <div id="darktheme-toggle-knob" style="width:20px; height:20px; border-radius:50%; background:white; position:absolute; top:3px; box-shadow:0 1px 3px rgba(0,0,0,0.4); transition:left 0.2s;"></div>
                 </div>
@@ -4302,59 +4344,59 @@
             <div class="grid-2" style="margin-bottom: 15px;">
                 <div class="nav-card" onclick="window.openAdminModal('maintenance')" style="position:relative;">
                     <div id="admin-maint-active-dot" class="hidden" style="position:absolute; top:8px; right:8px; width:10px; height:10px; border-radius:50%; background:var(--red); box-shadow:0 0 6px var(--red);"></div>
-                    <div class="nav-icon" style="color:var(--red);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+                    <div class="nav-icon" style="color:var(--red);"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M224 96C206.3 96 192 110.3 192 128L192 256L128 256C110.3 256 96 270.3 96 288L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 288C544 270.3 529.7 256 512 256L448 256L448 128C448 110.3 433.7 96 416 96L224 96zM320 384C337.7 384 352 369.7 352 352C352 334.3 337.7 320 320 320C302.3 320 288 334.3 288 352C288 369.7 302.3 384 320 384z"/></svg></div>
                     <div class="nav-main-text" style="color: var(--red); font-size: 14px;">Maintenance</div>
                     <div class="nav-sub-text" id="admin-maint-status-mini">OFF</div>
                 </div>
                 <div class="nav-card" onclick="window.openAdminModal('versiongate')">
-                    <div class="nav-icon" style="color:var(--orange);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><rect x="6" y="2" width="12" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/></svg></div>
+                    <div class="nav-icon" style="color:#f97316;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M288 64C261.5 64 240 85.5 240 112L240 528C240 554.5 261.5 576 288 576L352 576C378.5 576 400 554.5 400 528L400 112C400 85.5 378.5 64 352 64L288 64zM272 480L272 496C272 504.8 279.2 512 288 512L352 512C360.8 512 368 504.8 368 496L368 480L272 480z"/></svg></div>
                     <div class="nav-main-text" style="color: var(--orange); font-size: 14px;">Version Gate</div>
                     <div class="nav-sub-text">Lock old app versions</div>
                 </div>
                 <div class="nav-card" onclick="window.openPayRateModal()">
-                    <div class="nav-icon" style="color:var(--green);"><svg viewBox="0 0 24 24" style="width:22px; height:22px;"><text x="12" y="18" font-size="18" font-weight="900" text-anchor="middle" fill="currentColor">₹</text></svg></div>
+                    <div class="nav-icon" style="color:var(--green);"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 64C178.6 64 64 178.6 64 320C64 461.4 178.6 576 320 576C461.4 576 576 461.4 576 320C576 178.6 461.4 64 320 64zM353.3 384L353.3 416L286.7 416L286.7 384L256 384L256 352L286.7 352L286.7 320L256 320L256 288L286.7 288L286.7 256L353.3 256L353.3 288L384 288L384 320L353.3 320L353.3 352L384 352L384 384L353.3 384z"/></svg></div>
                     <div class="nav-main-text" style="color: var(--green); font-size: 14px;">Pay Rates</div>
                     <div class="nav-sub-text">Grade Pay / TA Rate</div>
                 </div>
                 <div class="nav-card" onclick="window.openHraRateModal()">
-                    <div class="nav-icon" style="color:var(--orange);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></div>
-                    <div class="nav-main-text" style="color: var(--orange); font-size: 14px;">HRA Rates</div>
+                    <div class="nav-icon" style="color:#0891b2;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 96C254.4 96 201.1 142.4 192.8 206.4C192.3 210.2 192 214.1 192 218.2L192 256L160 256C124.7 256 96 284.7 96 320L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 320C544 284.7 515.3 256 480 256L448 256L448 218.2C448 214.1 447.7 210.2 447.2 206.4C438.9 142.4 385.6 96 320 96zM320 160C360.9 160 394.7 193.8 394.7 234.7L394.7 256L245.3 256L245.3 234.7C245.3 193.8 279.1 160 320 160z"/></svg></div>
+                    <div class="nav-main-text" style="color: #0891b2; font-size: 14px;">HRA Rates</div>
                     <div class="nav-sub-text">HQ-wise HRA %</div>
                 </div>
                 <div class="nav-card" onclick="window.openNhaRateModal()">
-                    <div class="nav-icon" style="color:var(--orange);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="12" y2="11"/></svg></div>
-                    <div class="nav-main-text" style="color: var(--orange); font-size: 14px;">NHA Rates</div>
+                    <div class="nav-icon" style="color:#d97706;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M160 96C124.7 96 96 124.7 96 160L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 160C544 124.7 515.3 96 480 96L160 96zM400 416L240 416C231.2 416 224 408.8 224 400C224 391.2 231.2 384 240 384L400 384C408.8 384 416 391.2 416 400C416 408.8 408.8 416 400 416zM400 288L240 288C231.2 288 224 280.8 224 272C224 263.2 231.2 256 240 256L400 256C408.8 256 416 263.2 416 272C416 280.8 408.8 288 400 288zM336 160L240 160C231.2 160 224 152.8 224 144C224 135.2 231.2 128 240 128L336 128C344.8 128 352 135.2 352 144C352 152.8 344.8 160 336 160z"/></svg></div>
+                    <div class="nav-main-text" style="color: #d97706; font-size: 14px;">NHA Rates</div>
                     <div class="nav-sub-text">Level-wise ₹ rate</div>
                 </div>
                 <div class="nav-card" onclick="window.openAdminModal('dapush')">
-                    <div class="nav-icon" style="color:var(--green);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></div>
+                    <div class="nav-icon" style="color:#22c55e;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M128 352C110.3 352 96 366.3 96 384L96 512C96 529.7 110.3 544 128 544L192 544C209.7 544 224 529.7 224 512L224 384C224 366.3 209.7 352 192 352L128 352zM288 224C270.3 224 256 238.3 256 256L256 512C256 529.7 270.3 544 288 544L352 544C369.7 544 384 529.7 384 512L384 256C384 238.3 369.7 224 352 224L288 224zM448 96C430.3 96 416 110.3 416 128L416 512C416 529.7 430.3 544 448 544L512 544C529.7 544 544 529.7 544 512L544 128C544 110.3 529.7 96 512 96L448 96z"/></svg></div>
                     <div class="nav-main-text" style="color: var(--green); font-size: 14px;">Push DA</div>
                     <div class="nav-sub-text">Update all users</div>
                 </div>
                 <div class="nav-card" onclick="window.openAdminModal('archive')">
-                    <div class="nav-icon" style="color:var(--orange);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg></div>
-                    <div class="nav-main-text" style="color: var(--orange); font-size: 14px;">Archive Data</div>
+                    <div class="nav-icon" style="color:#8b5cf6;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M64 128C64 110.3 78.3 96 96 96L544 96C561.7 96 576 110.3 576 128L576 160C576 177.7 561.7 192 544 192L96 192C78.3 192 64 177.7 64 160L64 128zM96 240L544 240L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 240zM248 304C234.7 304 224 314.7 224 328C224 341.3 234.7 352 248 352L392 352C405.3 352 416 341.3 416 328C416 314.7 405.3 304 392 304L248 304z"/></svg></div>
+                    <div class="nav-main-text" style="color: #8b5cf6; font-size: 14px;">Archive Data</div>
                     <div class="nav-sub-text">Move old logs</div>
                 </div>
                 <div class="nav-card" onclick="window.openAdminModal('feedback')" style="position:relative;">
-                    <div class="nav-icon" style="position: relative; display: inline-block; color:var(--red);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg><div id="admin-feedback-badge-mini" class="hidden" style="position:absolute; top:-6px; right:-10px; background:var(--red); color:white; font-size:10px; font-weight:900; border-radius:50%; width:16px; height:16px; display:flex; align-items:center; justify-content:center;">0</div></div>
+                    <div class="nav-icon" style="position:relative; color:#e11d48;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 544C461.4 544 576 436.5 576 304C576 171.5 461.4 64 320 64C178.6 64 64 171.5 64 304C64 358.3 83.2 408.3 115.6 448.5L66.8 540.8C62 549.8 63.5 560.8 70.4 568.3C77.3 575.8 88.2 578.1 97.5 574.1L215.9 523.4C247.7 536.6 282.9 544 320 544zM192 272C209.7 272 224 286.3 224 304C224 321.7 209.7 336 192 336C174.3 336 160 321.7 160 304C160 286.3 174.3 272 192 272zM320 272C337.7 272 352 286.3 352 304C352 321.7 337.7 336 320 336C302.3 336 288 321.7 288 304C288 286.3 302.3 272 320 272zM416 304C416 286.3 430.3 272 448 272C465.7 272 480 286.3 480 304C480 321.7 465.7 336 448 336C430.3 336 416 321.7 416 304z"/></svg><div id="admin-feedback-badge-mini" class="hidden" style="position:absolute; top:-4px; right:-8px; background:var(--red); color:white; font-size:10px; font-weight:900; border-radius:50%; width:16px; height:16px; display:flex; align-items:center; justify-content:center;">0</div></div>
                     <div class="nav-main-text" style="color: var(--red); font-size: 14px;">Feedback</div>
                     <div class="nav-sub-text">User submissions</div>
                 </div>
                 <div class="nav-card" onclick="window.exportAdminData()">
-                    <div class="nav-icon" style="color:var(--purple);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+                    <div class="nav-icon" style="color:#a855f7;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 352C337.7 352 352 337.7 352 320L352 173.3L400 221.3C410.5 231.8 426.7 231.8 437.2 221.3L453.2 205.3C463.7 194.8 463.7 178.6 453.2 168.1L341.2 56.1C330.7 45.6 314.5 45.6 304 56.1L192 168.1C181.5 178.6 181.5 194.8 192 205.3L208 221.3C218.5 231.8 234.7 231.8 245.2 221.3L288 178.5L288 320C288 337.7 302.3 352 320 352zM128 448C110.3 448 96 462.3 96 480L96 544C96 561.7 110.3 576 128 576L512 576C529.7 576 544 561.7 544 544L544 480C544 462.3 529.7 448 512 448L128 448z"/></svg></div>
                     <div class="nav-main-text" style="color: var(--purple); font-size: 14px;">Export Data</div>
                     <div class="nav-sub-text">Refresh hardcoded defaults</div>
                 </div>
                 <div class="nav-card" onclick="window.openAdminModal('announcement')" style="position:relative;">
                     <div id="admin-announce-active-dot" class="hidden" style="position:absolute; top:8px; right:8px; width:10px; height:10px; border-radius:50%; background:var(--blue-fill); box-shadow:0 0 6px var(--blue);"></div>
-                    <div class="nav-icon" style="color:var(--blue);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+                    <div class="nav-icon" style="color:#3b82f6;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 64C302.3 64 288 78.3 288 96L288 112.5C230.9 127.9 192 180.3 192 242.2L192 288C192 296.6 187.5 304.6 180.2 309.3L117.2 349.3C107.5 355.4 96 348.4 96 336.8L96 288C96 164.3 196.3 64 320 64zM352 576C334.3 576 320 561.7 320 544C320 526.3 334.3 512 352 512C369.7 512 384 526.3 384 544C384 561.7 369.7 576 352 576zM544 288C544 410.5 446.5 512 326.4 512L313.6 512C193.5 512 96 410.5 96 288L96 336.8C96 348.4 107.5 355.4 117.2 349.3L180.2 309.3C187.5 304.6 192 296.6 192 288L192 242.2C192 180.3 230.9 127.9 288 112.5L288 96C288 78.3 302.3 64 320 64C443.7 64 544 164.3 544 288z"/></svg></div>
                     <div class="nav-main-text" style="color: var(--blue); font-size: 14px;">Announcement</div>
                     <div class="nav-sub-text">Push a bell notification</div>
                 </div>
                 <div class="nav-card" onclick="window.openAdminModal('stationpush')">
-                    <div class="nav-icon" style="color:var(--green);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px; height:22px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-                    <div class="nav-main-text" style="color: var(--green); font-size: 14px;">Push Stations</div>
+                    <div class="nav-icon" style="color:#0ea5e9;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 64C249.4 64 192 121.4 192 192C192 304 320 480 320 480C320 480 448 304 448 192C448 121.4 390.6 64 320 64zM320 256C288.6 256 264 231.4 264 200C264 168.6 288.6 144 320 144C351.4 144 376 168.6 376 200C376 231.4 351.4 256 320 256z"/></svg></div>
+                    <div class="nav-main-text" style="color: #0ea5e9; font-size: 14px;">Push Stations</div>
                     <div class="nav-sub-text">HQ-wise, all users at once</div>
                 </div>
             </div>
@@ -4714,7 +4756,7 @@
                             <svg class="dash-link-icon--fa dash-link-icon--circular-book" viewBox="0 0 640 640" aria-hidden="true"><path class="circ-book-page" d="M320 205.3L320 514.6L320.5 514.4C375.1 491.7 433.7 480 492.8 480L512 480L512 160L492.8 160C450.6 160 408.7 168.4 369.7 184.6C352.9 191.6 336.3 198.5 320 205.3z"/><path class="circ-book-cover" d="M294.9 125.5L320 136L345.1 125.5C391.9 106 442.1 96 492.8 96L528 96C554.5 96 576 117.5 576 144L576 496C576 522.5 554.5 544 528 544L492.8 544C442.1 544 391.9 554 345.1 573.5L332.3 578.8C324.4 582.1 315.6 582.1 307.7 578.8L294.9 573.5C248.1 554 197.9 544 147.2 544L112 544C85.5 544 64 522.5 64 496L64 144C64 117.5 85.5 96 112 96L147.2 96C197.9 96 248.1 106 294.9 125.5z"/></svg>
                             <span data-i18n="nav_circulars">Circulars</span>
                         </span>
-                        <span class="dash-link-chevron dash-link-chevron--sm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+                        <span class="dash-link-chevron-wrap" aria-hidden="true"><span class="dash-link-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span></span>
                     </div>
                     <div class="dash-link-divider" aria-hidden="true"></div>
                     <div class="dash-link-row dash-link-row--blue" onclick="window.openDashMandali()">
@@ -4722,7 +4764,7 @@
                             <svg class="dash-link-icon--fa" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 80C377.4 80 424 126.6 424 184C424 241.4 377.4 288 320 288C262.6 288 216 241.4 216 184C216 126.6 262.6 80 320 80zM96 152C135.8 152 168 184.2 168 224C168 263.8 135.8 296 96 296C56.2 296 24 263.8 24 224C24 184.2 56.2 152 96 152zM0 480C0 409.3 57.3 352 128 352C140.8 352 153.2 353.9 164.9 357.4C132 394.2 112 442.8 112 496L112 512C112 523.4 114.4 534.2 118.7 544L32 544C14.3 544 0 529.7 0 512L0 480zM521.3 544C525.6 534.2 528 523.4 528 512L528 496C528 442.8 508 394.2 475.1 357.4C486.8 353.9 499.2 352 512 352C582.7 352 640 409.3 640 480L640 512C640 529.7 625.7 544 608 544L521.3 544zM472 224C472 184.2 504.2 152 544 152C583.8 152 616 184.2 616 224C616 263.8 583.8 296 544 296C504.2 296 472 263.8 472 224zM160 496C160 407.6 231.6 336 320 336C408.4 336 480 407.6 480 496L480 512C480 529.7 465.7 544 448 544L192 544C174.3 544 160 529.7 160 512L160 496z"/></svg>
                             <span data-i18n="nav_mandali">Mandali</span>
                         </span>
-                        <span class="dash-link-chevron dash-link-chevron--sm" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+                        <span class="dash-link-chevron-wrap" aria-hidden="true"><span class="dash-link-chevron"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span></span>
                     </div>
                 </div>
                 <div id="dashboard-announcements-area" style="margin-top:14px;"></div>
@@ -5305,20 +5347,29 @@
         </div>
         <div class="screen-content">
             <div class="card" style="padding: 12px 15px; margin-bottom: 10px;">
-                <h3 style="color: var(--purple); margin: 0 0 4px 0; font-size: 15px;">Manual Backup</h3>
+                <div class="backup-section-head">
+                    <span class="backup-heading-icon" style="color: var(--purple);"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"/></svg></span>
+                    <h3 style="color: var(--purple);">Manual Backup</h3>
+                </div>
                 <p data-i18n="backup_save_file_desc" style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px 0;">Save a physical backup file to your phone.</p>
                 <button onclick="window.exportData()" style="background: var(--blue-fill); padding: 10px;">Download Backup File</button>
                 <div id="manual-backup-time" style="font-size: 11px; color: #0ea5e9; font-weight: bold; margin-top: 6px; text-align: center;"></div>
             </div>
             <div class="card" style="padding: 12px 15px; margin-bottom: 10px;">
-                <h3 style="color: var(--yellow); margin: 0 0 4px 0; font-size: 15px;">Restore from File</h3>
+                <div class="backup-section-head">
+                    <span class="backup-heading-icon" style="color: #eab308;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 333.3L246.6 371.9C234.1 384.4 213.8 384.4 201.3 371.9C188.8 359.4 188.8 339.1 201.3 326.6L297.3 230.6C309.8 218.1 330.1 218.1 342.6 230.6L438.6 326.6C451.1 339.1 451.1 359.4 438.6 371.9C426.1 384.4 405.8 384.4 393.3 371.9L352 333.3L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L160 384z"/></svg></span>
+                    <h3 style="color: var(--yellow);">Restore from File</h3>
+                </div>
                 <p data-i18n="backup_import_file_desc" style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px 0;">Import a previously downloaded backup file.</p>
                 <button onclick="document.getElementById('import-file').click()" style="background: var(--blue-fill); color: white; padding: 10px;">Choose File & Restore</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="window.importData(event)">
                 <div id="restore-backup-time" style="font-size: 11px; color: #0ea5e9; font-weight: bold; margin-top: 6px; text-align: center;"></div>
             </div>
             <div class="card" style="padding: 12px 15px; margin-bottom: 10px;">
-                <h3 style="color: var(--green); margin: 0 0 4px 0; font-size: 15px;">Cloud Sync Status</h3>
+                <div class="backup-section-head">
+                    <span class="backup-heading-icon" style="color: var(--green);"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M176 544C96.5 544 32 479.5 32 400C32 336.6 73 282.8 129.9 263.5C128.6 255.8 128 248 128 240C128 160.5 192.5 96 272 96C327.4 96 375.5 127.3 399.6 173.1C413.8 164.8 430.4 160 448 160C501 160 544 203 544 256C544 271.7 540.2 286.6 533.5 299.7C577.5 320 608 364.4 608 416C608 486.7 550.7 544 480 544L176 544z"/></svg></span>
+                    <h3 style="color: var(--green);">Cloud Sync Status</h3>
+                </div>
                 <p id="backup-sync-status" style="font-size: 13px; font-weight: bold; color: #3b7aec; margin: 0;">Your data is actively syncing to Google.</p>
                 <p style="font-size: 12px; font-weight: bold; color: #0ea5e9; margin: 0; padding-top: 8px;" id="sync-time-lbl">Last Synced: Never</p>
             </div>
