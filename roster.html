@@ -707,6 +707,16 @@
     #mandali-time-slider::-moz-range-track { height: 4px; border-radius: 2px; background: color-mix(in srgb, var(--blue) 25%, var(--border) 75%); }
     #mandali-time-slider::-moz-range-progress { height: 4px; border-radius: 2px; background: var(--blue); }
     #mandali-time-slider::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--blue); border: 3px solid var(--card); box-shadow: 0 2px 6px rgba(0,0,0,0.35); cursor: pointer; }
+    .mandali-slider-tooltip {
+        position: absolute; top: -24px; left: 0; transform: translateX(-50%);
+        background: var(--card); color: #854d0e; font-size: 11.5px; font-weight: 800;
+        padding: 3px 9px; border-radius: 10px; white-space: nowrap; pointer-events: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        border: 1px solid color-mix(in srgb, var(--border) 70%, #ca8a04 30%);
+    }
+    body.dark-mode .mandali-slider-tooltip {
+        background: var(--top-bar-bg); color: #fde047; border-color: transparent;
+    }
 </style>
 </head>
 <body>
@@ -971,7 +981,7 @@ if (window.parent !== window) {
                 <button onclick="window.resetMandaliToLive()" style="width:auto; height:40px; min-height:40px; box-sizing:border-box; margin:0; background:var(--blue); white-space:nowrap; padding:0 18px; border-radius:30px; border:none; color:white; font-weight:700; font-size:14px; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 8px rgba(59,130,246,0.35); font-family:'Roboto',sans-serif; cursor:pointer;">↺ Reset</button>
             </div>
             <div style="margin-bottom:4px; padding:6px 0; position:relative;">
-                <div id="mandali-slider-tooltip" class="hidden" style="position:absolute; top:-24px; left:0; transform:translateX(-50%); background:var(--top-bar-bg); color:#fde047; font-size:11.5px; font-weight:800; padding:3px 9px; border-radius:10px; white-space:nowrap; pointer-events:none; box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>
+                <div id="mandali-slider-tooltip" class="mandali-slider-tooltip hidden"></div>
                 <input type="range" id="mandali-time-slider" min="0" max="1439" step="5" value="0" oninput="window.onMandaliSliderInput(this.value)" onchange="window.onMandaliSliderRelease()" style="width:100%; margin:0;">
                 <div style="display:flex; justify-content:space-between; font-size:9.5px; color:var(--text-muted); padding:0 2px; margin-top:2px; font-weight:600;">
                     <span>00</span><span>03</span><span>06</span><span>09</span><span>12</span><span>15</span><span>18</span><span>21</span><span>24</span>
