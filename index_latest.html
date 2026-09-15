@@ -759,6 +759,7 @@
         .nav-icon svg { width: 22px; height: 22px; }
         #roster-nav-card .nav-icon svg { width: 28px; height: 28px; }
         .nav-card:has(#dash-ta-val) .nav-icon svg { width: 28px !important; height: 28px !important; }
+        .nav-card:has([data-i18n="nav_pdf"]) .nav-icon svg { width: 32px !important; height: 28px !important; }
         .nav-card:has([data-i18n="nav_all_journey"]) .nav-icon svg { width: 30px !important; height: 24px !important; }
         
         input:not([type="checkbox"]):not([type="radio"]), select, textarea { width: 100%; padding: 10px 14px; min-height: 44px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); border-radius: var(--md-radius-input); margin-top: 4px; font-size: var(--text-body); font-weight: var(--font-weight-body); line-height: var(--line-height-body); box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); transition: background 0.3s, color 0.3s, border 0.3s, box-shadow 0.2s; box-sizing: border-box; -webkit-appearance: none; appearance: none; }
@@ -7938,6 +7939,46 @@
         if (target === 'screen-settings') window.openSettingsModal();
         else window.navTo(target);
         return true;
+    };
+
+    window.scrollToFutureTrendComparePanel = function() {
+        const run = () => {
+            const collapseWrap = document.querySelector('#trend-future-detail-wrap .trend-collapse-wrap');
+            const wrap = document.getElementById('trend-future-detail-wrap');
+            const target = collapseWrap || wrap;
+            if (!target) return;
+            const screen = document.getElementById('screen-yearly-trend');
+            const scrollHost = screen && !screen.classList.contains('hidden') ? screen.querySelector('.screen-content') : null;
+            const headerOffset = 72;
+            if (scrollHost && scrollHost.scrollHeight > scrollHost.clientHeight + 4) {
+                const hostTop = scrollHost.getBoundingClientRect().top;
+                const targetTop = target.getBoundingClientRect().top;
+                scrollHost.scrollTo({ top: scrollHost.scrollTop + (targetTop - hostTop) - headerOffset, behavior: 'smooth' });
+                return;
+            }
+            const y = window.scrollY + target.getBoundingClientRect().top - headerOffset;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        };
+        requestAnimationFrame(() => requestAnimationFrame(run));
+    };
+
+    window.scrollToSalaryComparePanel = function() {
+        const run = () => {
+            const target = document.getElementById('salary-projected-breakdown-body');
+            if (!target) return;
+            const screen = document.getElementById('screen-salary');
+            const scrollHost = screen && !screen.classList.contains('hidden') ? screen.querySelector('.screen-content') : null;
+            const headerOffset = 72;
+            if (scrollHost && scrollHost.scrollHeight > scrollHost.clientHeight + 4) {
+                const hostTop = scrollHost.getBoundingClientRect().top;
+                const targetTop = target.getBoundingClientRect().top;
+                scrollHost.scrollTo({ top: scrollHost.scrollTop + (targetTop - hostTop) - headerOffset, behavior: 'smooth' });
+                return;
+            }
+            const y = window.scrollY + target.getBoundingClientRect().top - headerOffset;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+        };
+        requestAnimationFrame(() => requestAnimationFrame(run));
     };
 
     window.scrollToCompareBarChart = function(scopeEl) {
@@ -16767,6 +16808,10 @@
         wrap.innerHTML = window.buildFutureTrendDetailHtml(window._futureTrendMonthKey, projectedLegs);
         wrap.classList.remove('hidden');
         window.updateTrendCompareFab();
+        if (window._scrollToFutureComparePanel && window._trendFutureCompareActual) {
+            window._scrollToFutureComparePanel = false;
+            setTimeout(() => window.scrollToFutureTrendComparePanel(), 120);
+        }
     };
 
     // Point (Task 3): Graph View — a full yearly line graph, adapted from the same SVG technique
@@ -17384,8 +17429,14 @@
     };
 
     window.switchTrendFutureCompare = function() {
-        window._trendFutureCompareActual = !window._trendFutureCompareActual;
-        window._scrollToCompareAfterRender = !!window._trendFutureCompareActual;
+        const turningOn = !window._trendFutureCompareActual;
+        window._trendFutureCompareActual = turningOn;
+        if (turningOn) {
+            window._trendCollapseOpen = window._trendCollapseOpen || {};
+            window._trendCollapseOpen['future-detail'] = true;
+            window._scrollToFutureComparePanel = true;
+        }
+        window._scrollToCompareAfterRender = turningOn;
         window.updateTrendCompareFab();
         window.renderYearlyFutureTrendGraph();
     };
@@ -17724,8 +17775,10 @@
     };
 
     window.switchSalaryCompareExpected = function() {
-        window._salaryCompareExpected = !window._salaryCompareExpected;
-        window._scrollToCompareAfterRender = !!window._salaryCompareExpected;
+        const turningOn = !window._salaryCompareExpected;
+        window._salaryCompareExpected = turningOn;
+        if (turningOn) window._scrollToSalaryComparePanel = true;
+        window._scrollToCompareAfterRender = turningOn;
         window.updateSalaryCompareFab();
         window.renderSalaryProjectedBreakdown();
         window.renderSalaryProjectedYearGraph();
@@ -17761,6 +17814,10 @@
                 compareExpected: window._salaryCompareExpected,
                 expectedResult
             });
+            if (window._scrollToSalaryComparePanel && window._salaryCompareExpected) {
+                window._scrollToSalaryComparePanel = false;
+                setTimeout(() => window.scrollToSalaryComparePanel(), 120);
+            }
         });
     };
 

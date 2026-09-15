@@ -32,6 +32,7 @@
         --table-border: #a5b4fc;
         --sheet-header-bg: #4667b6; --sheet-header-text: #cbdcff;
         --md-elevation-3: 0 4px 8px rgba(15, 23, 42, 0.12), 0 8px 24px rgba(15, 23, 42, 0.10);
+        --md-radius-input: 14px;
         --cal-outer-border: color-mix(in srgb, var(--blue-fill) 38%, var(--border));
         --cal-today-border: var(--blue-fill);
     }
@@ -178,7 +179,7 @@
     body.dark-mode .mandali-tab-btn.active { color: #fff !important; }
     body.green-theme .mandali-tab-btn.active { background: var(--blue-fill) !important; color: #fff !important; }
     .swipe-hint { text-align: center; font-size: 12px; font-weight: 700; color: var(--red); margin: 0 0 12px 0; }
-    input, select { width: 100%; padding: 11px 14px; border-radius: 30px; border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 16px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; -webkit-appearance: none; appearance: none; min-width: 0; }
+    input, select { width: 100%; padding: 11px 14px; border-radius: var(--md-radius-input); border: 1px solid var(--border); background: var(--input-bg); color: var(--text); font-size: 16px; margin-bottom: 10px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); font-family: 'Roboto', sans-serif; box-sizing: border-box; -webkit-appearance: none; appearance: none; min-width: 0; }
     button:not(.bottom-icon):not(.nav-fab):not(.month-nav-arrow-btn):not(.icon-search-btn):not(.clear-btn):not(.header-tab):not(.view-edit-team-btn):not(.mandali-tab-btn):not(.mandali-station-row):not(.mandali-sphere-btn) {
         width: 100%; padding: 12px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 15px; color: white; background: var(--blue-fill);
         box-shadow: var(--shadow), inset 0 1px 0 color-mix(in srgb, white 25%, transparent), inset 0 -2px 3px color-mix(in srgb, black 12%, transparent); transition: background 0.3s;
@@ -262,6 +263,14 @@
     .tsc-edit-icon { display: inline-flex; align-items: center; color: var(--blue-fill); margin-left: 2px; }
     .admin-quick-card .aq-icon { display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
     .admin-quick-card .aq-icon svg { width: 24px; height: 24px; display: block; }
+    .admin-quick-card .aq-icon svg path { fill: currentColor; }
+    .admin-quick-card.aq-teams .aq-icon { color: var(--blue); }
+    .admin-quick-card.aq-feedback .aq-icon { color: var(--red); }
+    .admin-quick-card.aq-schedule .aq-icon { color: #0891b2; }
+    .admin-quick-card.aq-save .aq-icon { color: var(--green); }
+    .admin-quick-card.aq-progs .aq-icon { color: var(--purple); }
+    .admin-quick-card.aq-export .aq-icon { color: var(--orange); }
+    .admin-quick-card.aq-festivals .aq-icon { color: #d97706; }
     .cor-name, .tte-name { color: var(--orange); font-weight: 800; }
     #view-admin .card { padding: 10px 14px; margin-bottom: 10px; }
     #view-admin .card h3 { margin-bottom: 6px !important; font-size: 13.5px !important; }
@@ -368,7 +377,7 @@
     .search-card { border-radius: 30px; padding: 8px 14px; margin-bottom: 14px; }
     .search-card label { display: block; text-align: center; font-size: 12.5px; font-weight: 900; margin-bottom: 5px; padding: 2px 12px; color: var(--blue); }
     .search-row-3 { display: flex; gap: 6px; align-items: flex-start; }
-    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 0 10px; font-size: 12.5px; height: 34px; min-height: 34px; max-height: 34px; line-height: 34px; border-radius: 30px; box-sizing: border-box; }
+    .search-row-3 input { flex: 1; margin-bottom: 0; padding: 0 10px; font-size: 12.5px; height: 34px; min-height: 34px; max-height: 34px; line-height: 34px; border-radius: var(--md-radius-input); box-sizing: border-box; }
     .search-field-wrap { flex: 1; min-width: 0; }
     .search-field-caption { font-size: 9.5px; font-weight: 600; color: var(--text-muted); text-align: center; margin: 2px 0 0 0; }
     .icon-search-btn, .clear-btn { width: 36px; height: 36px; min-width: 36px; min-height: 36px; flex-shrink: 0; padding: 0; border-radius: 12px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-sizing: border-box; line-height: 1; }
@@ -474,31 +483,43 @@
     .cal-day.cal-empty { visibility: hidden; cursor: default; }
     .cal-month-pill {
         width: 100%; height: 100%; min-height: 92px; border-radius: 14px;
-        background: linear-gradient(155deg, #7dd3fc 0%, #6366f1 55%, #4338ca 100%);
-        box-shadow: 0 4px 10px rgba(79,70,229,0.35), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -2px 4px rgba(0,0,0,0.2);
+        background: linear-gradient(155deg,
+            color-mix(in srgb, var(--blue-fill) 16%, var(--card)) 0%,
+            color-mix(in srgb, var(--blue-fill) 28%, var(--input-bg)) 100%);
+        border: 1px solid color-mix(in srgb, var(--blue-fill) 32%, var(--border));
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.45);
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        color: white; font-weight: 900; text-align: center; line-height: 1.3;
+        color: var(--blue-fill); font-weight: 900; text-align: center; line-height: 1.3;
     }
+    body.dark-mode .cal-month-pill {
+        background: linear-gradient(155deg,
+            color-mix(in srgb, var(--blue-fill) 22%, var(--card)) 0%,
+            color-mix(in srgb, var(--blue-fill) 12%, var(--input-bg)) 100%);
+        border-color: color-mix(in srgb, var(--blue-fill) 40%, var(--border));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+        color: color-mix(in srgb, var(--blue) 85%, #fff 15%);
+    }
+    .cal-month-pill .cmp-year { color: var(--text-muted); opacity: 1; }
     .cal-month-pill .cmp-month { font-size: 14px; letter-spacing: 0.5px; }
     .cal-month-pill .cmp-year { font-size: 11px; opacity: 0.85; font-weight: 700; }
     .cal-day .cal-daynum, .cal-subday .cal-daynum { font-weight: 800; font-size: 15px; color: var(--text); }
     .cal-day .cal-tag, .cal-subday .cal-tag { font-size: 7px; font-weight: 900; }
     .cal-day .cal-trainno, .cal-subday .cal-trainno { font-size: 9.5px; font-weight: 800; color: #111827; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95%; }
     body.dark-mode .cal-day .cal-trainno, body.dark-mode .cal-subday .cal-trainno { color: #f1f5f9; }
-    .cal-day.cal-out, .cal-subday.cal-out { background: rgba(26,33,48,0.10); }
+    .cal-day.cal-out, .cal-subday.cal-out { background: color-mix(in srgb, var(--blue-fill) 11%, var(--card)); }
     .cal-day.cal-out .cal-tag, .cal-subday.cal-out .cal-tag { color: var(--blue); }
-    .cal-day.cal-in, .cal-subday.cal-in { background: rgba(45,51,57,0.18); }
+    .cal-day.cal-in, .cal-subday.cal-in { background: color-mix(in srgb, var(--green) 13%, var(--card)); }
     .cal-day.cal-in .cal-tag, .cal-subday.cal-in .cal-tag { color: #0d9488; }
-    .cal-day.cal-halt, .cal-subday.cal-halt { background: rgba(35,39,46,0.14); }
-    .cal-day.cal-halt .cal-tag, .cal-subday.cal-halt .cal-tag { color: #475569; }
+    .cal-day.cal-halt, .cal-subday.cal-halt { background: color-mix(in srgb, var(--text-muted) 12%, var(--card)); }
+    .cal-day.cal-halt .cal-tag, .cal-subday.cal-halt .cal-tag { color: var(--text-muted); }
     /* Point: dark-mode-specific day box colors — the light-mode rgba tints look muddy against a
        dark background, so these get distinct, deliberately chosen dark tones instead: a neutral
        grey for In, a darker charcoal-black for Out, and a complementary shade for Halt. */
-    body.dark-mode .cal-day.cal-out, body.dark-mode .cal-subday.cal-out { background: #1a2130; }
-    body.dark-mode .cal-day.cal-out .cal-tag, body.dark-mode .cal-subday.cal-out .cal-tag { color: #7fa8d6; }
-    body.dark-mode .cal-day.cal-in, body.dark-mode .cal-subday.cal-in { background: #2d3339; }
+    body.dark-mode .cal-day.cal-out, body.dark-mode .cal-subday.cal-out { background: color-mix(in srgb, var(--blue-fill) 24%, var(--input-bg)); }
+    body.dark-mode .cal-day.cal-out .cal-tag, body.dark-mode .cal-subday.cal-out .cal-tag { color: #93c5fd; }
+    body.dark-mode .cal-day.cal-in, body.dark-mode .cal-subday.cal-in { background: color-mix(in srgb, var(--green) 18%, var(--input-bg)); }
     body.dark-mode .cal-day.cal-in .cal-tag, body.dark-mode .cal-subday.cal-in .cal-tag { color: #5eead4; }
-    body.dark-mode .cal-day.cal-halt, body.dark-mode .cal-subday.cal-halt { background: #23272e; }
+    body.dark-mode .cal-day.cal-halt, body.dark-mode .cal-subday.cal-halt { background: color-mix(in srgb, var(--text-muted) 16%, var(--input-bg)); }
     body.dark-mode .cal-day.cal-halt .cal-tag, body.dark-mode .cal-subday.cal-halt .cal-tag { color: #94a3b8; }
     .cal-day.cal-rest { background: rgba(249,115,22,0.10); }
     .cal-day.cal-rest .cal-tag { color: var(--orange); }
@@ -852,32 +873,32 @@ if (window.parent !== window) {
     <div id="view-admin" class="hidden">
         <div class="admin-quick-grid">
             <div class="admin-quick-card aq-teams" onclick="window.toggleTeamTable()">
-                <div class="aq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 80C377.4 80 424 126.6 424 184C424 241.4 377.4 288 320 288C262.6 288 216 241.4 216 184C216 126.6 262.6 80 320 80zM96 152C135.8 152 168 184.2 168 224C168 263.8 135.8 296 96 296C56.2 296 24 263.8 24 224C24 184.2 56.2 152 96 152zM0 480C0 409.3 57.3 352 128 352C140.8 352 153.2 353.9 164.9 357.4C132 394.2 112 442.8 112 496L112 512C112 523.4 114.4 534.2 118.7 544L32 544C14.3 544 0 529.7 0 512L0 480zM521.3 544C525.6 534.2 528 523.4 528 512L528 496C528 442.8 508 394.2 475.1 357.4C486.8 353.9 499.2 352 512 352C582.7 352 640 409.3 640 480L640 512C640 529.7 625.7 544 608 544L521.3 544zM472 224C472 184.2 504.2 152 544 152C583.8 152 616 184.2 616 224C616 263.8 583.8 296 544 296C504.2 296 472 263.8 472 224zM160 496C160 407.6 231.6 336 320 336C408.4 336 480 407.6 480 496L480 512C480 529.7 465.7 544 448 544L192 544C174.3 544 160 529.7 160 512L160 496z"/></svg></div>
                 <div class="aq-label">Edit Teams</div>
             </div>
             <div class="admin-quick-card aq-feedback" onclick="window.openFeedbackInboxModal()">
-                <div class="aq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="m22 6-10 7L2 6"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M112 128C85.5 128 64 149.5 64 176L64 384C64 410.5 85.5 432 112 432L160 432L160 512.2C160 520.4 165.6 527.7 173.4 530.3C181.2 532.9 189.8 530.3 195.1 524.2L334.9 360.2C338.3 356.3 343.1 354.1 348.1 354.1L528 354.1C554.5 354.1 576 332.6 576 306.1L576 176C576 149.5 554.5 128 528 128L112 128z"/></svg></div>
                 <div class="aq-label">Feedback</div>
                 <span id="admin-feedback-count-badge" class="hidden aq-badge">0</span>
             </div>
             <div class="admin-quick-card aq-schedule" onclick="window.toggleScheduleTable()">
-                <div class="aq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M224 64C241.7 64 256 78.3 256 96L256 128L384 128L384 96C384 78.3 398.3 64 416 64C433.7 64 448 78.3 448 96L448 128L480 128C515.3 128 544 156.7 544 192L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 192C96 156.7 124.7 128 160 128L192 128L192 96C192 78.3 206.3 64 224 64zM464 288L176 288C167.2 288 160 295.2 160 304L160 336C160 344.8 167.2 352 176 352L464 352C472.8 352 480 344.8 480 336L480 304C480 295.2 472.8 288 464 288z"/></svg></div>
                 <div class="aq-label">Edit Schedule</div>
             </div>
             <div class="admin-quick-card aq-save" onclick="window.openAnchorDateModal()">
-                <div class="aq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M160 64C124.7 64 96 92.7 96 128L96 512C96 547.3 124.7 576 160 576L480 576C515.3 576 544 547.3 544 512L544 237.3C544 220.3 537.3 204 525.3 192L432 98.7C420 86.7 403.7 80 386.7 80L160 80zM416 128.1L495.9 208L416 208L416 128.1zM192 448L448 448L448 512L192 512L192 448z"/></svg></div>
                 <div class="aq-label">Anchor Date</div>
             </div>
             <div class="admin-quick-card aq-progs" onclick="window.toggleProgTable()">
-                <div class="aq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="8" width="20" height="8" rx="2"/><path d="M6 8V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M96 192C96 156.7 124.7 128 160 128L480 128C515.3 128 544 156.7 544 192L544 448C544 483.3 515.3 512 480 512L160 512C124.7 512 96 483.3 96 448L96 192zM192 224C183.2 224 176 231.2 176 240L176 272C176 280.8 183.2 288 192 288L448 288C456.8 288 464 280.8 464 272L464 240C464 231.2 456.8 224 448 224L192 224zM192 352C183.2 352 176 359.2 176 368L176 400C176 408.8 183.2 416 192 416L352 416C360.8 416 368 408.8 368 400L368 368C368 359.2 360.8 352 352 352L192 352z"/></svg></div>
                 <div class="aq-label">Edit Programs</div>
             </div>
             <div class="admin-quick-card aq-export" onclick="window.exportCurrentData()">
-                <div class="aq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m8 11 4 4 4-4"/><path d="M4 21h16"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 352C337.7 352 352 337.7 352 320L352 173.3L400 221.3C410.5 231.8 426.7 231.8 437.2 221.3L453.2 205.3C463.7 194.8 463.7 178.6 453.2 168.1L341.2 56.1C330.7 45.6 314.5 45.6 304 56.1L192 168.1C181.5 178.6 181.5 194.8 192 205.3L208 221.3C218.5 231.8 234.7 231.8 245.2 221.3L288 178.5L288 320C288 337.7 302.3 352 320 352zM128 448C110.3 448 96 462.3 96 480L96 544C96 561.7 110.3 576 128 576L512 576C529.7 576 544 561.7 544 544L544 480C544 462.3 529.7 448 512 448L448 448L448 512L192 512L192 448L128 448z"/></svg></div>
                 <div class="aq-label">Export Data</div>
             </div>
             <div class="admin-quick-card aq-festivals" onclick="window.openFestivalsAdminModal()" style="grid-column:1 / -1;">
-                <div class="aq-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16"/><path d="M12 4v16"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <div class="aq-icon"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 64C332.2 64 342.4 72.1 344.8 83.9L360.8 163.9L440.8 179.9C452.6 182.3 460.7 192.5 460.7 204.7C460.7 216.9 452.6 227.1 440.8 229.5L360.8 245.5L344.8 325.5C342.4 337.3 332.2 345.4 320 345.4C307.8 345.4 297.6 337.3 295.2 325.5L279.2 245.5L199.2 229.5C187.4 227.1 179.3 216.9 179.3 204.7C179.3 192.5 187.4 182.3 199.2 179.9L279.2 163.9L295.2 83.9C297.6 72.1 307.8 64 320 64zM128 384C140.2 384 150.4 392.1 152.8 403.9L160.8 443.9L200.8 451.9C212.6 454.3 220.7 464.5 220.7 476.7C220.7 488.9 212.6 499.1 200.8 501.5L160.8 509.5L152.8 549.5C150.4 561.3 140.2 569.4 128 569.4C115.8 569.4 105.6 561.3 103.2 549.5L95.2 509.5L55.2 501.5C43.4 499.1 35.3 488.9 35.3 476.7C35.3 464.5 43.4 454.3 55.2 451.9L95.2 443.9L103.2 403.9C105.6 392.1 115.8 384 128 384zM512 384C524.2 384 534.4 392.1 536.8 403.9L544.8 443.9L584.8 451.9C596.6 454.3 604.7 464.5 604.7 476.7C604.7 488.9 596.6 499.1 584.8 501.5L544.8 509.5L536.8 549.5C534.4 561.3 524.2 569.4 512 569.4C499.8 569.4 489.6 561.3 487.2 549.5L479.2 509.5L439.2 501.5C427.4 499.1 419.3 488.9 419.3 476.7C419.3 464.5 427.4 454.3 439.2 451.9L479.2 443.9L487.2 403.9C489.6 392.1 499.8 384 512 384z"/></svg></div>
                 <div class="aq-label">Festivals</div>
             </div>
         </div>
