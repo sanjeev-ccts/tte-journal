@@ -261,7 +261,11 @@
     .header-tab.header-tab-flash { animation: rosterHeaderTabFlash 0.7s cubic-bezier(0.4, 0, 0.2, 1); border-radius: 8px; }
     .view-edit-team-btn svg { flex-shrink: 0; color: var(--blue-fill); }
     .tsc-edit-icon { display: inline-flex; align-items: center; color: var(--blue-fill); margin-left: 2px; }
-    .admin-quick-card .aq-icon { display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+    .admin-quick-card .aq-icon {
+        display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+        width: 44px; height: 44px; border-radius: 12px;
+        background: color-mix(in srgb, currentColor 14%, transparent);
+    }
     .admin-quick-card .aq-icon svg { width: 24px; height: 24px; display: block; }
     .admin-quick-card .aq-icon svg path { fill: currentColor; }
     .admin-quick-card.aq-teams .aq-icon { color: var(--blue); }
