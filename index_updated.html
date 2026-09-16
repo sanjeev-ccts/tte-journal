@@ -231,7 +231,7 @@
         body.green-theme .station-chip { background: color-mix(in srgb, var(--blue) 12%, transparent); }
         body.green-theme .circ-tag-year { background: color-mix(in srgb, var(--blue) 12%, transparent); color: var(--blue); }
         body.green-theme .circ-dash-icon-badge { color: var(--blue); }
-        /* Point: Do NOT override circular icons color in green theme - keep them as default blue */
+        body.green-theme .circ-circular-icon { background: color-mix(in srgb, var(--blue) 12%, transparent); }
         body.green-theme .circ-fab-right { background: radial-gradient(circle at center, #4ade80 0%, #15803d 55%, #14532d 100%); }
         body.green-theme #btn-clear-inputs svg { color: #64748b !important; }
         #btn-clear-inputs svg { color: #64748b; }
@@ -741,15 +741,14 @@
         /* Mandali icon - color the two side persons differently */
         .dash-link-icon-badge .mandali-left-person,
         .dash-link-icon-badge .mandali-right-person {
-            fill: #f97316; /* Orange - same as circular icon book page fill */
+            fill: var(--green);
         }
         .dash-link-icon-badge .mandali-center-person {
             fill: var(--blue);
         }
         .backup-timestamp {
             font-size: 11px; color: #0ea5e9; font-weight: bold;
-            margin: 8px 0 0 0; padding: 0 0 6px 0; text-align: left;
-            border-bottom: 1px solid var(--border);
+            margin: 0 0 8px 2px; text-align: left;
         }
         .dash-link-row--blue .dash-link-label { color: var(--blue); }
         .dash-link-row--blue .dash-link-chevron { color: var(--blue); opacity: 0.85; }
@@ -987,11 +986,11 @@
         .sheet-action-row button {
             width: auto !important; min-width: 0 !important; flex: 1 1 0;
             min-height: 34px !important; height: auto !important; margin: 0 !important;
-            padding: 5px 6px !important; border-radius: 8px !important;
+            padding: 5px 8px !important; border-radius: 8px !important;
             font-size: 11px !important; font-weight: 700 !important; line-height: 1 !important;
             display: inline-flex !important; flex-direction: row !important;
             align-items: center !important; justify-content: center !important;
-            gap: 4px !important; box-shadow: none !important;
+            gap: 5px !important; box-shadow: none !important;
         }
         .all-journey-action-row .all-journey-action-cancel,
         .all-journey-action-row .all-journey-action-share,
@@ -1006,15 +1005,11 @@
         .sheet-action-share, .all-journey-action-share {
             background: #0ea5e9 !important; color: #fff !important;
         }
-        .all-journey-action-remark {
-            background: #8b5cf6 !important; color: #fff !important;
-        }
         .sheet-action-share svg, .all-journey-action-share svg {
             width: 16px; height: 16px; fill: #fff; flex-shrink: 0; display: block;
         }
         .all-journey-action-edit svg, .sheet-action-edit svg, .manage-action-edit svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
         .all-journey-action-delete svg, .sheet-action-delete svg, .manage-action-delete svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
-        .all-journey-action-remark svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
         .sheet-action-cancel svg, .all-journey-action-cancel svg { width: 14px; height: 14px; flex-shrink: 0; display: block; }
         .circ-icon-action svg { width: 16px; height: 16px; fill: currentColor; display: block; }
         .ui-icon-only-btn svg { width: 14px; height: 14px; fill: currentColor; display: block; }
@@ -1392,10 +1387,7 @@
         .bottom-nav-indicator.visible { opacity: 1; }
         .bottom-icon-wrap { position: relative; z-index: 1; }
         .nav-fab-wrapper { position: relative; z-index: 2; }
-        #pwa-install-banner { position: fixed; bottom: calc(var(--bottom-ui-offset) + 10px); left: 50%; transform: translateX(-50%); width: 94%; max-width: 560px; background: linear-gradient(135deg, #1d4ed8, #1e40af); color: white; border-radius: 20px; padding: 10px 12px; z-index: 4100; box-shadow: 0 -4px 18px rgba(0,0,0,0.35); display: flex; align-items: center; gap: 10px; box-sizing: border-box; }
-        #pwa-install-banner button { border-radius: 20px; padding: 8px 16px; font-size: 13px; white-space: nowrap; }
-        #pwa-install-banner .close-btn { width: 28px; height: 28px; border-radius: 50%; font-size: 18px; display: flex; align-items: center; justify-content: center; padding: 0; flex-shrink: 0; background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; }
-        #pwa-install-banner .close-btn:hover { background: rgba(255,255,255,0.3); }
+        #pwa-install-banner { position: fixed; bottom: calc(var(--bottom-ui-offset) + 10px); left: 50%; transform: translateX(-50%); width: 94%; max-width: 560px; background: linear-gradient(135deg, #1d4ed8, #1e40af); color: white; border-radius: 14px; padding: 12px 14px; z-index: 4100; box-shadow: 0 -4px 18px rgba(0,0,0,0.35); display: flex; align-items: center; gap: 10px; box-sizing: border-box; }
         #exit-toast { bottom: calc(96px + var(--safe-bottom)) !important; }
         .app-snackbar {
             position: fixed; left: 50%; z-index: 10000; max-width: 92vw; min-width: 200px; width: max-content;
@@ -1831,16 +1823,16 @@
             background:var(--card);
             background:linear-gradient(155deg, color-mix(in srgb, var(--card) 92%, white 8%) 0%, var(--card) 55%, color-mix(in srgb, var(--card) 90%, black 10%) 100%);
             border-radius:14px; padding:14px 16px;
-            border:1px solid var(--border); margin-bottom:10px; display:flex; gap:12px; align-items:center; position:relative;
+            border:1px solid var(--border); margin-bottom:10px; display:flex; gap:12px; align-items:flex-start;
         }
         .circ-circular-card.circ-pinned { border:1.5px solid rgba(234,179,8,0.5); background:rgba(234,179,8,0.05); }
-        .circ-circular-card { background: var(--card); border: 1px solid var(--md-outline-variant); box-shadow: var(--md-elevation-1); align-items: center; }
+        .circ-circular-card { background: var(--card); border: 1px solid var(--md-outline-variant); box-shadow: var(--md-elevation-1); align-items: stretch; }
         .circ-circular-link-row { display:block; flex:1; min-width:0; text-decoration:none; color:inherit; cursor:pointer; }
         .circ-circular-body { flex:1; min-width:0; width:100%; }
-        .circ-circular-title-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; padding-right:40px; position:relative; }
-        .circ-circular-title-main { flex:1; min-width:0; display:flex; align-items:center; gap:6px; text-decoration:none; color:inherit; }
+        .circ-circular-title-row { display:flex; align-items:flex-start; gap:8px; margin-bottom:6px; }
+        .circ-circular-title-main { flex:1; min-width:0; display:flex; align-items:flex-start; gap:6px; text-decoration:none; color:inherit; }
         .circ-circular-title { font-size:14.5px; font-weight:700; color:var(--text); margin:0; line-height:1.35; flex:1; min-width:0; }
-        .circ-circular-title-row .circ-icon-action--edit { position:absolute; top:8px; right:8px; flex-shrink:0; margin-top:0; transform: scale(0.7); z-index:10; }
+        .circ-circular-title-row .circ-icon-action--edit { flex-shrink:0; margin-top:1px; }
         .circ-circular-meta { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
         .circ-tag { font-size:10px; font-weight:800; padding:3px 9px; border-radius:20px; white-space:nowrap; }
         .circ-tag-category { background:rgba(124,58,237,0.12); color:var(--purple); }
@@ -1849,11 +1841,8 @@
         .circ-tag-date { background:rgba(100,116,139,0.12); color:var(--text-muted); }
         .circ-tag-pin { background:rgba(234,179,8,0.18); color:#a16207; }
         .circ-tag-link { background:rgba(14,165,233,0.12); color:#0ea5e9; }
-        /* Point (iv): attached file tag should have same color as link tag */
-        .circ-tag-file { background:rgba(14,165,233,0.12); color:#0ea5e9; }
         .circ-circular-desc { font-size:12px; color:var(--text-muted); margin:0 0 8px; line-height:1.4; }
-        .circ-open-arrow { color:var(--text-muted); font-size:16px; flex-shrink:0; line-height:1; display:flex; align-items:center; justify-content:center; height:100%; }
-        .circ-circular-title-main { align-items:center; }
+        .circ-open-arrow { color:var(--text-muted); font-size:16px; flex-shrink:0; line-height:1.35; }
         .circ-manage-search-box { margin-bottom:12px; }
 
         .circ-fab-3d { position:fixed; bottom:90px; width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; cursor:pointer; z-index:3000; box-shadow:0 6px 16px rgba(0,0,0,0.35); border:none; }
@@ -1900,7 +1889,7 @@
             border-radius:50%; border:none; display:flex; align-items:center; justify-content:center;
             font-size:14px; cursor:pointer; flex-shrink:0; padding:0; box-sizing:border-box;
         }
-        .circ-icon-action--edit { background: rgba(37,99,235,0.12) !important; color: var(--blue-fill) !important; align-self:center; transform: scale(0.7); }
+        .circ-icon-action--edit { background: rgba(37,99,235,0.12) !important; color: var(--blue-fill) !important; align-self:center; }
         .circ-icon-action--edit svg { width:16px; height:16px; fill: var(--blue-fill) !important; flex-shrink:0; }
         #dash-sync-icon.sync-state-offline #dash-sync-badge-group circle:nth-of-type(2) {
             fill: #ffffff;
@@ -3451,7 +3440,7 @@
 </div>
 
 <div id="version-gate-screen" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:99998; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; text-align:center;">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" style="width:80px; height:80px; fill:#f59e0b; margin-bottom:15px;"><path d="M320 96C284.7 96 256 124.7 256 160L256 224L448 224C483.3 224 512 252.7 512 288L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 288C128 252.7 156.7 224 192 224L192 160C192 89.3 249.3 32 320 32C383.5 32 436.1 78.1 446.2 138.7C449.1 156.1 437.4 172.6 419.9 175.6C402.4 178.6 386 166.8 383 149.3C378 119.1 351.7 96 320 96zM360 424C373.3 424 384 413.3 384 400C384 386.7 373.3 376 360 376L280 376C266.7 376 256 386.7 256 400C256 413.3 266.7 424 280 424L360 424z"/></svg>
+    <div style="font-size:60px; margin-bottom:15px;">📱</div>
     <h2 style="color:var(--text); margin:0 0 10px 0; font-weight:900;">Update Required</h2>
     <p id="version-gate-msg" style="color:var(--text-muted); font-size:14px; line-height:1.6; margin:0 0 20px 0; max-width:300px;"></p>
     <button onclick="window.location.reload()" style="width:auto; padding:12px 30px; border-radius:30px; background:var(--blue-fill); margin-bottom:12px;">🔄 Reload App</button>
@@ -3486,8 +3475,8 @@
             <div style="font-weight:900; font-size:13px;">Install TTE LOGS</div>
             <div style="font-size:11px; opacity:0.9;">Faster, full-screen access — no browser link needed.</div>
         </div>
-        <button onclick="window.triggerPWAInstall()" data-i18n="install" style="width: auto; min-width: 70px; max-width: 90px; margin:0; padding:6px 12px; font-size:12px; background:white; color:#1e40af; font-weight:900; border-radius:20px; flex-shrink:0;">Install</button>
-        <button onclick="window.dismissInstallBanner()" class="close-btn" style="flex-shrink:0; width: 28px; height: 28px; min-width: 28px; max-width: 28px;">✕</button>
+        <button onclick="window.triggerPWAInstall()" data-i18n="install" style="width:auto; margin:0; padding:8px 14px; font-size:12px; background:white; color:#1e40af; font-weight:900; border-radius:20px; flex-shrink:0;">Install</button>
+        <button onclick="window.dismissInstallBanner()" style="width:auto; margin:0; padding:6px 9px; font-size:12px; background:rgba(255,255,255,0.2); border-radius:50%; flex-shrink:0;">✕</button>
     </div>
 
     <button type="button" id="app-zoom-indicator" class="hidden" onclick="window.resetAppViewportZoom()" aria-label="Reset zoom">
@@ -4027,7 +4016,7 @@
                     <svg class="sidebar-item-icon" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true" style="color:#0ea5e9;"><path d="M371.8 82.4C359.8 87.4 352 99 352 112L352 192L240 192C142.8 192 64 270.8 64 368C64 481.3 145.5 531.9 164.2 542.1C166.7 543.5 169.5 544 172.3 544C183.2 544 192 535.1 192 524.3C192 516.8 187.7 509.9 182.2 504.8C172.8 496 160 478.4 160 448.1C160 395.1 203 352.1 256 352.1L352 352.1L352 432.1C352 445 359.8 456.7 371.8 461.7C383.8 466.7 397.5 463.9 406.7 454.8L566.7 294.8C579.2 282.3 579.2 262 566.7 249.5L406.7 89.5C397.5 80.3 383.8 77.6 371.8 82.6z"/></svg><span data-i18n="share">Share</span>
                 </div>
                 <div class="sidebar-item" onclick="document.getElementById('help-modal').classList.remove('hidden'); window.closeSidebar();">
-                    <svg class="sidebar-item-icon" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true" style="color:#3b82f6;"><path d="M112 128C85.5 128 64 149.5 64 176C64 191.1 71.1 205.3 83.2 214.4L291.2 370.4C308.3 383.2 331.7 383.2 348.8 370.4L556.8 214.4C568.9 205.3 576 191.1 576 176C576 149.5 554.5 128 528 128L112 128zM64 260L64 448C64 483.3 92.7 512 128 512L512 512C547.3 512 576 483.3 576 448L576 260L377.6 408.8C343.5 434.4 296.5 434.4 262.4 408.8L64 260z"/></svg><span data-i18n="contact_report_issue">Contact</span>
+                    <svg class="sidebar-item-icon" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true" style="color:#3b82f6;"><path d="M576 304C576 436.5 461.4 544 320 544C282.9 544 247.7 536.6 215.9 523.3L97.5 574.1C88.1 578.1 77.3 575.8 70.4 568.3C63.5 560.8 62 549.8 66.8 540.8L115.6 448.6C83.2 408.3 64 358.3 64 304C64 171.5 178.6 64 320 64C461.4 64 576 171.5 576 304z"/></svg><span data-i18n="contact_report_issue">Contact</span>
                 </div>
                 <div id="settings-install-row" onclick="window.closeSidebar(); window.handleSettingsInstallTap();" class="sidebar-item">
                     <svg class="sidebar-item-icon" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true" style="color:#22c55e;"><path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"/></svg><span data-i18n="install_app_row">Install App</span>
@@ -4060,22 +4049,6 @@
             <h3 id="modal-title" style="margin-top:0; font-size: 18px; color: var(--text);">Message</h3>
             <div id="modal-msg" style="font-size: 14px; white-space: pre-wrap; color: var(--text-muted); margin-bottom: 20px; text-align: center; line-height: 1.5;"></div>
             <div style="display: flex; gap: 10px; justify-content: center;"><button id="modal-cancel" class="hidden" data-i18n="cancel" style="flex: 1; margin: 0; background: #64748b;">CANCEL</button><button id="modal-ok" data-i18n="ok" style="flex: 1; margin: 0; background: var(--blue-fill);">OK</button></div>
-        </div>
-    </div>
-
-    <!-- Journey Remark Modal -->
-    <div id="journey-remark-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="journey-remark-title" aria-hidden="true" style="position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; z-index:6000; padding:16px;" onclick="if(event.target === this) window.closeJourneyRemarkModal()">
-        <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 20px; border-radius: 16px; width: 90%; max-width: 400px; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-                <h3 id="journey-remark-title" style="margin:0; font-size:18px; color:var(--text); font-weight:900;">Journey Remarks</h3>
-                <button onclick="window.closeJourneyRemarkModal()" style="background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-            </div>
-            <div id="journey-remark-info" style="font-size:13px; color:var(--text-muted); margin-bottom:12px; padding:8px; background:rgba(59,130,246,0.1); border-radius:8px;"></div>
-            <textarea id="journey-remark-textarea" placeholder="Write your remark here..." style="width:100%; min-height:120px; padding:12px; border:1px solid var(--border); border-radius:10px; font-size:14px; resize:vertical; background:var(--card); color:var(--text); box-sizing:border-box; font-family:inherit;"></textarea>
-            <div style="display:flex; gap:10px; margin-top:16px; justify-content:flex-end;">
-                <button onclick="window.closeJourneyRemarkModal()" style="padding:10px 20px; border-radius:10px; border:none; background:#64748b; color:#fff; font-weight:700; font-size:13px; cursor:pointer;">Cancel</button>
-                <button onclick="window.saveJourneyRemark()" style="padding:10px 20px; border-radius:10px; border:none; background:var(--blue-fill); color:#fff; font-weight:700; font-size:13px; cursor:pointer;">Save Remark</button>
-            </div>
         </div>
     </div>
     
@@ -4414,7 +4387,7 @@
                     <div class="nav-sub-text" id="admin-maint-status-mini">OFF</div>
                 </div>
                 <div class="nav-card" onclick="window.openAdminModal('versiongate')">
-                    <div class="nav-icon" style="color:#f97316;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M320 96C284.7 96 256 124.7 256 160L256 224L448 224C483.3 224 512 252.7 512 288L512 512C512 547.3 483.3 576 448 576L192 576C156.7 576 128 547.3 128 512L128 288C128 252.7 156.7 224 192 224L192 160C192 89.3 249.3 32 320 32C383.5 32 436.1 78.1 446.2 138.7C449.1 156.1 437.4 172.6 419.9 175.6C402.4 178.6 386 166.8 383 149.3C378 119.1 351.7 96 320 96zM360 424C373.3 424 384 413.3 384 400C384 386.7 373.3 376 360 376L280 376C266.7 376 256 386.7 256 400C256 413.3 266.7 424 280 424L360 424z"/></svg></div>
+                    <div class="nav-icon" style="color:#f97316;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M400 416C497.2 416 576 337.2 576 240C576 142.8 497.2 64 400 64C302.8 64 224 142.8 224 240C224 258.7 226.9 276.8 232.3 293.7L71 455C66.5 459.5 64 465.6 64 472L64 552C64 565.3 74.7 576 88 576L168 576C181.3 576 192 565.3 192 552L192 512L232 512C245.3 512 256 501.3 256 488L256 448L296 448C302.4 448 308.5 445.5 313 441L346.3 407.7C363.2 413.1 381.3 416 400 416zM440 160C462.1 160 480 177.9 480 200C480 222.1 462.1 240 440 240C417.9 240 400 222.1 400 200C400 177.9 417.9 160 440 160z"/></svg></div>
                     <div class="nav-main-text" style="color: var(--orange); font-size: 14px;">Version Gate</div>
                     <div class="nav-sub-text">Lock old app versions</div>
                 </div>
@@ -5172,47 +5145,6 @@
         </div>
     </div>
 
-    <!-- REMARKS PAGE (Point 4) -->
-    <div id="screen-remarks" class="hidden">
-        <div class="top-bar">
-            <button class="back-btn" onclick="window.closeRemarksModal()"><svg viewBox="0 0 512 512" style="width:20px; height:20px;"><path fill="currentColor" stroke="currentColor" stroke-width="14" stroke-linejoin="round" d="M217,129.88c-6.25-6.25-16.38-6.25-22.63,0L79.61,244.64c-0.39,0.39-0.76,0.8-1.11,1.23c-0.11,0.13-0.2,0.27-0.31,0.41c-0.21,0.28-0.42,0.55-0.62,0.84c-0.14,0.21-0.26,0.43-0.39,0.64c-0.14,0.23-0.28,0.46-0.41,0.7c-0.13,0.24-0.24,0.48-0.35,0.73c-0.11,0.23-0.22,0.45-0.32,0.68c-0.11,0.26-0.19,0.52-0.28,0.78c-0.08,0.23-0.17,0.46-0.24,0.69c-0.09,0.29-0.15,0.58-0.22,0.86c-0.05,0.22-0.11,0.43-0.16,0.65c-0.08,0.38-0.13,0.76-0.17,1.14c-0.02,0.14-0.04,0.27-0.06,0.41c-0.11,1.07-0.11,2.15,0,3.22c0.01,0.06,0.02,0.12,0.03,0.18c0.05,0.46,0.12,0.92,0.21,1.37c0.03,0.13,0.07,0.26,0.1,0.39c0.09,0.38,0.18,0.76,0.29,1.13c0.04,0.13,0.09,0.26,0.14,0.4c0.12,0.36,0.25,0.73,0.4,1.09c0.05,0.11,0.1,0.21,0.15,0.32c0.17,0.37,0.34,0.74,0.53,1.1c0.04,0.07,0.09,0.14,0.13,0.21c0.21,0.38,0.44,0.76,0.68,1.13c0.02,0.03,0.04,0.06,0.06,0.09c0.55,0.81,1.18,1.58,1.89,2.29l114.81,114.81c3.12,3.12,7.22,4.69,11.31,4.69s8.19-1.56,11.31-4.69c6.25-6.25,6.25-16.38,0-22.63l-87.5-87.5h291.62c8.84,0,16-7.16,16-16s-7.16-16-16-16H129.51L217,152.5C223.25,146.26,223.25,136.13,217,129.88z"/></svg></button>
-            <h1 data-i18n="page_title_remarks">Remarks</h1>
-        </div>
-        <div class="screen-content" style="display:flex; flex-direction:column; height:calc(100vh - 60px); box-sizing:border-box;">
-            <div style="display:flex; gap:8px; margin-bottom:8px; flex-shrink:0; align-items:center;">
-                <button onclick="window.shiftRemarksMonth(-1)" class="squeeze-ball month-nav-arrow-btn prev" type="button">‹</button>
-                <select id="remarks-month-sel" onchange="window.changeRemarksMonth()" style="margin:0; flex:1; background-color:var(--card); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E&quot;); background-position: calc(100% - 12px) center; background-size: 14px 14px; background-repeat: no-repeat; border:1px solid var(--border); padding:9px 28px 9px 12px; -webkit-appearance:none; -moz-appearance:none; appearance:none; text-align:center; text-align-last:center;">
-                    <option value="01">January</option><option value="02">February</option><option value="03">March</option><option value="04">April</option>
-                    <option value="05">May</option><option value="06">June</option><option value="07">July</option><option value="08">August</option>
-                    <option value="09">September</option><option value="10">October</option><option value="11">November</option><option value="12">December</option>
-                </select>
-                <select id="remarks-year-sel" onchange="window.changeRemarksMonth()" style="margin:0; flex:1; background-color:var(--card); background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E&quot;); background-position: calc(100% - 12px) center; background-size: 14px 14px; background-repeat: no-repeat; border:1px solid var(--border); padding:9px 28px 9px 12px; -webkit-appearance:none; -moz-appearance:none; appearance:none; text-align:center; text-align-last:center;">
-                    <option value="2015">2015</option><option value="2016">2016</option><option value="2017">2017</option><option value="2018">2018</option>
-                    <option value="2019">2019</option><option value="2020">2020</option><option value="2021">2021</option><option value="2022">2022</option>
-                    <option value="2023">2023</option><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
-                    <option value="2027">2027</option><option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option>
-                    <option value="2031">2031</option><option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option>
-                    <option value="2035">2035</option><option value="2036">2036</option><option value="2037">2037</option><option value="2038">2038</option>
-                    <option value="2039">2039</option><option value="2040">2040</option>
-                </select>
-                <button onclick="window.shiftRemarksMonth(1)" class="squeeze-ball month-nav-arrow-btn next" type="button">›</button>
-            </div>
-            <p data-i18n="remarks_tap_hint" style="font-size:10.5px; color:var(--text-muted); margin:0 0 8px 0; flex-shrink:0;">Tap the boxes to edit Allotted Coaches and Remarks inline.</p>
-            <div class="earnings-table-shell" style="overflow-y:auto; overflow-x:auto; flex:1; border-radius:10px; border:1px solid var(--border); background:var(--card);">
-                <table id="remarks-table" style="width:100%; border-collapse:collapse; font-size:11.5px; table-layout:fixed; background:var(--card);">
-                    <thead><tr id="remarks-table-header-row" style="background:var(--all-header-bg); position:sticky; top:0; z-index:2;">
-                        <th style="padding:6px 2px; font-size:10px; color:var(--all-header-text); width:16%; border-bottom:1px solid var(--border);">Date</th>
-                        <th style="padding:6px 2px; font-size:10px; color:var(--all-header-text); width:20%; border-left:1px solid rgba(255,255,255,0.2); border-bottom:1px solid var(--border);">Train</th>
-                        <th style="padding:6px 2px; font-size:10px; color:var(--all-header-text); width:30%; border-left:1px solid rgba(255,255,255,0.2); border-bottom:1px solid var(--border);">Allotted Coaches</th>
-                        <th style="padding:6px 2px; font-size:10px; color:var(--all-header-text); width:34%; border-left:1px solid rgba(255,255,255,0.2); border-bottom:1px solid var(--border);">Remarks</th>
-                    </tr></thead>
-                    <tbody id="remarks-table-body"></tbody>
-                </table>
-            </div>
-            <button onclick="window.saveRemarksTable()" style="background:var(--blue-fill); margin-top:12px; margin-bottom:70px; flex-shrink:0;" data-i18n="save_remarks_btn">Save Remarks</button>
-        </div>
-    </div>
-
     <!-- DUTY ROSTER IFRAME MODAL -->
     <div id="roster-iframe-modal" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:999000; display:flex; flex-direction:column;" onclick="if(event.target === this) { this.classList.add('hidden'); window.notifyRosterIframeHidden && window.notifyRosterIframeHidden(); }">
         <div class="top-bar" style="position:relative; border-bottom:none; box-shadow:none;">
@@ -5459,22 +5391,22 @@
             <h1 data-i18n="page_title_backup_restore">Backup & Restore</h1>
         </div>
         <div class="screen-content">
+            <div id="manual-backup-time" class="backup-timestamp"></div>
             <div class="card" style="padding: 12px 15px; margin-bottom: 10px;">
                 <div class="backup-section-head">
                     <span class="backup-heading-icon" style="color: var(--purple);"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M352 96C352 78.3 337.7 64 320 64C302.3 64 288 78.3 288 96L288 306.7L246.6 265.3C234.1 252.8 213.8 252.8 201.3 265.3C188.8 277.8 188.8 298.1 201.3 310.6L297.3 406.6C309.8 419.1 330.1 419.1 342.6 406.6L438.6 310.6C451.1 298.1 451.1 277.8 438.6 265.3C426.1 252.8 405.8 252.8 393.3 265.3L352 306.7L352 96zM160 384C124.7 384 96 412.7 96 448L96 480C96 515.3 124.7 544 160 544L480 544C515.3 544 544 515.3 544 480L544 448C544 412.7 515.3 384 480 384L433.1 384L376.5 440.6C345.3 471.8 294.6 471.8 263.4 440.6L206.9 384L160 384zM464 440C477.3 440 488 450.7 488 464C488 477.3 477.3 488 464 488C450.7 488 440 477.3 440 464C440 450.7 450.7 440 464 440z"/></svg></span>
                     <h3 style="color: var(--purple);">Manual Backup</h3>
                 </div>
                 <p data-i18n="backup_save_file_desc" style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px 0;">Save a physical backup file to your phone.</p>
-                <div id="manual-backup-time" class="backup-timestamp"></div>
                 <button type="button" class="backup-action-btn" onclick="window.exportData()">Download Backup File</button>
             </div>
+            <div id="restore-backup-time" class="backup-timestamp"></div>
             <div class="card" style="padding: 12px 15px; margin-bottom: 10px;">
                 <div class="backup-section-head">
                     <span class="backup-heading-icon" style="color: #eab308;"><svg viewBox="0 0 640 640" fill="currentColor" aria-hidden="true"><path d="M352 173.3L352 384C352 401.7 337.7 416 320 416C302.3 416 288 401.7 288 384L288 173.3L246.6 214.7C234.1 227.2 213.8 227.2 201.3 214.7C188.8 202.2 188.8 181.9 201.3 169.4L297.3 73.4C309.8 60.9 330.1 60.9 342.6 73.4L438.6 169.4C451.1 181.9 451.1 202.2 438.6 214.7C426.1 227.2 405.8 227.2 393.3 214.7L352 173.3zM320 464C364.2 464 400 428.2 400 384L480 384C515.3 384 544 412.7 544 448L544 480C544 515.3 515.3 544 480 544L160 544C124.7 544 96 515.3 96 480L96 448C96 412.7 124.7 384 160 384L240 384C240 428.2 275.8 464 320 464zM464 488C477.3 488 488 477.3 488 464C488 450.7 477.3 440 464 440C450.7 440 440 450.7 440 464C440 477.3 450.7 488 464 488z"/></svg></span>
                     <h3 style="color: var(--yellow);">Restore from File</h3>
                 </div>
                 <p data-i18n="backup_import_file_desc" style="font-size: 12px; color: var(--text-muted); margin: 0 0 10px 0;">Import a previously downloaded backup file.</p>
-                <div id="restore-backup-time" class="backup-timestamp"></div>
                 <button type="button" class="backup-action-btn" onclick="document.getElementById('import-file').click()">Choose File & Restore</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="window.importData(event)">
             </div>
@@ -8899,7 +8831,7 @@
             if (window.resetTrendCollapseSections) window.resetTrendCollapseSections();
         }
         
-        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-remarks', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary', 'screen-settings', 'screen-alerts'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
+        ['screen-login', 'screen-dashboard', 'screen-add', 'screen-all', 'screen-reports', 'screen-backup', 'screen-my-archive', 'screen-register', 'screen-admin', 'screen-circulars-dashboard', 'screen-circulars-list', 'screen-sleep-ruined', 'screen-earnings', 'screen-national-holiday', 'screen-yearly-trend', 'screen-salary', 'screen-settings', 'screen-alerts'].forEach(id => { const el = document.getElementById(id); if(el) el.classList.add('hidden'); });
         const shownScreenEl = document.getElementById(screenId);
         if (!shownScreenEl) return;
         shownScreenEl.classList.remove('hidden');
@@ -13247,11 +13179,9 @@
         const shareBtn = !leg.isNonDuty
             ? `<button type="button" class="all-journey-action-share" aria-label="Share" onclick="event.stopPropagation(); window.shareAllJourneyEntry('${id}')">${window.svgShareIcon(16, '#fff')}</button>`
             : '';
-        const remarkBtn = `<button type="button" class="all-journey-action-remark" aria-label="Remarks" onclick="event.stopPropagation(); window.openJourneyRemarkModal('${id}')"><svg viewBox="0 0 640 640" style="width:14px;height:14px;fill:#fff;display:block;margin-right:6px;"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg>Remark</button>`;
         return `<div class="all-journey-action-row" data-action-for="${id}">
             <button type="button" class="all-journey-action-edit" aria-label="${isMultiDayLeave ? 'Edit complete leave period' : 'Edit entry'}" onclick="event.stopPropagation(); window.editAllJourneyEntry('${id}')">${window.svgEditIcon(14, '#fff')} Edit</button>
             <button type="button" class="all-journey-action-delete" aria-label="${isMultiDayLeave ? 'Delete complete leave period' : 'Delete entry'}" onclick="event.stopPropagation(); window.deleteAllJourneyEntry('${id}')">${window.svgTrashIcon(14, '#fff')} Delete</button>
-            ${remarkBtn}
             ${shareBtn}
             <button type="button" class="all-journey-action-cancel" aria-label="Cancel" onclick="event.stopPropagation(); window.toggleAllJourneyExpand('${id}')">${window.svgCrossIcon(14, '#fff')}</button>
         </div>`;
@@ -13385,10 +13315,8 @@
                     const rowBorder = isCocl
                         ? 'border: 1px solid color-mix(in srgb, #9333ea 42%, var(--border) 58%);'
                         : 'border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%);';
-                    const hasRemark = !!(window.appState.journeyRemarks && window.appState.journeyRemarks[String(leg.id)]);
-                    const remarkIndicator = hasRemark ? `<svg viewBox="0 0 640 640" style="width:16px;height:16px;fill:#3b82f6;display:block;margin-right:8px;"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg>` : '';
                     if (isExpanded && isFirstDisplayedDay) htmlElements.push(buildAllJourneyActionRow(leg));
-                    htmlElements.push(`<div class="all-journey-row all-journey-row--nonduty ${nonDutyRowClass}${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="true" style="${rowBorder} border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;">${nonDutyCheckbox}<div class="all-journey-row-body" style="display:flex;align-items:center;">${remarkIndicator}${contentStr}</div>${allJourneyChevronHtml()}</div>`);
+                    htmlElements.push(`<div class="all-journey-row all-journey-row--nonduty ${nonDutyRowClass}${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="true" style="${rowBorder} border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;">${nonDutyCheckbox}<div class="all-journey-row-body">${contentStr}</div>${allJourneyChevronHtml()}</div>`);
                     isFirstDisplayedDay = false;
                     cursor.setDate(cursor.getDate() + 1);
                 }
@@ -13400,13 +13328,10 @@
                 const dutyCheckboxCol = window._allJourneyMultiSelectMode ? window.allJourneySelectMark(dutyChecked) : '';
                 
                 const isExpanded = !window._allJourneyMultiSelectMode && String(window._allJourneyExpandedId) === String(leg.id);
-                const hasRemark = !!(window.appState.journeyRemarks && window.appState.journeyRemarks[String(leg.id)]);
-                const remarkIndicator = hasRemark ? `<svg viewBox="0 0 640 640" style="width:16px;height:16px;fill:#3b82f6;display:block;margin-right:8px;"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg>` : '';
                 if (isExpanded) htmlElements.push(buildAllJourneyActionRow(leg));
                 htmlElements.push(`<div class="all-journey-row${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="false" style="border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%); border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;">
                     ${dutyCheckboxCol}
-                    <div class="all-journey-row-body" style="display:flex;align-items:center;">
-                        ${remarkIndicator}
+                    <div class="all-journey-row-body">
                         <span class="aj-train">${leg.train}</span><span class="aj-sep"> · </span>
                         <span class="aj-date">${shortDep}</span><span class="aj-sep"> · </span>
                         <span class="aj-stn">${leg.depStn}</span> <span class="aj-time">${leg.depTime}</span>
@@ -14162,14 +14087,11 @@
         section.style.display = '';
         list.innerHTML = latest.map(c => {
             const hasLink = !!c.link && window.isSafeUrl(c.link);
-            // Point (v): On main circular page, show tag below title besides date tag (no icons)
-            const linkFileTag = hasLink ? '<span class="circ-tag circ-tag-link">🔗 Link</span>' : '<span class="circ-tag circ-tag-file">📎 Attached file</span>';
-            const inner = `
+            const inner = `<span class="circ-latest-dot">${hasLink ? '📄' : '📎'}</span>
                 <div class="circ-latest-body">
                     <div class="circ-latest-title">${window.escapeHtml(c.title || 'Untitled')}</div>
                     <div class="circ-circular-meta">
                         <span class="circ-tag circ-tag-date">${window.circFormatDateShort(c.date)}</span>
-                        ${linkFileTag}
                     </div>
                 </div>
                 <span class="circ-latest-arrow">↗</span>`;
@@ -14582,7 +14504,7 @@
                         ${c.category ? `<span class="circ-tag circ-tag-category">${escapeHtml(c.category)}</span>` : ''}
                         ${c.date ? `<span class="circ-tag circ-tag-date">${window.circFormatDateShort(c.date)}</span>` : ''}
                         ${hasLink ? `<span class="circ-tag circ-tag-link">🔗 Link</span>` : ''}
-                        ${!hasLink && c.fileName ? `<span class="circ-tag circ-tag-file">📎 Attached file</span>` : ''}
+                        ${!hasLink && c.fileName ? `<span class="circ-tag" style="background:rgba(100,116,139,0.12); color:var(--text-muted);">📎 Attached file</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -14999,17 +14921,6 @@
         window.navTo('screen-earnings');
     };
 
-    window.openRemarksModal = function() {
-        const now = new Date();
-        const mSel = document.getElementById('remarks-month-sel');
-        const ySel = document.getElementById('remarks-year-sel');
-        mSel.value = String(now.getMonth()+1).padStart(2,'0');
-        ySel.value = String(now.getFullYear());
-        window._remarksMonthKey = `${ySel.value}-${mSel.value}`;
-        window.renderRemarksTable();
-        window.navTo('screen-remarks');
-    };
-
     // Point 2: prev/next arrows to jump a month at a time without opening the dropdowns
     window.shiftAllLogsMonth = function(delta) {
         const mSel = document.getElementById('all-logs-month');
@@ -15185,91 +15096,6 @@
         if (ySel) ySel.value = now.getFullYear();
         renderDutyCalendar();
         document.getElementById('calendar-modal').classList.remove('hidden');
-    };
-
-    // REMARKS PAGE FUNCTIONS - Following Add Earnings pattern
-    window.shiftRemarksMonth = function(delta) {
-        const mSel = document.getElementById('remarks-month-sel');
-        const ySel = document.getElementById('remarks-year-sel');
-        let m = parseInt(mSel.value, 10) + delta;
-        let y = parseInt(ySel.value, 10);
-        if (m > 12) { m = 1; y++; }
-        if (m < 1) { m = 12; y--; }
-        mSel.value = String(m).padStart(2, '0');
-        ySel.value = String(y);
-        window.changeRemarksMonth();
-    };
-
-    window.changeRemarksMonth = function() {
-        const mSel = document.getElementById('remarks-month-sel');
-        const ySel = document.getElementById('remarks-year-sel');
-        window._remarksMonthKey = `${ySel.value}-${mSel.value}`;
-        window.renderRemarksTable();
-    };
-
-    window.closeRemarksModal = function() {
-        window.navTo('screen-dashboard');
-        // Reset to current month/year when closing
-        const now = new Date();
-        const mSel = document.getElementById('remarks-month-sel');
-        const ySel = document.getElementById('remarks-year-sel');
-        if (mSel) mSel.value = String(now.getMonth() + 1).padStart(2, '0');
-        if (ySel) ySel.value = String(now.getFullYear());
-        window._remarksMonthKey = `${ySel.value}-${mSel.value}`;
-    };
-
-    window.renderRemarksTable = function() {
-        const body = document.getElementById('remarks-table-body');
-        if (!body) return;
-        const monthKey = window._remarksMonthKey;
-        const dutyLegs = (window.appState.legs || [])
-            .filter(l => !l.isNonDuty && l.depDate && l.depDate.startsWith(monthKey))
-            .filter(l => !isSpareDdupBsbLeg(l))
-            .sort((a, b) => a.depDate.localeCompare(b.depDate));
-
-        const savedRemarks = (window.appState.remarks && window.appState.remarks[monthKey]) || {};
-
-        if (dutyLegs.length === 0) {
-            body.innerHTML = `<tr><td colspan="4" style="padding:14px; text-align:center; color:var(--text-muted); font-size:11px;">No duty entries for this month.</td></tr>`;
-            return;
-        }
-
-        body.innerHTML = dutyLegs.map(leg => {
-            const saved = savedRemarks[leg.id] || {};
-            return `<tr data-leg-id="${leg.id}">
-                <td style="padding:6px 2px; text-align:center; font-weight:700; color:var(--text); font-size:10.5px; border-bottom:1px solid var(--border);">${formatDateShort(leg.depDate)}</td>
-                <td style="padding:6px 2px; text-align:center; font-weight:700; color:var(--text); font-size:10.5px; border-left:1px solid var(--border); border-bottom:1px solid var(--border);">${escapeHtml(leg.train || '—')}</td>
-                <td contenteditable="true" class="editable-cell" data-field="coaches" style="border-left:1px solid var(--border); border-bottom:1px solid var(--border);">${saved.coaches || ''}</td>
-                <td contenteditable="true" class="editable-cell" data-field="remarks" style="border-left:1px solid var(--border); border-bottom:1px solid var(--border);">${saved.remarks || ''}</td>
-            </tr>`;
-        }).join('');
-    };
-
-    window.saveRemarksTable = async function() {
-        const monthKey = window._remarksMonthKey;
-        const monthData = {};
-        document.querySelectorAll('#remarks-table-body tr[data-leg-id]').forEach(row => {
-            const legId = row.dataset.legId;
-            const coaches = row.querySelector('[data-field="coaches"]')?.innerText.trim() || '';
-            const remarks = row.querySelector('[data-field="remarks"]')?.innerText.trim() || '';
-            if (coaches || remarks) {
-                monthData[legId] = { coaches, remarks };
-            }
-        });
-        window.appState.remarks = window.appState.remarks || {};
-        window.appState.remarks[monthKey] = monthData;
-        window.saveData();
-        showSuccessSnackbar(window.i18n ? window.i18n.tOr('remarks_saved_message', "Remarks for this month have been saved.") : "Remarks for this month have been saved.");
-    };
-
-    // Initialize Remarks page to current month/year on first load
-    window.initRemarksPage = function() {
-        const now = new Date();
-        const mSel = document.getElementById('remarks-month-sel');
-        const ySel = document.getElementById('remarks-year-sel');
-        if (mSel) mSel.value = String(now.getMonth() + 1).padStart(2, '0');
-        if (ySel) ySel.value = String(now.getFullYear());
-        window._remarksMonthKey = `${ySel.value}-${mSel.value}`;
     };
 
     // Navigate calendar by delta months
@@ -19275,77 +19101,6 @@
         const fullHtml = `<div id="print-doc" style="font-family: Arial, sans-serif; font-size: 11px; padding: 20px; color: black; line-height: 1.4; background: white; min-width: 800px; width: 100%; max-width: 800px; margin: 0 auto;"><div style="text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">NIGHT DUTY BILL</div><table style="margin: 0 auto 20px auto; font-size: 12px; text-align: left; border: none; width: auto; line-height: 1.8;"><tr><td style="padding-right: 30px;">Name: <b>${p.name}</b></td><td>Designation: <b>${p.desig}</b></td></tr><tr><td>H.Q.: <b>${p.hq}/NR</b></td><td>ROP: <span style="float: right; font-weight: bold;">p.m.</span></td></tr><tr><td>P.F. No.: <b>${p.pf}</b></td><td>BU No.: <b>${p.bu}</b></td></tr><tr><td>Period From: <b>${strFrom}</b></td><td>To: <b>${strTo}</b></td></tr></table><table class="print-table" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 9px; margin-bottom: 15px;"><thead><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Date</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">Train No.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">From</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">To</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Dep.</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 10%; font-size: 10px;">Actual<br>Arrival</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign On</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Sign Off</th><th colspan="2" style="border: 1px solid black; padding: 4px; font-size: 10px;">Night Duty</th><th rowspan="2" style="border: 1px solid black; padding: 4px; width: 9%; font-size: 10px;">Night<br>Hours</th></tr><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">From</th><th style="border: 1px solid black; padding: 4px; width: 8%; font-size: 10px;">To</th></tr></thead><tbody>${tbodyHtml}</tbody><tfoot><tr style="font-weight: bold; background: #e5e5e5; -webkit-print-color-adjust: exact; color-adjust: exact; print-color-adjust: exact;"><td colspan="10" style="text-align: right; border: 1px solid black; padding: 12px 10px; font-size: 12px;">TOTAL</td><td style="border: 1px solid black; padding: 12px 4px; font-weight: bold; font-size: 12px;">${String(totalH).padStart(2,'0')}:${String(totalM).padStart(2,'0')}</td></tr></tfoot></table><div style="margin-top: 20px;"><div style="font-weight: bold; font-size: 12px; margin-bottom: 40px;">Total Night Duty Hours = ${totalH} Hours ${totalM} Minutes</div><table style="border: none; width: 300px; text-align: left; font-size: 12px; line-height: 1.8; float: right; margin-right: 20px;"><tr><td style="text-align: right; padding-right: 10px;">Signature:</td><td style="text-align: left;">...................................................</td></tr><tr><td style="text-align: right; padding-right: 10px;">Name:</td><td style="text-align: left;"><b>${p.name}</b></td></tr><tr><td style="text-align: right; padding-right: 10px;">Designation:</td><td style="text-align: left;"><b>${p.desig}</b></td></tr></table><div style="clear: both;"></div></div></div>`;
         window.openPdfPreview(pdfName, fullHtml);
     }
-
-    // Journey Remark Modal Functions
-    window._currentJourneyRemarkId = null;
-
-    window.openJourneyRemarkModal = function(journeyId) {
-        const leg = (window.appState.legs || []).find(l => String(l.id) === String(journeyId));
-        if (!leg) return;
-        
-        window._currentJourneyRemarkId = journeyId;
-        
-        // Show journey info
-        const infoDiv = document.getElementById('journey-remark-info');
-        const dateStr = formatDateShort(leg.depDate);
-        const trainInfo = leg.train ? `Train: ${leg.train}` : '';
-        const routeInfo = `${leg.depStn || ''} → ${leg.arrStn || ''}`;
-        infoDiv.innerHTML = `<strong>${dateStr}</strong> | ${trainInfo} | ${routeInfo}`;
-        
-        // Load existing remark if any
-        const remarks = (window.appState.journeyRemarks && window.appState.journeyRemarks[journeyId]) || '';
-        document.getElementById('journey-remark-textarea').value = remarks;
-        
-        document.getElementById('journey-remark-modal').classList.remove('hidden');
-    };
-
-    window.closeJourneyRemarkModal = function() {
-        document.getElementById('journey-remark-modal').classList.add('hidden');
-        window._currentJourneyRemarkId = null;
-    };
-
-    window.saveJourneyRemark = function() {
-        if (!window._currentJourneyRemarkId) return;
-        
-        const remarkText = document.getElementById('journey-remark-textarea').value.trim();
-        window.appState.journeyRemarks = window.appState.journeyRemarks || {};
-        
-        if (remarkText) {
-            window.appState.journeyRemarks[window._currentJourneyRemarkId] = remarkText;
-        } else {
-            delete window.appState.journeyRemarks[window._currentJourneyRemarkId];
-        }
-        
-        // Save to Firebase
-        if (window.db && window.firebaseSet && window.firebaseRef) {
-            const journeyRemarksRef = window.firebaseRef(window.db, `users/${window.currentUser.uid}/journeyRemarks`);
-            window.firebaseSet(journeyRemarksRef, window.appState.journeyRemarks)
-                .then(() => {
-                    window.saveData();
-                    window.closeJourneyRemarkModal();
-                    window.renderAllLogs();
-                    window.showSuccessSnackbar("Remark saved successfully");
-                })
-                .catch((error) => {
-                    console.error("Error saving remark to Firebase:", error);
-                    // Fallback to local save
-                    window.saveData();
-                    window.closeJourneyRemarkModal();
-                    window.renderAllLogs();
-                    window.showSuccessSnackbar("Remark saved locally");
-                });
-        } else {
-            // Fallback to local save only
-            window.saveData();
-            window.closeJourneyRemarkModal();
-            window.renderAllLogs();
-            window.showSuccessSnackbar("Remark saved successfully");
-        }
-    };
-
-    window.hasJourneyRemark = function(journeyId) {
-        return !!(window.appState.journeyRemarks && window.appState.journeyRemarks[String(journeyId)]);
-    };
 </script>
 </body>
 </html>
