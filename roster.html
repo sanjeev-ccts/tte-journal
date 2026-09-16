@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=0.5, user-scalable=yes, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#eef2f8">
 <title>BSB Duty Roster</title>
@@ -122,7 +122,7 @@
     body.in-iframe .top-bar-title-row { max-height: 0; opacity: 0; min-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; pointer-events: none; }
     body.in-iframe .top-bar-tabs-row { padding-top: calc(var(--safe-top)); }
     body.in-iframe .screen-content { padding-top: 15px; }
-    body.in-iframe { padding-bottom: 0; }
+    body.in-iframe { padding-bottom: 0; min-height: 100dvh; background: var(--bg); --bottom-ui-offset: calc(12px + var(--safe-bottom)); }
     body.in-iframe #roster-bottom-bar { display: none !important; }
     .top-bar-tabbed.top-bar--compact-tabs .top-bar-title-row { max-height: 0; opacity: 0; min-height: 0 !important; padding-top: 0 !important; padding-bottom: 0 !important; pointer-events: none; }
     .top-bar-tabbed.top-bar--compact-tabs .top-bar-tabs-row { padding-top: calc(var(--safe-top)); }
@@ -337,7 +337,34 @@
     /* overflow:hidden removed for the same reason as .admin-table-wrap above — it created a dead
        inner scroll box that trapped position:sticky. Full-bleed margins let this table's own
        header row (added below) stick correctly under the dialog title too. */
-    .trip-table-wrap { margin: 0 -18px 14px -18px; box-shadow: var(--shadow); border-top: 1px solid rgba(59,130,246,0.25); border-bottom: 1px solid rgba(59,130,246,0.25); }
+    .trip-table-wrap { margin: 0 -18px 0 -18px; box-shadow: none; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .roster-festival-banner {
+        margin: 0 0 12px;
+        padding: 10px 14px;
+        border-radius: 14px;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 800;
+        color: var(--orange);
+        background: color-mix(in srgb, var(--orange) 16%, var(--card));
+        border: 1px solid color-mix(in srgb, var(--orange) 48%, var(--border));
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 20%, transparent);
+    }
+    .roster-festival-banner .roster-festival-nh {
+        display: inline-block;
+        height: 15px;
+        line-height: 15px;
+        font-size: 9px;
+        font-weight: 900;
+        color: var(--orange);
+        border: 1px solid var(--orange);
+        border-radius: 20px;
+        padding: 0 7px;
+        letter-spacing: 0.3px;
+        vertical-align: middle;
+    }
+    #result-modal-body .trip-table-wrap { border-top: none; border-bottom: none; }
+    #result-modal-body table.trip-table tr.trip-divider td { border-bottom: none !important; }
     table.trip-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 12.5px; background: var(--card); }
     table.trip-table th { background: var(--sheet-header-bg); color: var(--sheet-header-text); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px; padding: 8px 3px; font-weight: 800; position: sticky; top: var(--sticky-header-h, 54px); z-index: 15; }
     /* This wrapper has its own bounded height + real overflow-y:auto, so it IS its own scroll
@@ -378,7 +405,8 @@
     .team-click-hint.hint-red { font-size: 13px; color: var(--red); }
     .select-clear-row { display: flex; gap: 8px; align-items: center; }
     .select-clear-row select { flex: 1; margin-bottom: 10px; }
-    .search-card { border-radius: 30px; padding: 8px 14px; margin-bottom: 14px; }
+    .search-card { border-radius: 30px; padding: 8px 14px 14px; margin-bottom: 14px; }
+    .search-card .search-row-3 { margin-bottom: 8px; }
     .search-card label { display: block; text-align: center; font-size: 12.5px; font-weight: 900; margin-bottom: 5px; padding: 2px 12px; color: var(--blue); }
     .search-row-3 { display: flex; gap: 6px; align-items: stretch; }
     .search-row-3 input { flex: 1; margin-bottom: 0; padding: 0 10px; font-size: 12.5px; height: 34px; min-height: 34px; max-height: 34px; line-height: 34px; border-radius: var(--md-radius-input); box-sizing: border-box; }
@@ -386,10 +414,22 @@
         flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: stretch;
         border: 1px solid var(--border); border-radius: var(--md-radius-input);
         background: var(--input-bg); overflow: hidden; min-height: 58px;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .search-field-wrap:focus-within {
+        border-color: var(--blue-fill);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-fill) 18%, transparent);
+    }
+    body.green-theme .search-field-wrap:focus-within {
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 18%, transparent);
     }
     .search-field-wrap input {
         flex: 1; border: none !important; border-radius: 0 !important; box-shadow: none !important;
-        background: transparent !important; margin: 0 !important;
+        background: transparent !important; margin: 0 !important; outline: none !important;
+    }
+    .search-field-wrap input:focus {
+        outline: none !important; box-shadow: none !important; border: none !important;
     }
     .search-field-caption {
         font-size: 9.5px; font-weight: 600; color: var(--text-muted); text-align: center;
@@ -401,7 +441,8 @@
     .icon-search-btn, .clear-btn { width: 36px; height: 36px; min-width: 36px; min-height: 36px; flex-shrink: 0; padding: 0; border-radius: 12px; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; font-family: 'Roboto', sans-serif; box-sizing: border-box; line-height: 1; }
     .icon-search-btn { background: var(--blue-fill); color: var(--on-accent-fill); border: none; box-shadow: none; }
     .icon-search-btn svg { width: 18px; height: 18px; display: block; }
-    .name-search-results { margin-top: 8px; max-height: 260px; overflow-y: auto; }
+    .name-search-results { margin-top: 0; max-height: 260px; overflow-y: auto; }
+    .name-search-results:not(:empty) { margin-top: 8px; }
     .name-search-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; border-radius: 12px; background: var(--input-bg); border: 1px solid var(--border); margin-bottom: 6px; cursor: pointer; }
     .name-search-row:active { background: rgba(59,130,246,0.15); }
     .name-search-row .nsr-name { font-weight: 800; font-size: 13.5px; color: var(--text); }
@@ -417,6 +458,15 @@
         padding: 0 !important; margin-bottom: 8px; overflow: hidden;
         background: var(--card); border: 1px solid var(--border); border-radius: 16px;
         box-shadow: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .mandali-station-block.expanded {
+        border-color: var(--blue-fill);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-fill) 18%, transparent);
+    }
+    body.green-theme .mandali-station-block.expanded {
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 18%, transparent);
     }
     body:not(.card-shadow-on) .mandali-station-block { box-shadow: none; }
     body.card-shadow-on .mandali-station-block { box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
@@ -565,10 +615,24 @@
         border: 1px solid var(--cal-outer-border);
         box-shadow: 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06);
     }
-    .cal-trip-wrapper.cal-trip-today { border-color: var(--cal-today-border); }
-    .cal-day.cal-day-today { border-color: var(--cal-today-border) !important; }
+    .cal-trip-wrapper.cal-trip-today {
+        border-color: var(--blue-fill);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-fill) 22%, transparent), 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06);
+    }
+    .cal-day.cal-day-today {
+        border-color: var(--blue-fill) !important;
+        box-shadow: 0 0 0 2px color-mix(in srgb, var(--blue-fill) 20%, transparent);
+    }
+    body.green-theme .cal-trip-wrapper.cal-trip-today,
+    body.green-theme .cal-day.cal-day-today {
+        border-color: var(--green);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--green) 22%, transparent), 0 2px 5px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 2px rgba(0,0,0,0.06);
+    }
     body.dark-mode .cal-trip-wrapper { box-shadow: 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3); border-color: var(--cal-outer-border); }
-    body.dark-mode .cal-trip-wrapper.cal-trip-today { border-color: var(--cal-today-border); }
+    body.dark-mode .cal-trip-wrapper.cal-trip-today {
+        border-color: var(--blue-fill);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--blue-fill) 28%, transparent), 0 2px 6px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -1px 2px rgba(0,0,0,0.3);
+    }
     .mandali-live-clock {
         display: flex; align-items: center; justify-content: center; gap: 8px;
         margin: 10px 0 0; min-height: 26px;
@@ -584,9 +648,8 @@
     .result-modal-box {
         position: relative;
         background: var(--card);
-        background: linear-gradient(155deg, color-mix(in srgb, var(--card) 92%, white 8%) 0%, var(--card) 55%, color-mix(in srgb, var(--card) 90%, black 10%) 100%);
         border-radius: 18px 18px 0 0; padding: 18px; width: 100%; max-width: 640px; max-height: 94vh; overflow-y: auto;
-        box-shadow: 0 -8px 30px rgba(0,0,0,0.35), inset 0 1px 0 color-mix(in srgb, white 25%, transparent), inset 0 -2px 3px color-mix(in srgb, black 12%, transparent);
+        box-shadow: 0 -8px 30px rgba(0,0,0,0.35);
         animation: rosterSheetSlideUp 0.28s ease-out;
     }
     /* Full-bleed to match the black table header below it (no more left/right gap), and
@@ -595,12 +658,16 @@
        a -18px margin on all sides, the sticky offsets must ALSO be -18px (not 0) — otherwise
        the "stuck" position doesn't match the "resting" (bled) position, and a gap opens up
        exactly at the point the header transitions into its stuck state. */
-    .result-modal-header { display: flex; align-items: center; justify-content: center; margin: -18px -18px 12px -18px; padding: 15px 18px; position: sticky; top: -18px; left: -18px; right: -18px; background: color-mix(in srgb, var(--blue) 22%, var(--card) 78%); z-index: 25; box-shadow: 0 4px 6px -4px rgba(0,0,0,0.15); }
-    .result-modal-header h3 { color: #3b7aec !important; }
+    .result-modal-header { display: flex; align-items: center; justify-content: center; margin: -18px -18px 12px -18px; padding: 15px 18px; position: sticky; top: -18px; left: -18px; right: -18px; background: var(--card); z-index: 25; box-shadow: none; border-bottom: 1px solid var(--border); }
+    .result-modal-header h3 { color: var(--text) !important; }
     /* Same full-bleed + matching-sticky-offset treatment as the header above, so the footer's
        background also lines up flush left/right instead of staying inset while everything
        else bleeds to the edge. Padding (not margin) keeps the actual buttons visually inset. */
-    .admin-bottom-actions { display: flex; gap: 8px; margin: 10px -18px -18px -18px; padding: 8px 18px 18px 18px; position: sticky; bottom: -18px; left: -18px; right: -18px; background: var(--card); z-index: 20; box-shadow: 0 -4px 6px -4px rgba(0,0,0,0.15); }
+    .admin-bottom-actions { display: flex; gap: 8px; margin: 0 -18px -18px -18px; padding: 12px 18px 18px 18px; position: sticky; bottom: -18px; left: -18px; right: -18px; background: var(--card); z-index: 20; box-shadow: none; border-top: none; }
+    #result-modal-close-wrap {
+        position: sticky; bottom: -18px; margin: 0 -18px -18px -18px; padding: 12px 18px 18px 18px;
+        background: var(--card); z-index: 25; box-shadow: none; border-top: none;
+    }
     .admin-bottom-actions button { margin: 0; flex: 1; width: auto; }
     .aq-badge { position: absolute; top: -6px; right: -6px; background: var(--red); color: white; font-size: 10px; font-weight: 900; border-radius: 10px; padding: 1px 7px; }
     .admin-quick-card { position: relative; }
@@ -709,7 +776,7 @@
     #app-zoom-indicator:not(.hidden) { pointer-events: auto !important; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
     #app-zoom-indicator svg { width: 16px; height: 16px; flex-shrink: 0; color: var(--text-muted); }
     #app-zoom-indicator.app-zoom-indicator--reset { border-color: color-mix(in srgb, var(--blue-fill) 55%, var(--border)); }
-    body.in-iframe #app-zoom-indicator { display: none !important; }
+    html { touch-action: pan-x pan-y pinch-zoom; }
     .bell-badge { position: absolute; top: -3px; right: -3px; background: #ef4444; color: white; font-size: 9px; font-weight: bold; border-radius: 50%; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; }
     .app-snackbar {
         position: fixed; left: 50%; z-index: 21000; max-width: 92vw; min-width: 200px; width: max-content;
@@ -2381,15 +2448,14 @@ window.searchCalSetYear = function(val) {
 // Builds the SAME trip-table look used everywhere else in the app (Date | Train No | Day |
 // Up/Down), just with a small Dep/Arr timing line added under each train number. Shared by both
 // the calendar's date-tap popup and the Mandali row-tap popup so both look identical.
-function buildDayDetailHtml(teamNo, dateStr) {
+function buildRosterFestivalBannerHtml(dateStr) {
     const festival = getFestivalForDate(dateStr);
-    const nhaCapsule = (festival && festival.nha)
-        ? ` <span style="display:inline-block; height:15px; line-height:15px; font-size:9px; font-weight:900; color:${festival.color}; border:1px solid ${festival.color}; border-radius:20px; padding:0 7px; letter-spacing:0.3px; text-align:center; vertical-align:middle;">NH</span>`
-        : '';
-    const festivalBanner = festival
-        ? `<div style="background:color-mix(in srgb, ${festival.color} 15%, var(--card) 85%); border-top:1px solid ${festival.color}; border-bottom:1px solid ${festival.color}; margin:0 -18px 12px -18px; padding:10px 18px; font-size:13px; font-weight:800; color:${festival.color}; text-align:center;">${festivalEmojiSpan(festival)} ${festival.name} — ${fmtDateLabel(dateStr)}${nhaCapsule}</div>`
-        : '';
-    return festivalBanner + buildDayDetailTripHtml(teamNo, dateStr);
+    if (!festival) return '';
+    const nhaCapsule = festival.nha ? ' <span class="roster-festival-nh">NH</span>' : '';
+    return `<div class="roster-festival-banner">${festivalEmojiSpan(festival)} ${festival.name} — ${fmtDateLabel(dateStr)}${nhaCapsule}</div>`;
+}
+function buildDayDetailHtml(teamNo, dateStr) {
+    return buildRosterFestivalBannerHtml(dateStr) + buildDayDetailTripHtml(teamNo, dateStr);
 }
 function buildDayDetailTripHtml(teamNo, dateStr) {
     const status = getDutyStatusOnDate(teamNo, dateStr);
@@ -2642,7 +2708,7 @@ function showResultModal(title, bodyHtml) {
     const hasBottomActions = bodyHtml.includes('class="admin-bottom-actions"');
     document.getElementById('result-modal-body').innerHTML = hasBottomActions
         ? bodyHtml
-        : bodyHtml + '<div id="result-modal-close-wrap" style="position:sticky; bottom:-18px; margin:12px -18px -18px -18px; padding:12px 18px 18px 18px; background:var(--card); z-index:25; box-shadow:0 -4px 6px -4px rgba(0,0,0,0.15);"><button onclick="window.closeResultModal()" style="margin:0; background:var(--input-bg); color:var(--text-muted); border:1.5px solid var(--border); box-shadow:none;">Close</button></div>';
+        : bodyHtml + '<div id="result-modal-close-wrap"><button onclick="window.closeResultModal()" style="margin:0; background:var(--input-bg); color:var(--text-muted); border:1.5px solid var(--border); box-shadow:none;">Close</button></div>';
     document.getElementById('result-modal-overlay').classList.remove('hidden');
 
     // Point (fix): Close used to be a SEPARATE sticky element from .admin-bottom-actions
@@ -4946,11 +5012,21 @@ window.applyRosterNotificationBadge = function(count) {
     }
 };
 
-const APP_VIEWPORT_CONTENT = 'width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover';
+const APP_VIEWPORT_CONTENT = 'width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=0.5, user-scalable=yes, viewport-fit=cover';
+
+window.getAppViewportScale = function() {
+    const vv = window.visualViewport;
+    const layoutWidth = document.documentElement.clientWidth || window.innerWidth;
+    if (vv && vv.width && layoutWidth && Math.abs(vv.width - layoutWidth) > 1) {
+        return layoutWidth / vv.width;
+    }
+    return (vv && vv.scale) ? vv.scale : 1;
+};
 
 window.clampAppViewportZoom = function() {
+    const scale = window.getAppViewportScale ? window.getAppViewportScale() : ((window.visualViewport && window.visualViewport.scale) || 1);
     const vv = window.visualViewport;
-    if (!vv || !vv.scale || vv.scale <= 2.02) return;
+    if (!vv || scale <= 2.02) return;
     if (window._appZoomClampLock) return;
     window._appZoomClampLock = true;
     const meta = document.querySelector('meta[name="viewport"]');
@@ -4958,8 +5034,8 @@ window.clampAppViewportZoom = function() {
         window._appZoomClampLock = false;
         return;
     }
-    const inv = (2 / vv.scale).toFixed(6);
-    meta.setAttribute('content', `width=device-width, initial-scale=${inv}, maximum-scale=2.0, minimum-scale=1.0, viewport-fit=cover`);
+    const inv = (2 / scale).toFixed(6);
+    meta.setAttribute('content', `width=device-width, initial-scale=${inv}, maximum-scale=2.0, minimum-scale=0.5, user-scalable=yes, viewport-fit=cover`);
     void document.documentElement.offsetHeight;
     setTimeout(() => {
         meta.setAttribute('content', APP_VIEWPORT_CONTENT);
@@ -4990,8 +5066,7 @@ window.updateAppZoomIndicator = function() {
     const btn = document.getElementById('app-zoom-indicator');
     const label = document.getElementById('app-zoom-indicator-label');
     if (!btn || !label) return;
-    const vv = window.visualViewport;
-    const scale = (vv && vv.scale) ? vv.scale : 1;
+    const scale = window.getAppViewportScale ? window.getAppViewportScale() : 1;
     const pct = Math.round(scale * 100);
     const zoomed = Math.abs(pct - 100) > 2;
     const resetTxt = window.i18n ? window.i18n.tOr('zoom_reset_suffix', 'Reset') : 'Reset';
@@ -5009,9 +5084,8 @@ window.updateAppZoomIndicator = function() {
 
 window.resetAppViewportZoom = function() {
     if (window._appZoomResetLock) return;
-    const vv = window.visualViewport;
-    const scale = (vv && vv.scale) ? vv.scale : 1;
-    if (scale <= 1.02) {
+    const scale = window.getAppViewportScale ? window.getAppViewportScale() : 1;
+    if (scale >= 0.98 && scale <= 1.02) {
         if (window.updateAppZoomIndicator) window.updateAppZoomIndicator();
         return;
     }
@@ -5029,15 +5103,15 @@ window.resetAppViewportZoom = function() {
     };
     if (meta) {
         const inv = (1 / scale).toFixed(6);
-        meta.setAttribute('content', `width=device-width, initial-scale=${inv}, maximum-scale=${inv}, minimum-scale=${inv}, viewport-fit=cover`);
+            meta.setAttribute('content', `width=device-width, initial-scale=${inv}, maximum-scale=${inv}, minimum-scale=${inv}, user-scalable=yes, viewport-fit=cover`);
         void document.documentElement.offsetHeight;
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 applyRelaxed();
                 setTimeout(applyRelaxed, 80);
                 setTimeout(() => {
-                    const s2 = (window.visualViewport && window.visualViewport.scale) ? window.visualViewport.scale : 1;
-                    if (s2 > 1.02) {
+                    const s2 = window.getAppViewportScale ? window.getAppViewportScale() : 1;
+                    if (s2 > 1.02 || s2 < 0.98) {
                         try { sessionStorage.setItem('app_viewport_zoom_reset', '1'); } catch (e) { /* ignore */ }
                         window.location.reload();
                         return;
