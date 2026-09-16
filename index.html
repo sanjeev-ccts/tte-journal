@@ -994,9 +994,11 @@
         }
         .all-journey-action-row .all-journey-action-cancel,
         .all-journey-action-row .all-journey-action-share,
-        .sheet-action-row .sheet-action-cancel,
-        .sheet-action-row .sheet-action-share {
-            flex: 0 0 44px !important; min-width: 44px !important; padding: 8px !important;
+        .all-journey-action-row .all-journey-action-remark {
+            flex: 0 0 auto !important; min-width: auto !important; padding: 6px 10px !important; font-size: 11px !important;
+        }
+        .all-journey-action-edit, .all-journey-action-delete {
+            flex: 0 0 70px !important; min-width: 70px !important; padding: 6px 8px !important; font-size: 10px !important;
         }
         .sheet-action-edit, .sheet-action-delete,
         .all-journey-action-edit, .all-journey-action-delete {
@@ -1010,11 +1012,12 @@
         }
         .all-journey-action-edit svg, .sheet-action-edit svg, .manage-action-edit svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
         .all-journey-action-delete svg, .sheet-action-delete svg, .manage-action-delete svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; display: block; }
-        .sheet-action-cancel svg, .all-journey-action-cancel svg { width: 14px; height: 14px; flex-shrink: 0; display: block; }
+        .sheet-action-cancel svg, .all-journey-action-cancel svg, .all-journey-action-remark svg { width: 14px; height: 14px; flex-shrink: 0; display: block; }
         .circ-icon-action svg { width: 16px; height: 16px; fill: currentColor; display: block; }
         .ui-icon-only-btn svg { width: 14px; height: 14px; fill: currentColor; display: block; }
         .all-journey-action-edit { background: var(--blue-fill) !important; }
         .all-journey-action-delete { background: var(--red) !important; }
+        .all-journey-action-remark { background: #059669 !important; color: #fff !important; }
         .all-journey-action-cancel,
         .sheet-action-cancel {
             background: #64748b !important; color: #fff !important;
@@ -4860,6 +4863,10 @@
                             <datalist id="stn-list"></datalist>
                         </div>
                     </div>
+                    <div style="padding: 10px 12px; border-top: 1px solid var(--border);">
+                        <label class="form-field-lbl" for="trip-remark" style="font-size: 12px;">Remark (optional)</label>
+                        <input type="text" id="trip-remark" placeholder="Add a note for this journey" style="margin: 0; width: 100%;" maxlength="200">
+                    </div>
                     <div class="aj-duty-form-footer">
                         <button id="btn-save-duty" onclick="window.saveLeg()" style="background:var(--blue-fill);" data-i18n="save_this_journey">Save This Journey</button>
                     </div>
@@ -5661,6 +5668,11 @@
         size = size || 14;
         color = color || 'currentColor';
         return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="none" stroke="' + color + '" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" style="display:block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+    };
+    window.svgCommentIcon = function(size, color) {
+        size = size || 14;
+        color = color || 'currentColor';
+        return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" fill="' + color + '" aria-hidden="true" style="display:block;"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>';
     };
     window.svgShareIcon = function(size, color) {
         size = size || 16;
@@ -10754,7 +10766,7 @@
         const id = document.getElementById('manage-id')?.value;
         if (id) window.shareAllJourneyEntry(id);
     };
-    function manageLeg(id, train, dep, arr, depTime, arrTime) { 
+    function manageLeg(id, train, dep, arr, depTime, arrTime, remark) { 
         document.getElementById('manage-type').value = 'duty';
         document.getElementById('manage-id').value = id; 
         document.getElementById('manage-msg').innerText = `Tr: ${train} | ${dep} (${depTime||'--:--'}) ➔ ${arr} (${arrTime||'--:--'})`; 
@@ -10825,6 +10837,9 @@
             document.getElementById('trip-arr-date').value = leg.arrDate; 
             document.getElementById('trip-arr-stn').value = leg.arrStn; 
             document.getElementById('trip-arr-time').value = leg.arrTime; 
+            if (document.getElementById('trip-remark')) {
+                document.getElementById('trip-remark').value = leg.remark || '';
+            }
         }
         navTo('screen-add');
         if (window.captureTripFormBaseline) window.captureTripFormBaseline();
@@ -10861,7 +10876,8 @@
             arrDate: rawArrDate,
             arrStn: document.getElementById('trip-arr-stn').value.toUpperCase().trim(), 
             arrTime: rawArrTime || '',
-            inProgress: isInProgress
+            inProgress: isInProgress,
+            remark: (document.getElementById('trip-remark') || {}).value || ''
         }; 
         
         if(!leg.depDate || !leg.train || !leg.depStn || !leg.depTime || !leg.arrStn || !leg.arrDate) {
@@ -10948,6 +10964,7 @@
         document.getElementById('trip-arr-date').value = ''; 
         document.getElementById('trip-arr-stn').value = ''; 
         document.getElementById('trip-arr-time').value = ''; 
+        if (document.getElementById('trip-remark')) document.getElementById('trip-remark').value = '';
         document.getElementById('trip-dep-stn').value = leg.arrStn;
         window._tripAutoDepStn = leg.arrStn;
         if (window.captureTripFormBaseline) window.captureTripFormBaseline();
@@ -13183,6 +13200,7 @@
             <button type="button" class="all-journey-action-edit" aria-label="${isMultiDayLeave ? 'Edit complete leave period' : 'Edit entry'}" onclick="event.stopPropagation(); window.editAllJourneyEntry('${id}')">${window.svgEditIcon(14, '#fff')} Edit</button>
             <button type="button" class="all-journey-action-delete" aria-label="${isMultiDayLeave ? 'Delete complete leave period' : 'Delete entry'}" onclick="event.stopPropagation(); window.deleteAllJourneyEntry('${id}')">${window.svgTrashIcon(14, '#fff')} Delete</button>
             ${shareBtn}
+            <button type="button" class="all-journey-action-remark" aria-label="Remark" onclick="event.stopPropagation(); window.addRemarkToLeg('${id}')">${window.svgCommentIcon(14, '#fff')} Remark</button>
             <button type="button" class="all-journey-action-cancel" aria-label="Cancel" onclick="event.stopPropagation(); window.toggleAllJourneyExpand('${id}')">${window.svgCrossIcon(14, '#fff')}</button>
         </div>`;
     }
@@ -13206,7 +13224,7 @@
         if (leg.isNonDuty) {
             manageNonDuty(leg.id, leg.dutyType, leg.fromDate, leg.toDate);
         } else {
-            manageLeg(leg.id, leg.train, leg.depStn, leg.arrStn, leg.depTime, leg.arrTime);
+            manageLeg(leg.id, leg.train, leg.depStn, leg.arrStn, leg.depTime, leg.arrTime, leg.remark || '');
         }
         triggerEdit();
     };
@@ -13220,6 +13238,47 @@
         window._sheetModeNonDutySaveCallback = null;
         window._sheetModeDeleteCallback = null;
         deleteLeg(leg.id);
+    };
+
+    window.addRemarkToLeg = function(legId) {
+        const leg = (window.appState.legs || []).find(l => String(l.id) === String(legId));
+        if (!leg) return;
+        const currentRemark = leg.remark || leg.remarks || '';
+        
+        // Show custom modal for remark input
+        const modal = document.getElementById('custom-modal');
+        const titleEl = document.getElementById('modal-title');
+        const msgEl = document.getElementById('modal-msg');
+        const cancelBtn = document.getElementById('modal-cancel');
+        const okBtn = document.getElementById('modal-ok');
+        
+        titleEl.textContent = 'Remark';
+        msgEl.innerHTML = '<textarea id="remark-input" placeholder="Enter remark for this journey..." style="width:100%; min-height:80px; padding:10px; border:1px solid var(--border); border-radius:8px; font-size:14px; resize:vertical; font-family:inherit;">' + currentRemark.replace(/"/g, '&quot;') + '</textarea>';
+        cancelBtn.classList.remove('hidden');
+        okBtn.textContent = 'Save';
+        
+        // Remove old listeners
+        const newCancelBtn = cancelBtn.cloneNode(true);
+        const newOkBtn = okBtn.cloneNode(true);
+        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+        okBtn.parentNode.replaceChild(newOkBtn, okBtn);
+        
+        modal.classList.remove('hidden');
+        
+        newCancelBtn.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+        
+        newOkBtn.addEventListener('click', function() {
+            const newRemark = document.getElementById('remark-input').value.trim();
+            leg.remark = newRemark;
+            if (window.appState.legs && !window.appState.legs.find(l => l.id === leg.id)) {
+                window.appState.legs.push(leg);
+            }
+            window.saveData();
+            window.renderAllLogs();
+            modal.classList.add('hidden');
+        });
     };
 
     function allJourneyChevronHtml() {
@@ -13329,6 +13388,8 @@
                 
                 const isExpanded = !window._allJourneyMultiSelectMode && String(window._allJourneyExpandedId) === String(leg.id);
                 if (isExpanded) htmlElements.push(buildAllJourneyActionRow(leg));
+                const hasRemark = leg.remark || leg.remarks;
+                const commentIconHtml = hasRemark ? `<span class="all-journey-comment-indicator" style="margin-left:8px;" title="Has remark">${window.svgCommentIcon(14, '#059669')}</span>` : '';
                 htmlElements.push(`<div class="all-journey-row${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="false" style="border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%); border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;">
                     ${dutyCheckboxCol}
                     <div class="all-journey-row-body">
@@ -13338,6 +13399,7 @@
                         <span class="aj-sep"> → </span>
                         <span class="aj-stn">${leg.arrStn}</span> <span class="aj-time">${leg.arrTime}</span>
                         <span class="aj-sep"> · </span><span class="aj-date">${shortArr}</span>
+                        ${commentIconHtml}
                     </div>
                     ${allJourneyChevronHtml()}
                  </div>`);
