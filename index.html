@@ -4011,9 +4011,6 @@
                 <div class="sidebar-item" onclick="window.closeSidebar(); window.openEarningsModal();">
                     <svg class="sidebar-item-icon" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true" style="color:var(--green);"><path d="M128 128C92.7 128 64 156.7 64 192L64 448C64 483.3 92.7 512 128 512L512 512C547.3 512 576 483.3 576 448L576 192C576 156.7 547.3 128 512 128L128 128zM320 224C373 224 416 267 416 320C416 373 373 416 320 416C267 416 224 373 224 320C224 267 267 224 320 224zM512 248C512 252.4 508.4 256.1 504 255.5C475 251.9 452.1 228.9 448.5 200C448 195.6 451.6 192 456 192L504 192C508.4 192 512 195.6 512 200L512 248zM128 392C128 387.6 131.6 383.9 136 384.5C165 388.1 187.9 411.1 191.5 440C192 444.4 188.4 448 184 448L136 448C131.6 448 128 444.4 128 440L128 392zM136 255.5C131.6 256 128 252.4 128 248L128 200C128 195.6 131.6 192 136 192L184 192C188.4 192 192.1 195.6 191.5 200C187.9 229 164.9 251.9 136 255.5zM504 384.5C508.4 384 512 387.6 512 392L512 440C512 444.4 508.4 448 504 448L456 448C451.6 448 447.9 444.4 448.5 440C452.1 411 475.1 388.1 504 384.5z"/></svg><span data-i18n="earnings_label">Add Earnings</span>
                 </div>
-                <div class="sidebar-item" onclick="window.closeSidebar(); window.openRemarksModal();">
-                    <svg class="sidebar-item-icon" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true" style="color:#8b5cf6;"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg><span data-i18n="remarks_label">Remarks</span>
-                </div>
                 <div class="sidebar-item" onclick="window.showSidebarNationalHoliday();">
                     <svg class="sidebar-item-icon" viewBox="0 0 640 640" fill="currentColor" aria-hidden="true" style="color:var(--orange);"><path d="M155.7 160C170.3 150.8 180 134.5 180 116C180 87.3 156.7 64 128 64C99.3 64 76 87.3 76 116C76 132.7 83.8 147.5 96 157L96 576L160 576L160 512L533.6 512C548.2 512 560 500.2 560 485.6C560 481.9 559.2 478.3 557.7 474.9L496 336L557.7 197.1C559.2 193.7 560 190.1 560 186.4C560 171.8 548.2 160 533.6 160L155.7 160z"/></svg><span data-i18n="sidebar_national_holiday">National Holiday</span>
                 </div>
@@ -4067,11 +4064,11 @@
     </div>
 
     <!-- Journey Remark Modal -->
-    <div id="journey-remark-modal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; z-index:6000; padding:16px;" onclick="if(event.target === this) window.closeJourneyRemarkModal()">
+    <div id="journey-remark-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="journey-remark-title" aria-hidden="true" style="position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; z-index:6000; padding:16px;" onclick="if(event.target === this) window.closeJourneyRemarkModal()">
         <div style="background: var(--modal-bg); background: linear-gradient(155deg, color-mix(in srgb, var(--modal-bg) 92%, white 8%) 0%, var(--modal-bg) 55%, color-mix(in srgb, var(--modal-bg) 90%, black 10%) 100%); padding: 20px; border-radius: 16px; width: 90%; max-width: 400px; border: 1px solid var(--border); box-shadow: var(--shadow), inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow);">
             <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;">
-                <h3 style="margin:0; font-size:18px; color:var(--text); font-weight:900;">Journey Remarks</h3>
-                <button onclick="window.closeJourneyRemarkModal()" style="background:none; border:none; cursor:pointer; padding:4px; display:flex; align-items:center; justify-content:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+                <h3 id="journey-remark-title" style="margin:0; font-size:18px; color:var(--text); font-weight:900;">Journey Remarks</h3>
+                <button onclick="window.closeJourneyRemarkModal()" style="background:none; border:none; cursor:pointer; padding:0; display:flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="display:block;"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
             </div>
             <div id="journey-remark-info" style="font-size:13px; color:var(--text-muted); margin-bottom:12px; padding:8px; background:rgba(59,130,246,0.1); border-radius:8px;"></div>
             <textarea id="journey-remark-textarea" placeholder="Write your remark here..." style="width:100%; min-height:120px; padding:12px; border:1px solid var(--border); border-radius:10px; font-size:14px; resize:vertical; background:var(--card); color:var(--text); box-sizing:border-box; font-family:inherit;"></textarea>
@@ -13250,7 +13247,7 @@
         const shareBtn = !leg.isNonDuty
             ? `<button type="button" class="all-journey-action-share" aria-label="Share" onclick="event.stopPropagation(); window.shareAllJourneyEntry('${id}')">${window.svgShareIcon(16, '#fff')}</button>`
             : '';
-        const remarkBtn = `<button type="button" class="all-journey-action-remark" aria-label="Remarks" onclick="event.stopPropagation(); window.openJourneyRemarkModal('${id}')"><svg viewBox="0 0 640 640" style="width:14px;height:14px;fill:#fff;display:block;"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg></button>`;
+        const remarkBtn = `<button type="button" class="all-journey-action-remark" aria-label="Remarks" onclick="event.stopPropagation(); window.openJourneyRemarkModal('${id}')"><svg viewBox="0 0 640 640" style="width:14px;height:14px;fill:#fff;display:block;margin-right:6px;"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg>Remark</button>`;
         return `<div class="all-journey-action-row" data-action-for="${id}">
             <button type="button" class="all-journey-action-edit" aria-label="${isMultiDayLeave ? 'Edit complete leave period' : 'Edit entry'}" onclick="event.stopPropagation(); window.editAllJourneyEntry('${id}')">${window.svgEditIcon(14, '#fff')} Edit</button>
             <button type="button" class="all-journey-action-delete" aria-label="${isMultiDayLeave ? 'Delete complete leave period' : 'Delete entry'}" onclick="event.stopPropagation(); window.deleteAllJourneyEntry('${id}')">${window.svgTrashIcon(14, '#fff')} Delete</button>
@@ -13388,8 +13385,10 @@
                     const rowBorder = isCocl
                         ? 'border: 1px solid color-mix(in srgb, #9333ea 42%, var(--border) 58%);'
                         : 'border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%);';
+                    const hasRemark = !!(window.appState.journeyRemarks && window.appState.journeyRemarks[String(leg.id)]);
+                    const remarkIndicator = hasRemark ? `<svg viewBox="0 0 640 640" style="width:16px;height:16px;fill:#3b82f6;display:block;margin-right:8px;"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg>` : '';
                     if (isExpanded && isFirstDisplayedDay) htmlElements.push(buildAllJourneyActionRow(leg));
-                    htmlElements.push(`<div class="all-journey-row all-journey-row--nonduty ${nonDutyRowClass}${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="true" style="${rowBorder} border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;">${nonDutyCheckbox}<div class="all-journey-row-body">${contentStr}</div>${allJourneyChevronHtml()}</div>`);
+                    htmlElements.push(`<div class="all-journey-row all-journey-row--nonduty ${nonDutyRowClass}${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="true" style="${rowBorder} border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); cursor: pointer; transition: background 0.3s, color 0.3s, border 0.3s;">${nonDutyCheckbox}<div class="all-journey-row-body" style="display:flex;align-items:center;">${remarkIndicator}${contentStr}</div>${allJourneyChevronHtml()}</div>`);
                     isFirstDisplayedDay = false;
                     cursor.setDate(cursor.getDate() + 1);
                 }
@@ -13401,10 +13400,13 @@
                 const dutyCheckboxCol = window._allJourneyMultiSelectMode ? window.allJourneySelectMark(dutyChecked) : '';
                 
                 const isExpanded = !window._allJourneyMultiSelectMode && String(window._allJourneyExpandedId) === String(leg.id);
+                const hasRemark = !!(window.appState.journeyRemarks && window.appState.journeyRemarks[String(leg.id)]);
+                const remarkIndicator = hasRemark ? `<svg viewBox="0 0 640 640" style="width:16px;height:16px;fill:#3b82f6;display:block;margin-right:8px;"><path d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z"/></svg>` : '';
                 if (isExpanded) htmlElements.push(buildAllJourneyActionRow(leg));
                 htmlElements.push(`<div class="all-journey-row${isExpanded ? ' all-journey-row--expanded' : ''}" role="button" tabindex="0" aria-expanded="${isExpanded}" data-leg-id="${leg.id}" data-nonduty="false" style="border: 1px solid color-mix(in srgb, var(--text-muted) 40%, var(--border) 60%); border-radius: 10px; margin-bottom: 7px; box-shadow: inset 0 1px 0 var(--inset-highlight), inset 0 -2px 3px var(--inset-shadow); background: ${rowColor}; cursor: pointer; transition: background 0.3s, border 0.3s;">
                     ${dutyCheckboxCol}
-                    <div class="all-journey-row-body">
+                    <div class="all-journey-row-body" style="display:flex;align-items:center;">
+                        ${remarkIndicator}
                         <span class="aj-train">${leg.train}</span><span class="aj-sep"> · </span>
                         <span class="aj-date">${shortDep}</span><span class="aj-sep"> · </span>
                         <span class="aj-stn">${leg.depStn}</span> <span class="aj-time">${leg.depTime}</span>
@@ -19314,10 +19316,31 @@
             delete window.appState.journeyRemarks[window._currentJourneyRemarkId];
         }
         
-        window.saveData();
-        window.closeJourneyRemarkModal();
-        window.renderAllLogs();
-        showSuccessSnackbar("Remark saved successfully");
+        // Save to Firebase
+        if (window.db && window.firebaseSet && window.firebaseRef) {
+            const journeyRemarksRef = window.firebaseRef(window.db, `users/${window.currentUser.uid}/journeyRemarks`);
+            window.firebaseSet(journeyRemarksRef, window.appState.journeyRemarks)
+                .then(() => {
+                    window.saveData();
+                    window.closeJourneyRemarkModal();
+                    window.renderAllLogs();
+                    window.showSuccessSnackbar("Remark saved successfully");
+                })
+                .catch((error) => {
+                    console.error("Error saving remark to Firebase:", error);
+                    // Fallback to local save
+                    window.saveData();
+                    window.closeJourneyRemarkModal();
+                    window.renderAllLogs();
+                    window.showSuccessSnackbar("Remark saved locally");
+                });
+        } else {
+            // Fallback to local save only
+            window.saveData();
+            window.closeJourneyRemarkModal();
+            window.renderAllLogs();
+            window.showSuccessSnackbar("Remark saved successfully");
+        }
     };
 
     window.hasJourneyRemark = function(journeyId) {
