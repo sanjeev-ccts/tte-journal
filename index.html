@@ -232,6 +232,10 @@
         body.green-theme .circ-tag-year { background: color-mix(in srgb, var(--blue) 12%, transparent); color: var(--blue); }
         body.green-theme .circ-dash-icon-badge { color: var(--blue); }
         /* Point: Do NOT override circular icons color in green theme - keep them as default blue */
+        body.green-theme .circ-fab svg,
+        body.green-theme .circ-icon-action svg,
+        body.green-theme .circ-open-arrow,
+        body.green-theme .circ-latest-arrow { color: #0ea5e9 !important; fill: #0ea5e9 !important; }
         body.green-theme .circ-fab-right { background: radial-gradient(circle at center, #4ade80 0%, #15803d 55%, #14532d 100%); }
         body.green-theme #btn-clear-inputs svg { color: #64748b !important; }
         #btn-clear-inputs svg { color: #64748b; }
@@ -1841,7 +1845,8 @@
         .circ-circular-title-main { flex:1; min-width:0; display:flex; align-items:center; gap:6px; text-decoration:none; color:inherit; }
         .circ-circular-title { font-size:14.5px; font-weight:700; color:var(--text); margin:0; line-height:1.35; flex:1; min-width:0; }
         .circ-circular-title-row .circ-icon-action--edit { position:absolute; top:8px; right:8px; flex-shrink:0; margin-top:0; transform: scale(0.7); z-index:10; }
-        .circ-circular-meta { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+        .circ-circular-meta { display:flex; gap:6px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+        .circ-circular-meta-tags { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
         .circ-tag { font-size:10px; font-weight:800; padding:3px 9px; border-radius:20px; white-space:nowrap; }
         .circ-tag-category { background:rgba(124,58,237,0.12); color:var(--purple); }
         .circ-tag-official { background:rgba(22,163,74,0.12); color:var(--green); }
@@ -14168,8 +14173,10 @@
                 <div class="circ-latest-body">
                     <div class="circ-latest-title">${window.escapeHtml(c.title || 'Untitled')}</div>
                     <div class="circ-circular-meta">
-                        <span class="circ-tag circ-tag-date">${window.circFormatDateShort(c.date)}</span>
-                        ${linkFileTag}
+                        <div class="circ-circular-meta-tags">
+                            <span class="circ-tag circ-tag-date">${window.circFormatDateShort(c.date)}</span>
+                            ${linkFileTag}
+                        </div>
                     </div>
                 </div>
                 <span class="circ-latest-arrow">↗</span>`;
@@ -14573,16 +14580,18 @@
                             <p class="circ-circular-title">${escapeHtml(c.title)}${!circIsAdmin() ? '' : (c.visible === false ? ' <span style="color:var(--red); font-size:11px; font-weight:800;">(Hidden)</span>' : '')}</p>
                             ${hasLink ? '<span class="circ-open-arrow" aria-hidden="true">↗</span>' : ''}
                         </${titleTag}>
-                        ${adminEdit}
                     </div>
                     ${c.description ? `<p class="circ-circular-desc">${escapeHtml(c.description)}</p>` : ''}
                     <div class="circ-circular-meta">
-                        ${c.pinned ? `<span class="circ-tag circ-tag-pin">📌 Pinned</span>` : ''}
-                        ${c.officialNo ? `<span class="circ-tag circ-tag-official">${escapeHtml(c.officialNo)}${c.year ? ' · ' + c.year : ''}</span>` : (c.year ? `<span class="circ-tag circ-tag-year">${c.year}</span>` : '')}
-                        ${c.category ? `<span class="circ-tag circ-tag-category">${escapeHtml(c.category)}</span>` : ''}
-                        ${c.date ? `<span class="circ-tag circ-tag-date">${window.circFormatDateShort(c.date)}</span>` : ''}
-                        ${hasLink ? `<span class="circ-tag circ-tag-link">🔗 Link</span>` : ''}
-                        ${!hasLink && c.fileName ? `<span class="circ-tag circ-tag-file">📎 Attached file</span>` : ''}
+                        <div class="circ-circular-meta-tags">
+                            ${c.pinned ? `<span class="circ-tag circ-tag-pin">📌 Pinned</span>` : ''}
+                            ${c.officialNo ? `<span class="circ-tag circ-tag-official">${escapeHtml(c.officialNo)}${c.year ? ' · ' + c.year : ''}</span>` : (c.year ? `<span class="circ-tag circ-tag-year">${c.year}</span>` : '')}
+                            ${c.category ? `<span class="circ-tag circ-tag-category">${escapeHtml(c.category)}</span>` : ''}
+                            ${c.date ? `<span class="circ-tag circ-tag-date">${window.circFormatDateShort(c.date)}</span>` : ''}
+                            ${hasLink ? `<span class="circ-tag circ-tag-link">🔗 Link</span>` : ''}
+                            ${!hasLink && c.fileName ? `<span class="circ-tag circ-tag-file">📎 Attached file</span>` : ''}
+                        </div>
+                        ${adminEdit}
                     </div>
                 </div>
             </div>
@@ -19324,7 +19333,7 @@
                     window.saveData();
                     window.closeJourneyRemarkModal();
                     window.renderAllLogs();
-                    window.showSuccessSnackbar("Remark saved successfully");
+                    if (window.showSuccessSnackbar) window.showSuccessSnackbar("Remark saved successfully");
                 })
                 .catch((error) => {
                     console.error("Error saving remark to Firebase:", error);
@@ -19332,14 +19341,14 @@
                     window.saveData();
                     window.closeJourneyRemarkModal();
                     window.renderAllLogs();
-                    window.showSuccessSnackbar("Remark saved locally");
+                    if (window.showSuccessSnackbar) window.showSuccessSnackbar("Remark saved locally");
                 });
         } else {
             // Fallback to local save only
             window.saveData();
             window.closeJourneyRemarkModal();
             window.renderAllLogs();
-            window.showSuccessSnackbar("Remark saved successfully");
+            if (window.showSuccessSnackbar) window.showSuccessSnackbar("Remark saved successfully");
         }
     };
 
