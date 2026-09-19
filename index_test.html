@@ -16035,8 +16035,9 @@
     window.resetTrendDateNavigation = function() {
         const today = new Date();
         window._trendCurrentYear = today.getFullYear();
-        window._futureTrendMonthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
-        window._trendActualMonthKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+        const monthKey = window.getDefaultTrendMonthKeyForYear(today.getFullYear());
+        window._futureTrendMonthKey = monthKey;
+        window._trendActualMonthKey = monthKey;
         window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
         window._trendFutureCompareActual = false;
         window._trendActiveView = 'graph';
@@ -16047,7 +16048,12 @@
         if (!window.appState.legs || !window.appState.profile) return;
         window.resetTrendDateNavigation();
         window._trendSkipNavReset = true;
-        if (currentTab === 'nda') window._ndaSignOnMonthKey = window.getCurrentNdaMonthKey();
+        if (currentTab === 'nda') {
+            const ndaKey = window.getCurrentNdaMonthKey();
+            window._ndaSignOnMonthKey = ndaKey;
+            window._futureTrendMonthKey = ndaKey;
+            window._trendActualMonthKey = ndaKey;
+        }
         const signonBtn = document.getElementById('trend-tab-signon-btn');
         if (signonBtn) signonBtn.classList.toggle('hidden', currentTab !== 'nda');
         const titleEl = document.getElementById('trend-screen-title');
@@ -16061,15 +16067,31 @@
         window.updateTrendCompareFab();
     }
 
-    window.getCurrentNdaMonthKey = function() {
-        const today = new Date();
-        let ndaY = today.getFullYear();
-        let ndaM = today.getMonth() + 1;
-        if (today.getDate() > 15) {
+    window.getNdaMonthKeyForDate = function(d) {
+        const ref = (d instanceof Date) ? d : new Date(d);
+        let ndaY = ref.getFullYear();
+        let ndaM = ref.getMonth() + 1;
+        if (ref.getDate() > 15) {
             ndaM += 1;
             if (ndaM > 12) { ndaM = 1; ndaY += 1; }
         }
         return `${ndaY}-${String(ndaM).padStart(2, '0')}`;
+    };
+
+    window.getCurrentNdaMonthKey = function() {
+        return window.getNdaMonthKeyForDate(new Date());
+    };
+
+    window.getDefaultTrendMonthKeyForYear = function(year) {
+        const y = parseInt(year, 10);
+        if (currentTab === 'nda') {
+            const now = new Date();
+            if (now.getFullYear() === y) return window.getCurrentNdaMonthKey();
+            return `${y}-01`;
+        }
+        const now = new Date();
+        const m = (now.getFullYear() === y) ? now.getMonth() + 1 : 1;
+        return `${y}-${String(m).padStart(2, '0')}`;
     };
 
     window.getNdaSignOnOverride = function(mo, rowKey, defaultStr) {
@@ -16631,9 +16653,7 @@
     window.ensureActualTrendMonthKey = function() {
         const year = window._trendCurrentYear || new Date().getFullYear();
         if (!window._trendActualMonthKey || !window._trendActualMonthKey.startsWith(String(year) + '-')) {
-            const today = new Date();
-            const m = (today.getFullYear() === year) ? today.getMonth() + 1 : 1;
-            window._trendActualMonthKey = `${year}-${String(m).padStart(2, '0')}`;
+            window._trendActualMonthKey = window.getDefaultTrendMonthKeyForYear(year);
         }
     };
 
@@ -16928,9 +16948,7 @@
     window.ensureFutureTrendMonthKey = function() {
         const year = window._trendCurrentYear || new Date().getFullYear();
         if (!window._futureTrendMonthKey || !window._futureTrendMonthKey.startsWith(String(year) + '-')) {
-            const today = new Date();
-            const m = (today.getFullYear() === year) ? today.getMonth() + 1 : 1;
-            window._futureTrendMonthKey = `${year}-${String(m).padStart(2, '0')}`;
+            window._futureTrendMonthKey = window.getDefaultTrendMonthKeyForYear(year);
         }
     };
 
