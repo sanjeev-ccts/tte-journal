@@ -1,3 +1,57 @@
+/* ============================================================================
+   roster-core.js — Shared roster logic (used by OtherHQ.html AND index.html)
+   ============================================================================
+
+   WHAT IT DOES
+   ------------
+   Pure functions only. No Firebase, no DOM state, no HQ assumptions.
+   Defines window.RosterCore with helpers for:
+
+     - Date arithmetic       addDays, combineDateTime, weekIndexOf
+     - Rotation              getEffectiveTeam  (weekly team shift)
+     - Programme lookup      getProgrammeRow   (14 slots per TTE per week)
+     - Day status            getDayStatus      (sameDay / departureOnly /
+                                                arrivalOnly / rest / crossing /
+                                                blank)
+     - Train lookup          getTrainInfo, fmtTrainTiming
+     - Direction map         OUT_TRAINS / IN_TRAINS — every train number has
+                             one fixed direction, forever.
+     - Calendar rendering    buildCalendarCardHtml / buildCalendarGridCells
+     - Day-detail modal      buildDayDetailHtml
+     - Small helpers         fmtDateLabel, dayAbbrev, hapticTap,
+                             getAppViewportScale
+
+   WHO CALLS IT
+   ------------
+   - OtherHQ.html       renders the calendar and day detail for PYGS users
+   - index.html         calls getDayStatus etc. via roster-bridge.js to build
+                        projected TA / NDA / Salary legs
+
+   DATA SHAPE EXPECTED (the "bundle")
+   ----------------------------------
+     {
+       teamMaster:      { A: {cor, tte1, tte2, tte3}, B: {...}, ... },
+       linkProgramme:   { A1: {WED_OUT, WED_IN, ..., TUE_IN}, A2: {...}, ... },
+       trainSchedule:   { "22111": {from,to,dep,arr,arrNextDay}, ... },
+       anchorDate:      "2026-09-16",       // Wednesday of week 0
+       config: {
+         teamLetters:   ["A","B","C","D","E","F","G","H"],
+         weekStartsOn:  3,                  // 0=Sun … 3=Wed
+         slotOrder:     ["WED_OUT","WED_IN", ..., "TUE_IN"],
+         memberLabels:  {1:"COR", 2:"TTE-1", 3:"TTE-2", 4:"TTE-3"}
+       }
+     }
+
+   TO SUPPORT A NEW HQ
+   -------------------
+   None of this needs editing. The bundle carries all HQ-specific info.
+
+   DIRECTION RULE (important)
+   --------------------------
+   Every train number has a fixed direction — 14217 always departs, 14218
+   always arrives. A return journey uses a DIFFERENT train number. This is
+   why OUT/IN placement never needs context — just a lookup in the map.
+============================================================================ */
 (function () {
 'use strict';
 function pad2(n){return String(n).padStart(2,'0');}
