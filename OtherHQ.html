@@ -1,3 +1,55 @@
+<!--
+================================================================================
+  OtherHQ.html — Multi-HQ Duty Roster (currently PYGS; extendable to LKO, CNB…)
+================================================================================
+
+  WHAT IT DOES
+  ------------
+  A self-contained duty roster page for any railway HQ other than BSB.
+  Loaded inside the parent TTE LOGS app via an iframe (see roster-iframe-modal
+  in index.html), or opened directly as ?hq=PYGS for standalone use.
+
+  HOW IT PICKS ITS HQ
+  -------------------
+  Reads the ?hq= URL parameter first; falls back to localStorage['roster_my_hq'];
+  defaults to 'PYGS'. Sets window.rosterHQ to that value.
+
+  WHAT'S INSIDE
+  -------------
+  - PYGS_DATA         Seed data (teams A–H, 32-TTE link programme, train
+                      timings, anchor date). Auto-seeds Firebase on first
+                      admin load if roster/PYGS doesn't exist yet.
+  - My Duty tab       User picks Team + Position, calendar renders their
+                      personal rotation for any month.
+  - Admin tab         Six cards: Edit Teams, Link Programme, Train Schedule,
+                      Anchor Date, Export Data, Print Roster.
+
+  FIREBASE
+  --------
+  Reads/writes  roster/{hq}/teamMaster
+                roster/{hq}/linkProgramme
+                roster/{hq}/trainSchedule
+                roster/{hq}/anchorDate
+                roster/{hq}/config
+  Each HQ has its own island — no data is shared between HQs.
+
+  DEPENDENCIES
+  ------------
+  - roster-core.js  (shared calendar + direction logic)
+  - i18n.js         (translations)
+  - Firebase 10.7.1 (loaded as ES modules from gstatic)
+
+  TO ONBOARD A NEW HQ
+  -------------------
+  1. Add a LKO_DATA = {...} block next to PYGS_DATA below, same shape.
+  2. Add 'LKO': 'OtherHQ.html?hq=LKO' to rosterHqFileMap in index.html.
+  3. That's it — no structural changes needed.
+
+  DO NOT EDIT the <script type="module"> block's structure carelessly;
+  all PYGS logic lives inside it and long pastes have corrupted it before.
+  If you only need to change data, edit the PYGS_DATA object.
+================================================================================
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
