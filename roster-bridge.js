@@ -1,4 +1,50 @@
-/* roster-bridge.js — v6 */
+/* ============================================================================
+   roster-bridge.js — PYGS integration into the parent TTE LOGS app
+   ============================================================================
+
+   WHAT IT DOES
+   ------------
+   Makes the parent app (index.html) understand PYGS-shaped roster data.
+   Loaded as a module at the bottom of index.html, after the main app
+   script has finished.
+
+   WHY IT EXISTS
+   -------------
+   index.html was written assuming BSB's roster shape:
+     - localStorage key 'roster_my_team' holds a numeric team
+     - programme numbers run 1–43
+     - same-day pairs use slashes, two-day legs use separated slots
+   PYGS stores team + position as {team:"A", member:1}, has 8 teams,
+   and needs a different calendar reader. Rather than rewrite index.html's
+   BSB code paths, this file overrides ONLY the four functions that need
+   PYGS awareness — BSB code is never touched.
+
+   WHAT IT OVERRIDES (only when HQ != 'BSB')
+   -----------------------------------------
+     window.buildProjectedDutyLegsForYear   → synthetic PYGS legs for
+                                              TA / NDA / Salary graphs
+     window.openQuickAddCalendar            → PYGS-aware quick-add modal
+     window.openSelectTeamModal             → Team + Position picker
+     window.updateSelectTeamDisplay         → "Select team-A · COR" label
+
+   SIDE EFFECTS (BSB unaffected)
+   ------------------------------
+   - Mirrors the PYGS team letter into localStorage['roster_my_team'] so
+     the parent's guards (which read that key) pass naturally.
+   - Keeps re-installing overrides every 100ms for the first 20 seconds,
+     because the parent module assigns its own versions late during boot.
+
+   BSB SAFETY
+   ----------
+   Every override first checks `if (!isOther()) return;` — for BSB users,
+   the file effectively does nothing. Deleting roster-bridge.js restores
+   BSB-only behaviour with zero code changes elsewhere.
+
+   TO SUPPORT A NEW HQ (LKO, CNB, …)
+   ---------------------------------
+   No edits needed here as long as OtherHQ.html is set up for that HQ.
+   The bridge is HQ-agnostic; it just asks RosterCore for that HQ's data.
+============================================================================ */
 (function () {
     'use strict';
     console.log('[bridge] v6 loaded');
