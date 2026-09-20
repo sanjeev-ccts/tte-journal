@@ -11,7 +11,15 @@
         d.setDate(d.getDate() + n);
         return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
     }
-
+    
+    function updateRosterSubLabel() {
+    const el = document.getElementById('roster-nav-sub');
+    if (!el) return;
+    const h = hq() || 'BSB';
+    const txt = 'Roster for ' + h;
+    if (el.textContent !== txt) el.textContent = txt;
+    }
+    
     function getIdentity() {
         const h = hq();
         if (!h) return null;
@@ -264,6 +272,7 @@
     var ticks = 0, MAX = 200;
     function loop() {
         ticks++;
+        updateRosterSubLabel();
         mirrorTeamKey();
         const ok = installAll();
         if (ticks === 1 || ticks === 60 || ticks === MAX) {
