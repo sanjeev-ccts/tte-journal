@@ -2,6 +2,9 @@ const CACHE_NAME = 'tte-tracker-v3.6';
 const CORE_ASSETS = [
     './index.html',
     './roster.html',
+    './OtherHQ.html',
+    './roster-core.js',
+    './roster-bridge.js',
     './i18n.js',
     './manifest.json', 
     './icon.png?v=3',
