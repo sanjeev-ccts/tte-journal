@@ -1,0 +1,18 @@
+{
+  "name": "TTE Journal",
+  "install": "bash .cursor/install.sh",
+  "start": "bash .cursor/start-dev-server.sh",
+  "ports": [
+    {
+      "name": "static web",
+      "port": 8080
+    }
+  ],
+  "terminals": [
+    {
+      "name": "web",
+      "command": "python3 -m http.server 8080 --bind 0.0.0.0",
+      "description": "Serves the static TTE LOGS PWA from the repository root."
+    }
+  ]
+}
