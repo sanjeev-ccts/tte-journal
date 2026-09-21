@@ -276,17 +276,76 @@ programme. Add them via Admin → Train Schedule.
 
 ---
 
-## A note about other HQ types
+## Two rotation types — weekly vs daily
 
-The pattern described here works for HQs that follow the same general
-shape as PYGS — teams rotate weekly, each team has up to four members,
-duties follow a repeating weekly pattern.
+Not every HQ rotates its programme the same way. There are two patterns in
+use. They are genuinely different systems, not just different data.
 
-If a future HQ has a genuinely different structure (different number of
-days in the rotation, teams that don't rotate, or members who don't all
-follow the same shape), it may need its own separate file rather than
-reusing `OtherHQ.html`. Consult whoever built the app if that situation
-arises.
+### Weekly rotation (example: PYGS)
+
+Every Wednesday, every team moves forward one position in a cycle. If Team
+A ran a certain programme last week, this week Team B runs that same
+programme, and Team A runs what Team C ran last week, and so on. After as
+many weeks as there are teams, it cycles back to the start.
+
+- The whole week's programme stays the same for a team
+- It changes only on Wednesdays
+- Team letters (A–H) identify teams
+- Each team has up to four TTE members, and each member has their own
+  programme row
+
+### Daily rotation (example: BSB)
+
+Every day, every team's programme number advances by one. If Team 9 ran
+Programme 9 yesterday, it runs Programme 10 today, Programme 11 tomorrow,
+and so on. After a fixed number of days (43 for BSB) the cycle repeats.
+
+- Each team's programme changes every single day
+- Teams are identified by number (1–43 for BSB)
+- Each team has a **Base Programme** number — the programme they run on
+  the anchor date. Every day after that, their effective programme is
+  Base + days elapsed, wrapped around the cycle length.
+- All members of a team share the same daily programme
+
+---
+
+### How to tell which rotation your HQ uses
+
+Ask someone who knows that HQ's working — or check the roster document
+itself. The tell-tale signs:
+
+- **Weekly rotation** looks like a grid of weekly patterns with team
+  letters or names in the left column
+- **Daily rotation** looks like a numbered list where every team has the
+  same daily programme number or the same sequence advancing by day
+
+If you are unsure, ask first. It's a two-minute question that saves a day
+of confusion.
+
+---
+
+### Adding a weekly-rotation HQ
+
+Follow the three edits described earlier in this document exactly as
+written. Set `rotationType: "weekly"` in the new data block (or omit it —
+weekly is the default).
+
+---
+
+### Adding a daily-rotation HQ
+
+The same three edits apply, with four additional settings inside the new
+data block:
+
+1. **`rotationType: "daily"`** — tells the app to use the daily model.
+
+2. **`rotationCount: N`** — the length of the cycle. For BSB's model,
+   N = 43. Every `N` days, each team's programme number wraps back to
+   where it started.
+
+3. **A `baseProg` field on every team** in the `teamMaster` section. This
+   is the programme number that team runs on the anchor date. Example:
+
 
 ---
 
