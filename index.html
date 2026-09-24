@@ -3091,15 +3091,21 @@
 
                     // Point 2: Apply admin's pay rate table override if present, else keep defaults
                     if (adminConfig.payRateTable) {
-                        window.payRateTable = adminConfig.payRateTable;
-                    }
+                        window.payRateTable = Object.assign({}, window.DEFAULT_PAY_RATE_TABLE, adminConfig.payRateTable);
+                    } else {
+                        window.payRateTable = JSON.parse(JSON.stringify(window.DEFAULT_PAY_RATE_TABLE));
+					}
                     // Point 8-i: Apply admin's HRA rate table override if present, else keep defaults
                     if (adminConfig.hraRateTable) {
-                        window.hraRateTable = adminConfig.hraRateTable;
-                    }
+                        window.hraRateTable = Object.assign({}, window.DEFAULT_HRA_RATE_TABLE, adminConfig.hraRateTable);
+                    } else {
+                        window.hraRateTable = JSON.parse(JSON.stringify(window.DEFAULT_HRA_RATE_TABLE));
+					}
                     // Apply admin's NHA rate table override if present, else keep defaults
                     if (adminConfig.nhaRateTable) {
-                        window.nhaRateTable = adminConfig.nhaRateTable;
+                        window.nhaRateTable = Object.assign({}, window.DEFAULT_NHA_RATE_TABLE, adminConfig.nhaRateTable);
+                    } else {
+                        window.nhaRateTable = JSON.parse(JSON.stringify(window.DEFAULT_NHA_RATE_TABLE));
                     }
                     // NHA festival dates - shared with the Roster app (admin_config/roster_festivals
                     // is a global node, not HQ-scoped, so this works identically for every user
