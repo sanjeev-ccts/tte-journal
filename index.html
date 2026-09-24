@@ -6936,7 +6936,19 @@ window.isBsbRosterHq = function() {
 
 
     // Wrapper that reads userData from the stored map (avoids inline JSON in onclick)
-    window.viewUserAuditById = (uid, name) => {
+   window.copyUserUid = function(uid) {
+    if (!uid) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(uid).then(function() {
+            window.showSnackbar('UID copied: ' + uid, { type: 'success', duration: 2200 });
+        }).catch(function() {
+            window.showSnackbar(uid, { type: 'info', duration: 6000 });
+        });
+    } else {
+        window.showSnackbar(uid, { type: 'info', duration: 6000 });
+    }
+};
+	window.viewUserAuditById = (uid, name) => {
         const userData = window._rosterDataMap && window._rosterDataMap[uid];
         if (!userData) return showModal("Error", "User data not found. Please reload the roster.", "error", false);
         window.viewUserAudit(uid, name, userData);
@@ -6964,8 +6976,15 @@ window.isBsbRosterHq = function() {
                     <div style="flex:1; border-left:1px solid var(--border);"><div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Basic Pay</div><div style="font-size:14px; font-weight:800; color:var(--text);">${profile.basicpay ? '₹'+escapeHtml(profile.basicpay) : '—'}</div></div>
                     <div style="flex:1; border-left:1px solid var(--border);"><div style="font-size:10px; color:var(--text-muted); text-transform:uppercase;">Logs (This Month)</div><div style="font-size:14px; font-weight:800; color:var(--green);">${(() => { const now = new Date(); const mk = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`; return Object.values(userData.legs || {}).filter(l => ((l.isNonDuty ? l.fromDate : l.depDate) || '').startsWith(mk)).length; })()}</div></div>
                 </div>
-                <div style="border-top:1px dashed var(--border); padding-top:10px; display:flex; gap:8px;">
-                    <button onclick="window.adminToggleBlockUser()" style="margin:0; flex:1; font-size:12px; padding:8px; background:${isBlocked ? 'var(--green)' : '#ea580c'};">${isBlocked ? '✅ Unblock User' : '🚫 Block User'}</button>
+<div style="border-top:1px dashed var(--border); padding-top:10px; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+    <div style="flex:1; min-width:0;">
+        <div style="font-size:10px; color:var(--text-muted); text-transform:uppercase; margin-bottom:2px;">Firebase UID</div>
+        <div style="font-family:monospace; font-size:11px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(uid)}</div>
+    </div>
+    <button onclick="window.copyUserUid('${uid}')" style="width:auto; margin:0; padding:8px 16px; font-size:12px; background:var(--blue-fill); border-radius:20px; white-space:nowrap;">📋 Copy UID</button>
+</div>
+<div style="border-top:1px dashed var(--border); padding-top:10px; display:flex; gap:8px;">
+    <button onclick="window.adminToggleBlockUser()" style="margin:0; flex:1; font-size:12px; padding:8px; background:${isBlocked ? 'var(--green)' : '#ea580c'};">${isBlocked ? '✅ Unblock User' : '🚫 Block User'}</button>
                     <button onclick="window.kickUser('${uid}', '${escapeHtml(profile.name || 'this user').replace(/'/g,"\\'")}')" style="margin:0; flex:1; font-size:12px; padding:8px; background:#9333ea;">👢 Kick</button>
                     <button onclick="window.quickDeleteUser('${uid}', '${escapeHtml(profile.name || 'this user')}')" style="margin:0; flex:1; font-size:12px; padding:8px; background:var(--red); display:inline-flex; align-items:center; justify-content:center; gap:6px;">${window.svgTrashIcon(14, '#fff')} Delete User</button>
                 </div>
