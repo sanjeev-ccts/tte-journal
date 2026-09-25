@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tte-tracker-v3.9';
+const CACHE_NAME = 'tte-tracker-v4.0';
 const CORE_ASSETS = [
     './index.html',
     './roster.html',
