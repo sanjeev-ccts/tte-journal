@@ -7638,15 +7638,24 @@ window.adminGenerateUserPdf = async function(uid, type) {
     };
 
     window.quickDeleteUser = function(uid, name) {
-        showModal("Permanently Delete User", `This will COMPLETELY DELETE all of "${name}"'s data (profile, every logged journey — everything) from Firebase. They will need to sign in and register again completely from scratch. This CANNOT be undone.\n\nAre you absolutely sure?`, "warning", true, (proceed) => {
-            if (!proceed) return;
-            window.firebaseSet(window.firebaseRef(window.db, `users/${uid}`), null).then(() => {
-                window._rosterRowsCache = (window._rosterRowsCache || []).filter(r => r.uid !== uid);
-                renderRosterTable();
-                showModal("Deleted", `${name}'s account data has been permanently removed.`, "success", false);
-            }).catch(err => showModal("Error", `Failed: ${err.message}`, "error", false));
-        });
-    };
+    showModal("Permanently Delete User", `This will COMPLETELY DELETE all of "${name}"'s data (profile, every logged journey — everything) from Firebase. They will need to sign in and register again completely from scratch. This CANNOT be undone.\n\nAre you absolutely sure?`, "warning", true, async (proceed) => {
+        if (!proceed) return;
+        try {
+            // Point: Force logout FIRST, so their active session is terminated before
+            // their data is wiped. This prevents them from continuing to use the app
+            // (or re-registering on the spot) with an already-open session.
+            await window.firebaseSet(window.firebaseRef(window.db, `admin_config/forceLogout/${uid}`), Date.now());
+            // Then delete their data.
+            await window.firebaseSet(window.firebaseRef(window.db, `users/${uid}`), null);
+            
+            window._rosterRowsCache = (window._rosterRowsCache || []).filter(r => r.uid !== uid);
+            renderRosterTable();
+            showModal("Deleted", `${name}'s account data has been permanently removed and they have been logged out.`, "success", false);
+        } catch(err) {
+            showModal("Error", `Failed: ${err.message}`, "error", false);
+        }
+    });
+};
 
     // Point 8: relative-time formatter for Last Online ("Online now" / "5m ago" / "3h ago" / "2d ago")
     function formatRelativeTime(ms) {
